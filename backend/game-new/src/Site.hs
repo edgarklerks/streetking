@@ -1535,11 +1535,15 @@ raceChallengeAccept = do
 
             -- TODO: check user busy
 
+        let t = N.raceStart {
+                    N.race_type = read $ chgt,
+                    N.race_id = cid  
 
-        N.sendBulk [uid, rp_account_id $ Chg.challenger chg] (N.raceStart {
-                                                                        N.race_type = read $ chgt,
-                                                                        N.race_id = cid  
-                                                                              })
+                }
+        N.sendNotification uid t
+        liftIO $ print t 
+        N.sendNotification (rp_account_id $ Chg.challenger chg) t 
+        liftIO $ print t
 
         rid <- runDb $ do
             -- TODO: get / search functions for track, user, car with task triggering
@@ -1836,7 +1840,7 @@ tournamentJoin = do
     writeResult (1 :: Int)
 
 {-- till here --}
-wrapErrors x = runDb (forkSqlTransaction $ forkSqlTransaction $  Task.run Task.Cron 0 >> liftIO (print "done") >> return ()) >>  CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
+wrapErrors x = runDb (forkSqlTransaction $ forkSqlTransaction $  Task.run Task.Cron 0 >> return ()) >>  CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
 
 userNotification :: Application ()
