@@ -464,7 +464,8 @@ carMarketBuy = do
         let d = updateHashMap xs (def :: MI.MarketItem)
         s <- p uid d 
         N.sendNotification (MI.account_id s) (N.carMarket {
-                                        N.car_id = fromJust $ MI.car_instance_id d
+                                        N.car_id = fromJust $ MI.car_instance_id d,
+                                        N.money = MI.price s 
                     })
 
         writeResult ("Your bought a car on the market" :: String)
@@ -702,7 +703,8 @@ marketPlaceBuy = do
             mp <- p 
             
             N.sendNotification (MP.account_id mp) (N.partMarket {
-                                                                                                N.part_id = fromJust $ MP.id mp  
+                                                                                                N.part_id = fromJust $ MP.id mp 
+                                                                                                , N.money = MP.price mp
                                             })
 
             writeResult ("You bought the part" :: String) 
