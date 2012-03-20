@@ -358,6 +358,21 @@ update t con d a = transaction sqlExecute $ Update tbl ass con
         tbl = table t
         ass = updates d a
 
+-- upsert: take table name and a record in HashMap format. check if a record already exists with the id from the Map. if exists, update the record; if not, insert. return the id of the record.
+upsert :: Sql -> M.HashMap Sql Value -> SqlTransaction Connection Value
+upsert t m = do
+    n <- transaction sqlGetOne $ Select (table t) (express "count(*)") con [] NullLimit NullOffset
+    case n of
+        0 -> do
+            insert t [] $ M.toList m
+        otherwise -> do
+            update t con [] $ M.toList m
+            return i 
+    where con = ["id" |== i]
+          i = maybe SqlNull id (M.lookup "id" m)
+
+
+
 
 {-
  - *** Utility ***
