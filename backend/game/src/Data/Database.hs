@@ -1,8 +1,9 @@
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances, ViewPatterns #-}
 
 module Data.Database where
 
-import Data.List
+import Control.Applicative
+import Data.List hiding (insert)
 import qualified Data.HashMap.Strict as M
 import Data.Tools
 import Data.SqlTransaction
@@ -361,7 +362,8 @@ update t con d a = transaction sqlExecute $ Update tbl ass con
 -- upsert: take table name and a record in HashMap format. check if a record already exists with the id from the Map. if exists, update the record; if not, insert. return the id of the record.
 upsert :: Sql -> M.HashMap Sql Value -> SqlTransaction Connection Value
 upsert t m = do
-    n <- transaction sqlGetOne $ Select (table t) (express "count(*)") con [] NullLimit NullOffset
+    let mi x = fromSql x :: Integer
+    n <- mi <$> (transaction sqlGetOne $ Select (table t) [express "count(*)"] con [] NullLimit NullOffset)
     case n of
         0 -> do
             insert t [] $ M.toList m
