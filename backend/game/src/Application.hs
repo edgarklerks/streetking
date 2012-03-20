@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses #-}
 {-
 
 This module defines our application's monad and any application-specific
@@ -13,6 +14,7 @@ module Application
 import           Snap.Extension
 import           Snap.Extension.Heist.Impl
 import           Snap.Extension.Timer.Impl
+import qualified Model.Account as A 
 
 
 ------------------------------------------------------------------------------

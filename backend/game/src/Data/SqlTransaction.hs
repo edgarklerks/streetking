@@ -35,7 +35,8 @@ module Data.SqlTransaction (
     sqlGetAll,
     sqlGetAllAssoc,
     sqlExecute,
-	quickInsert
+	quickInsert,
+    Connection
 
 ) where 
 
@@ -52,7 +53,7 @@ import Data.Convertible
 import Data.Map (Map)
 import qualified Database.HDBC as H
 import qualified Data.HashMap.Strict as M
-
+import Database.HDBC.PostgreSQL
 newtype SqlTransaction c a = SqlTransaction {
         unsafeRunSqlTransaction :: ReaderT c (ErrorT String IO) a 
  } deriving (Functor, Alternative, Applicative, Monad, MonadPlus, MonadFix, MonadReader c, MonadError String, MonadIO) 
