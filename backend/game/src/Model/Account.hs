@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
 module Model.Account where 
 
 import           Data.SqlTransaction
@@ -36,7 +36,9 @@ $(genRecord "Account" [
                     ("busy_until", ''Integer)
     ]
     )
-$(genDatabase "Account")
+
+$(genDatabase "Account" "account")
+
 $(genInstance "Account" [             
                     ("id", ''Id),
                     ("firstname", ''String),

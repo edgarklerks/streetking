@@ -48,4 +48,3 @@ nhead = ((fmap . fmap) join . fmap) (fmap fromHashMap . listToMaybe)
 thsql :: H.SqlValue -> Integer 
 thsql = convert 
 mco = (fmap) thsql 
-upsert = undefined 

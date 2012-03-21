@@ -1,10 +1,11 @@
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances, TemplateHaskell #-}
 module Model.Personal where 
 
 import           Data.SqlTransaction
 import           Database.HDBC
 import           Data.Convertible
 import           Model.General
+import           Data.Database 
 
 import           Control.Applicative
 import qualified Data.Map as M
@@ -37,3 +38,5 @@ $(genInstance "Personal" [
         ("paid_until", ''Integer),
         ("busy_until", ''Integer)
     ])
+
+$(genDatabase "Personal" "personal")

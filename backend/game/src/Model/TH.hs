@@ -13,8 +13,8 @@ genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] 
         tp = foldr step [] xs
         step (x,t) z = (varStrictType (mkName x) (strictType notStrict (conT t)))  : z 
 
-genDatabase :: String -> Q [Dec]
-genDatabase n = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb n ++ saveDb n)]
+genDatabase :: String -> String -> Q [Dec]
+genDatabase n tbl = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl ++ saveDb tbl)]
 
 genInstance :: String -> [(String, Name)] -> Q [Dec] 
 genInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Mapable")) (conT $ mkName nm)) (tmMap nm (fmap fst xs) ++ frmMap nm (fmap fst xs) ++ tmHashMap nm (fmap fst xs) ++ frmHashMap nm (fmap fst xs))]  
