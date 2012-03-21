@@ -29,9 +29,31 @@ Executable game
     snap-server == 0.5.*,
     text >= 0.11 && < 0.12,
     time >= 1.1 && < 1.4,
-    xmlhtml == 0.1.*
+    xmlhtml == 0.1.*,
+    directory,
+    binary,
+    TigerHash,
+    entropy,
+    containers,
+    stm,
+    parsec,
+    deepseq,
+    zeromq-haskell,
+    unordered-containers,
+    convertible,
+    aeson,
+    HDBC,
+    HDBC-postgresql,
+    random,
+    semigroups,
+    pointed,
+    regex-base,
+    regex-tdfa,
+    comonad,
+    template-haskell,
+    array
 
-  extensions: TypeSynonymInstances MultiParamTypeClasses
+  extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction
 
   if flag(development)
     cpp-options: -DDEVELOPMENT
