@@ -13,7 +13,7 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genRecord "PartType" 
+$(genAll "PartType" "part_type"
     [
     ("id", ''Id),
     ("name", ''String),
@@ -23,15 +23,3 @@ $(genRecord "PartType"
     ("default_universal", ''Bool)
     ]
     )
-$(genInstance "PartType" 
- [
-    ("id", ''Id),
-    ("name", ''String),
-    ("sort", ''Integer),
-    ("use_3d", ''String),
-    ("required", ''Bool),
-    ("default_universal", ''Bool)
-    ]
-    )   
-
-$(genDatabase "PartType" "part_type")

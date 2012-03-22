@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, IncoherentInstances, RankNTypes, FlexibleContexts, ViewPatterns #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, IncoherentInstances, RankNTypes, FlexibleContexts, ViewPatterns, ScopedTypeVariables #-}
 module Data.InRules where
 
 

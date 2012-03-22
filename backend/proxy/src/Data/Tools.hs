@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, BangPatterns, FlexibleInstances, MultiParamTypeClasses, GADTs, ViewPatterns, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings, BangPatterns, FlexibleInstances, MultiParamTypeClasses, GADTs, ViewPatterns, FlexibleContexts, OverlappingInstances #-}
 
 module Data.Tools where
 

@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TemplateHaskell, NoMonomorphismRestriction #-}
 module Model.TH where 
 
 import Language.Haskell.TH
@@ -7,6 +7,12 @@ import Control.Monad
 import Data.Maybe 
 
 
+genAll :: String -> String -> [(String, Name)] ->  Q [Dec]
+genAll nm tbl xs = do r <- genRecord nm xs  
+                      i <- genInstance nm xs
+                      d <- genDatabase nm tbl
+                      return $ r ++ i ++ d
+
 genRecord :: String -> [(String, Name)] -> Q [Dec]
 genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] ([''Show, ''Eq])]
     where
@@ -14,7 +20,7 @@ genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] 
         step (x,t) z = (varStrictType (mkName x) (strictType notStrict (conT t)))  : z 
 
 genDatabase :: String -> String -> Q [Dec]
-genDatabase n tbl = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl ++ saveDb tbl)]
+genDatabase n tbl = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl ++ saveDb tbl ++ searchDB tbl)]
 
 genInstance :: String -> [(String, Name)] -> Q [Dec] 
 genInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Mapable")) (conT $ mkName nm)) (tmMap nm (fmap fst xs) ++ frmMap nm (fmap fst xs) ++ tmHashMap nm (fmap fst xs) ++ frmHashMap nm (fmap fst xs))]  
@@ -39,6 +45,15 @@ loadDb n = [funD (mkName "load") [clausem]]
             where decs = appE sl [| [ ("id", $(varE $ mkName "cEQ")) ]|]
                   sl = appE (varE (mkName "select")) (stringE n)
                   ff = appE (varE $ mkName "nhead")
+
+searchDB tbl = [funD (mkName "search") [clausem]]
+    where clausem = clause [(varP (mkName "xs")), varP (mkName "order"), varP (mkName "limit"), varP (mkName "offset")] (normalB (appE (varE $ mkName "mfp") dec)) []
+            where dec = appE (appE (varE $ mkName "transaction") (varE $ mkName "sqlGetAllAssoc")) decs
+                  decs = appE (appE (appE sl ordr) lmt) offs
+                  ordr = (varE (mkName "order")) 
+                  offs = appE (conE $ mkName "Offset") (appE ((varE $ mkName "htsql")) (varE $ mkName "offset"))
+                  lmt = appE (conE $ mkName "Limit") (appE (varE (mkName "htsql")) (varE (mkName "limit")))
+                  sl = appE (appE (appE (conE (mkName "Select")) (appE (varE (mkName "table")) (stringE tbl))) ([|[ $(varE $ mkName "selectAll") ]|])) (varE $ mkName "xs")
 
 saveDb n = [funD (mkName "save") [clausem]]
     where clausem = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") decs) []
