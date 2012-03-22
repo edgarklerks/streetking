@@ -13,20 +13,11 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genRecord "Manufacturer" 
+$(genAll "Manufacturer" "manufacturer"
     [
         ("id", ''Id),
         ("name", ''String),
-        ("picture", ''String)
+        ("picture", ''String),
+        ("text", ''String)
     ]
     )
-
-$(genInstance "Manufacturer" 
- [
-        ("id", ''Id),
-        ("name", ''String),
-        ("picture", ''String)
-    ]
- )
-
-$(genDatabase "Manufacturer" "manufacturer")

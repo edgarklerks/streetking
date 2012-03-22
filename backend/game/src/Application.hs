@@ -12,8 +12,6 @@ module Application
   ) where
 
 import           Snap.Extension
-import           Snap.Extension.Heist.Impl
-import           Snap.Extension.Timer.Impl
 import           Snap.Types 
 import           Config.ConfigFileParser
 import qualified Database.HDBC as DB
@@ -47,23 +45,12 @@ type Application = SnapExtend ApplicationState
 -- templates, and Timer simply to illustrate the config loading differences
 -- between development and production modes.
 data ApplicationState = ApplicationState
-    { templateState :: HeistState Application
-    , timerState    :: TimerState
-    , dsn :: DCP.ConnectionPool
-    , slaveChan :: Slave  
+    { 
+        dsn :: DCP.ConnectionPool
+      , slaveChan :: Slave  
     }
 
 
-------------------------------------------------------------------------------
-instance HasHeistState Application ApplicationState where
-    getHeistState     = templateState
-    setHeistState s a = a { templateState = s }
-
-
-------------------------------------------------------------------------------
-instance HasTimerState ApplicationState where
-    getTimerState     = timerState
-    setTimerState s a = a { timerState = s }
 
 
 ------------------------------------------------------------------------------
@@ -108,9 +95,9 @@ loadConfig = do
 
 applicationInitializer :: Initializer ApplicationState
 applicationInitializer = do
-    heist <- heistInitializer "resources/templates" id
-    timer <- timerInitializer
     (dsn, nr, dc, dctrl) <- loadConfig
     db <- liftIO $ DCP.initConnectionPool (fromInteger nr) (DB.connectPostgreSQL dsn)
+    liftIO $ print "started connection pool"
     s <- liftIO $ setupSlave dc dctrl
-    return $ ApplicationState heist timer db s
+    liftIO $ print "connected to bla"
+    return $ ApplicationState db s

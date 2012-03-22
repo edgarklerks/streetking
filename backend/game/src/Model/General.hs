@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts #-}
+{-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, NoMonomorphismRestriction #-}
 module Model.General where 
 
 
@@ -10,10 +10,12 @@ import qualified Data.Aeson as A
 import           Data.Maybe 
 import           Data.Convertible
 import           Control.Monad
+import           Data.Database
 
 class H.IConnection c => Database c a where 
     save :: a -> SqlTransaction c Integer
     load :: Integer -> SqlTransaction c (Maybe a) 
+    search :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction c [a]
 
 
 class Mapable a where 
@@ -48,3 +50,5 @@ nhead = ((fmap . fmap) join . fmap) (fmap fromHashMap . listToMaybe)
 thsql :: H.SqlValue -> Integer 
 thsql = convert 
 mco = (fmap) thsql 
+
+mfp = (fmap catMaybes) . (fmap.fmap) fromHashMap

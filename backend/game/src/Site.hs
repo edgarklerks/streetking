@@ -12,6 +12,7 @@ module Site
 
 import           Control.Applicative
 import           Data.Maybe
+import qualified Data.ByteString.Char8 as C
 import qualified Data.Text.Encoding as T
 import           Snap.Extension.Heist
 import           Snap.Extension.Timer
@@ -29,28 +30,12 @@ import           Application
 -- Otherwise, the way the route table is currently set up, this action
 -- would be given every request.
 index :: Application ()
-index = ifTop $ heistLocal (bindSplices indexSplices) $ render "index"
+index = ifTop $ writeBS "Hello" 
   where
-    indexSplices =
-        [ ("start-time",   startTimeSplice)
-        , ("current-time", currentTimeSplice)
-        ]
 
 
-------------------------------------------------------------------------------
--- | Renders the echo page.
-echo :: Application ()
-echo = do
-    message <- decodedParam "stuff"
-    heistLocal (bindString "message" (T.decodeUtf8 message)) $ render "echo"
-  where
-    decodedParam p = fromMaybe "" <$> getParam p
-
-
-------------------------------------------------------------------------------
 -- | The main entry point handler.
 site :: Application ()
 site = route [ ("/",            index)
-             , ("/echo/:stuff", echo)
              ]
        <|> serveDirectory "resources/static"
