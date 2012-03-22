@@ -366,7 +366,7 @@ upsert t m = do
     n <- mi <$> (transaction sqlGetOne $ Select (table t) [express "count(*)"] con [] NullLimit NullOffset)
     case n of
         0 -> do
-            insert t [] $ M.toList m
+            insert t [] $ M.toList (M.delete "id" m)
         otherwise -> do
             update t con [] $ M.toList m
             return i 
