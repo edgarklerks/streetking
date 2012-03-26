@@ -17,7 +17,6 @@ import           Control.Monad.Trans
 import           Data.Maybe
 import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
-import           Database.Media 
 import qualified Data.Text.Encoding as T
 import           Snap.Extension.Heist
 import           Snap.Extension.Timer
@@ -192,30 +191,6 @@ logout = checkPerm'  *> dropRoles "user_token"
 
                 
 
-mediaGet :: Application () 
-mediaGet = checkPerm' *> withConnection f 
-    where f db = do 
-            mid <- B.unpack <$> getOpParam "id"
-            let xid = read mid :: Int
-            (s,p) <- runSqlTransaction (mediaRoute xid) internalError db
-            withRequest $ \r -> do 
-                m <- liftIO $ HE.newManager
-                (s,hp,bs) <- runHttp (mediaRequest r s p) m
-                liftIO $ HE.closeManager m 
-                writeBS bs
-                modifyResponse (setResponseCode s)
-
-mediaRequest :: Request -> String -> String -> HE.Request Application 
-mediaRequest  req host port = let 
-                 method = req $> rqMethod
-                 uri = req $> rqURI
-                 resource = req $> rqContextPath 
-                 subresource = req $> rqPathInfo 
-                 params = req $> rqParams 
-                 reqParams = fmap (second (Just . head)) $ M.toList params 
-                 request = HE.def {HE.method = B.pack . show $ method, HE.path = (resource `B.append` subresource), HE.port = (read port), HE.host = (B.pack host), HE.queryString = reqParams }  
-            in request  
-
  
 -- test Roles
 roleApp :: Application()
@@ -272,7 +247,6 @@ site = CIO.catch (route [
     ("/User/logout", logout),
     ("/Role/application", roleApp),
     ("/Role/user", roleUser),
-    ("/Media/get", mediaGet),
     ("/", proxy) ] ) $ \(UserErrorE e) -> 
         writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" 
 

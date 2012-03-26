@@ -49,7 +49,6 @@ import           Control.Concurrent
 import           Data.ServerPool
 import           Control.Comonad
 import qualified Data.SqlTransaction as ST
-import           Database.LoginRegister
 import           Config.ConfigFileParser
 import           Database.HDBC.PostgreSQL
 import qualified Database.HDBC as DB
