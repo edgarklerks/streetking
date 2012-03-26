@@ -33,6 +33,8 @@ index :: Application ()
 index = ifTop $ writeBS "Hello" 
   where
 
+register :: Application () 
+register = undefined
 
 -- | The main entry point handler.
 site :: Application ()

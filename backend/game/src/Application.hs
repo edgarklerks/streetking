@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
 {-
 
 This module defines our application's monad and any application-specific
@@ -9,6 +9,9 @@ information it requires.
 module Application
   ( Application
   , applicationInitializer
+  , runDb 
+  , addRole 
+  , ApplicationException(..)
   ) where
 
 import           Snap.Extension
@@ -19,6 +22,8 @@ import qualified Database.HDBC.PostgreSQL as DB
 import           Data.Binary as Bin
 import qualified Data.ByteString.Char8 as B
 import qualified Control.Monad.CatchIO as CIO
+import           Control.Applicative
+import           Data.Typeable
 import qualified Data.ConnectionPool as DCP 
 import qualified Data.ByteString.Lazy.Char8 as L
 import qualified Model.Account as A 
@@ -30,6 +35,7 @@ import           Control.Monad.Trans
 import           Control.Monad.Reader
 import           Data.Maybe
 import qualified Data.Role as R 
+import           Data.SqlTransaction
 
 
 ------------------------------------------------------------------------------
@@ -37,6 +43,12 @@ import qualified Data.Role as R
 -- 'Snap.Extension' to provide us with an extended 'MonadSnap' making use of
 -- the Heist and Timer Snap extensions.
 type Application = SnapExtend ApplicationState
+
+data ApplicationException = UserErrorE B.ByteString 
+    deriving (Typeable, Show)
+
+instance CIO.Exception ApplicationException
+
 
 
 ------------------------------------------------------------------------------
@@ -59,6 +71,25 @@ data ApplicationState = ApplicationState
 -- generate the 'ApplicationState' needed for our application and will
 -- automatically generate reload\/cleanup actions for us which we don't need
 -- to worry about.
+internalError :: String -> Application a 
+internalError x = modifyResponse (setResponseCode 500) *> (CIO.throw $ UserErrorE (B.pack x))
+
+
+getDatabase :: Application DCP.ConnectionContext
+getDatabase = asks dsn >>= liftIO . DCP.getConnection 
+
+returnDatabase :: DCP.ConnectionContext -> Application ()
+returnDatabase x = asks dsn >>= \c -> liftIO (DCP.returnConnection c x)
+
+
+runDb :: SqlTransaction Connection a -> Application a
+runDb xs =  withConnection $ \c -> do 
+    frp <- runSqlTransaction xs internalError c
+    frp `seq`return frp
+
+withConnection :: (DB.Connection -> Application a) -> Application a
+withConnection f = CIO.bracket getDatabase returnDatabase (f . DCP.unwrapContext)
+
 
 addRole :: R.Id -> B.ByteString -> Application ()
 addRole r p = do 
