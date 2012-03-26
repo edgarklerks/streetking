@@ -201,42 +201,6 @@ roleUser = (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":"
 
 
 
--- return a new task
-{-- 
-makeNewTask :: Application ()
-makeNewTask = do 
-        writeBS "newTask " -- *> (writeBS . B.pack =<< withRoleState dumpAll)
-        withRoleState $ \x -> do 
-            db <- getDatabase
-            x <- getRoles "application_token"
-            appid <- getDevId
-            u <- runSqlTransaction (newTaskAppid appid) internalError db 
-            writeBS $ B.pack $ show (u)
---}
-{-- --}
-
-{--
-index :: Application ()
-index = do 
-    r <- getRequest 
-    heistLocal (bindSplices $ indexSplices r ) $ render "index"
-  where
-    indexSplices r =
-        [ ("start-time",   startTimeSplice)
-        , ("current-time", currentTimeSplice)
-        , ("html", paths (rqPathInfo r))
-        ]
-paths xs = return [X.TextNode $ T.decodeASCII $ xs]
-
-------------------------------------------------------------------------------
--- | Renders the echo page.
-echo :: Application ()
-echo = do
-    message <- decodedParam "stuff"
-    heistLocal (bindString "message" (T.decodeUtf8 message)) $ render "echo"
-  where
-    decodedParam p = fromMaybe "" <$> getParam p
---}
 ------------------------------------------------------------------------------
 -- | The main entry point handler.
 site :: Application ()
