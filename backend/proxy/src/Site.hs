@@ -42,9 +42,7 @@ import           Control.Monad.Identity
 import           Control.Monad.Cont
 import           Data.SqlTransaction
 import           Database.AppToken
-import           Database.Login --Register
-import           Database.Register
-import           Database.Task
+import           Database.User
 import           Blaze.ByteString.Builder
 import qualified Network.HTTP.Types as T
 import qualified Control.Monad.CatchIO as CIO
@@ -167,7 +165,7 @@ checkPerm' = withRequest checkPerm  <|> wall
 identify :: Application ()
 identify = withConnection $ \c -> do 
     b <- getOpParam "token"
-    u <- runSqlTransaction ( tokenDevId (B.unpack b)) internalError c  
+    u <- runSqlTransaction ( loginApp (B.unpack b)) internalError c  
     addRole "application_token" (Developer (Just . fromInteger $ u)) 
 
 -- | Debug function to dump the current RoleState 
@@ -186,7 +184,7 @@ login = checkPerm' *> withConnection login''
         where login'' db = do 
                 e <- B.unpack <$> getOpParam "email"
                 p <- B.unpack <$> getOpParam "password"
-                u <- runSqlTransaction (loginUserMinClearText e p) internalError db
+                u <- runSqlTransaction (loginUser e p) internalError db
                 addRole "user_token" (User (Just . fromInteger $ u))
 
 logout :: Application ()
