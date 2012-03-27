@@ -12,7 +12,6 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
-
 $(genAll "Account" "account" [             
                     ("id", ''Id),
                     ("firstname", ''String),

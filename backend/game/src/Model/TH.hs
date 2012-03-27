@@ -5,6 +5,7 @@ import Language.Haskell.TH
 import Language.Haskell.TH.Lib
 import Control.Monad
 import Data.Maybe 
+import Data.Default 
 
 {-- 
  -
@@ -14,7 +15,8 @@ genAll :: String -> String -> [(String, Name)] ->  Q [Dec]
 genAll nm tbl xs = do r <- genRecord nm xs  
                       i <- genInstance nm xs
                       d <- genDatabase nm tbl
-                      return $ r ++ i ++ d
+                      x <- genDefaultInstance nm xs
+                      return $ r ++ i ++ d ++ x
 
 genRecord :: String -> [(String, Name)] -> Q [Dec]
 genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] ([''Show, ''Eq])]
@@ -29,6 +31,12 @@ genInstance :: String -> [(String, Name)] -> Q [Dec]
 genInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Mapable")) (conT $ mkName nm)) (tmMap nm (fmap fst xs) ++ frmMap nm (fmap fst xs) ++ tmHashMap nm (fmap fst xs) ++ frmHashMap nm (fmap fst xs))]  
 
 
+genDefaultInstance :: String -> [(String, Name)] -> Q [Dec]
+genDefaultInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Default")) (conT $ mkName nm)) fdn]
+    where fdn = [funD (mkName "def") [clausem]]
+          clausem = clause [] (decs) []
+          decs  = normalB (recConE (mkName nm) mm)
+          mm = fmap (\(x,y) -> fieldExp (mkName x) (sigE (varE (mkName "def")) (conT y) )) xs
 tmMap n xs = [funD (mkName "toMap") [clausem]]
     where clausem = clause [varP (mkName "a")] (decs xs) []
           decs xs = normalB (foldr step mm xs) 
@@ -38,10 +46,10 @@ tmMap n xs = [funD (mkName "toMap") [clausem]]
 frmMap n xs = [funD (mkName "fromMap") [clausem]]
 
     where clausem = clause [varP (mkName "m")] (decs xs) [] 
-            where decs (x:xs) = normalB (foldr step (s x) xs)
+            where decs (x:xs) = normalB (foldl step (s x) xs)
                   lk x = appE (appE (varE (mkName "mlookup")) ((stringE x))) (varE $ mkName "m")
                   s x = appE (appE (varE (mkName "fmap")) (conE (mkName n))) (lk x)
-                  step x z = appE (appE [|ap|] z) (lk x) 
+                  step z x = appE (appE [|ap|] z) (lk x) 
 
 loadDb n = [funD (mkName "load") [clausem]]
     where clausem = clause [(varP (mkName "i"))] (normalB $ ff (appE decs [|[("id",  $(appE (varE $ mkName "htsql") (varE (mkName "i"))))]|])) []
@@ -69,10 +77,12 @@ tmHashMap n xs = [funD (mkName "toHashMap") [clausem]]
           step x z = appE (appE (appE (varE (mkName "ninsert")) (stringE x)) f) z
                 where f = appE (varE (mkName "htsql")) (appE (varE (mkName x)) (varE (mkName "a")))
 
+
+
 frmHashMap n xs = [funD (mkName "fromHashMap") [clausem]]
     where clausem = clause [varP (mkName "m")] (decs xs) [] 
-            where decs (x:xs) = normalB (foldr step (s x) xs)
+            where decs (x:xs) = normalB (foldl step (s x) xs)
                   lk x = appE (appE (varE (mkName "nlookup")) ((stringE x))) (varE $ mkName "m")
                   s x = appE (appE (varE (mkName "fmap")) (conE (mkName n))) (lk x)
-                  step x z = appE (appE [|ap|] z) (lk x) 
+                  step z x = appE (appE [|ap|] z) (lk x) 
 
