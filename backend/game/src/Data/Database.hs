@@ -100,8 +100,8 @@ instance Expression Assignments where
     sql (Inserts fs@(_:_)) = concat ["(", fq, ") values (", fl, ")"]
         where
             fq = concat $ intersperse ", " $ map sql fs
-            fl = concat $ intersperse ", " $ map def fs
-    sql (Updates fs@(_:_)) = concat $ intersperse ", " $ map (\f -> concat [sql f, " = ", def f]) fs
+            fl = concat $ intersperse ", " $ map devault fs
+    sql (Updates fs@(_:_)) = concat $ intersperse ", " $ map (\f -> concat [sql f, " = ", devault f]) fs
     sql _ = ""
     values (Inserts fs) = concat $ map values fs
     values (Updates fs) = concat $ map values fs
@@ -118,9 +118,9 @@ infixl 4 .->
 (.#>) = Default
 infixl 4 .#>
 
-def :: Assignment -> Sql
-def (Default _ s) = s
-def _ = "?"
+devault :: Assignment -> Sql
+devault (Default _ s) = s
+devault _ = "?"
 
 instance Expression Assignment where
     sql (Assign q _) = concat ["\"", q, "\""]

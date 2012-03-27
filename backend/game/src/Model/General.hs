@@ -1,5 +1,25 @@
 {-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, NoMonomorphismRestriction #-}
-module Model.General where 
+module Model.General
+    (
+        module Data.Default,
+        Database(..),
+        Mapable(..),
+        Id,
+        nlookup,
+        nempty,
+        htsql,
+        thsql,
+        ninsert,
+        sinsert,
+        mlookup,
+        mco,
+        mfp,
+        nhead,
+        sempty
+
+    )
+
+where 
 
 
 import           Data.SqlTransaction
@@ -11,6 +31,7 @@ import           Data.Maybe
 import           Data.Convertible
 import           Control.Monad
 import           Data.Database
+import           Data.Default
 
 class H.IConnection c => Database c a where 
     save :: a -> SqlTransaction c Integer
@@ -23,6 +44,11 @@ class Mapable a where
     toMap :: a -> M.Map String SqlValue  
     fromHashMap :: S.HashMap String SqlValue -> Maybe a 
     toHashMap :: a -> S.HashMap String SqlValue 
+    updateMap :: M.Map String SqlValue -> a -> a 
+    updateHashMap :: S.HashMap String SqlValue -> a -> a
+    updateMap x a = fromJust $ fromMap (M.union x $ toMap a)
+    updateHashMap x a = fromJust $ fromHashMap (S.union x $ toHashMap a) 
+
 
 type Id = Maybe Integer 
 

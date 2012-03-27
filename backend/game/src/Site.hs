@@ -19,6 +19,7 @@ import           Snap.Extension.Timer
 import           Snap.Util.FileServe
 import           Snap.Types
 import           Text.Templating.Heist
+import qualified Model.Account as as A 
 
 import           Application
 
@@ -30,14 +31,44 @@ import           Application
 -- Otherwise, the way the route table is currently set up, this action
 -- would be given every request.
 index :: Application ()
-index = ifTop $ writeBS "Hello" 
+index = ifTop $ writeBS "go rape yourself" 
   where
 
-register :: Application () 
-register = undefined
+ni = error "Not implemented"
+
+userRegister :: Application () 
+userRegister = do 
+            
+
+
+marketManufacturer :: Application ()
+marketManufacturer = ni 
+
+marketModel :: Application ()
+marketModel = ni
+
+marketBuy :: Application ()
+marketBuy = ni 
+
+marketSell :: Application ()
+marketSell = ni
+
+marketReturn :: Application ()
+marketReturn = ni
+
+garageCar :: Application ()
+garageCar = ni 
 
 -- | The main entry point handler.
 site :: Application ()
-site = route [ ("/",            index)
+site = route [ 
+                ("/", index),
+                ("/User/register", userRegister),
+                ("/Market/manufacturer", marketManufacturer),
+                ("/Market/model", marketModel),
+                ("/Market/buy", marketBuy),
+                ("/Market/sell", marketSell),
+                ("/Market/return", marketReturn),
+                ("/Garage/car", garageCar)
              ]
        <|> serveDirectory "resources/static"
