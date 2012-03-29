@@ -16,5 +16,10 @@ import           Prelude hiding (id)
 $(genAll "Car" "car"
     [
         ("id", ''Id),
-        ("manufacturer_id", ''Integer)
+        ("manufacturer_id", ''Integer),
+        ("acceleration", ''Integer),
+        ("top_speed", ''Integer),
+        ("braking", ''Integer),
+        ("nos", ''Integer),
+        ("handling", ''Integer)
     ])

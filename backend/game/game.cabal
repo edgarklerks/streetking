@@ -51,7 +51,13 @@ Executable game
     regex-tdfa,
     comonad,
     template-haskell,
-    array
+    array,
+    data-default,
+    attoparsec,
+    QuickCheck,
+    vector,
+    data-object-yaml,
+    data-object
 
   extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction
 

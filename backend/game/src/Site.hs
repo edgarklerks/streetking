@@ -11,17 +11,24 @@ module Site
   ) where
 
 import           Control.Applicative
+import           Control.Monad
 import           Data.Maybe
+import           Data.SqlTransaction
+import           Data.Database
+import           Data.DatabaseTemplate
+import           Database.HDBC (toSql, fromSql)
 import qualified Data.ByteString.Char8 as C
 import qualified Data.Text.Encoding as T
-import           Snap.Extension.Heist
-import           Snap.Extension.Timer
 import           Snap.Util.FileServe
 import           Snap.Types
-import           Text.Templating.Heist
-import qualified Model.Account as as A 
-
+import qualified Model.Account as A 
+import qualified Model.Garage as G 
+import qualified Model.Manufacturer as M 
+import qualified Model.Car as Car 
+import qualified Model.CarInstance as CarInstance 
+import qualified Model.CarInGarage as CIG 
 import           Application
+import           Model.General (Mapable(..), Default(..), Database(..))
 
 
 ------------------------------------------------------------------------------
@@ -30,22 +37,36 @@ import           Application
 -- The 'ifTop' is required to limit this to the top of a route.
 -- Otherwise, the way the route table is currently set up, this action
 -- would be given every request.
+--
+
+type STQ a = SqlTransaction Connection a
+
 index :: Application ()
 index = ifTop $ writeBS "go rape yourself" 
   where
 
+ni :: forall t. t
 ni = error "Not implemented"
 
 userRegister :: Application () 
 userRegister = do 
+           x <- getJson  
+           let m = updateHashMap x (def :: A.Account) 
+           let g = def :: G.Garage  
+            -- save all  
+           i <- runDb (save m <* save g)
+           writeResult i
             
 
 
 marketManufacturer :: Application ()
-marketManufacturer = ni 
+marketManufacturer = do 
+       (l, o) <- getPages 
+       xs <- runDb (search [] [] l o) :: Application [M.Manufacturer]
+       writeMapables xs
 
 marketModel :: Application ()
-marketModel = ni
+marketModel = ni 
 
 marketBuy :: Application ()
 marketBuy = ni 
@@ -57,7 +78,12 @@ marketReturn :: Application ()
 marketReturn = ni
 
 garageCar :: Application ()
-garageCar = ni 
+garageCar = do 
+        (l,o) <- getPages  
+        uid <- getUserId 
+        ps <- runDb $ search ["id" |== (toSql uid)] [] l o :: Application [CIG.CarInGarage]
+        writeMapables ps
+         
 
 -- | The main entry point handler.
 site :: Application ()

@@ -136,11 +136,27 @@ instance Expression Constraints where
     sql [] = "true"
     sql xs = concat $ intersperse " and " $ map sql xs
     values xs = concat $ map values xs
+{-- 
+ - garage_id : 3
+ - 
+ - garage_id == garage_id 
+ - Selection |== toSql (S.lookup "garage_id" g)
+ - --}
 
-data Constraint = Constraint ConOp Selection Value deriving Show
+data Constraint = Constraint ConOp Selection Value | And Constraint Constraint | Or Constraint Constraint deriving Show
+
+(.&&) = And 
+(.||) = Or 
+
+infixr 2 .||
+infixr 3 .&&  
 
 instance Expression Constraint where
     sql (Constraint o s _) = concat ["( ", sql s, " ", sql o, " ?)"]
+    sql (And c o) = concat ["(", sql c, ") and (", sql o, ")"]
+    sql (Or c o) = concat ["(", sql c, ") or (", sql o, ")"]
+    values (Or c o) = concat [values c, values o]
+    values (And c o) = concat [values c, values o]
     values (Constraint o s v) = concat [values s, [enc o v]]
         where
             enc OpContains x = toSql $ encWith '%' $ (fromSql x :: Sql)

@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable, OverloadedStrings #-}
 {-
 
 This module defines our application's monad and any application-specific
@@ -12,6 +12,15 @@ module Application
   , runDb 
   , addRole 
   , ApplicationException(..)
+  , getJson 
+  , getId 
+  , getUserId 
+  , getPages 
+  , SqlMap 
+  , writeResult 
+  , writeMapable
+  , writeMapables
+  , internalError
   ) where
 
 import           Snap.Extension
@@ -26,8 +35,7 @@ import           Control.Applicative
 import           Data.Typeable
 import qualified Data.ConnectionPool as DCP 
 import qualified Data.ByteString.Lazy.Char8 as L
-import qualified Model.Account as A 
-import qualified Model.General (Database(..), Mapable(..))
+import           Model.General (Database(..), Mapable(..))
 import           Data.TimedMap
 import           Data.DChan 
 import           Control.Concurrent
@@ -36,7 +44,12 @@ import           Control.Monad.Reader
 import           Data.Maybe
 import qualified Data.Role as R 
 import           Data.SqlTransaction
-
+import qualified Data.HashMap.Strict as S
+import           Data.InRules
+import           Data.Conversion
+import           Data.Aeson 
+import           Data.Attoparsec.Lazy
+import           Database.HDBC.PostgreSQL hiding (internalError)
 
 ------------------------------------------------------------------------------
 -- | 'Application' is our application's monad. It uses 'SnapExtend' from
@@ -49,6 +62,29 @@ data ApplicationException = UserErrorE B.ByteString
 
 instance CIO.Exception ApplicationException
 
+toAeson :: InRule -> L.ByteString  
+toAeson = (Data.Aeson.encode :: Value -> L.ByteString) . fromInRule
+
+writeAeson :: ToInRule a => a -> Application ()
+writeAeson = writeLBS . toAeson . toInRule
+
+
+writeResult :: ToInRule a => a -> Application ()
+writeResult x = writeAeson $ S.fromList [("result" :: String, x)]
+
+writeMapable :: Mapable a => a -> Application ()
+writeMapable = writeResult . toHashMap 
+
+writeMapables :: Mapable a => [a] -> Application ()
+writeMapables = writeResult . fmap toHashMap 
+
+-- | Retrieve the userid or halt computation with error 
+getUserId :: Application Integer 
+getUserId =  do 
+        x <- getParam "userid"
+        case x of 
+            Just y -> return (read $ B.unpack y)
+            Nothing -> internalError "No userid"
 
 
 ------------------------------------------------------------------------------
@@ -62,9 +98,27 @@ data ApplicationState = ApplicationState
       , slaveChan :: Slave  
     }
 
+type SqlMap = S.HashMap String SqlValue 
+getJson :: Application  SqlMap 
+getJson = do 
+    (Done _ v) <- parse json <$> getRequestBody 
+    return (fromInRule $ toInRule v)
+
+getId :: Application Integer 
+getId = do 
+    xs <- getJson
+    let b = S.lookup "id" xs 
+    case b of 
+        Nothing -> internalError "No id provided"
+        Just i -> return (DB.fromSql i)
 
 
-
+getPages :: Application (Integer,Integer)
+getPages = do 
+    xs <- getJson
+    let b = S.lookupDefault (DB.SqlInteger 100) "limit" xs
+    let o = S.lookupDefault (DB.SqlInteger 0) "offset" xs 
+    return (DB.fromSql b, DB.fromSql o)
 ------------------------------------------------------------------------------
 -- | The 'Initializer' for ApplicationState. For more on 'Initializer's, see
 -- the documentation from the snap package. Briefly, this is used to
