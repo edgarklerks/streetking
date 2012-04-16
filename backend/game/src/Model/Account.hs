@@ -34,6 +34,7 @@ $(genAll "Account" "account" [
                     ("energy_recovery", ''Integer),
                     ("energy_update", ''Integer),
                     ("busy_until", ''Integer),
-                    ("password", ''String)
+                    ("password", ''String),
+                    ("email", ''String)
     ]
     )
