@@ -114,7 +114,8 @@ loadModel = do
         ns <- (runDb $ load  $ convert model_name) :: Application (Maybe Car.Car)
         case ns of 
             Nothing -> internalError "No such car"
-            Just x -> undefined 
+            Just x -> do 
+                return undefined 
 
 -- | The main entry point handler.
 site :: Application ()
