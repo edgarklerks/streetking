@@ -36,6 +36,8 @@ import qualified Data.Digest.TigerHash.ByteString as H
 import           Data.Conversion
 import           Data.InRules
 import           Data.Tools
+import           System.FilePath.Posix
+import           Data.String
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -69,7 +71,7 @@ userLogin :: Application ()
 userLogin = do 
     x <- getJson 
     let m = updateHashMap x (def :: A.Account)
-    u <- runDb (search ["nickname" |== toSql (A.nickname m)] [] 1 0) :: Application [A.Account]
+    u <- runDb (search ["email" |== toSql (A.email m)] [] 1 0) :: Application [A.Account]
     when (null u) $ internalError "No such user"
     let user = head u
     if ((H.b32TigerHash . H.tigerHash) (C.pack $ A.password m) == A.password user)
@@ -117,6 +119,15 @@ loadModel = do
             Just x -> do 
                 return undefined 
 
+loadTemplate :: Application ()
+loadTemplate = do 
+        name <- getOParam "name"
+        let pth =  ("resources/static/" ++ C.unpack name ++ ".tpl")
+        let dirs = splitDirectories pth
+        if ".." `elem` dirs 
+            then internalError "do not hacked server"
+            else serveFileAs "text/plain" pth
+
 -- | The main entry point handler.
 site :: Application ()
 site = route [ 
@@ -129,6 +140,7 @@ site = route [
                 ("/Market/sell", marketSell),
                 ("/Market/return", marketReturn),
                 ("/Garage/car", garageCar),
-                ("/Car/model", loadModel)
+                ("/Car/model", loadModel),
+                ("/Game/template", loadTemplate)
              ]
        <|> serveDirectory "resources/static"

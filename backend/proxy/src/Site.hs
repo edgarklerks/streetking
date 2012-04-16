@@ -103,10 +103,14 @@ sendAbroad req =
                writeBS bs 
                liftIO $ HE.closeManager m
                modifyResponse (setResponseCode s)
-               modifyResponse (findHeaderLocation hp)
+               modifyResponse (findHeaderContentType hp . findHeaderLocation hp)
 
 findHeaderLocation ps r = case lookup "Location" ps of 
     Just x -> addHeader "Location" x r
+    Nothing -> r
+
+findHeaderContentType ps r = case lookup "Content-Type" ps of 
+    Just x -> addHeader "Content-Type" x r
     Nothing -> r
 
 getUserId :: [Role] -> [(B.ByteString, [B.ByteString])]
@@ -204,15 +208,18 @@ roleUser = (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":"
 ------------------------------------------------------------------------------
 -- | The main entry point handler.
 site :: Application ()
-site = CIO.catch (route [ 
+site = allowOrigin *> (CIO.catch (route [ 
     ("/Application/identify", identify),
     ("/Application/inspect", inspect),
-    ("/User/login", login),
     ("/User/logout", logout),
     ("/Role/application", roleApp),
     ("/Role/user", roleUser),
     ("/", proxy) ] ) $ \(UserErrorE e) -> 
-        writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" 
+        writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" )
 
         
+-- -Access-Control-Allow-Origin: * 
+
+allowOrigin :: Application ()
+allowOrigin = modifyResponse (addHeader "Access-Control-Allow-Origin" "*")
 

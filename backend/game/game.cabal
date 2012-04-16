@@ -57,7 +57,8 @@ Executable game
     QuickCheck,
     vector,
     data-object-yaml,
-    data-object
+    data-object,
+    filepath
 
   extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction
 
