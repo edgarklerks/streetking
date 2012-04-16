@@ -29,7 +29,13 @@ import qualified Model.CarInstance as CarInstance
 import qualified Model.CarInGarage as CIG 
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
+import           Data.Convertible
 
+import qualified Data.Digest.TigerHash as H
+import qualified Data.Digest.TigerHash.ByteString as H
+import           Data.Conversion
+import           Data.InRules
+import           Data.Tools
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -51,13 +57,29 @@ ni = error "Not implemented"
 userRegister :: Application () 
 userRegister = do 
            x <- getJson  
-           let m = updateHashMap x (def :: A.Account) 
+           let m = updateHashMap x (def :: A.Account)
+           let c = m { A.password = H.b32TigerHash (H.tigerHash $ C.pack (A.password m)) }
            let g = def :: G.Garage  
-            -- save all  
-           i <- runDb (save m <* save g)
-           writeResult i
-            
 
+            -- save all  
+           i <- runDb (save c <* save g)
+           writeResult i
+
+userLogin :: Application ()
+userLogin = do 
+    x <- getJson 
+    let m = updateHashMap x (def :: A.Account)
+    u <- runDb (search ["nickname" |== toSql (A.nickname m)] [] 1 0) :: Application [A.Account]
+    when (null u) $ internalError "No such user"
+    let user = head u
+    if ((H.b32TigerHash . H.tigerHash) (C.pack $ A.password m) == A.password user)
+        then do 
+            k <- getUniqueKey 
+            addRole (convert $ A.id user) k 
+            writeResult (A.id user)
+        else do 
+            internalError "Go rape yourself. Tnxbye"
+     
 
 marketManufacturer :: Application ()
 marketManufacturer = do 
@@ -66,7 +88,10 @@ marketManufacturer = do
        writeMapables xs
 
 marketModel :: Application ()
-marketModel = ni 
+marketModel = do 
+      ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id")
+      ns <- runDb (search xs [] l o) :: Application [Car.Car]
+      writeMapables ns
 
 marketBuy :: Application ()
 marketBuy = ni 
@@ -83,18 +108,26 @@ garageCar = do
         uid <- getUserId 
         ps <- runDb $ search ["id" |== (toSql uid)] [] l o :: Application [CIG.CarInGarage]
         writeMapables ps
-         
+loadModel :: Application ()
+loadModel = do 
+        model_name <- getOParam "car_id"
+        ns <- (runDb $ load  $ convert model_name) :: Application (Maybe Car.Car)
+        case ns of 
+            Nothing -> internalError "No such car"
+            Just x -> undefined 
 
 -- | The main entry point handler.
 site :: Application ()
 site = route [ 
                 ("/", index),
+                ("/User/login", userLogin),
                 ("/User/register", userRegister),
                 ("/Market/manufacturer", marketManufacturer),
                 ("/Market/model", marketModel),
                 ("/Market/buy", marketBuy),
                 ("/Market/sell", marketSell),
                 ("/Market/return", marketReturn),
-                ("/Garage/car", garageCar)
+                ("/Garage/car", garageCar),
+                ("/Car/model", loadModel)
              ]
        <|> serveDirectory "resources/static"

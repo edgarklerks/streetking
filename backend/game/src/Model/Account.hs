@@ -16,6 +16,7 @@ $(genAll "Account" "account" [
                     ("id", ''Id),
                     ("firstname", ''String),
                     ("lastname", ''String),
+                    ("nickname", ''String),
                     ("picture_small", ''String),
                     ("picture_medium", ''String),
                     ("picture_large", ''String),
@@ -32,6 +33,7 @@ $(genAll "Account" "account" [
                     ("max_energy", ''Integer),
                     ("energy_recovery", ''Integer),
                     ("energy_update", ''Integer),
-                    ("busy_until", ''Integer)
+                    ("busy_until", ''Integer),
+                    ("password", ''String)
     ]
     )

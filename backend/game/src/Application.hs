@@ -9,6 +9,7 @@ information it requires.
 module Application
   ( Application
   , applicationInitializer
+  , getUniqueKey
   , runDb 
   , addRole 
   , ApplicationException(..)
@@ -16,11 +17,13 @@ module Application
   , getId 
   , getUserId 
   , getPages 
+  , getPagesWithDTD
   , SqlMap 
   , writeResult 
   , writeMapable
   , writeMapables
   , internalError
+  , getOParam
   ) where
 
 import           Snap.Extension
@@ -50,17 +53,33 @@ import           Data.Conversion
 import           Data.Aeson 
 import           Data.Attoparsec.Lazy
 import           Database.HDBC.PostgreSQL hiding (internalError)
-
+import           Data.Database hiding (Value) 
+import           Data.DatabaseTemplate 
+import           Data.Convertible 
+import           System.Entropy
+import qualified Data.Digest.TigerHash as H
+import qualified Data.Digest.TigerHash.ByteString as H
+import           Data.Monoid
 ------------------------------------------------------------------------------
 -- | 'Application' is our application's monad. It uses 'SnapExtend' from
 -- 'Snap.Extension' to provide us with an extended 'MonadSnap' making use of
 -- the Heist and Timer Snap extensions.
 type Application = SnapExtend ApplicationState
 
+getUniqueKey :: Application B.ByteString
+getUniqueKey = do 
+    p <- asks ch
+    ts <- liftIO $ hGetEntropy p 64
+    return (B.pack . H.b32TigerHash . H.tigerHash $ ts)
+
+
 data ApplicationException = UserErrorE B.ByteString 
     deriving (Typeable, Show)
 
 instance CIO.Exception ApplicationException
+
+apiError :: B.ByteString -> Application ()
+apiError xs = CIO.throw (UserErrorE xs)
 
 toAeson :: InRule -> L.ByteString  
 toAeson = (Data.Aeson.encode :: Value -> L.ByteString) . fromInRule
@@ -96,6 +115,7 @@ data ApplicationState = ApplicationState
     { 
         dsn :: DCP.ConnectionPool
       , slaveChan :: Slave  
+      ,  ch :: CryptHandle 
     }
 
 type SqlMap = S.HashMap String SqlValue 
@@ -112,6 +132,12 @@ getId = do
         Nothing -> internalError "No id provided"
         Just i -> return (DB.fromSql i)
 
+getOParam :: B.ByteString -> Application B.ByteString
+getOParam x = do 
+    p <- getParam x
+    case p of 
+        Nothing -> internalError $ "param: " `mappend` (B.unpack x) `mappend`  "must provided"
+        Just a -> return a
 
 getPages :: Application (Integer,Integer)
 getPages = do 
@@ -119,6 +145,13 @@ getPages = do
     let b = S.lookupDefault (DB.SqlInteger 100) "limit" xs
     let o = S.lookupDefault (DB.SqlInteger 0) "offset" xs 
     return (DB.fromSql b, DB.fromSql o)
+
+getPagesWithDTD :: DTD -> Application ((Integer, Integer), Constraints)
+getPagesWithDTD d = do 
+        xs <- getJson 
+        let b = S.lookupDefault (DB.SqlInteger 100) "limit" xs
+        let o = S.lookupDefault (DB.SqlInteger 0) "offset" xs 
+        return ((DB.fromSql b, DB.fromSql o),(dtd d $ convert xs ))
 ------------------------------------------------------------------------------
 -- | The 'Initializer' for ApplicationState. For more on 'Initializer's, see
 -- the documentation from the snap package. Briefly, this is used to
@@ -185,4 +218,5 @@ applicationInitializer = do
     liftIO $ print "started connection pool"
     s <- liftIO $ setupSlave dc dctrl
     liftIO $ print "connected to bla"
-    return $ ApplicationState db s
+    ch <- liftIO $ openHandle
+    return $ ApplicationState db s ch

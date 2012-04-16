@@ -13,13 +13,15 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genAll "Car" "car"
+$(genAll "Car" "car_model"
     [
         ("id", ''Id),
         ("manufacturer_id", ''Integer),
-        ("acceleration", ''Integer),
         ("top_speed", ''Integer),
+        ("acceleration", ''Integer),
         ("braking", ''Integer),
         ("nos", ''Integer),
-        ("handling", ''Integer)
+        ("handling", ''Integer),
+        ("name", ''String),
+        ("use_3d", ''String)
     ])
