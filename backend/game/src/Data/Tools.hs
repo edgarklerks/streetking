@@ -219,10 +219,7 @@ doSql t = dbconn >>= (runSqlTransaction t error)
 
 -}
 
+{-- Cast anything --}
 
-getUniqueKey :: IO B.ByteString 
-getUniqueKey = do 
-   g <- newStdGen 
-   let bs = take 64 $ randomRs (0,255) g :: [Word8]
-   return $  B.pack . H.b32TigerHash . H.tigerHash $ bs
-
+instance (R.ToInRule a, R.FromInRule b) => Convertible a b where 
+        safeConvert a = Right . R.fromInRule $ R.toInRule a
