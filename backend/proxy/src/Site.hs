@@ -208,7 +208,7 @@ roleUser = (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":"
 ------------------------------------------------------------------------------
 -- | The main entry point handler.
 site :: Application ()
-site = allowOrigin *> (CIO.catch (route [ 
+site = allowOrigin *> allowCredentials *> (CIO.catch (route [ 
     ("/Application/identify", identify),
     ("/Application/inspect", inspect),
     ("/User/logout", logout),
@@ -222,4 +222,7 @@ site = allowOrigin *> (CIO.catch (route [
 
 allowOrigin :: Application ()
 allowOrigin = modifyResponse (addHeader "Access-Control-Allow-Origin" "*")
+-- Access-Control-Allow-Credentials: true  
 
+allowCredentials :: Application () 
+allowCredentials = modifyResponse (addHeader "Access-Control-Allow-Credentials" "true")

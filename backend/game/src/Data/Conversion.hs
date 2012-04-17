@@ -168,6 +168,7 @@ conv2Sql (InBool False) = toSql  False
 conv2Sql InNull = SqlNull
 conv2Sql (InString s) =  toSql s
 conv2Sql (InObject s) =  toSql (fromInRule (InObject s)::LocalTime) 
+conv2Sql (InByteString s) = toSql s
 
 
 conv2SqlArray :: InRule -> [SqlValue]
