@@ -9,7 +9,7 @@ module Data.DChan (
 
 import Control.Applicative
 import Control.Monad
-import qualified Data.HashMap.Lazy as H
+import qualified Data.HashMap.Strict as H
 import Data.Word
 import qualified System.ZMQ as Z
 import qualified Data.Binary as B 
@@ -20,6 +20,7 @@ import Control.Concurrent
 import Control.Concurrent.STM
 import Debug.Trace
 import Control.DeepSeq
+import Debug.Trace
 
 data ClientWords where 
     Server :: String ->  ClientWords 
