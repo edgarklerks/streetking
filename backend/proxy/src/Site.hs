@@ -191,7 +191,7 @@ login = checkPerm' *> withConnection login''
                 addRole "user_token" (User (Just . fromInteger $ u))
 
 logout :: Application ()
-logout = checkPerm'  *> dropRoles "user_token"
+logout = checkPerm'  *> dropRoles "user_token" *> writeLBS "{\"result\":1}"
 
                 
 
