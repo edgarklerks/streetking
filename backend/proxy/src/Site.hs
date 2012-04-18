@@ -103,10 +103,14 @@ sendAbroad req =
                writeBS bs 
                liftIO $ HE.closeManager m
                modifyResponse (setResponseCode s)
-               modifyResponse (findHeaderLocation hp)
+               modifyResponse (findHeaderContentType hp . findHeaderLocation hp)
 
 findHeaderLocation ps r = case lookup "Location" ps of 
     Just x -> addHeader "Location" x r
+    Nothing -> r
+
+findHeaderContentType ps r = case lookup "Content-Type" ps of 
+    Just x -> addHeader "Content-Type" x r
     Nothing -> r
 
 getUserId :: [Role] -> [(B.ByteString, [B.ByteString])]
@@ -204,15 +208,39 @@ roleUser = (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":"
 ------------------------------------------------------------------------------
 -- | The main entry point handler.
 site :: Application ()
-site = CIO.catch (route [ 
-    ("/Application/identify", identify),
-    ("/Application/inspect", inspect),
-    ("/User/login", login),
-    ("/User/logout", logout),
-    ("/Role/application", roleApp),
-    ("/Role/user", roleUser),
-    ("/", proxy) ] ) $ \(UserErrorE e) -> 
-        writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" 
+site = do 
+    g <- rqMethod <$> getRequest 
+    case g of 
+        OPTIONS -> allowAll 
+        otherwise -> allowAll *> (CIO.catch (route [  
+            ("/Application/identify", identify),
+            ("/Application/inspect", inspect),
+            ("/User/logout", logout),
+            ("/Role/application", roleApp),
+            ("/Role/user", roleUser),
+            ("/", proxy) ] ) $ \(UserErrorE e) -> 
+                writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" )
 
+allowAll = allowCredentials *> allowOrigin *> allowMethods *> allowHeaders
         
+-- -Access-Control-Allow-Origin: * 
 
+allowOrigin :: Application ()
+allowOrigin = do 
+            g <- getRequest
+            modifyResponse (addHeader "Content-Type" "text/plain")
+            modifyResponse (\x -> 
+               case getHeader "Origin" g <|> getHeader "Referer" g of 
+                    Nothing -> addHeader "Access-Control-Allow-Origin" "*" x
+                    Just n -> addHeader "Access-Control-Allow-Origin" n x
+                )
+-- Access-Control-Allow-Credentials: true  
+
+allowCredentials :: Application () 
+allowCredentials = modifyResponse (addHeader "Access-Control-Allow-Credentials" "true")
+
+allowMethods :: Application ()
+allowMethods = modifyResponse (addHeader "Access-Control-Allow-Methods" "POST, GET, OPTIONS, PUT")
+
+allowHeaders :: Application ()
+allowHeaders = modifyResponse (addHeader "Access-Control-Allow-Headers" "origin, content-type, accept, cookie");

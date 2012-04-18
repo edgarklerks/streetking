@@ -21,7 +21,7 @@ $(genAll "Account" "account" [
                     ("picture_medium", ''String),
                     ("picture_large", ''String),
                     ("level", ''Integer),
-                    ("skill_accelleration", ''Integer),
+                    ("skill_acceleration", ''Integer),
                     ("skill_braking", ''Integer),
                     ("skill_control", ''Integer),
                     ("skill_reactions", ''Integer),
@@ -32,8 +32,9 @@ $(genAll "Account" "account" [
                     ("energy", ''Integer),
                     ("max_energy", ''Integer),
                     ("energy_recovery", ''Integer),
-                    ("energy_update", ''Integer),
+                    ("energy_updated", ''Integer),
                     ("busy_until", ''Integer),
-                    ("password", ''String)
+                    ("password", ''String),
+                    ("email", ''String)
     ]
     )

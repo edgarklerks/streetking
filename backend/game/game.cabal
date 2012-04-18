@@ -57,9 +57,12 @@ Executable game
     QuickCheck,
     vector,
     data-object-yaml,
-    data-object
+    data-object,
+    filepath,
+    hashable,
+    smallcheck
 
-  extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction
+  extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction ViewPatterns
 
   if flag(development)
     cpp-options: -DDEVELOPMENT

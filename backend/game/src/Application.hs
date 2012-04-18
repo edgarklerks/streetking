@@ -20,6 +20,7 @@ module Application
   , getPagesWithDTD
   , SqlMap 
   , writeResult 
+  , writeError 
   , writeMapable
   , writeMapables
   , internalError
@@ -87,6 +88,8 @@ toAeson = (Data.Aeson.encode :: Value -> L.ByteString) . fromInRule
 writeAeson :: ToInRule a => a -> Application ()
 writeAeson = writeLBS . toAeson . toInRule
 
+writeError :: ToInRule a => a -> Application ()
+writeError x = writeAeson $ S.fromList [("error" :: String, x)]
 
 writeResult :: ToInRule a => a -> Application ()
 writeResult x = writeAeson $ S.fromList [("result" :: String, x)]
