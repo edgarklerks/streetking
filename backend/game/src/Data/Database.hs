@@ -22,7 +22,7 @@ import Database.HDBC.PostgreSQL
  -}
 
 dbconn ::  IO Connection
-dbconn = connectPostgreSQL "host=192.168.1.66 port=5432 dbname=deosx user=graffiti password=wetwetwet"
+dbconn = connectPostgreSQL "host=graf2.graffity.me port=5432 dbname=streetking_dev user=deosx password=#*rl&"
 
 doSql :: SqlTransaction Connection a -> IO a
 doSql t = dbconn >>= (runSqlTransaction t error)

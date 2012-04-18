@@ -95,7 +95,7 @@ userLogin = do
             k <- getUniqueKey 
             addRole (convert $ A.id user) k 
             n <- runDb (load $ convert $ A.id user) :: Application (Maybe AP.AccountProfile)
-            writeMapable (fromJust n)
+            writeResult k
         else do 
             internalError "Username or password is wrong, please try it again"
             
@@ -107,11 +107,21 @@ userData = do
     case n of 
         Nothing -> internalError "No such user"
         Just x -> writeMapable x
+
+userMe :: Application ()
+userMe = do 
+    x <- getUserId 
+    n <- runDb (load x) :: Application (Maybe AP.AccountProfile)
+    case n of 
+        Nothing -> internalError "You do not exist, kbye"
+        Just x -> writeMapable x
+
 loadMenu :: Application ()
 loadMenu = do 
-    n <- runDb (search [] [Order ("number", []) True] 100000 0) :: Application [MM.MenuModel] 
-    let b = convert n :: T.Tree MM.Menu 
-    writeResult  (AS.toJSON b)
+    mt <- getOParam "tree_type"
+    n <- runDb (search ["menu_type" |== (toSql mt) ] [Order ("number", []) True] 100000 0) :: Application [MM.MenuModel] 
+    writeResult  (AS.toJSON (MM.fromFlat (convert n :: MM.FlatTree)))
+
     
 marketManufacturer :: Application ()
 marketManufacturer = do 
@@ -165,6 +175,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/User/login", userLogin),
                 ("/User/register", userRegister),
                 ("/User/data", userData),
+                ("/User/me", userMe),
                 ("/Market/manufacturer", marketManufacturer),
                 ("/Market/model", marketModel),
                 ("/Market/buy", marketBuy),
@@ -173,6 +184,6 @@ site = CIO.catch (CIO.catch (route [
                 ("/Garage/car", garageCar),
                 ("/Car/model", loadModel),
                 ("/Game/template", loadTemplate),
-                ("/Game/menu", loadMenu)
+                ("/Game/tree", loadMenu)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
