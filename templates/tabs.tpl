@@ -6,7 +6,7 @@
 			}
 		</ul>
 		<div></div>
-		<div id="PARTS" style="background:#f00">
+		<div id="PARTS">
 		</div>
 	</span>
 </div>
