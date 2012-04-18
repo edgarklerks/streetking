@@ -185,6 +185,7 @@ addRole :: R.Id -> B.ByteString -> Application ()
 addRole r p = do 
         s <- asks slaveChan 
         liftIO $ writeMaster s "token" $ B.pack . L.unpack $ Bin.encode ((R.User (Just r)), p)
+        print (B.encode (R.User (Just r), p)
 
 getDsn :: Sections -> Maybe String 
 getDsn xs = do 
