@@ -36,6 +36,7 @@ import           Data.Default
 class H.IConnection c => Database c a where 
     save :: a -> SqlTransaction c Integer
     load :: Integer -> SqlTransaction c (Maybe a) 
+    -- Constraints Orders limit offset
     search :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction c [a]
 
 
