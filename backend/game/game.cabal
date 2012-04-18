@@ -58,9 +58,11 @@ Executable game
     vector,
     data-object-yaml,
     data-object,
-    filepath
+    filepath,
+    hashable,
+    smallcheck
 
-  extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction
+  extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction ViewPatterns
 
   if flag(development)
     cpp-options: -DDEVELOPMENT

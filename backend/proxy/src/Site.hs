@@ -208,21 +208,39 @@ roleUser = (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":"
 ------------------------------------------------------------------------------
 -- | The main entry point handler.
 site :: Application ()
-site = allowOrigin *> allowCredentials *> (CIO.catch (route [ 
-    ("/Application/identify", identify),
-    ("/Application/inspect", inspect),
-    ("/User/logout", logout),
-    ("/Role/application", roleApp),
-    ("/Role/user", roleUser),
-    ("/", proxy) ] ) $ \(UserErrorE e) -> 
-        writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" )
+site = do 
+    g <- rqMethod <$> getRequest 
+    case g of 
+        OPTIONS -> allowAll 
+        otherwise -> allowAll *> (CIO.catch (route [  
+            ("/Application/identify", identify),
+            ("/Application/inspect", inspect),
+            ("/User/logout", logout),
+            ("/Role/application", roleApp),
+            ("/Role/user", roleUser),
+            ("/", proxy) ] ) $ \(UserErrorE e) -> 
+                writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" )
 
+allowAll = allowCredentials *> allowOrigin *> allowMethods *> allowHeaders
         
 -- -Access-Control-Allow-Origin: * 
 
 allowOrigin :: Application ()
-allowOrigin = modifyResponse (addHeader "Access-Control-Allow-Origin" "*")
+allowOrigin = do 
+            g <- getRequest
+            modifyResponse (addHeader "Content-Type" "text/plain")
+            modifyResponse (\x -> 
+               case getHeader "Origin" g <|> getHeader "Referer" g of 
+                    Nothing -> addHeader "Access-Control-Allow-Origin" "*" x
+                    Just n -> addHeader "Access-Control-Allow-Origin" n x
+                )
 -- Access-Control-Allow-Credentials: true  
 
 allowCredentials :: Application () 
 allowCredentials = modifyResponse (addHeader "Access-Control-Allow-Credentials" "true")
+
+allowMethods :: Application ()
+allowMethods = modifyResponse (addHeader "Access-Control-Allow-Methods" "POST, GET, OPTIONS, PUT")
+
+allowHeaders :: Application ()
+allowHeaders = modifyResponse (addHeader "Access-Control-Allow-Headers" "origin, content-type, accept, cookie");

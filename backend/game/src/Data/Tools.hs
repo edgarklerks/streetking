@@ -31,6 +31,8 @@ import qualified Data.ByteString as C
 import qualified Data.HashMap.Strict as Map
 
 import Data.Word
+import Data.Hashable
+import Data.List ((\\))
 
 
 
@@ -71,7 +73,9 @@ must :: (CIO.MonadCatchIO m, Eq k) => [(k,v)] -> [k] -> m ()
 must (fmap fst -> k) k' = if null (k' \\ k) 
                             then return ()
                             else CIO.throw $ CF $ "Not all required fields are filled" 
-                                
+
+
+
         
 -- | Non pure version of cfilterPure, throws CheckException 
 cfilter :: (StringLike v, Eq k, StringLike k, CIO.MonadCatchIO m) => [(k,v)] -> [(k, CFilter v)] -> m ()  
@@ -80,7 +84,9 @@ cfilter x a = case cfilterPure x a of
                     xs -> do 
                         CIO.throw $ CE $ fmap (first toString) xs
                         
-    
+scfilter :: (Show k, Show v, StringLike v, Eq k, StringLike k, CIO.MonadCatchIO m) => Map.HashMap k v -> [(k, CFilter v)] -> m ()
+scfilter x a = cfilter (toList x) a
+    where toList = Map.foldrWithKey (\k v z -> (k, v) : z) [] 
 
 infixr 3 `andcf`
 infixr 2 `orcf`
@@ -139,6 +145,12 @@ instance StringLike R.InRule where
 mkCRegex :: (StringLike s) => String -> String -> CFilter s  
 mkCRegex x = mkCFilter (matchTest r . toString) 
     where r = makeRegexOpts (defaultCompOpt {caseSensitive = False}) (defaultExecOpt {captureGroups = False}) x 
+
+-- | An empty CFilter 
+
+minl, maxl :: (StringLike s) => Int -> CFilter s 
+minl n = mkCFilter (\x -> length (toString x) >= n) ("is too short, min length: " ++ show n)
+maxl n = mkCFilter (\x -> length (toString x) <= n) ("is too short, max length: " ++ show n)
 
 -- | An email CFilter 
 email :: (StringLike s) => CFilter s
@@ -223,3 +235,15 @@ doSql t = dbconn >>= (runSqlTransaction t error)
 
 instance (R.ToInRule a, R.FromInRule b) => Convertible a b where 
         safeConvert a = Right . R.fromInRule $ R.toInRule a
+
+
+sallowed :: (Data.Hashable.Hashable k, Eq k) => [k] -> Map.HashMap k v -> Map.HashMap k v
+sallowed xs =  Map.foldrWithKey step Map.empty 
+        where step k v z | k `elem` xs = Map.insert k v z 
+                         | otherwise = z 
+smust :: (Show k, CIO.MonadCatchIO m,Eq k) => [k] -> Map.HashMap k v -> m ()
+smust xs (Map.keys -> z) | null (xs \\ z)  = return ()
+                        | otherwise = CIO.throw (CF $ "fields are obligatory: " ++ show xs)
+
+scheck :: (Show k, Data.Hashable.Hashable k, Eq k, CIO.MonadCatchIO m) => [k] -> Map.HashMap k v -> m (Map.HashMap k v)
+scheck xs z = let p = sallowed xs z in smust xs p >> return p
