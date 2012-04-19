@@ -122,6 +122,13 @@ loadMenu = do
     n <- runDb (search ["menu_type" |== (toSql mt) ] [Order ("number", []) True] 100000 0) :: Application [MM.MenuModel] 
     writeResult  (AS.toJSON (MM.fromFlat (convert n :: MM.FlatTree)))
 
+{-- 
+ - {
+ -  manufacturer_id: 2,
+ -  car_model_id: 3
+ -
+ -
+ --}
     
 marketManufacturer :: Application ()
 marketManufacturer = do 
@@ -143,6 +150,9 @@ marketSell = ni
 
 marketReturn :: Application ()
 marketReturn = ni
+
+marketParts :: Application ()
+marketParts = ni
 
 garageCar :: Application ()
 garageCar = do 
@@ -181,6 +191,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/buy", marketBuy),
                 ("/Market/sell", marketSell),
                 ("/Market/return", marketReturn),
+                ("/Market/parts", marketParts),
                 ("/Garage/car", garageCar),
                 ("/Car/model", loadModel),
                 ("/Game/template", loadTemplate),

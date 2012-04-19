@@ -55,7 +55,7 @@ instance Convertible [MenuModel] (Tree Menu) where
 
 shittree = Node Root [Node (SubMenu "ACCOUNT" "" "") 
                             [ Node (MenuItem "LOGIN" "ACCOUNT_LOGIN" "dialog") [],
-                               Node (MenuItem "REGISTER" "ACCOUNT_REGISTER" "") []
+                               Node (MenuItem "REGISTER" "ACCOUNT_REGISTER" "dialog") []
 
                                
                             ],
@@ -65,10 +65,10 @@ shittree = Node Root [Node (SubMenu "ACCOUNT" "" "")
 shittree2 = Node Root [
             Node (MenuItem "LOGOUT" "LOGOUT" "") [],
             Node (MenuItem "GARAGE" "GARAGE" "") [],
-            Node (SubMenu "MARKETPLACE" "" "") [
-                                Node (MenuItem "NEW" "MARKETPLACE_NEW" "") [],
-                                Node (MenuItem "USED" "MARKETPLACE_USED" "") []
-
+            Node (SubMenu "SHOP" "" "") [
+                                Node (MenuItem "NEW_CARS" "MARKETPLACE_NEWCARS" "") [],
+                                Node (MenuItem "NEW_PARTS" "MARKETPLACE_NEWPARTS" "") [],
+                                Node (MenuItem "USED_PARTS" "MARKETPLACE_USEDPARTS" "") []
                             ],
             Node (MenuItem "PROFILE" "PROFILE" "") []
         ]

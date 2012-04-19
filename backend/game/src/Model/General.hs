@@ -79,3 +79,6 @@ thsql = convert
 mco = (fmap) thsql 
 
 mfp = (fmap catMaybes) . (fmap.fmap) fromHashMap
+
+instance Default Bool where 
+        def = False

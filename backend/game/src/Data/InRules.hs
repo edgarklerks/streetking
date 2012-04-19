@@ -448,6 +448,7 @@ instance (ToInRule a) => ToInRule (Map.HashMap String a) where
     toInRule = InObject .  Map.map toInRule
 instance (FromInRule a) => FromInRule (Map.HashMap String a) where
     fromInRule (InObject m) = Map.map fromInRule m
+    fromInRule _ = error "You gave not an object"
 
 instance (ToInRule a) => ToInRule [a] where
     toInRule = InArray . map toInRule
