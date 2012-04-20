@@ -19,7 +19,6 @@ $(genAll "PartType" "part_type"
     ("name", ''String),
     ("sort", ''Integer),
     ("use_3d", ''String),
-    ("required", ''Bool),
-    ("default_universal", ''Bool)
+    ("required", ''Bool)
     ]
     )
