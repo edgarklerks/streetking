@@ -74,10 +74,14 @@ shittree2 = Node Root [
         ]
 
 shittree3 = Node Root [
-            Node (Tab "wheels" "PARTS" "") [],
-            Node (Tab "brakes" "PARTS" "") [],
+            Node (Tab "wheel" "PARTS" "") [],
+            Node (Tab "brake" "PARTS" "") [],
             Node (Tab "suspension" "PARTS" "") [],
-            Node (Tab "engine" "PARTS" "") []
+            Node (Tab "engine" "PARTS" "") [],
+            Node (Tab "spoiler" "PARTS" "") [],
+            Node (Tab "aerodynamic" "PARTS" "") [],
+            Node (Tab "body" "PARTS" "") [],
+            Node (Tab "nos" "PARTS" "") []
     ]
 
 saveTree name tree = do 
