@@ -18,6 +18,7 @@ $(genAll "Manufacturer" "manufacturer"
         ("id", ''Id),
         ("name", ''String),
         ("picture", ''String),
-        ("text", ''String)
+        ("text", ''String),
+        ("label", ''String)
     ]
     )
