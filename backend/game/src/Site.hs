@@ -134,7 +134,7 @@ loadMenu = do
     
 marketManufacturer :: Application ()
 marketManufacturer = do 
-       (l, o) <- getPages 
+       (l, o) <- getPagesWithDTD ["manufacturer_id" +== "manufacturer_id"] 
        xs <- runDb (search [] [] l o) :: Application [M.Manufacturer]
        writeMapables xs
 
