@@ -154,7 +154,7 @@ marketReturn = ni
 
 marketParts :: Application ()
 marketParts = do 
-   ((l, o), xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "car_id" +== "car_id" +&& "level" +== "level" +&& "part_type" +== "part_type")
+   ((l, o), xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "car_id" +== "car_id" +&& "level" +== "level" +&& "part_type" +== "name")
    ns <- runDb (search xs [] l o) :: Application [Part.Part]
    writeMapables ns
 
