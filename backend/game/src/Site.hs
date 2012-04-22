@@ -140,7 +140,7 @@ marketManufacturer = do
 marketModel :: Application ()
 marketModel = do 
       ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id")
-      ns <- runDb (search xs [] l o) :: Application [PM.PartMarket]
+      ns <- runDb (search xs [] l o) :: Application [C.Car]
       writeMapables ns
 
 marketBuy :: Application ()
