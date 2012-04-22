@@ -35,6 +35,7 @@ import qualified Model.CarInstance as CarInstance
 import qualified Model.CarInGarage as CIG 
 import qualified Model.Car3dModel as C3D
 import qualified Model.Part as Part 
+import qualified Model.PartMarket as PM 
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
 import           Data.Convertible
@@ -139,7 +140,7 @@ marketManufacturer = do
 marketModel :: Application ()
 marketModel = do 
       ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id")
-      ns <- runDb (search xs [] l o) :: Application [Car.Car]
+      ns <- runDb (search xs [] l o) :: Application [PM.PartMarket]
       writeMapables ns
 
 marketBuy :: Application ()
@@ -152,7 +153,10 @@ marketReturn :: Application ()
 marketReturn = ni
 
 marketParts :: Application ()
-marketParts = ni
+marketParts = do 
+   ((l, o), xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "car_id" +== "car_id" +&& "level" +== "level" +&& "part_type" +== "part_type")
+   ns <- runDb (search xs [] l o) :: Application [Part.Part]
+   writeMapables ns
 
 garageCar :: Application ()
 garageCar = do 

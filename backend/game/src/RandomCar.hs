@@ -62,7 +62,8 @@ data Part = Part {
             part_type :: String, 
             manufacturer_id :: Integer,
             weight :: Integer,
-            car_id :: Maybe Integer
+            car_id :: Maybe Integer,
+            level :: Integer 
         } deriving Show 
 
 putParts :: Connection -> [Part] -> IO ()
@@ -72,14 +73,14 @@ getParts :: Connection -> IO ()
 getParts c = do 
         ms <- runSqlTransaction (fmap (fromJust . M.id) <$> search [] [] 10000 0) error c 
         cs <- runSqlTransaction (fmap (fromJust . C.id) <$> search [] [] 10000 0) error c 
-        ps <- generateParts 100 ms cs 
-        let bs = forM ps $ \(Part pt mid w cid) -> do 
+        ps <- generateParts 10000 ms cs 
+        let bs = forM ps $ \(Part pt mid w cid d) -> do 
                     p <- search ["name" |== (toSql pt)] [] 1 0 
                     case p of 
                         [] -> do 
                             i <- save (def { PT.name = pt })
-                            save ( def { P.manufacturer_id = mid, P.part_type_id = i, P.weight = w, P.car_id = cid })
-                        [n] -> save ( def { P.manufacturer_id = mid, P.part_type_id = fromJust $ PT.id n, P.weight = w, P.car_id = cid })
+                            save ( def { P.manufacturer_id = mid, P.part_type_id = i, P.weight = w, P.car_id = cid, P.level = d })
+                        [n] -> save ( def { P.manufacturer_id = mid, P.part_type_id = fromJust $ PT.id n, P.weight = w, P.car_id = cid, P.level = d })
         runSqlTransaction bs error c 
         return ()
 
@@ -91,9 +92,10 @@ generateParts n ms cs = evalRandIO $ replicateM n $ do
                     m <- fromList $ (,1/10) <$> ms 
                     w <- getRandomR (1,100)
                     c <- fromList $ (,1/10) <$> cs 
+                    d <- getRandomR $ (1, 100) 
                     case t of 
-                        "aerodynamic" -> return (Part t m w (Just c))
-                        otherwise -> return (Part t m w Nothing)
+                        "aerodynamic" -> return (Part t m w (Just c) d)
+                        otherwise -> return (Part t m w Nothing d)
 
 
 breakChar ::  Char -> String -> [String]
