@@ -44,7 +44,12 @@ mkCar xs = case p of
 
 dumpCars :: Connection  -> Car -> IO ()
 dumpCars c (Car nm mdl lvl yr) = do 
-               let b = def {C.year = maybe 0 id  yr, C.name = (BC.unpack mdl), C.level = lvl} ::  C.Car 
+               p1 <- getRandomR (1,100)
+               p2 <- getRandomR (1,100)
+               p3 <- getRandomR (1,100)
+               p4 <- getRandomR (1,100)
+               p5 <- getRandomR (1,100)
+               let b = def {C.id = Nothing,C.top_speed = p1,C.braking = p3, C.handling = p4, C.nos = p5, C.acceleration = p2,  C.year = maybe 0 id  yr, C.name = (BC.unpack mdl), C.level = lvl} ::  C.Car 
 
                let saveManufacturer = do 
                    let m = def { M.name = (BC.unpack nm)} :: M.Manufacturer 
@@ -63,24 +68,26 @@ data Part = Part {
             manufacturer_id :: Integer,
             weight :: Integer,
             car_id :: Maybe Integer,
+            parameter :: Integer
             level :: Integer 
         } deriving Show 
 
 putParts :: Connection -> [Part] -> IO ()
 putParts c xs = undefined 
 
-getParts :: Connection -> IO ()
-getParts c = do 
+getParts :: Int -> Connection -> IO ()
+getParts n c = do 
         ms <- runSqlTransaction (fmap (fromJust . M.id) <$> search [] [] 10000 0) error c 
         cs <- runSqlTransaction (fmap (fromJust . C.id) <$> search [] [] 10000 0) error c 
+        ps <- generateParts n  ms cs 
         ps <- generateParts 10000 ms cs 
-        let bs = forM ps $ \(Part pt mid w cid d) -> do 
+        let bs = forM ps $ \(Part pt mid w cid d pr) -> do 
                     p <- search ["name" |== (toSql pt)] [] 1 0 
                     case p of 
                         [] -> do 
                             i <- save (def { PT.name = pt })
-                            save ( def { P.manufacturer_id = mid, P.part_type_id = i, P.weight = w, P.car_id = cid, P.level = d })
-                        [n] -> save ( def { P.manufacturer_id = mid, P.part_type_id = fromJust $ PT.id n, P.weight = w, P.car_id = cid, P.level = d })
+                            save ( def { P.manufacturer_id = mid, P.part_type_id = i, P.weight = w, P.car_id = cid, P.parameter = pr, P.level = d })
+                        [n] -> save ( def { P.manufacturer_id = mid, P.part_type_id = fromJust $ PT.id n, P.weight = w, P.car_id = cid, P.parameter = pr , P.level = d})
         runSqlTransaction bs error c 
         return ()
 
@@ -92,10 +99,11 @@ generateParts n ms cs = evalRandIO $ replicateM n $ do
                     m <- fromList $ (,1/10) <$> ms 
                     w <- getRandomR (1,100)
                     c <- fromList $ (,1/10) <$> cs 
+                    p <- getRandomR (1, 100)
                     d <- getRandomR $ (1, 100) 
                     case t of 
-                        "aerodynamic" -> return (Part t m w (Just c) d)
-                        otherwise -> return (Part t m w Nothing d)
+                        "aerodynamic" -> return (Part t m w (Just c) p d)
+                        otherwise -> return (Part t m w Nothing p d)
 
 
 breakChar ::  Char -> String -> [String]
