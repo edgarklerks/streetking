@@ -36,6 +36,7 @@ import qualified Model.CarInGarage as CIG
 import qualified Model.Car3dModel as C3D
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
+import qualified Model.CarMarket as CM 
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
 import           Data.Convertible
@@ -140,7 +141,7 @@ marketManufacturer = do
 marketModel :: Application ()
 marketModel = do 
       ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id")
-      ns <- runDb (search xs [] l o) :: Application [Car.Car]
+      ns <- runDb (search xs [] l o) :: Application [CM.CarMarket]
       writeMapables ns
 
 marketBuy :: Application ()
