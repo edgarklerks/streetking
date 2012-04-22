@@ -68,7 +68,7 @@ data Part = Part {
             manufacturer_id :: Integer,
             weight :: Integer,
             car_id :: Maybe Integer,
-            parameter :: Integer
+            parameter :: Integer,
             level :: Integer 
         } deriving Show 
 
