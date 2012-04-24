@@ -208,7 +208,7 @@ userAddSkill = do
                         A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
                         A.skill_intelligence = A.skill_intelligence u + A.skill_intelligence d,
                         A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
-                        A.skill_unused = A.skill_unused u - abs (A.skill_unused d)
+                        A.skill_unused = A.skill_unused u - abs p
                     }
                runDb $ save u'
                writeMapable u'
