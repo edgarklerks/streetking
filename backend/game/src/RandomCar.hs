@@ -103,6 +103,7 @@ generateParts n ms cs = evalRandIO $ replicateM n $ do
                     d <- getRandomR $ (1, 100) 
                     case t of 
                         "aerodynamic" -> return (Part t m w (Just c) p d)
+                        "engine" -> return (Part t m w (Just c) p d)
                         otherwise -> return (Part t m w Nothing p d)
 
 
