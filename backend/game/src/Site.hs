@@ -195,23 +195,25 @@ loadTemplate = do
 userAddSkill :: Application ()
 userAddSkill = do 
         uid <- getUserId 
-        u <- fromJust <$> runDb (load uid) :: Application A.Account 
         xs <- getJson
-        let d = updateHashMap xs (def :: A.Account)
-        let p = A.skill_acceleration d + A.skill_braking d + A.skill_control d + A.skill_reactions d + A.skill_intelligence d  
-        if p > A.skill_unused u 
-            then internalError "Not enough skill points"
-            else do 
-               let u' = u {
-                        A.skill_control = A.skill_control u + A.skill_control d,
-                        A.skill_braking = A.skill_braking u + A.skill_braking d,
-                        A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
-                        A.skill_intelligence = A.skill_intelligence u + A.skill_intelligence d,
-                        A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
-                        A.skill_unused = A.skill_unused u - abs p
-                    }
-               runDb $ save u'
-               writeMapable u'
+        u' <- runDb $ do 
+            u <- fromJust <$> load uid 
+            let d = updateHashMap xs (def :: A.Account)
+            let p = A.skill_acceleration d + A.skill_braking d + A.skill_control d + A.skill_reactions d + A.skill_intelligence d  
+            if p > A.skill_unused u 
+                then rollback "Not enough skill points"
+                else do 
+                   let u' = u {
+                            A.skill_control = A.skill_control u + A.skill_control d,
+                            A.skill_braking = A.skill_braking u + A.skill_braking d,
+                            A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
+                            A.skill_intelligence = A.skill_intelligence u + A.skill_intelligence d,
+                             A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
+                            A.skill_unused = A.skill_unused u - abs p
+                        }
+                   save u'
+                   return u' 
+        writeMapable u'
 
 
 -- | The main entry point handler.
