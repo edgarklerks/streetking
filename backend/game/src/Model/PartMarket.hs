@@ -23,8 +23,7 @@ $(genAll "PartMarket" "market_parts" [
     ("car_id", ''Id),
     ("d3d_model_id", ''Integer),
     ("level", ''Integer),
-    ("name", ''String),
-    ("uid", ''Integer)
+    ("name", ''String)
  ])
 
 
