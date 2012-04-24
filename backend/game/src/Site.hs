@@ -192,6 +192,27 @@ loadTemplate = do
         if ".." `elem` dirs 
             then internalError "do not hacked server"
             else serveFileAs "text/plain" pth
+userAddSkill :: Application ()
+userAddSkill = do 
+        uid <- getUserId 
+        u <- fromJust <$> runDb (load uid) :: Application A.Account 
+        xs <- getJson
+        let d = updateHashMap xs (def :: A.Account)
+        let p = A.skill_acceleration d + A.skill_braking d + A.skill_control d + A.skill_reactions d + A.skill_intelligence d  
+        if p > A.skill_unused u 
+            then internalError "Not enough skill points"
+            else do 
+               let u' = u {
+                        A.skill_control = A.skill_control d,
+                        A.skill_braking = A.skill_braking d,
+                        A.skill_acceleration = A.skill_acceleration d,
+                        A.skill_intelligence = A.skill_intelligence d,
+                        A.skill_reactions = A.skill_reactions d,
+                        A.skill_unused = A.skill_unused u - abs (A.skill_unused d)
+                    }
+               runDb $ save u'
+               writeMapable u'
+
 
 -- | The main entry point handler.
 site :: Application ()
@@ -201,6 +222,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/User/register", userRegister),
                 ("/User/data", userData),
                 ("/User/me", userMe),
+                -- skill_acceleration: <number>
+                ("/User/addSkill", userAddSkill),
                 ("/Market/manufacturer", marketManufacturer),
                 ("/Market/model", marketModel),
                 ("/Market/buy", marketBuy),
