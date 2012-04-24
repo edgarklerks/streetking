@@ -16,7 +16,6 @@ import           Prelude hiding (id)
 
 $(genAll "Part" "part_model" [
     ("id", ''Id),
-    ("manufacturer_id", ''Integer),
     ("part_type_id", ''Integer),
     ("weight", ''Integer),
     ("parameter", ''Integer),
