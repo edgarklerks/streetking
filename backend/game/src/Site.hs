@@ -37,6 +37,7 @@ import qualified Model.Car3dModel as C3D
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
 import qualified Model.CarMarket as CM 
+import qualified Model.ManufacturerMarket as MAM 
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -135,8 +136,11 @@ loadMenu = do
     
 marketManufacturer :: Application ()
 marketManufacturer = do 
+       uid <- getUserId
+       puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
        ((l, o),xs) <- getPagesWithDTD ("id" +== "manufacturer_id") 
-       ms <- runDb (search xs [] l o) :: Application [M.Manufacturer]
+       let ctr = ("level" |<= (toSql $ A.level puser )) 
+       ms <- runDb (search (ctr:xs) [] l o) :: Application [MAM.ManufacturerMarket]
        writeMapables ms 
 
 marketModel :: Application ()
@@ -159,7 +163,7 @@ marketParts = do
    uid <- getUserId
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
    ((l, o), xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "car_id" +== "car_id" +&& "name" +== "part_type")
-   ns <- runDb (search ( ("level" |== (toSql $ A.level puser )) : xs) [] l o) :: Application [PM.PartMarket]
+   ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [PM.PartMarket]
    writeMapables ns
 
 garageCar :: Application ()
