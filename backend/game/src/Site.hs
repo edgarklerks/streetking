@@ -114,9 +114,7 @@ userData = do
 userMe :: Application ()
 userMe = do 
     x <- getUserId 
-    liftIO $ print x
     n <- runDb (load x) :: Application (Maybe AP.AccountProfile)
-    liftIO $ print n
     case n of 
         Nothing -> internalError "You do not exist, kbye"
         Just x -> writeMapable x
@@ -144,7 +142,7 @@ marketManufacturer = do
 marketModel :: Application ()
 marketModel = do 
       ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id")
-      ns <- runDb (search [] [] 1000 0) :: Application [CM.CarMarket]
+      ns <- runDb (search xs [] 1000 0) :: Application [CM.CarMarket]
       writeMapables ns
 
 marketBuy :: Application ()
