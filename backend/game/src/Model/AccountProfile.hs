@@ -26,7 +26,6 @@ $(genAll "AccountProfile" "account_profile" [
                     ("skill_control", ''Integer),
                     ("skill_reactions", ''Integer),
                     ("skill_intelligence", ''Integer),
-                    ("skill_unused", ''Integer),
                     ("money", ''Integer),
                     ("respect", ''Integer),
                     ("diamonds", ''Integer),
@@ -34,6 +33,7 @@ $(genAll "AccountProfile" "account_profile" [
                     ("max_energy", ''Integer),
                     ("energy_recovery", ''Integer),
                     ("energy_updated", ''Integer),
-                    ("busy_until", ''Integer)
+                    ("busy_until", ''Integer),
+                    ("skill_unused", ''Integer)
     ]
     )

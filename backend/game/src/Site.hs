@@ -37,6 +37,7 @@ import qualified Model.Car3dModel as C3D
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
 import qualified Model.CarMarket as CM 
+import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
 import           Data.Convertible
@@ -113,6 +114,7 @@ userData = do
 userMe :: Application ()
 userMe = do 
     x <- getUserId 
+    liftIO $ print x
     n <- runDb (load x) :: Application (Maybe AP.AccountProfile)
     case n of 
         Nothing -> internalError "You do not exist, kbye"
