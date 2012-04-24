@@ -124,8 +124,10 @@ data ApplicationState = ApplicationState
 type SqlMap = S.HashMap String SqlValue 
 getJson :: Application  SqlMap 
 getJson = do 
-    (Done _ v) <- parse json <$> getRequestBody 
-    return (fromInRule $ toInRule v)
+    t <- parse json <$> getRequestBody 
+    case t of 
+        (Done _ v)  -> return (fromInRule $ toInRule v)
+        otherwise -> internalError "No json provided" 
 
 getId :: Application Integer 
 getId = do 
