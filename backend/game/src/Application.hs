@@ -127,7 +127,7 @@ getJson = do
     t <- parse json <$> getRequestBody 
     case t of 
         (Done _ v)  -> return (fromInRule $ toInRule v)
-        otherwise -> internalError "No json provided" 
+        otherwise -> return S.empty --- internalError "No json provided" 
 
 getId :: Application Integer 
 getId = do 
