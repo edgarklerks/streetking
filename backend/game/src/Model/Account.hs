@@ -26,6 +26,7 @@ $(genAll "Account" "account" [
                     ("skill_control", ''Integer),
                     ("skill_reactions", ''Integer),
                     ("skill_intelligence", ''Integer),
+                    ("skill_unused", ''Integer),
                     ("money", ''Integer),
                     ("respect", ''Integer),
                     ("diamonds", ''Integer),
