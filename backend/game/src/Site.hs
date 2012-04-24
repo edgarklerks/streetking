@@ -157,8 +157,9 @@ marketReturn = ni
 marketParts :: Application ()
 marketParts = do 
    uid <- getUserId
-   ((l, o), xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "car_id" +== "car_id" +&& "level" +== "level" +&& "name" +== "part_type")
-   ns <- runDb (search (("uid" |== toSql uid):xs) [] l o) :: Application [PM.PartMarket]
+   puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
+   ((l, o), xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "car_id" +== "car_id" +&& "name" +== "part_type")
+   ns <- runDb (search ( ("level" |== (toSql $ A.level puser )) : xs) [] l o) :: Application [PM.PartMarket]
    writeMapables ns
 
 garageCar :: Application ()
