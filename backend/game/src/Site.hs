@@ -198,6 +198,7 @@ userAddSkill = do
         u <- fromJust <$> runDb (load uid) :: Application A.Account 
         xs <- getJson
         let d = updateHashMap xs (def :: A.Account)
+        liftIO $ print d
         let p = A.skill_acceleration d + A.skill_braking d + A.skill_control d + A.skill_reactions d + A.skill_intelligence d  
         if p > A.skill_unused u 
             then internalError "Not enough skill points"
