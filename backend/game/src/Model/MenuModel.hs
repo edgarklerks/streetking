@@ -64,13 +64,21 @@ shittree = Node Root [Node (SubMenu "ACCOUNT" "" "")
 
 shittree2 = Node Root [
             Node (MenuItem "LOGOUT" "LOGOUT" "") [],
-            Node (MenuItem "GARAGE" "GARAGE" "") [],
             Node (SubMenu "SHOP" "" "") [
                                 Node (MenuItem "NEW_CARS" "MARKETPLACE_NEWCARS" "") [],
                                 Node (MenuItem "NEW_PARTS" "MARKETPLACE_NEWPARTS" "") [],
                                 Node (MenuItem "USED_PARTS" "MARKETPLACE_USEDPARTS" "") []
                             ],
-            Node (MenuItem "PROFILE" "PROFILE" "") []
+            Node (MenuItem "PROFILE" "PROFILE" "") [],
+            Node (MenuItem "RACES" "RACES" "") [],
+            Node (SubMenu "GARAGE" "" "") [
+                Node (MenuItem "CARS" "GARAGE_CARS" "") [],
+                Node (MenuItem "PARTS" "GARAGE_PARTS" "") [],
+                Node (MenuItem "PERSONAL" "GARAGE_PERSONAL" "") []
+
+            ],
+            Node (MenuItem "HOME" "HOME" "") []
+
         ]
 
 shittree3 = Node Root [
