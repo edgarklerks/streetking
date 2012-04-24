@@ -116,6 +116,7 @@ userMe = do
     x <- getUserId 
     liftIO $ print x
     n <- runDb (load x) :: Application (Maybe AP.AccountProfile)
+    liftIO $ print n
     case n of 
         Nothing -> internalError "You do not exist, kbye"
         Just x -> writeMapable x
