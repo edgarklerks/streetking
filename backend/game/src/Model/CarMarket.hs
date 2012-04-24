@@ -27,5 +27,6 @@ $(genAll "CarMarket" "car_market"
         ("year", ''Integer),
         ("level", ''Integer),
         ("manufacturer_name", ''String),
-        ("label", ''String)
+        ("label", ''String),
+        ("price", ''Integer)
     ])

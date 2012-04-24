@@ -25,5 +25,6 @@ $(genAll "Car" "car_model"
         ("name", ''String),
         ("use_3d", ''String),
         ("year", ''Integer),
-        ("level", ''Integer)
+        ("level", ''Integer),
+        ("price", ''Integer)
     ])

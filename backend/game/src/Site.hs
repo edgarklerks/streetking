@@ -153,7 +153,15 @@ marketModel = do
       writeMapables ns
 
 marketBuy :: Application ()
-marketBuy = ni 
+marketBuy = do 
+    uid <- getUserId 
+    puser <- fromJust <$> runDb (load uid) :: Application A.Account
+    xs <- getJson 
+    runDb $ do 
+        let item = updateHashMap xs (def :: Part.Part)        
+        let mny = A.money puser 
+
+
 
 marketSell :: Application ()
 marketSell = ni
@@ -192,6 +200,7 @@ loadTemplate = do
         if ".." `elem` dirs 
             then internalError "do not hacked server"
             else serveFileAs "text/plain" pth
+
 userAddSkill :: Application ()
 userAddSkill = do 
         uid <- getUserId 

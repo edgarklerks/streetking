@@ -21,7 +21,8 @@ $(genAll "Part" "part_model" [
     ("parameter", ''Integer),
     ("car_id", ''Id),
     ("d3d_model_id", ''Integer),
-    ("level", ''Integer)
+    ("level", ''Integer),
+    ("price", ''Integer)
  ])
 
 
