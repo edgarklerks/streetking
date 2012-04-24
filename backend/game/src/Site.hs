@@ -145,8 +145,11 @@ marketManufacturer = do
 
 marketModel :: Application ()
 marketModel = do 
+      uid <- getUserId
+      puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
+      let ctr = ("level" |<= (toSql $ A.level puser )) 
       ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id")
-      ns <- runDb (search xs [] l o) :: Application [CM.CarMarket]
+      ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
       writeMapables ns
 
 marketBuy :: Application ()
