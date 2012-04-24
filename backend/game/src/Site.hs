@@ -159,8 +159,11 @@ marketBuy = do
     xs <- getJson 
     runDb $ do 
         let item = updateHashMap xs (def :: Part.Part)        
-        let mny = A.money puser 
-
+        let mny = A.money puser - Part.price item   
+        if mny < 0 
+            then rollback "You don' tno thgave eninh monye, brotther"
+            else return () 
+        return ()
 
 
 marketSell :: Application ()
