@@ -86,8 +86,8 @@ getParts n c = do
                     case p of 
                         [] -> do 
                             i <- save (def { PT.name = pt })
-                            save ( def { P.manufacturer_id = mid, P.part_type_id = i, P.weight = w, P.car_id = cid, P.parameter = pr, P.level = d })
-                        [n] -> save ( def { P.manufacturer_id = mid, P.part_type_id = fromJust $ PT.id n, P.weight = w, P.car_id = cid, P.parameter = pr , P.level = d})
+                            save ( def { P.part_type_id = i, P.weight = w, P.car_id = cid, P.parameter = pr, P.level = d })
+                        [n] -> save ( def { P.part_type_id = fromJust $ PT.id n, P.weight = w, P.car_id = cid, P.parameter = pr , P.level = d})
         runSqlTransaction bs error c 
         return ()
 

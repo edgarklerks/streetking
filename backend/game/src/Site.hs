@@ -165,7 +165,7 @@ marketParts :: Application ()
 marketParts = do 
    uid <- getUserId
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
-   ((l, o), xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "car_id" +== "car_id" +&& "name" +== "part_type")
+   ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type")
    ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [PM.PartMarket]
    writeMapables ns
 
