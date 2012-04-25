@@ -36,6 +36,7 @@ import qualified Model.CarInGarage as CIG
 import qualified Model.Car3dModel as C3D
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
+import qualified Model.PartInstance as PI 
 import qualified Model.CarMarket as CM 
 import qualified Model.ManufacturerMarket as MAM 
 import qualified Model.Transaction as Transaction
@@ -162,7 +163,7 @@ marketAllowedParts = do
     writeMapables p
 
 marketBuy :: Application ()
-marketBuy = ni {-- do 
+marketBuy = do 
     uid <- getUserId 
     xs <- getJson 
     runDb $ do 
@@ -177,12 +178,13 @@ marketBuy = ni {-- do
                 if mny < 0 
                     then rollback "You don' tno thgave eninh monye, brotther"
                     else do 
-                        grg <- fromJust $ load 
+                        grg <- search ["account_id" |== (toSql uid)]  [] 1 0 :: SqlTransaction Connection [G.Garage]
+                        
+        
                         save (puser { A.money = mny } )
                         return ()
                 return ()
 
---}
 marketSell :: Application ()
 marketSell = ni
 
