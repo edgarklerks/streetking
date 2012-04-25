@@ -178,10 +178,12 @@ marketBuy = do
         case item of 
             Nothing -> rollback "No such item, puddy puddy puddy"
             Just item -> do 
+                when (Part.level item > A.level puser) $ rollback "No correct level cowboy"
                 let mny = A.money puser - Part.price item   
                 if mny < 0 
                     then rollback "You don' tno thgave eninh monye, brotther"
                     else do 
+
                         -- We can buy now 
                         grg <- search ["account_id" |== (toSql uid)]  [] 1 0 :: SqlTransaction Connection [G.Garage]
                        
