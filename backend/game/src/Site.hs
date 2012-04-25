@@ -38,6 +38,8 @@ import qualified Model.Part as Part
 import qualified Model.PartMarket as PM 
 import qualified Model.CarMarket as CM 
 import qualified Model.ManufacturerMarket as MAM 
+import qualified Model.Transaction as Transaction
+import qualified Model.MarketPartType as MPT
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -152,20 +154,35 @@ marketModel = do
       ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
       writeMapables ns
 
+marketAllowedParts :: Application ()
+marketAllowedParts = do 
+    xs <- getJson 
+    let d = updateHashMap xs (def :: MPT.MarketPartType)
+    p <- runDb (search ["id" |== (toSql $ MPT.id d)] [] 0 1000) :: Application [MPT.MarketPartType]
+    writeMapables p
+
 marketBuy :: Application ()
-marketBuy = do 
+marketBuy = ni {-- do 
     uid <- getUserId 
-    puser <- fromJust <$> runDb (load uid) :: Application A.Account
     xs <- getJson 
     runDb $ do 
-        let item = updateHashMap xs (def :: Part.Part)        
-        let mny = A.money puser - Part.price item   
-        if mny < 0 
-            then rollback "You don' tno thgave eninh monye, brotther"
-            else return () 
-        return ()
+        (puser :: A.Account) <- fromJust <$> load uid
+        
+        let item' = updateHashMap xs (def :: Part.Part)        
+        item <- load (fromJust $ Part.id item')
+        case item of 
+            Nothing -> rollback "No such item, puddy puddy puddy"
+            Just item -> do 
+                let mny = A.money puser - Part.price item   
+                if mny < 0 
+                    then rollback "You don' tno thgave eninh monye, brotther"
+                    else do 
+                        grg <- fromJust $ load 
+                        save (puser { A.money = mny } )
+                        return ()
+                return ()
 
-
+--}
 marketSell :: Application ()
 marketSell = ni
 
@@ -247,6 +264,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Garage/car", garageCar),
                 ("/Car/model", loadModel),
                 ("/Game/template", loadTemplate),
-                ("/Game/tree", loadMenu)
+                ("/Game/tree", loadMenu),
+                ("/Market/allowedParts", marketAllowedParts)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
