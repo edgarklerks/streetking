@@ -208,7 +208,7 @@ marketBuy = do
                         return ()
                 
                 return ()
-    writeResult True 
+    writeResult "You bought part" 
 
 marketSell :: Application ()
 marketSell = ni
