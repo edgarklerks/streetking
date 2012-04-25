@@ -18,8 +18,8 @@ $(genAll "PartInstance" "part_instance"
     [
         ("id", ''Id),
         ("part_id", ''Integer),
-        ("garage_id", ''Integer),
-        ("car_instance_id", ''Integer),
+        ("garage_id", ''Id),
+        ("car_instance_id", ''Id),
         ("improvement", ''Integer),
         ("wear", ''Integer)
     ])
