@@ -45,6 +45,8 @@ import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
 import           Data.Convertible
+import           Data.Time.Clock 
+import           Data.Time.Clock.POSIX
 
 import qualified Data.Digest.TigerHash as H
 import qualified Data.Digest.TigerHash.ByteString as H
@@ -99,6 +101,7 @@ userLogin = do
     let user = head u
     if ((H.b32TigerHash . H.tigerHash) (C.pack ( A.password m) `mappend` salt) == A.password user)
         then do 
+
             k <- getUniqueKey 
             addRole (convert $ A.id user) k 
             n <- runDb (load $ convert $ A.id user) :: Application (Maybe AP.AccountProfile)
@@ -166,9 +169,10 @@ marketBuy :: Application ()
 marketBuy = do 
     uid <- getUserId 
     xs <- getJson 
+    tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+    
     runDb $ do 
         (puser :: A.Account) <- fromJust <$> load uid
-        
         let item' = updateHashMap xs (def :: Part.Part)        
         item <- load (fromJust $ Part.id item')
         case item of 
@@ -178,10 +182,23 @@ marketBuy = do
                 if mny < 0 
                     then rollback "You don' tno thgave eninh monye, brotther"
                     else do 
+                        -- We can buy now 
                         grg <- search ["account_id" |== (toSql uid)]  [] 1 0 :: SqlTransaction Connection [G.Garage]
+                       
+                        -- Add to user garage 
                         
-        
+                        save (def {PI.garage_id = G.id (head grg), PI.part_id = fromJust $ Part.id item} :: PI.PartInstance) 
+                        
+                        -- restore money to new amount 
+                        save (def { 
+                            Transaction.amount = Part.price item, 
+                            Transaction.current = A.money puser,
+                            Transaction.type = "part_model",
+                            Transaction.type_id = fromJust $ Part.id item,
+                            Transaction.time = tpsx  
+                                })
                         save (puser { A.money = mny } )
+
                         return ()
                 return ()
 
@@ -239,7 +256,7 @@ userAddSkill = do
                             A.skill_braking = A.skill_braking u + A.skill_braking d,
                             A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
                             A.skill_intelligence = A.skill_intelligence u + A.skill_intelligence d,
-                             A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
+                            A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
                             A.skill_unused = A.skill_unused u - abs p
                         }
                    save u'
