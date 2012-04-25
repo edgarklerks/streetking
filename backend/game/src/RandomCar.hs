@@ -13,6 +13,7 @@ import qualified Model.Car as C
 import qualified Model.Part as P 
 import qualified Model.PartType as PT 
 import qualified Model.ParameterTable as PMT 
+import qualified Model.PartModifier as Mod
 import           Model.General
 import           Data.Char
 import           Data.Maybe 
@@ -71,7 +72,8 @@ data Part = Part {
             car_id :: Maybe Integer,
             parameter :: Integer,
             parameter_name :: String,
-            level :: Integer 
+            level :: Integer,
+            part_modifier_name :: String 
         } deriving Show 
 
 putParts :: Connection -> [Part] -> IO ()
@@ -83,16 +85,18 @@ getParts n c = do
         cs <- runSqlTransaction (fmap (fromJust . C.id) <$> search [] [] 10000 0) error c 
         ps <- generateParts n  ms cs 
         ps <- generateParts 1000 ms cs 
-        let bs = forM ps $ \(Part pt mid w cid pr pm d) -> do 
+        let bs = forM ps $ \(Part pt mid w cid pr pm d ptm) -> do 
                     p <- search ["name" |== (toSql pt)] [] 1 0 
                     case p of 
                         [] -> do 
                             i <- save (def { PT.name = pt })
                             j <- head <$> search ["name" |== (toSql pm)] [] 1 0 :: SqlTransaction Connection PMT.ParameterTable
-                            save ( def { P.part_type_id = i, P.weight = w, P.car_id = cid, P.parameter1 = Just $ pr, P.parameter1_type_id = PMT.id j, P.level = d })
+                            pmod <- head <$> search ["name" |== (toSql ptm)] [] 1 0 :: SqlTransaction Connection Mod.PartModifier 
+                            save ( def { P.part_type_id = i, P.weight = w, P.car_id = cid, P.parameter1 = Just $ pr, P.parameter1_type_id = PMT.id j, P.level = d, P.part_modifier_id = Mod.id pmod })
                         [n] -> do 
                             j <- head <$> search ["name" |== (toSql pm)] [] 1 0 :: SqlTransaction Connection PMT.ParameterTable
-                            save ( def { P.part_type_id = fromJust $ PT.id n, P.weight = w, P.car_id = cid, P.parameter1 = Just $ pr , P.parameter1_type_id = PMT.id j, P.level = d})
+                            pmod <- head <$> search ["name" |== (toSql ptm)] [] 1 0 :: SqlTransaction Connection Mod.PartModifier 
+                            save ( def { P.part_type_id = fromJust $ PT.id n, P.weight = w, P.car_id = cid, P.parameter1 = Just $ pr , P.parameter1_type_id = PMT.id j, P.level = d, P.part_modifier_id = Mod.id pmod})
         runSqlTransaction bs error c 
         return ()
 
@@ -101,17 +105,19 @@ bds = [ "body"    , "engine"   , "chassis"   ,   "brake"   ,   "wheel"    ,   "n
  
 generateParts :: Int -> [Integer] -> [Integer] -> IO [Part]
 generateParts n ms cs = evalRandIO $ replicateM n $ do 
+                    let ns = ["Stock", "Pro", "Racing", "Family"]
                     let xs = bds 
                     t <- fromList $ (,1/10) <$> xs
+                    st <- fromList $ (,1/10) <$> ns
                     m <- fromList $ (,1/10) <$> ms 
                     w <- getRandomR (1,100)
                     c <- fromList $ (,1/10) <$> cs 
                     p <- getRandomR (1, 100)
                     d <- getRandomR $ (1, 100) 
                     case t of 
-                        ("aerodynamic", h) -> return (Part "aerodynamic" m w (Just c) p h d)
-                        ("engine", h) -> return (Part "engine" m w (Just c) p h d)
-                        (t, ph) -> return (Part t m w Nothing p ph d)
+                        ("aerodynamic", h) -> return (Part "aerodynamic" m w (Just c) p h d st)
+                        ("engine", h) -> return (Part "engine" m w (Just c) p h d st)
+                        (t, ph) -> return (Part t m w Nothing p ph d st)
 
 
 breakChar ::  Char -> String -> [String]
