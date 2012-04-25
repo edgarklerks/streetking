@@ -187,9 +187,12 @@ marketBuy = do
                        
                         -- Add to user garage 
                         
-                        save (def {PI.garage_id = G.id (head grg), PI.part_id = fromJust $ Part.id item} :: PI.PartInstance) 
-                        
-                        -- restore money to new amount 
+                        save (def {
+                            PI.garage_id = G.id (head grg), 
+                            PI.part_id = fromJust $ Part.id item
+                        } :: PI.PartInstance) 
+                       
+                       -- write it away in transaction log 
                         save (def { 
                             Transaction.amount = Part.price item, 
                             Transaction.current = A.money puser,
@@ -197,10 +200,13 @@ marketBuy = do
                             Transaction.type_id = fromJust $ Part.id item,
                             Transaction.time = tpsx  
                                 })
+                        -- restore money to new amount 
                         save (puser { A.money = mny } )
 
                         return ()
+                
                 return ()
+    writeResult True 
 
 marketSell :: Application ()
 marketSell = ni
