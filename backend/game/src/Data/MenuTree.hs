@@ -33,9 +33,8 @@ data Menu = Root
           | Tab Label Module Class
         deriving (Show , Eq)
 
-mkTabs :: String -> [String] -> [Menu]
-mkTabs p xs =  foldr step [] xs 
-                where step x z = Tab x p "" : z
+mkTabs p xs =  Node Root (foldr step [] xs)
+                where step x z = Node (Tab x p "") [] : z
 
 type MenuTree = Tree (Int, Menu)
 
