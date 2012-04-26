@@ -117,6 +117,7 @@ generateParts n ms cs = evalRandIO $ replicateM n $ do
                     case t of 
                         ("aerodynamic", h) -> return (Part "aerodynamic" m w (Just c) p h d st)
                         ("engine", h) -> return (Part "engine" m w (Just c) p h d st)
+                        ("turbo", h) -> return (Part "turbo" m w (Just c) p h d st)
                         (t, ph) -> return (Part t m w Nothing p ph d st)
 
 

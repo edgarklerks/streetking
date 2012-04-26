@@ -216,6 +216,7 @@ marketBuy = do
                 return ()
     writeResult ("You bought part"  :: String)
 
+-- Second hand shop 
 marketSell :: Application ()
 marketSell = do 
             uid <- getUserId 
