@@ -61,7 +61,8 @@ Executable game
     filepath,
     hashable,
     smallcheck,
-    iconv
+    iconv,
+    hint
 
   extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction ViewPatterns
 

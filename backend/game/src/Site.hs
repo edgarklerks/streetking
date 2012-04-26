@@ -60,6 +60,7 @@ import           Data.String
 import           GHC.Exception (SomeException)
 
 import qualified Control.Monad.CatchIO as CIO
+import           Data.Noodle
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
 --
@@ -222,9 +223,14 @@ marketSell = do
             uid <- getUserId 
             xs <- getJson
             let d = updateHashMap xs (def :: MI.MarketItem)
-            action d uid  
-    where action d uid = runDb $ do undefined  
-                        
+            runSnippet "init n = n + 1" [("1", "Int")] (undefined :: Int)
+{--            action d uid  
+    where action d uid = runDb $ do
+            -- check if user has money 
+            -- (10% * price, 10)
+        
+   --}
+            
             
                 
 
