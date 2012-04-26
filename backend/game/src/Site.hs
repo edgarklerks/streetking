@@ -165,7 +165,7 @@ marketAllowedParts = do
     xs <- getJson 
     let d = updateHashMap xs (def :: MPT.MarketPartType)
     p <- runDb (search ["car_id" |== (toSql $ MPT.car_id d)] [] 10000 0) :: Application [MPT.MarketPartType]
-    writeMapables p
+    writeResult (AS.toJSON $ MM.mkTabs "PARTS" (fmap MPT.name p))
 
 marketBuy :: Application ()
 marketBuy = do 
