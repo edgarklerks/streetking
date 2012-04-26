@@ -61,8 +61,7 @@ Executable game
     filepath,
     hashable,
     smallcheck,
-    iconv,
-    hint
+    hslua
 
   extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction ViewPatterns
 
