@@ -14,6 +14,6 @@ import           Model.TH
 import           Prelude hiding (id)
 
 $(genAll "MarketPartType" "market_part_types" [
-    ("id", ''Integer),
+    ("id", ''Id),
     ("name", ''String)
     ])

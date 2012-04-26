@@ -163,7 +163,6 @@ marketAllowedParts :: Application ()
 marketAllowedParts = do 
     xs <- getJson 
     let d = updateHashMap xs (def :: MPT.MarketPartType)
-
     p <- runDb (search ["id" |== (toSql $ MPT.id d)] [] 10000 0) :: Application [MPT.MarketPartType]
     writeMapables p
 
