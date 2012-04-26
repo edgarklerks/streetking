@@ -60,7 +60,9 @@ import           Data.String
 import           GHC.Exception (SomeException)
 
 import qualified Control.Monad.CatchIO as CIO
-import           Data.Noodle
+import           Lua.Instances
+import           Lua.Monad
+import           Lua.Prim
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
 --
@@ -223,7 +225,12 @@ marketSell = do
             uid <- getUserId 
             xs <- getJson
             let d = updateHashMap xs (def :: MI.MarketItem)
-            runSnippet "init n = n + 1" [("1", "Int")] (undefined :: Int)
+            liftIO $ runLua $ do 
+                   saveLuaValue "r" (LuaNum 0.1) 
+                   saveLuaValue "m" (LuaNum 10)
+                   saveLuaValue "n" (LuaNum 330)
+                   eval "res = r * n + m"
+                   peekGlobal "res"
 {--            action d uid  
     where action d uid = runDb $ do
             -- check if user has money 
