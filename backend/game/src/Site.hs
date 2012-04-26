@@ -242,7 +242,7 @@ marketParts = do
 garageParts :: Application ()
 garageParts = do 
         uid <- getUserId 
-        ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" .&& "id" +== "id" .&& "level" +<= "level-max" .&& "level" +>= "level-min")
+        ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" +&& "id" +== "id" +&& "level" +<= "level-max" +&& "level" +>= "level-min")
         ns <- runDb (search ( ("account_id" |== (toSql uid)) : xs) [] l o) :: Application [GPT.GaragePart]
         writeMapables ns
 
