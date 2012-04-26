@@ -28,7 +28,8 @@ $(genAll "Part" "part_model" [
     ("d3d_model_id", ''Integer),
     ("level", ''Integer),
     ("price", ''Integer),
-    ("part_modifier_id", ''MInteger)
+    ("part_modifier_id", ''MInteger),
+    ("unique", ''Bool)
  ])
 
 
