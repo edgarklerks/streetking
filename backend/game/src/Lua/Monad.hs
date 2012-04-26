@@ -43,7 +43,6 @@ module Lua.Monad
 ) where
 import qualified Scripting.Lua as Lua
 
-import Data.JSON2
 import Control.Monad.Reader
 import Control.Monad.Error
 import Control.Monad
@@ -102,7 +101,7 @@ call :: Int -> Int  -> LuaMonad Int
 call a b  = ask >>= liftIO . flip (`Lua.call` a) b
 
 tostring :: Int -> LuaMonad String 
-tostring x = ask >>= liftIO . (fmap unpack <$> flip Lua.tostring x)
+tostring x = ask >>= liftIO . (flip Lua.tostring x)
 
 openlibs :: LuaMonad ()
 openlibs = ask >>= liftIO . Lua.openlibs 
