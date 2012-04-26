@@ -36,7 +36,9 @@ $(genAll "GaragePart" "garage_parts" [
     ("price", ''Integer),
     ("car_model", ''MString),
     ("manufacturer_name", ''MString),
-    ("part_modifier", ''MString)
+    ("part_modifier", ''MString),
+    ("wear", ''Integer),
+    ("improvement", ''Integer)
  ])
 
 
