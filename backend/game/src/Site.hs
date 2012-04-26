@@ -163,8 +163,11 @@ marketModel = do
 marketAllowedParts :: Application ()
 marketAllowedParts = do 
     xs <- getJson 
+    uid <- getUserId 
     let d = updateHashMap xs (def :: MPT.MarketPartType)
-    p <- runDb (search ["car_id" |== (toSql $ MPT.car_id d)] [] 10000 0) :: Application [MPT.MarketPartType]
+    p <- runDb $ do 
+            x <- fromJust <$> load uid :: SqlTransaction Connection A.Account 
+            (search ["car_id" |== (toSql $ MPT.car_id d) .&& "level" |== (toSql $ A.level x)] [] 10000 0) :: SqlTransaction Connection [MPT.MarketPartType]
     writeResult (AS.toJSON $ MM.mkTabs "PARTS" (fmap MPT.name p))
 
 marketBuy :: Application ()

@@ -15,5 +15,6 @@ import           Prelude hiding (id)
 
 $(genAllId "MarketPartType" "market_part_types" "car_id" [
     ("car_id", ''Id),
-    ("name", ''String)
+    ("name", ''String),
+    ("level", ''Integer)
     ])
