@@ -14,9 +14,18 @@ import Data.Default
 genAll :: String -> String -> [(String, Name)] ->  Q [Dec]
 genAll nm tbl xs = do r <- genRecord nm xs  
                       i <- genInstance nm xs
-                      d <- genDatabase nm tbl
+                      d <- genDatabase nm tbl "id"
                       x <- genDefaultInstance nm xs
                       return $ r ++ i ++ d ++ x
+
+genAllId :: String -> String -> String -> [(String, Name)] -> Q [Dec]
+genAllId nm tbl td xs = 
+                   do r <- genRecord nm xs  
+                      i <- genInstance nm xs
+                      d <- genDatabase nm tbl td
+                      x <- genDefaultInstance nm xs
+                      return $ r ++ i ++ d ++ x
+
 
 genRecord :: String -> [(String, Name)] -> Q [Dec]
 genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] ([''Show, ''Eq])]
@@ -24,8 +33,8 @@ genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] 
         tp = foldr step [] xs
         step (x,t) z = (varStrictType (mkName x) (strictType notStrict (conT t)))  : z 
 
-genDatabase :: String -> String -> Q [Dec]
-genDatabase n tbl = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl ++ saveDb tbl ++ searchDB tbl)]
+genDatabase :: String -> String -> String -> Q [Dec]
+genDatabase n tbl td = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl td ++ saveDb tbl ++ searchDB tbl)]
 
 genInstance :: String -> [(String, Name)] -> Q [Dec] 
 genInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Mapable")) (conT $ mkName nm)) (tmMap nm (fmap fst xs) ++ frmMap nm (fmap fst xs) ++ tmHashMap nm (fmap fst xs) ++ frmHashMap nm (fmap fst xs))]  
@@ -51,12 +60,14 @@ frmMap n xs = [funD (mkName "fromMap") [clausem]]
                   s x = appE (appE (varE (mkName "fmap")) (conE (mkName n))) (lk x)
                   step z x = appE (appE [|ap|] z) (lk x) 
 
-loadDb n = [funD (mkName "load") [clausem]]
-    where clausem = clause [(varP (mkName "i"))] (normalB $ ff (appE decs [|[("id",  $(appE (varE $ mkName "htsql") (varE (mkName "i"))))]|])) []
-            where decs = appE sl [| [ ("id", $(varE $ mkName "cEQ")) ]|]
+loadDb :: String -> String -> [DecQ] 
+loadDb n td = [funD (mkName "load") [clausem]]
+    where clausem = clause [(varP (mkName "i"))] (normalB $ ff (appE decs [|[(td,  $(appE (varE $ mkName "htsql") (varE (mkName "i"))))]|])) []
+            where decs = appE sl [| [ (td, $(varE $ mkName "cEQ")) ]|]
                   sl = appE (varE (mkName "select")) (stringE n)
                   ff = appE (varE $ mkName "nhead")
 
+searchDB :: String -> [DecQ]
 searchDB tbl = [funD (mkName "search") [clausem]]
     where clausem = clause [(varP (mkName "xs")), varP (mkName "order"), varP (mkName "limit"), varP (mkName "offset")] (normalB (appE (varE $ mkName "mfp") dec)) []
             where dec = appE (appE (varE $ mkName "transaction") (varE $ mkName "sqlGetAllAssoc")) decs
@@ -66,6 +77,7 @@ searchDB tbl = [funD (mkName "search") [clausem]]
                   lmt = appE (conE $ mkName "Limit") (appE (varE (mkName "htsql")) (varE (mkName "limit")))
                   sl = appE (appE (appE (conE (mkName "Select")) (appE (varE (mkName "table")) (stringE tbl))) ([|[ $(varE $ mkName "selectAll") ]|])) (varE $ mkName "xs")
 
+saveDb :: String -> [DecQ]
 saveDb n = [funD (mkName "save") [clausem]]
     where clausem = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") decs) []
           decs = appE (appE (varE $ mkName "upsert") (stringE n)) (appE (varE $ mkName "toHashMap") (varE $ mkName "i"))

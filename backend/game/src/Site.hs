@@ -39,6 +39,7 @@ import qualified Model.PartMarket as PM
 import qualified Model.PartInstance as PI 
 import qualified Model.CarMarket as CM 
 import qualified Model.ManufacturerMarket as MAM 
+import qualified Model.MarketItem as MI 
 import qualified Model.Transaction as Transaction
 import qualified Model.MarketPartType as MPT
 import qualified Model.GarageParts as GPT 
@@ -163,7 +164,7 @@ marketAllowedParts :: Application ()
 marketAllowedParts = do 
     xs <- getJson 
     let d = updateHashMap xs (def :: MPT.MarketPartType)
-    p <- runDb (search ["id" |== (toSql $ MPT.id d)] [] 10000 0) :: Application [MPT.MarketPartType]
+    p <- runDb (search ["car_id" |== (toSql $ MPT.car_id d)] [] 10000 0) :: Application [MPT.MarketPartType]
     writeMapables p
 
 marketBuy :: Application ()
@@ -176,6 +177,7 @@ marketBuy = do
         (puser :: A.Account) <- fromJust <$> load uid
         let item' = updateHashMap xs (def :: Part.Part)        
         item <- load (fromJust $ Part.id item')
+        -- Some checks 
         case item of 
             Nothing -> rollback "No such item, puddy puddy puddy"
             Just item -> do 
@@ -212,7 +214,15 @@ marketBuy = do
     writeResult ("You bought part"  :: String)
 
 marketSell :: Application ()
-marketSell = ni
+marketSell = do 
+            uid <- getUserId 
+            xs <- getJson
+            let d = updateHashMap xs (def :: MI.MarketItem)
+            action d uid  
+    where action d uid = runDb $ do undefined  
+                        
+            
+                
 
 marketReturn :: Application ()
 marketReturn = ni

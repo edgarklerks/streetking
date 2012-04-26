@@ -13,7 +13,7 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genAll "MarketPartType" "market_part_types" [
-    ("id", ''Id),
+$(genAllId "MarketPartType" "market_part_types" "car_id" [
+    ("car_id", ''Id),
     ("name", ''String)
     ])

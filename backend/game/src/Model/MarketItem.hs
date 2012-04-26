@@ -17,6 +17,7 @@ $(genAll "MarketItem" "market_item"
     [
         ("id", ''Id),
         ("car_instance_id", ''Integer),
-        ("part_instance_id", ''Integer)
+        ("part_instance_id", ''Integer),
+        ("price", ''Integer)
         ]
     )
