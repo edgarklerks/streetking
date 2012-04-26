@@ -39,7 +39,8 @@ $(genAll "GaragePart" "garage_parts" [
     ("part_modifier", ''MString),
     ("wear", ''Integer),
     ("improvement", ''Integer),
-    ("unique", ''Bool)
+    ("unique", ''Bool),
+    ("part_instance_id", ''Integer)
  ])
 
 
