@@ -267,7 +267,7 @@ marketSell = do
                     
                     -- save part to market  
 
-                    save (d {MI.account_id = Just uid })
+                    save (d {MI.account_id = uid })
 
                     -- save part_instance as loon item 
                     save (x {PI.garage_id = Nothing })
