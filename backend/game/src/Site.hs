@@ -318,6 +318,9 @@ marketTrash = do
                                 Transaction.type_id = fromJust $ GPT.id d,
                                 Transaction.time = tpsx  
                             })
+
+                        pti <- fromJust <$> load (fromJust $ GPT.id d) :: SqlTransaction Connection PI.PartInstance
+                        save (pti { PI.deleted = True })
              
 
 
