@@ -326,7 +326,7 @@ marketTrash = do
                             })
                             
                         -- hide forever
-                        pti <- fromJust <$> load (fromJust $ GPT.id d) :: SqlTransaction Connection PI.PartInstance
+                        pti <- fromJust <$> load (fromJust $ GPT.part_instance_id d) :: SqlTransaction Connection PI.PartInstance
                         save (pti { PI.deleted = True })
              
 
