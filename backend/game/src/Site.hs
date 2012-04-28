@@ -160,7 +160,7 @@ marketPlace :: Application ()
 marketPlace = do 
            uid <- getUserId
            puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
-           ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" +&& "level" +>= "minlevel" +&& "level" +<= "maxlevel" .&& (ifdtd "me" (=="1") 
+           ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" +&& "level" +>= "minlevel" +&& "level" +<= "maxlevel" +&& (ifdtd "me" (=="1") 
                                 ("account_id" +==| (show uid)) 
                                 -- Should make this better, like a not equal statement
                                 ("account_id" +<| (show uid) +&& "account_id" +>| (show uid))
