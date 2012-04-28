@@ -277,10 +277,10 @@ marketSell = do
                     
                     let mny = A.money a - abs fee
                     when (mny < 0) $ rollback "Not enough money, fuckface"
-                    when (Mi.price d < 0) $ rollback "Price should be positive" 
+                    when (MI.price d < 0) $ rollback "Price should be positive" 
                     -- save part to market  
 
-                    save (d {MI.account_id = uid, price = abs (Mi.price d)  })
+                    save (d {MI.account_id = uid, price = abs (MI.price d)  })
                     
 
                     -- save part_instance as loon item 
