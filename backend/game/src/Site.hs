@@ -209,7 +209,8 @@ marketBuy = do
                         
                         save (def {
                             PI.garage_id = G.id (head grg), 
-                            PI.part_id = fromJust $ Part.id item
+                            PI.part_id = fromJust $ Part.id item,
+                            PI.account_id = uid 
                         } :: PI.PartInstance) 
                        
                        -- write it away in transaction log 
