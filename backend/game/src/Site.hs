@@ -267,7 +267,10 @@ marketSell = do
                     
                     -- save part to market  
 
-                    save (d { MI.account_id = uid })
+                    save d
+
+                    -- save part_instance as loon item 
+                    save (p {PI.part_instance_id = Nothing })
 
                     -- write it away in transaction log 
                     save (def { 
