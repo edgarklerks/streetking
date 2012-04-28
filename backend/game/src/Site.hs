@@ -311,7 +311,7 @@ marketTrash = do
         pts uid d tpsx 
         writeResult True 
     where pts uid d tpsx = runDb $ do 
-            pls <- search ["part_instance_id" |== toSql $  PI.id d] [] 1 0  :: SqlTransaction Connection [GPT.GaragePart]
+            pls <- search ["part_instance_id" |== toSql (PI.id d)] [] 1 0  :: SqlTransaction Connection [GPT.GaragePart]
             case pls of 
                 [] -> rollback "Cannot find garage part"
                 [d] -> do 
