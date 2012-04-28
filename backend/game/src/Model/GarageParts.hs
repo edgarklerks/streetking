@@ -40,7 +40,8 @@ $(genAll "GaragePart" "garage_parts" [
     ("wear", ''Integer),
     ("improvement", ''Integer),
     ("unique", ''Bool),
-    ("part_instance_id", ''Integer)
+    ("part_instance_id", ''Integer),
+    ("trash_price", ''Integer)
  ])
 
 
