@@ -306,7 +306,7 @@ marketTrash :: Application ()
 marketTrash = do 
         uid <- getUserId
         xs <- getJson >>= scheck ["part_instance_id"]
-        let d = updateHashMap xs (def :: PI.PartInstance)
+        let d = updateHashMap xs (def :: GPT.GaragePart)
         tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
         pts uid d tpsx 
         writeResult True 
