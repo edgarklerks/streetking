@@ -251,9 +251,7 @@ marketSell = do
                           ("price", LuaNum (fromIntegral $ MI.price d))
                           ]
            
-            
-            
-            trace (show x) $ tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+            tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
             pts uid d (fromIntegral $ round (x :: Double)) tpsx
             writeResult True 
     where pts uid d fee tpsx = runDb $ do 
@@ -283,7 +281,7 @@ marketSell = do
                     save (a { A.money = mny } )
 
 marketReturn :: Application ()
-marketReturn = undefined  
+marketReturn = undefined 
 
 
 marketParts :: Application ()
