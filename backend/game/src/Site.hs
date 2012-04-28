@@ -51,6 +51,7 @@ import           Model.General (Mapable(..), Default(..), Database(..))
 import           Data.Convertible
 import           Data.Time.Clock 
 import           Data.Time.Clock.POSIX
+import qualified Data.Foldable as F
 
 import qualified Data.Digest.TigerHash as H
 import qualified Data.Digest.TigerHash.ByteString as H
@@ -317,9 +318,9 @@ marketTrash = do
                 [] -> rollback "Cannot find garage part"
                 [d] -> do 
                         a <-  fromJust <$> load uid :: SqlTransaction Connection A.Account
-                        save (a {A.money = A.money a + abs (GPT.price d)})
+                        save (a {A.money = A.money a + abs (GPT.trash_price d)})
                         save (def { 
-                                Transaction.amount = abs (GPT.price d), 
+                                Transaction.amount = abs (GPT.trash_price d), 
                                 Transaction.current = A.money a,
                                 Transaction.type = "garage_trash",
                                 Transaction.type_id = fromJust $ GPT.id d,
@@ -338,9 +339,16 @@ marketParts :: Application ()
 marketParts = do 
    uid <- getUserId
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
-   ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type")
+   ((l, o), xs) <- getPagesWithDTD (
+            "car_id" +== "car_id" +&& "name" +== "part_type" +&& (ifdtd "me" (=="1") 
+                                ("account_id" +==| (show uid)) 
+                                -- Should make this better, like a not equal statement
+                                ("account_id" +<| (show uid) +&& "account_id" +>| (show uid))
+                    )
+    
+    )
    ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [PM.PartMarket]
-   writeMapables ns
+   writeMapables ns  
 
 garageParts :: Application ()
 garageParts = do 
