@@ -163,7 +163,7 @@ marketPlace = do
            ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" +&& "level" +>= "minlevel" +&& "level" +<= "maxlevel" +&& (ifdtd "me" (=="1") 
                                 ("account_id" +==| (show uid)) 
                                 -- Should make this better, like a not equal statement
-                                ("account_id" +<| (show uid) +&& "account_id" +>| (show uid))
+                                ("account_id" +<| (show uid) +|| "account_id" +>| (show uid))
                     )
                 )
            ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [MP.MarketPlace]
