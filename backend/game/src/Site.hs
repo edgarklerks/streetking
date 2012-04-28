@@ -289,15 +289,38 @@ marketSell = do
                     save (def { 
                             Transaction.amount = abs fee, 
                             Transaction.current = A.money a,
-                            Transaction.type = "market_item_sell",
+                            Transaction.type = "garage_sell",
                             Transaction.type_id = fromJust $ MI.part_instance_id d,
                             Transaction.time = tpsx  
                         })
                     -- restore money to new amount 
                     save (a { A.money = mny } )
 
-marketReturn :: Application ()
-marketReturn = undefined 
+marketTrash :: Application ()
+marketTrash = do 
+        uid <- getUserId
+        xs <- getJson >>= scheck ["id"]
+        let d = updateHashMap xs (def :: PI.PartInstance)
+        tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+        pts uid d tpsx 
+        writeResult True 
+    where pts uid d tpsx = runDb $ do 
+            pls <- load (fromJust $ PI.id d) :: SqlTransaction Connection (Maybe GPT.GaragePart)
+            case pls of 
+                Nothing -> rollback "Cannot find garage part"
+                Just d -> do 
+                        a <-  fromJust <$> load uid :: SqlTransaction Connection A.Account
+                        save (a {A.money = A.money a + abs (GPT.price d)})
+                        save (def { 
+                                Transaction.amount = abs (GPT.price d), 
+                                Transaction.current = A.money a,
+                                Transaction.type = "garage_trash",
+                                Transaction.type_id = fromJust $ GPT.id d,
+                                Transaction.time = tpsx  
+                            })
+             
+
+
 
 
 marketParts :: Application ()
@@ -378,7 +401,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/model", marketModel),
                 ("/Market/buy", marketBuy),
                 ("/Market/sell", marketSell),
-                ("/Market/return", marketReturn),
+                ("/Market/return", ni),
                 ("/Market/parts", marketParts),
                 ("/Garage/car", garageCar),
                 ("/Car/model", loadModel),
@@ -386,6 +409,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Game/tree", loadMenu),
                 ("/Garage/parts", garageParts),
                 ("/Market/allowedParts", marketAllowedParts),
-                ("/Market/place", marketPlace)
+                ("/Market/place", marketPlace),
+                ("/Market/trash", marketTrash)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
