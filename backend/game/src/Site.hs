@@ -270,7 +270,7 @@ marketSell = do
                     save d
 
                     -- save part_instance as loon item 
-                    save (p {PI.garage_id = Nothing })
+                    save (x {PI.garage_id = Nothing })
 
                     -- write it away in transaction log 
                     save (def { 
