@@ -251,9 +251,12 @@ marketSell = do
             x <- evalLua prg [
                           ("price", LuaNum (fromIntegral $ MI.price d))
                           ]
-           
+            -- -5.6 -> -5
+            -- floor -5.6 -> -6
+            -- ceil -5.6 -> -5
+            --
             tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
-            pts uid d (fromIntegral $ round (x :: Double)) tpsx
+            pts uid d (floor (x :: Double)) tpsx
             writeResult True 
     where pts uid d fee tpsx = runDb $ do 
            p <- search [("id" |== toSql ( MI.part_instance_id d)) .&& ("account_id" |== toSql uid)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance]
@@ -262,8 +265,7 @@ marketSell = do
             [x] -> do 
                     a <- fromJust <$> load uid  :: SqlTransaction Connection (A.Account)
                     
-                    let mny = A.money a - fee 
-
+                    let mny = A.money a - abs fee
                     when (mny < 0) $ rollback "Not enough money, fuckface"
                     
                     -- save part to market  
@@ -275,7 +277,7 @@ marketSell = do
 
                     -- write it away in transaction log 
                     save (def { 
-                            Transaction.amount = fee, 
+                            Transaction.amount = abs fee, 
                             Transaction.current = A.money a,
                             Transaction.type = "market_item_sell",
                             Transaction.type_id = fromJust $ MI.part_instance_id d,
