@@ -207,7 +207,7 @@ marketBuy = do
             Nothing -> rollback "No such item, puddy puddy puddy"
             Just item -> do 
                 when (Part.level item > A.level puser) $ rollback "No correct level cowboy"
-                let mny = A.money puser - Part.price item   
+                let mny = A.money puser - abs (Part.price item)
                 if mny < 0 
                     then rollback "You don' tno thgave eninh monye, brotther"
                     else do 
@@ -225,7 +225,7 @@ marketBuy = do
                        
                        -- write it away in transaction log 
                         save (def { 
-                            Transaction.amount = Part.price item, 
+                            Transaction.amount = - abs (Part.price item), 
                             Transaction.current = A.money puser,
                             Transaction.type = "part_model",
                             Transaction.type_id = fromJust $ Part.id item,
@@ -287,7 +287,7 @@ marketSell = do
 
                     -- write it away in transaction log 
                     save (def { 
-                            Transaction.amount = abs fee, 
+                            Transaction.amount = -(abs fee), 
                             Transaction.current = A.money a,
                             Transaction.type = "garage_sell",
                             Transaction.type_id = fromJust $ MI.part_instance_id d,
@@ -318,7 +318,8 @@ marketTrash = do
                                 Transaction.type_id = fromJust $ GPT.id d,
                                 Transaction.time = tpsx  
                             })
-
+                            
+                        -- hide forever
                         pti <- fromJust <$> load (fromJust $ GPT.id d) :: SqlTransaction Connection PI.PartInstance
                         save (pti { PI.deleted = True })
              
