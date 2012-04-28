@@ -44,6 +44,7 @@ import qualified Model.Transaction as Transaction
 import qualified Model.MarketPartType as MPT
 import qualified Model.GarageParts as GPT 
 import qualified Model.Config as CFG 
+import qualified Model.MarketPlace as MP
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -153,7 +154,16 @@ loadMenu = do
  -
  -
  --}
-    
+
+marketPlace :: Application ()
+marketPlace = do 
+           uid <- getUserId
+           puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
+           ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" +&& "level" +>= "minlevel" +&& "level" +<= "maxlevel")
+           ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [MP.MarketPlace]
+           writeMapables ns
+
+
 marketManufacturer :: Application ()
 marketManufacturer = do 
        uid <- getUserId
@@ -375,6 +385,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Game/template", loadTemplate),
                 ("/Game/tree", loadMenu),
                 ("/Garage/parts", garageParts),
-                ("/Market/allowedParts", marketAllowedParts)
+                ("/Market/allowedParts", marketAllowedParts),
+                ("/Market/place", marketPlace)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
