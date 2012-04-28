@@ -43,6 +43,7 @@ import qualified Model.MarketItem as MI
 import qualified Model.Transaction as Transaction
 import qualified Model.MarketPartType as MPT
 import qualified Model.GarageParts as GPT 
+import qualified Model.Config as CFG 
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -72,6 +73,13 @@ import           Lua.Prim
 --
 
 type STQ a = SqlTransaction Connection a
+
+loadConfig :: String -> Application String 
+loadConfig x = do 
+        p <- runDb (search ["key" |== toSql x] [] 1 0) :: Application [CFG.Config]
+        case p of 
+            [] -> internalError $ "No such config key: " ++ x
+            [x] -> return (CFG.value x)
 
 index :: Application ()
 index = ifTop $ writeBS "go rape yourself" 
@@ -219,27 +227,60 @@ marketBuy = do
                 return ()
     writeResult ("You bought part"  :: String)
 
+evalLua x xs = do 
+            p <- rl 
+            case p of 
+                Left e -> internalError e
+                Right (a, p) -> return a
+    where rl = liftIO $ runLua $ do 
+                        forM_ xs (uncurry saveLuaValue)
+                        eval x
+                        peekGlobal "res"
+
+
+--         
 -- Second hand shop 
 marketSell :: Application ()
 marketSell = do 
             uid <- getUserId 
-            xs <- getJson
+            xs <- getJson >>= scheck ["price", "part_instance_id"]
             let d = updateHashMap xs (def :: MI.MarketItem)
-            liftIO $ runLua $ do 
-                   saveLuaValue "r" (LuaNum 0.1) 
-                   saveLuaValue "m" (LuaNum 10)
-                   saveLuaValue "n" (LuaNum 330)
-                   eval "res = r * n + m"
-                   peekGlobal "res"
-{--            action d uid  
-    where action d uid = runDb $ do
-            -- check if user has money 
-            -- (10% * price, 10)
-        
-   --}
+            prg <- loadConfig "market_fee"
+            x <- evalLua prg [
+                          ("price", LuaNum (fromIntegral $ MI.price d))
+                          ]
             
             
-                
+
+            tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+            pts uid d (fromIntegral $ round (x :: Double)) tpsx
+            writeResult True 
+    where pts uid d fee tpsx = runDb $ do 
+           p <- search [("part_instance_id" |== toSql ( MI.part_instance_id d)) .&& ("account_id" |== toSql uid)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance]
+           case p of 
+            [] -> rollback $ "No such part: " ++ (show $ MI.part_instance_id d)
+            [x] -> do 
+                    a <- fromJust <$> load uid  :: SqlTransaction Connection (A.Account)
+                    
+                    let mny = A.money a - fee 
+
+                    when (mny < 0) $ rollback "Not enough money, fuckface"
+                    
+                    -- save part to market  
+
+                    save (d { MI.account_id = uid })
+                    -- add transaction 
+
+                    -- write it away in transaction log 
+                    save (def { 
+                            Transaction.amount = fee, 
+                            Transaction.current = A.money a,
+                            Transaction.type = "market_item_sell",
+                            Transaction.type_id = fromJust $ MI.part_instance_id d,
+                            Transaction.time = tpsx  
+                        })
+                    -- restore money to new amount 
+                    save (a { A.money = mny } )
 
 marketReturn :: Application ()
 marketReturn = ni
