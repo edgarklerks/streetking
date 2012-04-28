@@ -299,6 +299,7 @@ marketSell = do
 marketPlaceBuy :: Application ()
 marketPlaceBuy = do 
             uid <- getUserId
+            return undefined
 
 
 marketTrash :: Application ()
