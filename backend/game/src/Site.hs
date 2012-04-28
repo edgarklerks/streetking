@@ -64,6 +64,7 @@ import qualified Control.Monad.CatchIO as CIO
 import           Lua.Instances
 import           Lua.Monad
 import           Lua.Prim
+import           Debug.Trace
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
 --
@@ -249,10 +250,10 @@ marketSell = do
             x <- evalLua prg [
                           ("price", LuaNum (fromIntegral $ MI.price d))
                           ]
+           
             
             
-
-            tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+            trace (show x) $ tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
             pts uid d (fromIntegral $ round (x :: Double)) tpsx
             writeResult True 
     where pts uid d fee tpsx = runDb $ do 
@@ -269,7 +270,6 @@ marketSell = do
                     -- save part to market  
 
                     save (d { MI.account_id = uid })
-                    -- add transaction 
 
                     -- write it away in transaction log 
                     save (def { 
@@ -283,7 +283,8 @@ marketSell = do
                     save (a { A.money = mny } )
 
 marketReturn :: Application ()
-marketReturn = ni
+marketReturn = undefined  
+
 
 marketParts :: Application ()
 marketParts = do 
