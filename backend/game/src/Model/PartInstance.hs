@@ -22,5 +22,6 @@ $(genAll "PartInstance" "part_instance"
         ("car_instance_id", ''Id),
         ("improvement", ''Integer),
         ("wear", ''Integer),
-        ("account_id", ''Integer)
+        ("account_id", ''Integer),
+        ("deleted", ''Bool)
     ])
