@@ -255,7 +255,7 @@ marketSell = do
             pts uid d (fromIntegral $ round (x :: Double)) tpsx
             writeResult True 
     where pts uid d fee tpsx = runDb $ do 
-           p <- search [("part_instance_id" |== toSql ( MI.part_instance_id d)) .&& ("account_id" |== toSql uid)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance]
+           p <- search [("id" |== toSql ( MI.part_instance_id d)) .&& ("account_id" |== toSql uid)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance]
            case p of 
             [] -> rollback $ "No such part: " ++ (show $ MI.part_instance_id d)
             [x] -> do 
