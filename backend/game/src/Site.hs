@@ -296,19 +296,24 @@ marketSell = do
                     -- restore money to new amount 
                     save (a { A.money = mny } )
 
+marketPlaceBuy :: Application ()
+marketPlaceBuy = do 
+            uid <- getUserId
+
+
 marketTrash :: Application ()
 marketTrash = do 
         uid <- getUserId
-        xs <- getJson >>= scheck ["id"]
+        xs <- getJson >>= scheck ["part_instance_id"]
         let d = updateHashMap xs (def :: PI.PartInstance)
         tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
         pts uid d tpsx 
         writeResult True 
     where pts uid d tpsx = runDb $ do 
-            pls <- load (fromJust $ PI.id d) :: SqlTransaction Connection (Maybe GPT.GaragePart)
+            pls <- search ["part_instance_id" |== toSql $  PI.id d] [] 1 0  :: SqlTransaction Connection [GPT.GaragePart]
             case pls of 
-                Nothing -> rollback "Cannot find garage part"
-                Just d -> do 
+                [] -> rollback "Cannot find garage part"
+                [d] -> do 
                         a <-  fromJust <$> load uid :: SqlTransaction Connection A.Account
                         save (a {A.money = A.money a + abs (GPT.price d)})
                         save (def { 
