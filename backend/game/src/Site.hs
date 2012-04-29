@@ -45,6 +45,7 @@ import qualified Model.MarketPartType as MPT
 import qualified Model.GarageParts as GPT 
 import qualified Model.Config as CFG 
 import qualified Model.MarketPlace as MP
+import qualified Model.PartType as PT 
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -160,14 +161,19 @@ marketPlace :: Application ()
 marketPlace = do 
            uid <- getUserId
            puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
-           ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" +&& "level" +>= "minlevel" +&& "level" +<= "maxlevel" +&& (ifdtd "me" (=="1") 
-                                ("account_id" +==| (show uid)) 
-                                -- Should make this better, like a not equal statement
-                                ("account_id" +<| (show uid) +|| "account_id" +>| (show uid))
+           ((l, o), xs) <- getPagesWithDTD (
+                    "car_id" +== "car_id" +&&  
+                    "name" +== "part_type" +&& 
+                    "level" +>= "minlevel" +&& 
+                    "level" +<= "maxlevel" +&& 
+                     ifdtd "me" (=="1") 
+                                ("account_id" +==| toSql uid) 
+                                ("account_id" +<>| toSql uid)
+                    
                     )
-                )
            ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [MP.MarketPlace]
            writeMapables ns
+
 
 
 marketManufacturer :: Application ()
@@ -205,44 +211,34 @@ marketBuy = do
     tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
     
     runDb $ do 
-        (puser :: A.Account) <- fromJust <$> load uid
         let item' = updateHashMap xs (def :: Part.Part)        
         item <- load (fromJust $ Part.id item')
         -- Some checks 
         case item of 
             Nothing -> rollback "No such item, puddy puddy puddy"
             Just item -> do 
+                puser <- fromJust <$> load uid
                 when (Part.level item > A.level puser) $ rollback "No correct level cowboy"
-                let mny = A.money puser - abs (Part.price item)
-                if mny < 0 
-                    then rollback "You don' tno thgave eninh monye, brotther"
-                    else do 
 
-                        -- We can buy now 
-                        grg <- search ["account_id" |== (toSql uid)]  [] 1 0 :: SqlTransaction Connection [G.Garage]
-                       
-                        -- Add to user garage 
-                        
-                        save (def {
+                -- We can buy now 
+                grg <- search ["account_id" |== (toSql uid)]  [] 1 0 :: SqlTransaction Connection [G.Garage]
+
+                -- Add to user garage 
+
+                save (def {
                             PI.garage_id = G.id (head grg), 
                             PI.part_id = fromJust $ Part.id item,
                             PI.account_id = uid 
-                        } :: PI.PartInstance) 
-                       
-                       -- write it away in transaction log 
-                        save (def { 
-                            Transaction.amount = - abs (Part.price item), 
-                            Transaction.current = A.money puser,
-                            Transaction.type = "part_model",
-                            Transaction.type_id = fromJust $ Part.id item,
-                            Transaction.time = tpsx  
-                                })
-                        -- restore money to new amount 
-                        save (puser { A.money = mny } )
+                            } :: PI.PartInstance) 
 
-                        return ()
-                
+                -- write it away in transaction log 
+                transactionMoney uid  (def { 
+                            Transaction.amount = - abs (Part.price item), 
+                            Transaction.type = "part_model",
+                            Transaction.type_id = fromJust $ Part.id item
+                                })
                 return ()
+                
     writeResult ("You bought part"  :: String)
 
 evalLua x xs = do 
@@ -271,42 +267,119 @@ marketSell = do
             -- floor -5.6 -> -6
             -- ceil -5.6 -> -5
             --
-            tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
-            pts uid d (floor (x :: Double)) tpsx
+            pts uid d (floor (x :: Double)) 
             writeResult True 
-    where pts uid d fee tpsx = runDb $ do 
+    where pts uid d fee = runDb $ do 
            p <- search [("id" |== toSql ( MI.part_instance_id d)) .&& ("account_id" |== toSql uid)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance]
            case p of 
-            [] -> rollback $ "No such part: " ++ (show $ MI.part_instance_id d)
-            [x] -> do 
-                    a <- fromJust <$> load uid  :: SqlTransaction Connection (A.Account)
-                    
-                    let mny = A.money a - abs fee
-                    when (mny < 0) $ rollback "Not enough money, fuckface"
+                [] -> rollback $ "No such part: " ++ (show $ MI.part_instance_id d)
+                [x] -> do 
                     when (MI.price d < 0) $ rollback "Price should be positive" 
                     -- save part to market  
-
                     save (d {MI.account_id = uid, MI.price = abs (MI.price d)})
-                    
 
                     -- save part_instance as loon item 
                     save (x {PI.garage_id = Nothing })
 
                     -- write it away in transaction log 
-                    save (def { 
+                    transactionMoney uid (def { 
                             Transaction.amount = -(abs fee), 
-                            Transaction.current = A.money a,
                             Transaction.type = "garage_sell",
-                            Transaction.type_id = fromJust $ MI.part_instance_id d,
-                            Transaction.time = tpsx  
+                            Transaction.type_id = fromJust $ MI.part_instance_id d
                         })
-                    -- restore money to new amount 
-                    save (a { A.money = mny } )
+
+carBuy :: Application ()
+carBuy = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    let car = updateHashMap xs ( def :: CM.CarMarket)
+
+    runDb $ do 
+        g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+        cm <- load (fromJust $ CM.id car) :: SqlTransaction Connection (Maybe CM.CarMarket)
+        case cm of 
+            Nothing -> rollback "No such car found"
+            Just car -> do 
+                
+                -- save car to garage 
+                
+                save ((def :: CarInstance.CarInstance) {
+                        CarInstance.garage_id = fromJust $ G.id g,
+                        CarInstance.car_id = fromJust $ CM.id car 
+                    }) :: SqlTransaction Connection Integer
+                
+                -- sammeln stockr parts 
+                --
+
+                pts <- search ["required" |== toSql True] [] 1000 0 :: SqlTransaction Connection [PT.PartType]
+                -- Part loader 
+                let step z i = do 
+                    p <- search [
+                            "part_type_id" |== toSql (PT.id i) .&&  
+                            "car_id" |== toSql (CM.id car) .&& 
+                            "level" |== toSql (CM.level car)
+                         ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
+
+                    s <- search [
+                            "part_type_id" |== toSql (PT.id i) .&&  
+                            "car_id" |== SqlNull .&& 
+                            "level" |== toSql (CM.level car)
+                        ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
+
+                    let x = p ++ s
+
+                    when (null x) $ rollback "No suitable stock type found"
+
+                    let part = head x 
+                    
+                    save (def {
+                           PI.part_id = fromJust $ PM.id part,
+                           PI.car_instance_id = CM.id car,
+                           PI.account_id = uid,
+                           PI.deleted = False 
+                        })
+
+                final_price <- foldM step (CM.price car) pts  
+
+                -- pay shit
+                transactionMoney uid (def {
+                        Transaction.amount = - abs(final_price + CM.price car),
+                        Transaction.type = "car_instance",
+                        Transaction.type_id = fromJust $ CM.id car
+                    })
+
+
+
+        
+
+        
 
 marketPlaceBuy :: Application ()
 marketPlaceBuy = do 
             uid <- getUserId
             return undefined
+
+
+transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
+transactionMoney uid tr' =   do 
+                            tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                            let tr = tr' {Transaction.time = tpsx }
+                            a <- load uid :: SqlTransaction Connection (Maybe A.Account)
+                            case a of 
+                                Nothing -> rollback "tri tho serch yer paspoht suplieh bette, friennd"
+                                Just a -> do 
+
+                                    when (A.money a + Transaction.amount tr < 0) $ rollback "You don' tno thgave eninh monye, brotther"
+
+                                    -- save transaction 
+
+                                    save $ tr { Transaction.current = A.money a }
+                                    -- save user 
+                                    save $ a { A.money = A.money a + Transaction.amount tr }
+                                    return ()
+
+
+
 
 
 marketTrash :: Application ()
@@ -322,16 +395,11 @@ marketTrash = do
             case pls of 
                 [] -> rollback "Cannot find garage part"
                 [d] -> do 
-                        a <-  fromJust <$> load uid :: SqlTransaction Connection A.Account
-                        save (a {A.money = A.money a + abs (GPT.trash_price d)})
-                        save (def { 
+                        transactionMoney uid (def { 
                                 Transaction.amount = abs (GPT.trash_price d), 
-                                Transaction.current = A.money a,
                                 Transaction.type = "garage_trash",
-                                Transaction.type_id = fromJust $ GPT.id d,
-                                Transaction.time = tpsx  
+                                Transaction.type_id = fromJust $ GPT.id d
                             })
-                            
                         -- hide forever
                         pti <- fromJust <$> load (GPT.part_instance_id d) :: SqlTransaction Connection PI.PartInstance
                         save (pti { PI.deleted = True })
@@ -406,6 +474,7 @@ userAddSkill = do
         writeMapable u'
 
 
+
 -- | The main entry point handler.
 site :: Application ()
 site = CIO.catch (CIO.catch (route [ 
@@ -429,6 +498,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Garage/parts", garageParts),
                 ("/Market/allowedParts", marketAllowedParts),
                 ("/Market/place", marketPlace),
-                ("/Market/trash", marketTrash)
+                ("/Market/trash", marketTrash),
+                ("/Car/buy", carBuy)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))

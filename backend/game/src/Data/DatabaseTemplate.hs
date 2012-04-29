@@ -10,7 +10,7 @@ data DTD = Con D.ConOp String DTD
         | And DTD DTD  
         | Or DTD DTD 
         | Lift String 
-        | Fix String 
+        | Fix SqlValue  
         | If String (String -> Bool) DTD DTD
 
 (+&&) = And 
@@ -23,12 +23,13 @@ data DTD = Con D.ConOp String DTD
 (+<=) x y = Con D.OpLTE x (Lift y)
 (+%) x y = Con D.OpContains x (Lift y)
 (+%%) x y = Con D.OpIContains x (Lift y)
-
+(+<>) x y = Con D.OpNEQ x (Lift y)
 ifdtd = If
 
 infixr 2 +||
 infixr 3 +&& 
 
+infix 4 +<>
 infix 4 +== 
 infix 4 +>= 
 infix 4 +>
@@ -44,8 +45,9 @@ infix 4 +%%
 (+<=|) x y = Con D.OpLTE x (Fix y)
 (+%|) x y = Con D.OpContains x (Fix y)
 (+%%|) x y = Con D.OpIContains x (Fix y)
+(+<>|) x y = Con D.OpNEQ x (Fix y)
 
-
+infix 4 +<>|
 infix 4 +==| 
 infix 4 +>=|
 infix 4 +>|
@@ -83,6 +85,7 @@ evalDTD (Con c x (Fix (toSql -> y))) p =  case c of
                                 D.OpLT -> return $ x D.|> y 
                                 D.OpContains -> return $ x D.|% y
                                 D.OpIContains -> return $ x D.|%% y
+                                D.OpNEQ -> return $ x D.|<> y
             
 evalDTD (Con c x (Lift y)) p = do 
                 case (S.lookup y p) of 
@@ -95,3 +98,4 @@ evalDTD (Con c x (Lift y)) p = do
                                 D.OpLT -> return $ x D.|> p 
                                 D.OpContains -> return $ x D.|% p
                                 D.OpIContains -> return $ x D.|%% p
+                                D.OpNEQ -> return $ x D.|<> p
