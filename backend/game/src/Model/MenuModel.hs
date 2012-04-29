@@ -53,7 +53,7 @@ instance Convertible (Tree Menu) [MenuModel] where
 instance Convertible [MenuModel] (Tree Menu) where 
         safeConvert x = Right (fromFlat $ convert x)
 
-shittree = Node Root [Node (SubMenu "ACCOUNT" "" "") 
+logintree = Node Root [Node (SubMenu "ACCOUNT" "" "") 
                             [ Node (MenuItem "LOGIN" "ACCOUNT_LOGIN" "dialog") [],
                                Node (MenuItem "REGISTER" "ACCOUNT_REGISTER" "dialog") []
 
@@ -62,7 +62,7 @@ shittree = Node Root [Node (SubMenu "ACCOUNT" "" "")
                           Node (MenuItem "MAIN" "MAIN" "") []
                         ]
 
-shittree2 = Node Root [
+gametree = Node Root [
             Node (MenuItem "LOGOUT" "LOGOUT" "") [],
             Node (SubMenu "SHOP" "" "") [
                                 Node (MenuItem "NEW_CARS" "MARKETPLACE_NEWCARS" "") [],
@@ -81,9 +81,7 @@ shittree2 = Node Root [
 
         ]
 
-shittree3 = Node Root [
-            Node (Tab "aerodynamic" "PARTS" "") [],
-            Node (Tab "body" "PARTS" "") [],
+market_tabstree = Node Root [
             Node (Tab "engine" "PARTS" "") [],
             Node (Tab "suspension" "PARTS" "") [],
             Node (Tab "brake" "PARTS" "") [],
@@ -92,6 +90,17 @@ shittree3 = Node Root [
             Node (Tab "spoiler" "PARTS" "") [],
             Node (Tab "nos" "PARTS" "") []
     ]
+garage_tabstree = Node Root [
+            Node (Tab "aerodynamic" "PARTS" "") [],
+            Node (Tab "engine" "PARTS" "") [],
+            Node (Tab "suspension" "PARTS" "") [],
+            Node (Tab "brake" "PARTS" "") [],
+            Node (Tab "wheel" "PARTS" "") [],
+            Node (Tab "turbo" "PARTS" "") [],
+            Node (Tab "spoiler" "PARTS" "") [],
+            Node (Tab "nos" "PARTS" "") []
+    ]
+
 
 saveTree name tree = do 
         c <- dbconn 
