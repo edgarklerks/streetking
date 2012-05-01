@@ -25,5 +25,6 @@ $(genAll "CarInGarage" "car_in_garage"
         ("handling", ''Integer),
         ("name", ''String),
         ("acceleration", ''Integer),
-        ("price", ''Integer)
+        ("parts_price", ''Integer),
+        ("total_price", ''Integer)
     ])
