@@ -38,7 +38,8 @@ $(genAll "MarketPlace" "market_place" [
     ("part_modifier", ''MString),
     ("unique", ''Bool),
     ("improvement", ''Integer),
-    ("wear", ''Integer)
+    ("wear", ''Integer),
+    ("account_id", ''Integer)
  ])
 
 

@@ -38,6 +38,7 @@ class H.IConnection c => Database c a where
     load :: Integer -> SqlTransaction c (Maybe a) 
     -- Constraints Orders limit offset
     search :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction c [a]
+    delete :: a -> Constraints -> SqlTransaction c ()
 
 
 class Mapable a where 

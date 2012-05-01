@@ -365,8 +365,32 @@ marketPlaceBuy = do
             runDb $ do 
                 mm <- load (fromJust $ MP.id d) :: SqlTransaction Connection (Maybe MP.MarketPlace)
                 case mm of
-                    Nothing -> rollback "No such car"
-                    Just p -> return undefined  
+                    Nothing -> rollback "No such item"
+                    Just p -> do
+                        a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
+
+                        -- remove market_part where part_instance_id =  part_instance_id 
+                        --
+                        delete (undefined :: MP.MarketPlace) ["id" |== toSql (MP.id d)] 
+
+                        -- reassign part_instance to new garage_id 
+
+                        pi <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
+                        save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing})
+
+                        -- remove money 
+                        --
+                        transactionMoney uid (def {
+                                Transaction.amount = - abs(MP.price p),
+                                Transaction.type = "market_place_buy",
+                                Transaction.type_id = fromJust $ MP.id d 
+                            })
+
+                        transactionMoney (MP.account_id p) (def {
+                                Transaction.amount = abs(MP.price p),
+                                Transaction.type = "market_place_sell",
+                                Transaction.type_id = fromJust $ MP.id d
+                            })
 
 
 
@@ -511,6 +535,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/allowedParts", marketAllowedParts),
                 ("/Market/place", marketPlace),
                 ("/Market/trash", marketTrash),
+                ("/Market/buyPlace", marketPlaceBuy),
                 ("/Car/buy", carBuy)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))

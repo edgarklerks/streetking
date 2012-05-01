@@ -34,7 +34,7 @@ genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] 
         step (x,t) z = (varStrictType (mkName x) (strictType notStrict (conT t)))  : z 
 
 genDatabase :: String -> String -> String -> Q [Dec]
-genDatabase n tbl td = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl td ++ saveDb tbl ++ searchDB tbl)]
+genDatabase n tbl td = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl td ++ saveDb tbl ++ searchDB tbl ++ deleteDb tbl)]
 
 genInstance :: String -> [(String, Name)] -> Q [Dec] 
 genInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Mapable")) (conT $ mkName nm)) (tmMap nm (fmap fst xs) ++ frmMap nm (fmap fst xs) ++ tmHashMap nm (fmap fst xs) ++ frmHashMap nm (fmap fst xs))]  
@@ -76,6 +76,13 @@ searchDB tbl = [funD (mkName "search") [clausem]]
                   offs = appE (conE $ mkName "Offset") (appE ((varE $ mkName "htsql")) (varE $ mkName "offset"))
                   lmt = appE (conE $ mkName "Limit") (appE (varE (mkName "htsql")) (varE (mkName "limit")))
                   sl = appE (appE (appE (conE (mkName "Select")) (appE (varE (mkName "table")) (stringE tbl))) ([|[ $(varE $ mkName "selectAll") ]|])) (varE $ mkName "xs")
+
+deleteDb :: String -> [DecQ]
+deleteDb tbl = [funD (mkName "delete") [clausem]]
+    where clausem = clause [varP (mkName "e"), (varP (mkName "xs"))]  (normalB $ trn $ appE (appE (conE (mkName "Delete")) table) (varE $ mkName "xs")) []
+            where table = appE (varE (mkName "table")) (stringE tbl)
+                  trn x = appE (appE (varE (mkName "transaction")) (varE (mkName "sqlExecute"))) x 
+
 
 saveDb :: String -> [DecQ]
 saveDb n = [funD (mkName "save") [clausem]]

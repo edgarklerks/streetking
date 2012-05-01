@@ -143,7 +143,7 @@ instance Expression Constraints where
  - Selection |== toSql (S.lookup "garage_id" g)
  - --}
 
-data Constraint = Constraint ConOp Selection Value | And Constraint Constraint | Or Constraint Constraint deriving Show
+data Constraint = Constraint ConOp Selection Value | And Constraint Constraint | Or Constraint Constraint  deriving Show
 
 (.&&) = And 
 (.||) = Or 
@@ -280,6 +280,19 @@ instance Expression Offset where
  -}
 
 data Select = Select Table Selections Constraints Orders Limit Offset
+
+data Delete = Delete Table Constraints 
+
+instance Expression Delete where 
+    sql (Delete tbl con) = concat $ intersperse " " $ [
+                "delete from", sql tbl,
+                "where", sql con,
+                ";"
+            ]
+    values (Delete tbl con) = concat $ [
+            values tbl, 
+            values con 
+        ]
 
 instance Expression Select where
     sql (Select tbl sel con ord lim ofs) = concat $ intersperse " " $ [
