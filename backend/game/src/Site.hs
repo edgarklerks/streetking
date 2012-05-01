@@ -294,7 +294,7 @@ carBuy = do
     xs <- getJson >>= scheck ["id"]
     let car = updateHashMap xs ( def :: CM.CarMarket)
     flup <- ps uid xs car 
-    writeResult "You succesfully bought the car"
+    writeResult ("You succesfully bought the car" :: String)
          where ps uid xs car =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                 cm <- load (fromJust $ CM.id car) :: SqlTransaction Connection (Maybe CM.CarMarket)
