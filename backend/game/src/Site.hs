@@ -304,7 +304,7 @@ carBuy = do
                 
                             -- save car to garage 
                 
-                            save ((def :: CarInstance.CarInstance) {
+                            cid <- save ((def :: CarInstance.CarInstance) {
                                          CarInstance.garage_id = fromJust $ G.id g,
                                          CarInstance.car_id = fromJust $ CM.id car 
                                     }) :: SqlTransaction Connection Integer
@@ -335,7 +335,7 @@ carBuy = do
                     
                                     save (def {
                                        PI.part_id = fromJust $ PM.id part,
-                                       PI.car_instance_id = CM.id car,
+                                       PI.car_instance_id = Just cid,
                                        PI.account_id = uid,
                                        PI.deleted = False 
                                     })
