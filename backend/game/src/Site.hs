@@ -295,60 +295,61 @@ carBuy = do
     let car = updateHashMap xs ( def :: CM.CarMarket)
     flup <- ps uid xs car 
     writeResult flup
- where ps uid xs car =  runDb $ do 
-        g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-        cm <- load (fromJust $ CM.id car) :: SqlTransaction Connection (Maybe CM.CarMarket)
-        case cm of 
-            Nothing -> rollback "No such car found"
-            Just car -> do 
+         where ps uid xs car =  runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                cm <- load (fromJust $ CM.id car) :: SqlTransaction Connection (Maybe CM.CarMarket)
+                case cm of 
+                        Nothing -> rollback "No such car found"
+                        Just car -> do  
                 
-                -- save car to garage 
+                            -- save car to garage 
                 
-                save ((def :: CarInstance.CarInstance) {
-                        CarInstance.garage_id = fromJust $ G.id g,
-                        CarInstance.car_id = fromJust $ CM.id car 
-                    }) :: SqlTransaction Connection Integer
+                            save ((def :: CarInstance.CarInstance) {
+                                         CarInstance.garage_id = fromJust $ G.id g,
+                                         CarInstance.car_id = fromJust $ CM.id car 
+                                    }) :: SqlTransaction Connection Integer
                 
-                -- sammeln stockr parts 
-                --
+                        -- sammeln stockr parts 
+                        --
 
-                pts <- search ["required" |== toSql True] [] 1000 0 :: SqlTransaction Connection [PT.PartType]
-                -- Part loader 
-                let step z i = do 
-                    p <- search [
-                            "part_type_id" |== toSql (PT.id i) .&&  
-                            "car_id" |== toSql (CM.id car) .&& 
-                            "level" |== toSql (CM.level car)
-                         ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
+                            pts <- search ["required" |== toSql True] [] 1000 0 :: SqlTransaction Connection [PT.PartType]
+                            -- Part loader 
+                            let step z i = do 
+                                    p <- search [
+                                        "part_type_id" |== toSql (PT.id i) .&&  
+                                        "car_id" |== toSql (CM.id car) .&& 
+                                        "level" |== toSql (CM.level car)
+                                     ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
 
-                    s <- search [
-                            "part_type_id" |== toSql (PT.id i) .&&  
-                            "car_id" |== SqlNull .&& 
-                            "level" |== toSql (CM.level car)
-                        ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
+                                    s <- search [
+                                        "part_type_id" |== toSql (PT.id i) .&&  
+                                        "car_id" |== SqlNull .&& 
+                                        "level" |== toSql (CM.level car)
+                                        ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
 
-                    let x = p ++ s
+                                    let x = p ++ s
 
-                    when (null x) $ rollback "No suitable stock type found"
+                                    when (null x) $ rollback "No suitable stock type found"
 
-                    let part = head x 
+                                    let part = head x 
                     
-                    save (def {
-                           PI.part_id = fromJust $ PM.id part,
-                           PI.car_instance_id = CM.id car,
-                           PI.account_id = uid,
-                           PI.deleted = False 
-                        })
+                                    save (def {
+                                       PI.part_id = fromJust $ PM.id part,
+                                       PI.car_instance_id = CM.id car,
+                                       PI.account_id = uid,
+                                       PI.deleted = False 
+                                    })
+                                    return (z + PM.price part)
 
-                final_price <- foldM step (CM.price car) pts  
+                            final_price <- foldM step (CM.price car) pts  
 
-                -- pay shit
-                transactionMoney uid (def {
-                        Transaction.amount = - abs(final_price + CM.price car),
-                        Transaction.type = "car_instance",
-                        Transaction.type_id = fromJust $ CM.id car
-                    })
-                return True
+                                    -- pay shit
+                            transactionMoney uid (def {
+                                    Transaction.amount = - abs(final_price),
+                                    Transaction.type = "car_instance",
+                                    Transaction.type_id = fromJust $ CM.id car
+                                })
+                            return True
 
 
 
@@ -362,10 +363,10 @@ marketPlaceBuy = do
             xs <- getJson >>= scheck ["id"] 
             let d = updateHashMap xs (def :: MP.MarketPlace)
             runDb $ do 
-                mm <- load (MP.id d) :: SqlTransaction Connection (Maybe MP.MarketPlace)
+                mm <- load (fromJust $ MP.id d) :: SqlTransaction Connection (Maybe MP.MarketPlace)
                 case mm of
-                    Nothing -> internalError "No such car"
-                    Just p -> 
+                    Nothing -> rollback "No such car"
+                    Just p -> return undefined  
 
 
 
