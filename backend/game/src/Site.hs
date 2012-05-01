@@ -429,6 +429,7 @@ marketReturn = do
                         a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
 
                         pi <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
+                        delete (undefined :: MI.MarketItem) ["part_instance_id" |== toSql (MP.id d)] 
                         save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
 
  
