@@ -164,8 +164,8 @@ marketPlace = do
            ((l, o), xs) <- getPagesWithDTD (
                     "car_id" +== "car_id" +&&  
                     "name" +== "part_type" +&& 
-                    "level" +>= "minlevel" +&& 
-                    "level" +<= "maxlevel" +&& 
+                    "level" +>= "min-level" +&& 
+                    "level" +<= "max-level" +&& 
                      ifdtd "me" (=="1") 
                                 ("account_id" +==| toSql uid) 
                                 ("account_id" +<>| toSql uid)
@@ -510,6 +510,7 @@ userAddSkill = do
                    save u'
                    return u' 
         writeMapable u'
+
 
 
 
