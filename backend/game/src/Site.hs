@@ -355,6 +355,19 @@ carBuy = do
                             return True
 
 
+carTrash :: Application ()
+carTrash = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    p uid xs 
+    
+         where p uid xs = runDb $ do 
+                let d = updateHashMap xs (def :: CIG.CarInGarage)
+                cig <- load (CIG.id d) :: SqlTransaction Connection (Maybe CIG.CarInGarage)
+                case cig of 
+                    Nothing -> rollback "no such car"
+                    Just car -> do 
+                        <
 
         
 
@@ -399,6 +412,25 @@ marketPlaceBuy = do
 
 
 
+marketReturn :: Application ()
+marketReturn = do 
+        uid <- getUserId
+        xs <- getJson
+        let d = updateHashMap xs (def :: MP.MarketPlace)
+        p uid d 
+        writeResult True 
+    
+    where p uid d = runDb $ do 
+                mm <- load (fromJust $ MP.id d) :: SqlTransaction Connection (Maybe MP.MarketPlace)
+                case mm of 
+                    Nothing -> rollback "No such return"
+                    Just p -> do
+                        a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
+
+                        pi <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
+                        save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
+
+ 
 
 
 transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
@@ -407,7 +439,8 @@ transactionMoney uid tr' =   do
                             let tr = tr' {Transaction.time = tpsx }
                             a <- load uid :: SqlTransaction Connection (Maybe A.Account)
                             case a of 
-                                Nothing -> rollback "tri tho serch yer paspoht suplieh bette, friennd"
+                ,
+                Nothing -> rollback "tri tho serch yer paspoht suplieh bette, friennd"
                                 Just a -> do 
 
                                     when (A.money a + Transaction.amount tr < 0) $ rollback "You don' tno thgave eninh monye, brotther"
@@ -525,8 +558,6 @@ userAddSkill = do
         writeMapable u'
 
 
-
-
 -- | The main entry point handler.
 site :: Application ()
 site = CIO.catch (CIO.catch (route [ 
@@ -541,7 +572,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/model", marketModel),
                 ("/Market/buy", marketBuy),
                 ("/Market/sell", marketSell),
-                ("/Market/return", ni),
+                ("/Market/return", marketReturn),
                 ("/Market/parts", marketParts),
                 ("/Garage/car", garageCar),
                 ("/Car/model", loadModel),
