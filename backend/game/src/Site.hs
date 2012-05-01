@@ -323,7 +323,7 @@ carBuy = do
 
                                     s <- search [
                                         "part_type_id" |== toSql (PT.id i) .&&  
-                                        "car_id" |== SqlNull .&& 
+                                        "car_id" |== toSql 0 .&& 
                                         "level" |<= toSql (CM.level car)
                                         ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
 
