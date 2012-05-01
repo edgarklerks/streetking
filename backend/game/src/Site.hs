@@ -481,7 +481,7 @@ garageCar :: Application ()
 garageCar = do 
         (l,o) <- getPages  
         uid <- getUserId 
-        ps <- runDb $ search ["id" |== (toSql uid)] [] l o :: Application [CIG.CarInGarage]
+        ps <- runDb $ search ["account_id" |== (toSql uid)] [] l o :: Application [CIG.CarInGarage]
         writeMapables ps
 
 loadModel :: Application ()
