@@ -362,7 +362,7 @@ marketPlaceBuy = do
             uid <- getUserId
             xs <- getJson >>= scheck ["id"] 
             let d = updateHashMap xs (def :: MP.MarketPlace)
-            runDb $ do 
+            let p = runDb $ do 
                 mm <- load (fromJust $ MP.id d) :: SqlTransaction Connection (Maybe MP.MarketPlace)
                 case mm of
                     Nothing -> rollback "No such item"
@@ -391,6 +391,8 @@ marketPlaceBuy = do
                                 Transaction.type = "market_place_sell",
                                 Transaction.type_id = fromJust $ MP.id d
                             })
+            p
+            writeResult True 
 
 
 
