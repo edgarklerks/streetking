@@ -360,10 +360,11 @@ carTrash = do
     uid <- getUserId 
     xs <- getJson >>= scheck ["id"]
     p uid xs 
+    writeResult True
     
          where p uid xs = runDb $ do 
                 let d = updateHashMap xs (def :: CIG.CarInGarage)
-                cig <- load (CIG.id d) :: SqlTransaction Connection (Maybe CIG.CarInGarage)
+                cig <- load (fromJust $ CIG.id d) :: SqlTransaction Connection (Maybe CIG.CarInGarage)
                 case cig of 
                     Nothing -> rollback "no such car"
                     Just car -> do 
@@ -419,6 +420,7 @@ marketReturn = do
         p uid d 
         writeResult True 
     
+    
     where p uid d = runDb $ do 
                 mm <- load (fromJust $ MP.id d) :: SqlTransaction Connection (Maybe MP.MarketPlace)
                 case mm of 
@@ -438,8 +440,8 @@ transactionMoney uid tr' =   do
                             let tr = tr' {Transaction.time = tpsx }
                             a <- load uid :: SqlTransaction Connection (Maybe A.Account)
                             case a of 
-                ,
-                Nothing -> rollback "tri tho serch yer paspoht suplieh bette, friennd"
+               
+                                Nothing -> rollback "tri tho serch yer paspoht suplieh bette, friennd"
                                 Just a -> do 
 
                                     when (A.money a + Transaction.amount tr < 0) $ rollback "You don' tno thgave eninh monye, brotther"
