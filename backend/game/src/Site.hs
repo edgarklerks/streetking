@@ -329,7 +329,7 @@ carBuy = do
 
                                     let x = p ++ s
 
-                                    when (null x) $ rollback "No suitable stock type found"
+                                    when (null x) $ rollback $ "No suitable stock type found for: " ++ PT.name
 
                                     let part = head x 
                     
