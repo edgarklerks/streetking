@@ -454,7 +454,12 @@ marketParts = do
    uid <- getUserId
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
    ((l, o), xs) <- getPagesWithDTD (
-            "car_id" +== "car_id" +&& "name" +== "part_type" 
+            "car_id" +== "car_id" +&& "name" +== "part_type" +&&  
+            "level" +<= "level-max" +&& "level" +>= "level-min" +&&
+            "price" +>= "price-min" +&&
+            "price" +<= "price-max" 
+
+
             )
    ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [PM.PartMarket]
    writeMapables ns  
@@ -462,7 +467,12 @@ marketParts = do
 garageParts :: Application ()
 garageParts = do 
         uid <- getUserId 
-        ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" +&& "part_instance_id" +== "part_instance_id" +&& "level" +<= "level-max" +&& "level" +>= "level-min")
+        ((l, o), xs) <- getPagesWithDTD ("car_id" +== "car_id" +&& "name" +== "part_type" +&& "part_instance_id" +== "part_instance_id" 
+        +&& "level" +<= "level-max" +&& "level" +>= "level-min" +&&
+        "price" +>= "price-min" +&&
+        "price" +<= "price-max" 
+
+        )
         ns <- runDb (search ( ("account_id" |== (toSql uid)) : xs) [] l o) :: Application [GPT.GaragePart]
         writeMapables ns
 
