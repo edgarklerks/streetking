@@ -376,7 +376,7 @@ marketPlaceBuy = do
                         -- reassign part_instance to new garage_id 
 
                         pi <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
-                        save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing})
+                        save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
 
                         -- remove money 
                         --
