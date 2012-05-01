@@ -371,7 +371,7 @@ marketPlaceBuy = do
 
                         -- remove market_part where part_instance_id =  part_instance_id 
                         --
-                        delete (undefined :: MP.MarketPlace) ["id" |== toSql (MP.id d)] 
+                        delete (undefined :: MI.MarketItem) ["part_instance_id" |== toSql (MP.id d)] 
 
                         -- reassign part_instance to new garage_id 
 
