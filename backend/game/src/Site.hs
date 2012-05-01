@@ -164,8 +164,8 @@ marketPlace = do
            ((l, o), xs) <- getPagesWithDTD (
                     "car_id" +== "car_id" +&&  
                     "name" +== "part_type" +&& 
-                    "level" +>= "min-level" +&& 
-                    "level" +<= "max-level" +&& 
+                    "level" +>= "level-min" +&& 
+                    "level" +<= "level-max" +&& 
                      ifdtd "me" (=="1") 
                                 ("account_id" +==| toSql uid) 
                                 ("account_id" +<>| toSql uid)
