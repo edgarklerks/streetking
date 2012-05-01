@@ -293,8 +293,9 @@ carBuy = do
     uid <- getUserId 
     xs <- getJson >>= scheck ["id"]
     let car = updateHashMap xs ( def :: CM.CarMarket)
-
-    runDb $ do 
+    flup <- ps uid xs car 
+    writeResult flup
+ where ps uid xs car =  runDb $ do 
         g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
         cm <- load (fromJust $ CM.id car) :: SqlTransaction Connection (Maybe CM.CarMarket)
         case cm of 
@@ -347,6 +348,7 @@ carBuy = do
                         Transaction.type = "car_instance",
                         Transaction.type_id = fromJust $ CM.id car
                     })
+                return True
 
 
 
@@ -357,7 +359,16 @@ carBuy = do
 marketPlaceBuy :: Application ()
 marketPlaceBuy = do 
             uid <- getUserId
-            return undefined
+            xs <- getJson >>= scheck ["id"] 
+            let d = updateHashMap xs (def :: MP.MarketPlace)
+            runDb $ do 
+                mm <- load (MP.id d) :: SqlTransaction Connection (Maybe MP.MarketPlace)
+                case mm of
+                    Nothing -> internalError "No such car"
+                    Just p -> 
+
+
+
 
 
 transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
