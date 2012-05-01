@@ -166,6 +166,9 @@ marketPlace = do
                     "name" +== "part_type" +&& 
                     "level" +>= "level-min" +&& 
                     "level" +<= "level-max" +&& 
+                    "price" +>= "price-min" +&&
+                    "price" +<= "price-max" +&&
+
                      ifdtd "me" (=="1") 
                                 ("account_id" +==| toSql uid) 
                                 ("account_id" +<>| toSql uid)
