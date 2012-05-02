@@ -356,12 +356,27 @@ carBuy = do
                             return True
 
 
+carSell :: Application ()
+carSell = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["car_instance_id", "price"]
+    let d = updateHashMap xs (def :: MI.MarketItem)
+    p uid d 
+ where p uid d = runDb $ do
+                cig <- load (fromJust $ MI.car_instance_id d) :: SqlTransaction Connection (Maybe CIG.CarInGarage)
+                case cig of 
+                    Nothing -> rollback "no such car"
+                    Just car -> undefined 
+                         
+        
+
+
 carTrash :: Application ()
 carTrash = do 
     uid <- getUserId 
     xs <- getJson >>= scheck ["id"]
     p uid xs 
-    writeResult ("You sold your car succefully to the scrap heap" :: String)
+    writeResult ("You sold your car succesfully to the scrap heap" :: String)
     
          where p uid xs = runDb $ do 
                 let d = updateHashMap xs (def :: CIG.CarInGarage)
@@ -473,9 +488,12 @@ transactionMoney uid tr' =   do
 
 carParts :: Application ()
 carParts = do 
-    xs <- getJson >>= scheck ["car_instance_id"]
-    let d = updateHashMap xs (def :: CIP.CarInstanceParts)
-    ns <- runDb $ search ["car_instance_id" |== toSql (CIP.car_instance_id d)] [] 100 0 :: Application [CIP.CarInstanceParts]
+    uid <- getUserId
+    ((l,o),xs) <- getPagesWithDTD (
+        "car_instance_id" +== "car_instance_id" +&& 
+        "part_instance_id" +== "part_instance_id" +&&
+        "account_id" +==| (toSql uid))
+    ns <- runDb $ search xs [] l o :: Application [CIP.CarInstanceParts]
     writeMapables ns
 
 
