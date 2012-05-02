@@ -419,18 +419,19 @@ marketReturn = do
         let d = updateHashMap xs (def :: MP.MarketPlace)
         p uid d 
         writeResult True 
-    
+        -- check also on  account_id 
     
     where p uid d = runDb $ do 
-                mm <- load (fromJust $ MP.id d) :: SqlTransaction Connection (Maybe MP.MarketPlace)
-                case mm of 
-                    Nothing -> rollback "No such return"
-                    Just p -> do
-                        a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
+                mm <- search [ "id" |== toSql (MP.id d) .&& "account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [MP.MarketPlace]
 
-                        pi <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
-                        delete (undefined :: MI.MarketItem) ["part_instance_id" |== toSql (MP.id d)] 
-                        save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
+                when (null mm) $ rollback "no such return"
+                a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
+
+                pit <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
+
+                delete (undefined :: MI.MarketItem) ["part_instance_id" |== toSql (MP.id d)] 
+
+                save (pit {PI.garage_id = G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
 
  
 
