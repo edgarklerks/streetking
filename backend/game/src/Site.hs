@@ -369,7 +369,20 @@ carTrash = do
                 case cig of 
                     Nothing -> rollback "no such car"
                     Just car -> do 
-                        return undefined 
+                        
+                        ci <- fromJust <$> load (fromJust $ CIG.id car) :: SqlTransaction Connection CarInstance.CarInstance 
+
+                        xs <- search [ "car_instance_id" |== toSql (CarInstance.id ci) ] [] 1000 0 :: SqlTransaction Connection [PI.PartInstance] 
+
+                        forM_ xs $ \i -> save (i { PI.deleted = True }) 
+                        save (ci { CarInstance.deleted = True }) 
+
+                        transactionMoney uid (def {
+                                Transaction.amount = abs (CIG.total_price  car),
+                                Transaction.type = "car_in_garage_trash",
+                                Transaction.type_id = fromJust $ CIG.id car
+                            })
+
         
 
         
@@ -522,9 +535,9 @@ garageParts = do
            
 garageCar :: Application ()
 garageCar = do 
-        (l,o) <- getPages  
         uid <- getUserId 
-        ps <- runDb $ search ["account_id" |== (toSql uid)] [] l o :: Application [CIG.CarInGarage]
+        ((l,o), xs) <- getPagesWithDTD ("car_instance_id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
+        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         writeMapables ps
 
 loadModel :: Application ()
@@ -586,6 +599,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/parts", marketParts),
                 ("/Garage/car", garageCar),
                 ("/Car/model", loadModel),
+                ("/Car/trash", carTrash),
                 ("/Game/template", loadTemplate),
                 ("/Game/tree", loadMenu),
                 ("/Garage/parts", garageParts),
