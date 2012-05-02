@@ -361,7 +361,7 @@ carTrash = do
     uid <- getUserId 
     xs <- getJson >>= scheck ["id"]
     p uid xs 
-    writeResult True
+    writeResult ("You sold your car succefully to the scrap heap" :: String)
     
          where p uid xs = runDb $ do 
                 let d = updateHashMap xs (def :: CIG.CarInGarage)
@@ -422,7 +422,7 @@ marketPlaceBuy = do
                                 Transaction.type_id = fromJust $ MP.id d
                             })
             p
-            writeResult True 
+            writeResult ("You bought the part" :: String) 
 
 
 
