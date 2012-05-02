@@ -510,8 +510,10 @@ marketParts = do
    uid <- getUserId
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
    ((l, o), xs) <- getPagesWithDTD (
-            "car_id" +== "car_id" +&& "name" +== "part_type" +&&  
-            "level" +<= "level-max" +&& "level" +>= "level-min" +&&
+            "car_id" +== "car_id" +&& 
+            "name" +== "part_type" +&&  
+            "level" +<= "level-max" +&& 
+            "level" +>= "level-min" +&&
             "price" +>= "price-min" +&&
             "price" +<= "price-max" 
             )

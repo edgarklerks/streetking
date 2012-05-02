@@ -39,7 +39,6 @@ import           Control.Applicative
 import           Data.Typeable
 import qualified Data.ConnectionPool as DCP 
 import qualified Data.ByteString.Lazy.Char8 as L
-import           Model.General (Database(..), Mapable(..))
 import           Data.TimedMap
 import           Data.DChan 
 import           Control.Concurrent
@@ -159,6 +158,7 @@ getPagesWithDTD d = do
         let b = S.lookupDefault (DB.SqlInteger 100) "limit" xs
         let o = S.lookupDefault (DB.SqlInteger 0) "offset" xs 
         return ((DB.fromSql b, DB.fromSql o),(dtd d $ convert xs ))
+
 ------------------------------------------------------------------------------
 -- | The 'Initializer' for ApplicationState. For more on 'Initializer's, see
 -- the documentation from the snap package. Briefly, this is used to
