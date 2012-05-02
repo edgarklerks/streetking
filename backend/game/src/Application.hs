@@ -61,6 +61,7 @@ import qualified Data.Digest.TigerHash as H
 import qualified Data.Digest.TigerHash.ByteString as H
 import           Data.Monoid
 import           Debug.Trace
+import           Model.General (Mapable(..), Default(..), Database(..))
 ------------------------------------------------------------------------------
 -- | 'Application' is our application's monad. It uses 'SnapExtend' from
 -- 'Snap.Extension' to provide us with an extended 'MonadSnap' making use of
