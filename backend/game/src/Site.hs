@@ -46,6 +46,7 @@ import qualified Model.GarageParts as GPT
 import qualified Model.Config as CFG 
 import qualified Model.MarketPlace as MP
 import qualified Model.PartType as PT 
+import qualified Model.CarInstanceParts as CIP
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -174,7 +175,7 @@ marketPlace = do
                                 ("account_id" +<>| toSql uid)
                     
                     )
-           ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [MP.MarketPlace]
+           ns <- runDb (search ( ("level" |<= (toSql $ A.level puser + 2)) : xs) [] l o) :: Application [MP.MarketPlace]
            writeMapables ns
 
 
@@ -457,6 +458,12 @@ transactionMoney uid tr' =   do
 
 
 
+carParts :: Application ()
+carParts = do 
+    xs <- getJson >>= scheck ["car_instance_id"]
+    let d = updateHashMap xs (def :: CIP.CarInstanceParts)
+    ns <- runDb $ search ["car_instance_id" |== toSql (CIP.car_instance_id d)] [] 100 0 :: Application [CIP.CarInstanceParts]
+    writeMapables ns
 
 
 marketTrash :: Application ()
