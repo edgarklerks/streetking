@@ -530,7 +530,7 @@ garageParts = do
             "price" +>= "price-min" +&&
             "price" +<= "price-max" +&& 
 
-                ifdtd "anycar" (const)
+                ifdtd "anycar" (=="1")
                     ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
                     ("car_id" +== "car_id") +&&
                     
