@@ -491,8 +491,7 @@ carParts = do
     uid <- getUserId
     ((l,o),xs) <- getPagesWithDTD (
         "car_instance_id" +== "car_instance_id" +&& 
-        "part_instance_id" +== "part_instance_id" +&&
-        "account_id" +==| (toSql uid))
+        "part_instance_id" +== "part_instance_id" 
     ns <- runDb $ search xs [] l o :: Application [CIP.CarInstanceParts]
     writeMapables ns
 
