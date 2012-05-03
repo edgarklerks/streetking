@@ -41,7 +41,8 @@ $(genAllId "CarInstanceParts" "car_instance_parts" "car_instance_id"
         ("part_modifier", ''MString),
         ("unique", ''Bool),
         ("sort_part_type", ''Integer),
-        ("new_price", ''Integer)
+        ("new_price", ''Integer),
+        ("account_id", ''MInteger)
 
     ])
 
