@@ -377,10 +377,10 @@ carMarketBuy = do
              - 3. Add car to account 
              - --} 
 
-             mi <- load (fromJust $ MI.id d) :: SqlTransaction Connection (Maybe MI.MarketItem)
+             mi <- search  [ "car_instance_id" |== toSql MI.car_instance_id d] [] 1 0 :: SqlTransaction Connection [MI.MarketItem]
              case mi of 
-                Nothing -> rollback "no such car"
-                Just car -> do 
+                [] -> rollback "no such car"
+                [car] -> do 
                     transactionMoney uid (def { 
                                 Transaction.amount = - abs(MI.price car),
                                 Transaction.type = "garage_car_buy",
