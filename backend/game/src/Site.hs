@@ -664,9 +664,10 @@ marketParts = do
             "level" +<= "level-max" +&& 
             "level" +>= "level-min" +&&
             "price" +>= "price-min" +&&
-            "price" +<= "price-max" 
+            "price" +<= "price-max" +&&
+            "level" +<=| (toSql $ A.level puser)
             )
-   ns <- runDb (search ( ("level" |<= (toSql $ A.level puser )) : xs) [] l o) :: Application [PM.PartMarket]
+   ns <- runDb (search xs [] l o) :: Application [PM.PartMarket]
    writeMapables ns  
 
 garageParts :: Application ()
@@ -744,12 +745,34 @@ userAddSkill = do
 removePart :: Application ()
 removePart = do 
     uid <- getUserId 
-    xs <- getJson >>= scheck ["part_instance_id", "car_instance_id"]
+    xs <- getJson >>= scheck ["id"]
     let d = updateHashMap xs (def :: PI.PartInstance)
     p uid d 
-    writeResult ("you removed the part" :: String)
+    writeResult ("You removed the part." :: String)
  where p uid d = runDb $ do 
-        return undefined 
+        -- move part from car_instance_id to garage_id 
+        pl <- load (fromJust $ PI.id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
+        case pl of 
+            Nothing -> rollback "No such part"
+            Just x -> do 
+               g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+               save (x { PI.garage_id = G.id g, PI.car_instance_id = Nothing })
+
+addPart :: Application ()
+addPart = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id", "car_instance_id"]
+    let d = updateHashMap xs (def :: PI.PartInstance)
+    p uid d
+    writeResult ("You added the part" :: String)
+ where p uid d = runDb $ do 
+        pl <- load (fromJust $ PI.id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
+        case pl of 
+            Nothing -> rollback "No such part"
+            Just x -> do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
+                when (isJust (PI.car_instance_id x)) $ rollback "part already in car"
+                save (x {PI.garage_id = Nothing, PI.car_instance_id = PI.id d }) 
 
 
 
