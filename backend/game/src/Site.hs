@@ -637,6 +637,7 @@ marketTrash = do
 marketCars :: Application ()
 marketCars = do 
     uid <- getUserId 
+    puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
     ((l,o), xs) <- getPagesWithDTD (
                 "car_instance_id" +== "car_instance_id" +&&
                 "level" +<= "level-max" +&&
@@ -645,7 +646,9 @@ marketCars = do
                 "price" +<= "price-max" +&&
                      ifdtd "me" (=="1") 
                                 ("account_id" +==| toSql uid) 
-                                ("account_id" +<>| toSql uid)
+                                ("account_id" +<>| toSql uid +&& 
+                                    "level" +<=| (toSql $ A.level puser)
+                                    )
                     )
     ns <- runDb $ search xs [] l o :: Application [MPC.MarketPlaceCar]
     writeMapables ns 
