@@ -377,7 +377,7 @@ carMarketBuy = do
              - 3. Add car to account 
              - --} 
 
-             mi <- search  [ "car_instance_id" |== toSql MI.car_instance_id d] [] 1 0 :: SqlTransaction Connection [MI.MarketItem]
+             mi <- search  [ "car_instance_id" |== toSql (MI.car_instance_id d)] [] 1 0 :: SqlTransaction Connection [MI.MarketItem]
              case mi of 
                 [] -> rollback "no such car"
                 [car] -> do 
