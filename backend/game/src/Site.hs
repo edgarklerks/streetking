@@ -775,7 +775,7 @@ addPart = do
                 p <- search ["part_instance_id" |== toSql (MI.part_instance_id d)] [] 1 0 :: SqlTransaction Connection [GPT.GaragePart]
                 case p of 
                     [] -> rollback "impossubru happended" *>
-                            liftIO $ print p
+                            liftIO (print p)
                     [p] -> do 
                         xs <- search ["part_type_id" |== toSql (GPT.part_type_id p) .&& "car_instance_id" |== toSql (PI.car_instance_id x)] [] 1 0 :: SqlTransaction Connection [CIP.CarInstanceParts]
                         liftIO $ print p
