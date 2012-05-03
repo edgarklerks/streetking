@@ -745,13 +745,13 @@ userAddSkill = do
 removePart :: Application ()
 removePart = do 
     uid <- getUserId 
-    xs <- getJson >>= scheck ["id"]
-    let d = updateHashMap xs (def :: PI.PartInstance)
+    xs <- getJson >>= scheck ["part_instance_id"]
+    let d = updateHashMap xs (def :: MI.MarketItem)
     p uid d 
     writeResult ("You removed the part." :: String)
  where p uid d = runDb $ do 
         -- move part from car_instance_id to garage_id 
-        pl <- load (fromJust $ PI.id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
+        pl <- load (fromJust $ MI.part_instance_id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
         case pl of 
             Nothing -> rollback "No such part"
             Just x -> do 
@@ -761,18 +761,18 @@ removePart = do
 addPart :: Application ()
 addPart = do 
     uid <- getUserId 
-    xs <- getJson >>= scheck ["id", "car_instance_id"]
-    let d = updateHashMap xs (def :: PI.PartInstance)
+    xs <- getJson >>= scheck ["part_instance_id", "car_instance_id"]
+    let d = updateHashMap xs (def :: MI.MarketItem)
     p uid d
     writeResult ("You added the part" :: String)
  where p uid d = runDb $ do 
-        pl <- load (fromJust $ PI.id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
+        pl <- load (fromJust $ MI.part_instance_id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
         case pl of 
             Nothing -> rollback "No such part"
             Just x -> do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
                 when (isJust (PI.car_instance_id x)) $ rollback "part already in car"
-                save (x {PI.garage_id = Nothing, PI.car_instance_id = PI.id d }) 
+                save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.part_instance_id d }) 
 
 
 
