@@ -772,12 +772,11 @@ addPart = do
         case pl of 
             Nothing -> rollback "No such part"
             Just x -> do 
-            -- p
                 p <- search ["part_instance_id" |== toSql (MI.part_instance_id d)] [] 1 0 :: SqlTransaction Connection [GPT.GaragePart]
                 case p of 
                     [] -> rollback "impossubru happended"
                     [p] -> do 
-                        xs <- search ["part_type_id" |== toSql (GPT.part_type_id p) .&& "car_instance_id" |== toSql (PI.car_instance_id x)] [] 1 0 :: SqlTransaction Connection [CIP.CarInstanceParts] 
+                        xs <- search ["part_type_id" |== toSql (GPT.part_type_id p) .&& "car_instance_id" |== toSql (PI.car_instance_id x)] [] 1 0 :: SqlTransaction Connection [CIP.CarInstanceParts]
                         when (not $ null xs) $ rollback "already in car"
 
                         g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
