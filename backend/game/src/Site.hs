@@ -787,8 +787,9 @@ addPart = do
                                 save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
                                 return ()
                             [s] -> do 
+                                pl <- fromJust <$> load (fromJust $ CIP.part_instance_id s) :: SqlTransaction Connection (PI.PartInstance)
                                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
-                                save (s {PI.garage_id = G.id g, PI.car_instance_id = Nothing})
+                                save (pl {PI.garage_id = G.id g, PI.car_instance_id = Nothing})
                                 save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
 
 
