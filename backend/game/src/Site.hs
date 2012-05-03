@@ -774,7 +774,7 @@ addPart = do
             Just x -> do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
                 when (isJust (PI.car_instance_id x)) $ rollback "part already in car"
-                save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.part_instance_id d }) 
+                save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.cart_instance_id d }) 
 
 
 
