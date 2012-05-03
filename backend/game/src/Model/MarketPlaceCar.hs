@@ -27,5 +27,6 @@ $(genAllId "MarketPlaceCar" "market_place_car" "car_instance_id" [
         ("weight", ''Integer),
         ("manufacturer_name", ''String),
         ("level", ''Integer),
-        ("year", ''Integer)
+        ("year", ''Integer),
+        ("account_id", ''Integer)
     ])
