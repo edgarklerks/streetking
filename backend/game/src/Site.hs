@@ -583,7 +583,6 @@ marketCars :: Application ()
 marketCars = do 
     uid <- getUserId 
     ((l,o), xs) <- getPagesWithDTD (
-                "car_id" +== "car_id" +&&
                 "level" +<= "level-max" +&&
                 "level" +>= "level-min" +&&
                 "price" +>= "price-min" +&&
