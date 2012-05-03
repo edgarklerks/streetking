@@ -809,6 +809,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Car/parts", carParts),
                 ("/Car/sell", carSell),
                 ("/Market/returnCar", carReturn),
-                ("/Market/carParts", marketCarParts)
+                ("/Market/carParts", marketCarParts),
+                ("/Garage/addPart", addPart),
+                ("/Garage/removePart", removePart)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
