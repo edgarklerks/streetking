@@ -342,6 +342,27 @@ carBuy = do
                             return True
 
 
+carReturn :: Application ()
+carReturn = do 
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["car_instance_id"]
+        let d = updateHashMap xs (def :: MI.MarketItem)
+        p uid d
+        writeResult ("You're car is returned to your garage" :: String)
+    where p uid d = runDb $ do 
+                    car <- search ["account_id" |== toSql uid .&& "car_instance_id" |== toSql (MI.car_instance_id d)] [] 1 0 :: SqlTransaction Connection [MI.MarketItem] 
+                    case car of 
+                        [] -> rollback "No such market item"
+                        [car] -> do 
+                            c <- fromJust <$> load (fromJust $ MI.car_instance_id car ) :: SqlTransaction Connection (CarInstance.CarInstance)
+                            g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                            -- Move to garage  
+                            save (c {CarInstance.garage_id = G.id g})
+                            -- Remove from market place 
+                            delete car ["id" |== toSql (MI.id car)]
+
+
+
 carMarketBuy :: Application ()
 carMarketBuy = do 
         uid <- getUserId 
@@ -713,6 +734,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/buySecond", marketPlaceBuy),
                 ("/Car/buy", carBuy),
                 ("/Car/parts", carParts),
-                ("/Car/sell", carSell)
+                ("/Car/sell", carSell),
+                ("/Car/return", carReturn)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
