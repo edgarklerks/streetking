@@ -288,7 +288,7 @@ marketSell = do
                     -- write it away in transaction log 
                     transactionMoney uid (def { 
                             Transaction.amount = -(abs fee), 
-                            Transaction.type = "garage_sell",
+                            Transaction.type = "garage_part_on_market",
                             Transaction.type_id = fromJust $ MI.part_instance_id d
                         })
 
@@ -356,6 +356,48 @@ carBuy = do
                             return True
 
 
+carMarketBuy :: Application ()
+carMarketBuy = do 
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["car_instance_id"]
+        let d = updateHashMap xs (def :: MI.MarketItem)
+        p uid d 
+        writeResult ("Your bought a car on the market" :: String)
+    where  p uid d = runDb $ do 
+            {-- 
+             - 1. Add money 
+             - 2. Remove car from market 
+             - 3. Add car to account 
+             - --} 
+
+             mi <- load (fromJust $ MI.id d) :: SqlTransaction Connection (Maybe MI.MarketItem)
+             case mi of 
+                Nothing -> rollback "no such car"
+                Just car -> do 
+                    transactionMoney uid (def { 
+                                Transaction.amount = - abs(MI.price car),
+                                Transaction.type = "garage_car_buy",
+                                Transaction.type_id = fromJust $ MI.car_instance_id car
+                        })
+                    transactionMoney (MI.account_id car) (def {
+                            Transaction.amount = abs(MI.price car),
+                            Transaction.type = "garage_car_sell",
+                            Transaction.type_id = fromJust $ MI.car_instance_id car 
+                        })
+
+                    -- Remove car from market 
+                    delete car ["id" |== toSql (MI.id car)] 
+
+                    -- Move car to new garage 
+                    c <- fromJust <$> load (fromJust $ MI.car_instance_id d) :: SqlTransaction Connection (CarInstance.CarInstance)
+                    g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
+                    save (c { CarInstance.garage_id = G.id g })
+
+
+
+
+
+
 carSell :: Application ()
 carSell = do 
     uid <- getUserId 
@@ -374,28 +416,29 @@ carSell = do
                     Nothing -> rollback "no such car"
                     Just car -> do 
                     {-- 
-                     - 1. Add car to market 
-                     - 2. Remove car from garage
-                     - 3. Substract fee 
+                     - 1. Substract fee 
+                     - 2. Add car to market 
+                     - 3. Remove car from garage
                      --}
-                     
+                        transactionMoney uid (def {
+                                Transaction.amount = - abs(fee),
+                                Transaction.type = "garage_car_on_market",
+                                Transaction.type_id = fromJust $ CIG.id car
+                            })
+
+   
                      -- 1. Add car to market 
                         save (def {
                                MI.car_instance_id =  CIG.id car,
                                MI.price = MI.price d,
                                MI.account_id = uid 
                             } :: MI.MarketItem)
+
                      -- 2. Remove car from garage 
                         x <- fromJust <$> load (fromJust $ CIG.id car) :: SqlTransaction Connection CarInstance.CarInstance
                         save (x { CarInstance.garage_id = Nothing })
                         
-                        transactionMoney uid (def {
-                                Transaction.amount = - abs(fee),
-                                Transaction.type = "garage_car_sell",
-                                Transaction.type_id = fromJust $ CIG.id car
-                            })
-
-                        
+                                         
                         
                          
         
@@ -415,6 +458,13 @@ carTrash = do
                     Nothing -> rollback "no such car"
                     Just car -> do 
                         
+                        transactionMoney uid (def {
+                                Transaction.amount = abs (CIG.total_price  car),
+                                Transaction.type = "car_in_garage_trash",
+                                Transaction.type_id = fromJust $ CIG.id car
+                            })
+
+
                         ci <- fromJust <$> load (fromJust $ CIG.id car) :: SqlTransaction Connection CarInstance.CarInstance 
 
                         xs <- search [ "car_instance_id" |== toSql (CarInstance.id ci) ] [] 1000 0 :: SqlTransaction Connection [PI.PartInstance] 
@@ -422,13 +472,7 @@ carTrash = do
                         forM_ xs $ \i -> save (i { PI.deleted = True }) 
                         save (ci { CarInstance.deleted = True }) 
 
-                        transactionMoney uid (def {
-                                Transaction.amount = abs (CIG.total_price  car),
-                                Transaction.type = "car_in_garage_trash",
-                                Transaction.type_id = fromJust $ CIG.id car
-                            })
-
-        
+                                
 
         
 
@@ -442,17 +486,6 @@ marketPlaceBuy = do
                 case mm of
                     Nothing -> rollback "No such item"
                     Just p -> do
-                        a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
-
-                        -- remove market_part where part_instance_id =  part_instance_id 
-                        --
-                        delete (undefined :: MI.MarketItem) ["part_instance_id" |== toSql (MP.id d)] 
-
-                        -- reassign part_instance to new garage_id 
-
-                        pi <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
-                        save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
-
                         -- remove money 
                         --
                         transactionMoney uid (def {
@@ -466,7 +499,18 @@ marketPlaceBuy = do
                                 Transaction.type = "market_place_sell",
                                 Transaction.type_id = fromJust $ MP.id d
                             })
-            p
+
+                        a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
+
+                        -- remove market_part where part_instance_id =  part_instance_id 
+                        --
+                        delete (undefined :: MI.MarketItem) ["part_instance_id" |== toSql (MP.id d)] 
+
+                        -- reassign part_instance to new garage_id 
+
+                        pi <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
+                        save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
+
             writeResult ("You bought the part" :: String) 
 
 
@@ -653,6 +697,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/sell", marketSell),
                 ("/Market/return", marketReturn),
                 ("/Market/parts", marketParts),
+                ("/Market/buyCar", carMarketBuy),
                 ("/Garage/car", garageCar),
                 ("/Car/model", loadModel),
                 ("/Car/trash", carTrash),
@@ -664,6 +709,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/trash", marketTrash),
                 ("/Market/buySecond", marketPlaceBuy),
                 ("/Car/buy", carBuy),
-                ("/Car/parts", carParts)
+                ("/Car/parts", carParts),
+                ("/Car/sell", carSell)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
