@@ -47,6 +47,7 @@ import qualified Model.Config as CFG
 import qualified Model.MarketPlace as MP
 import qualified Model.PartType as PT 
 import qualified Model.CarInstanceParts as CIP
+import qualified Model.CarStockParts as CSP
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -316,40 +317,24 @@ carBuy = do
                         -- sammeln stockr parts 
                         --
 
-                            pts <- search ["required" |== toSql True] [] 1000 0 :: SqlTransaction Connection [PT.PartType]
                             -- Part loader 
-                            let step z i = do 
-                                    p <- search [
-                                        "part_type_id" |== toSql (PT.id i) .&&  
-                                        "car_id" |== toSql (CM.id car) .&& 
-                                        "level" |<= toSql (CM.level car)
-                                     ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
+                            pts <- search ["car_id" |== (toSql $ CM.id car)] [] 1000 0 :: SqlTransaction Connection [CSP.CarStockPart]
 
-                                    s <- search [
-                                        "part_type_id" |== toSql (PT.id i) .&&  
-                                        "car_id" |== SqlInteger 0 .&& 
-                                        "level" |<= toSql (CM.level car)
-                                        ] [] 1 0 :: SqlTransaction Connection [PM.PartMarket] 
 
-                                    let x = p ++ s
-
-                                    when (null x) $ rollback $ "No suitable stock type found for: " ++ PT.name i
-
-                                    let part = head x 
-                    
+                            let step z part = do 
                                     save (def {
-                                       PI.part_id = fromJust $ PM.id part,
+                                       PI.part_id = fromJust $ CSP.id part,
                                        PI.car_instance_id = Just cid,
                                        PI.account_id = uid,
                                        PI.deleted = False 
                                     })
-                                    return (z + PM.price part)
+                                    return ()
 
-                            final_price <- foldM step (CM.price car) pts  
+                            foldM_ step () pts  
 
                                     -- pay shit
                             transactionMoney uid (def {
-                                    Transaction.amount = - abs(final_price),
+                                    Transaction.amount = - abs(CM.price car),
                                     Transaction.type = "car_instance",
                                     Transaction.type_id = fromJust $ CM.id car
                                 })
@@ -592,6 +577,22 @@ marketTrash = do
                         pti <- fromJust <$> load (GPT.part_instance_id d) :: SqlTransaction Connection PI.PartInstance
                         save (pti { PI.deleted = True })
              
+
+marketCars :: Application ()
+marketCars = do 
+    uid <- getUserId 
+    ((l,o), xs) <- getPagesWithDTD (
+                "car_id" +== "car_id" +&&
+                "level" +<= "level-max" +&&
+                "level" +>= "level-min" +&&
+                "price" +>= "price-min" +&&
+                "price" +<= "price-max" +&&
+                     ifdtd "me" (=="1") 
+                                ("account_id" +==| toSql uid) 
+                                ("account_id" +<>| toSql uid)
+                    )
+    return undefined 
+    
 
 
 
