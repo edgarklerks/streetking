@@ -587,9 +587,19 @@ carParts = do
     uid <- getUserId
     ((l,o),xs) <- getPagesWithDTD (
         "car_instance_id" +== "car_instance_id" +&& 
-        "part_instance_id" +== "part_instance_id" +&& "account_id" +==| (toSql uid) ) 
+        "account_id" +==| (toSql uid) ) 
     ns <- runDb $ search xs [] l o :: Application [CIP.CarInstanceParts]
     writeMapables ns
+
+carPart :: Application ()
+carPart = do 
+    uid <- getUserId
+    ((l,o),xs) <- getPagesWithDTD (
+        "car_instance_id" +== "car_instance_id" +&& 
+        "part_instance_id" +== "part_instance_id" +&& "account_id" +==| (toSql uid) ) 
+    ns <- runDb $ search xs [] l o :: Application pCIP.CarInstanceParts]
+    writeMapables ns
+
 
 marketCarParts :: Application ()
 marketCarParts = do 
@@ -799,6 +809,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/buySecond", marketPlaceBuy),
                 ("/Car/buy", carBuy),
                 ("/Car/parts", carParts),
+                ("/Car/part", carPart),
                 ("/Car/sell", carSell),
                 ("/Market/returnCar", carReturn),
                 ("/Market/carParts", marketCarParts),
