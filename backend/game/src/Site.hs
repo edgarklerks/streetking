@@ -439,14 +439,6 @@ carSell = do
                         save (def {
                                MI.car_instance_id =  CIG.id car,
                                MI.price = MI.price d,
-                               MI.account_id = uid
-                            })
-
-   
-                     -- 1. Add car to market 
-                        save (def {
-                               MI.car_instance_id =  CIG.id car,
-                               MI.price = MI.price d,
                                MI.account_id = uid 
                             } :: MI.MarketItem)
 
