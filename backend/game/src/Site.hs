@@ -309,7 +309,7 @@ carBuy = do
                             -- save car to garage 
                 
                             cid <- save ((def :: CarInstance.CarInstance) {
-                                         CarInstance.garage_id = fromJust $ G.id g,
+                                         CarInstance.garage_id =  G.id g,
                                          CarInstance.car_id = fromJust $ CM.id car 
                                     }) :: SqlTransaction Connection Integer
                 
@@ -361,12 +361,42 @@ carSell = do
     uid <- getUserId 
     xs <- getJson >>= scheck ["car_instance_id", "price"]
     let d = updateHashMap xs (def :: MI.MarketItem)
-    p uid d 
- where p uid d = runDb $ do
+    prg <- loadConfig "market_fee"
+    fee <- evalLua prg [
+            ("price", LuaNum (fromIntegral $ MI.price d))
+            ]
+ 
+    p uid d (fee :: Double)
+    writeResult ("You car is in the market place" :: String)
+ where p uid d (fromIntegral . floor -> fee) = runDb $ do
                 cig <- load (fromJust $ MI.car_instance_id d) :: SqlTransaction Connection (Maybe CIG.CarInGarage)
                 case cig of 
                     Nothing -> rollback "no such car"
-                    Just car -> undefined 
+                    Just car -> do 
+                    {-- 
+                     - 1. Add car to market 
+                     - 2. Remove car from garage
+                     - 3. Substract fee 
+                     --}
+                     
+                     -- 1. Add car to market 
+                        save (def {
+                               MI.car_instance_id =  CIG.id car,
+                               MI.price = MI.price d,
+                               MI.account_id = uid 
+                            } :: MI.MarketItem)
+                     -- 2. Remove car from garage 
+                        x <- fromJust <$> load (fromJust $ CIG.id car) :: SqlTransaction Connection CarInstance.CarInstance
+                        save (x { CarInstance.garage_id = Nothing })
+                        
+                        transactionMoney uid (def {
+                                Transaction.amount = - abs(fee),
+                                Transaction.type = "garage_car_sell",
+                                Transaction.type_id = fromJust $ CIG.id car
+                            })
+
+                        
+                        
                          
         
 

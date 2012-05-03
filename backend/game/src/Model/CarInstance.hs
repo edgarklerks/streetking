@@ -13,11 +13,13 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
+type MInteger = Maybe Integer 
+
 $(genAll "CarInstance" "car_instance"
     [
         ("id", ''Id),
         ("car_id", ''Integer),
-        ("garage_id", ''Integer),
+        ("garage_id", ''MInteger),
         ("deleted", ''Bool)
     ]
     )
