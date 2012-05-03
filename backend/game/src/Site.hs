@@ -47,6 +47,7 @@ import qualified Model.Config as CFG
 import qualified Model.MarketPlace as MP
 import qualified Model.PartType as PT 
 import qualified Model.CarInstanceParts as CIP
+import qualified Model.MarketCarInstanceParts as MCIP
 import qualified Model.CarStockParts as CSP
 import qualified Model.MarketPlaceCar as MPC
 import           Control.Monad.Trans
@@ -438,6 +439,14 @@ carSell = do
                         save (def {
                                MI.car_instance_id =  CIG.id car,
                                MI.price = MI.price d,
+                               MI.account_id = uid
+                            })
+
+   
+                     -- 1. Add car to market 
+                        save (def {
+                               MI.car_instance_id =  CIG.id car,
+                               MI.price = MI.price d,
                                MI.account_id = uid 
                             } :: MI.MarketItem)
 
@@ -546,7 +555,7 @@ marketReturn = do
 
  
 
-
+---
 transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
 transactionMoney uid tr' =   do 
                             tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
@@ -568,14 +577,38 @@ transactionMoney uid tr' =   do
 
 
 
+
+
+                                
+
+        
+
+
+
+ 
+
+
+
+
 carParts :: Application ()
 carParts = do 
     uid <- getUserId
     ((l,o),xs) <- getPagesWithDTD (
         "car_instance_id" +== "car_instance_id" +&& 
-        "part_instance_id" +== "part_instance_id" ) 
+        "part_instance_id" +== "part_instance_id" +&& "account_id" +==| (toSql uid) ) 
     ns <- runDb $ search xs [] l o :: Application [CIP.CarInstanceParts]
     writeMapables ns
+
+marketCarParts :: Application ()
+marketCarParts = do 
+    uid <- getUserId
+    ((l,o),xs) <- getPagesWithDTD (
+        "car_instance_id" +== "car_instance_id" +&& 
+        "part_instance_id" +== "part_instance_id") 
+    ns <- runDb $ search xs [] l o :: Application [MCIP.MarketCarInstanceParts]
+    writeMapables ns
+
+
 
 
 marketTrash :: Application ()
@@ -605,6 +638,7 @@ marketCars :: Application ()
 marketCars = do 
     uid <- getUserId 
     ((l,o), xs) <- getPagesWithDTD (
+                "car_instance_id" +<= "car_instance_id"+&&
                 "level" +<= "level-max" +&&
                 "level" +>= "level-min" +&&
                 "price" +>= "price-min" +&&
@@ -616,9 +650,6 @@ marketCars = do
     ns <- runDb $ search xs [] l o :: Application [MPC.MarketPlaceCar]
     writeMapables ns 
     
-
-
-
 
 marketParts :: Application ()
 marketParts = do 
@@ -705,6 +736,21 @@ userAddSkill = do
         writeMapable u'
 
 
+
+
+removePart :: Application ()
+removePart = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["part_instance_id", "car_instance_id"]
+    let d = updateHashMap xs (def :: PI.PartInstance)
+    p uid d 
+    writeResult ("you removed the part" :: String)
+ where p uid d = runDb $ do 
+        return undefined 
+
+
+
+
 -- | The main entry point handler.
 site :: Application ()
 site = CIO.catch (CIO.catch (route [ 
@@ -736,6 +782,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Car/buy", carBuy),
                 ("/Car/parts", carParts),
                 ("/Car/sell", carSell),
-                ("/Market/returnCar", carReturn)
+                ("/Market/returnCar", carReturn),
+                ("/Market/carParts", marketCarParts)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
