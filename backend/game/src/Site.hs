@@ -772,7 +772,12 @@ addPart = do
         case pl of 
             Nothing -> rollback "No such part"
             Just x -> do 
+                p <- search ["id" |== toSql (MI.part_instance_id d)] [] 1 0 :: SqlTransaction Connection [Part.Part]
+                when (not $ null p) $ do 
+                        xs <- search ["part_type_id" |== toSql (Part.part_type_id (head p)) .&& "car_instance_id" |== toSql (PI.car_instance_id x)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance] 
+                        when (not $ null xs) $ rollback "already in car"
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
+
                 when (isJust (PI.car_instance_id x)) $ rollback "part already in car"
                 save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
 
