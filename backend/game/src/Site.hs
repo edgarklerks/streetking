@@ -786,7 +786,11 @@ addPart = do
             
                                 save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
                                 return ()
-                            otherwise -> rollback "part type already in car"
+                            [s] -> do 
+                                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
+                                save (s {PI.garage_id = G.id g, PI.car_instance_id = Nothing})
+                                save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
+
 
 
 
