@@ -48,6 +48,7 @@ import qualified Model.MarketPlace as MP
 import qualified Model.PartType as PT 
 import qualified Model.CarInstanceParts as CIP
 import qualified Model.CarStockParts as CSP
+import qualified Model.MarketPlaceCar as MPC
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -591,7 +592,8 @@ marketCars = do
                                 ("account_id" +==| toSql uid) 
                                 ("account_id" +<>| toSql uid)
                     )
-    return undefined 
+    ns <- runDb $ search xs [] l o :: Application [MPC.MarketPlaceCar]
+    writeMapables ns 
     
 
 
@@ -699,6 +701,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/return", marketReturn),
                 ("/Market/parts", marketParts),
                 ("/Market/buyCar", carMarketBuy),
+                ("/Market/cars", marketCars),
                 ("/Garage/car", garageCar),
                 ("/Car/model", loadModel),
                 ("/Car/trash", carTrash),
