@@ -61,7 +61,8 @@ Executable game
     filepath,
     hashable,
     smallcheck,
-    hslua
+    hslua,
+    MonadRandom
 
   extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction ViewPatterns
 
