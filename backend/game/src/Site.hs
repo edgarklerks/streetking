@@ -811,8 +811,7 @@ addPart = do
 
 hirePersonnel :: Application ()
 hirePersonnel = do 
-    uid <- getUseId 
-
+    uid <- getUserId 
 
 
     return ()
