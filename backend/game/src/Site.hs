@@ -50,7 +50,7 @@ import qualified Model.CarInstanceParts as CIP
 import qualified Model.MarketCarInstanceParts as MCIP
 import qualified Model.CarStockParts as CSP
 import qualified Model.MarketPlaceCar as MPC
-import qualified Model.Personnel as PN 
+import qualified Model.PersonnelDetails as PN 
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -815,7 +815,7 @@ garagePersonnel = do
                     "salary" +>= "salarymin" +&&
                     "salary" +<= "salarymax" 
             )
-        ns <- runDb $ search xs [] l o :: Application [PN.Personnel]
+        ns <- runDb $ search xs [] l o :: Application [PN.PersonnelDetails]
         writeMapables ns 
 
 
