@@ -817,16 +817,13 @@ hirePersonnel = do
 garagePersonnel :: Application ()
 garagePersonnel = do 
         uid <- getUserId 
-        t <- liftIO $ getRandomR (1, 100) 
         ((l,o), xs) <- getPagesWithDTD (
                     "skill" +>= "skillmin" +&&
                     "skill" +<= "skillmax" +&&
                     "salary" +>= "salarymin" +&&
-                    "salary" +<= "salarymax" +&&
-                    "sort" +<=| (toSql (t :: Integer)) +&& 
-                    "sort" +>=| (toSql $ (t :: Integer) - 10)
+                    "salary" +<= "salarymax" 
             )
-        ns <- runDb $ search xs [Order ("sort",[]) True, Order ("id", []) True]  l o :: Application [PN.PersonnelDetails]
+        ns <- runDb $ search xs [Order ("sort",[]) True]  l o :: Application [PN.PersonnelDetails]
         writeMapables ns 
 
 
