@@ -23,6 +23,8 @@ $(genAllId "MarketCarInstanceParts" "market_car_instance_parts" "car_instance_id
         ("name", ''String),
         ("part_type_id", ''Integer),
         ("weight", ''Integer),
+        ("improvement", ''Integer),
+        ("wear", ''Integer),
         ("parameter1", ''MInteger),
         ("parameter1_unit", ''MString),
         ("parameter1_name", ''MString),
