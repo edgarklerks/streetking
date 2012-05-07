@@ -647,6 +647,7 @@ marketTrash = do
                         pti <- fromJust <$> load (GPT.part_instance_id d) :: SqlTransaction Connection PI.PartInstance
                         save (pti { PI.deleted = True })
              
+ 
 
 marketCars :: Application ()
 marketCars = do 
@@ -698,7 +699,8 @@ garageParts = do
 
                 ifdtd "anycar" (=="1")
                     ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
-                    ("car_id" +== "car_id") +&&
+                    ("car_id" +== "car_id") +&& 
+
                     
                 "account_id" +==| toSql uid
             )
@@ -809,7 +811,10 @@ addPart = do
 
 hirePersonnel :: Application ()
 hirePersonnel = do 
-    uid <- getUserId 
+    uid <- getUseId 
+
+
+
     return ()
 
 

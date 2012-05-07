@@ -34,6 +34,7 @@ $(genAll "AccountProfile" "account_profile" [
                     ("energy_recovery", ''Integer),
                     ("energy_updated", ''Integer),
                     ("busy_until", ''Integer),
+                    ("till", ''Integer),
                     ("skill_unused", ''Integer)
     ]
     )
