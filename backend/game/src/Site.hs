@@ -73,6 +73,7 @@ import           Lua.Instances
 import           Lua.Monad
 import           Lua.Prim
 import           Debug.Trace
+import           Control.Monad.Random 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
 --
@@ -806,14 +807,23 @@ addPart = do
 
 
 
+hirePersonnel :: Application ()
+hirePersonnel = do 
+    uid <- getUserId 
+    return ()
+
+
+
 garagePersonnel :: Application ()
 garagePersonnel = do 
         uid <- getUserId 
+        t <- getRandomR (1, 100) 
         ((l,o), xs) <- getPagesWithDTD (
                     "skill" +>= "skillmin" +&&
                     "skill" +<= "skillmax" +&&
                     "salary" +>= "salarymin" +&&
-                    "salary" +<= "salarymax" 
+                    "salary" +<= "salarymax" +&&
+                    "sort" +==| (toSql (t :: Integer))
             )
         ns <- runDb $ search xs [] l o :: Application [PN.PersonnelDetails]
         writeMapables ns 
