@@ -825,7 +825,7 @@ garagePersonnel = do
                     "salary" +<= "salarymax" +&&
                     "sort" +==| (toSql (t :: Integer))
             )
-        ns <- runDb $ search xs [] l o :: Application [PN.PersonnelDetails]
+        ns <- runDb $ search xs [Order ("sort",[]) True]  l o :: Application [PN.PersonnelDetails]
         writeMapables ns 
 
 
