@@ -24,5 +24,7 @@ $(genAll "Personnel" "personnel" [
     ("gender", ''Bool),
     ("picture", ''String),
     ("skill", ''Integer),
-    ("salary", ''Integer)
+    ("salary", ''Integer),
+    ("price", ''Integer),
+    ("sort", ''Integer)
     ])

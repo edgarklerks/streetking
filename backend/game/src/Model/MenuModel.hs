@@ -74,7 +74,7 @@ gametree = Node Root [
             Node (SubMenu "GARAGE" "" "") [
                 Node (MenuItem "CARS" "GARAGE_CARS" "") [],
                 Node (MenuItem "PARTS" "GARAGE_PARTS" "") [],
-                Node (MenuItem "PERSONAL" "GARAGE_PERSONAL" "") []
+                Node (MenuItem "PERSONNEL" "GARAGE_PERSONNEL" "") []
 
             ],
             Node (MenuItem "HOME" "HOME" "") []
