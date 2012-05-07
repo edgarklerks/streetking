@@ -817,7 +817,7 @@ hirePersonnel = do
 garagePersonnel :: Application ()
 garagePersonnel = do 
         uid <- getUserId 
-        t <- getRandomR (1, 100) 
+        t <- liftIO $ getRandomR (1, 100) 
         ((l,o), xs) <- getPagesWithDTD (
                     "skill" +>= "skillmin" +&&
                     "skill" +<= "skillmax" +&&
