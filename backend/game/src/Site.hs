@@ -50,6 +50,7 @@ import qualified Model.CarInstanceParts as CIP
 import qualified Model.MarketCarInstanceParts as MCIP
 import qualified Model.CarStockParts as CSP
 import qualified Model.MarketPlaceCar as MPC
+import qualified Model.Personnel as PN 
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -403,6 +404,10 @@ carMarketBuy = do
 
 
 
+{--
+       $price = ($personnel_starting_price+(($personnel_starting_price/10*$improvement)-$personnel_starting_price))+rand(0,$personnel_starting_price/10);
+       $salary = $personnel_starting_price*7+($personnel_starting_price+(($personnel_starting_price/10*$improvement)-$personnel_starting_price))+rand(0,$personnel_starting_price/10)-
+ --}
 
 
 
@@ -546,6 +551,12 @@ marketReturn = do
                 save (pit {PI.garage_id = G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
 
  
+
+
+
+
+
+
 
 ---
 transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
@@ -795,6 +806,17 @@ addPart = do
 
 
 
+garagePersonnel :: Application ()
+garagePersonnel = do 
+        uid <- getUserId 
+        ((l,o), xs) <- getPagesWithDTD (
+                    "skill" +>= "skillmin" +&&
+                    "skill" +<= "skillmax" +&&
+                    "salary" +>= "salarymin" +&&
+                    "salary" +<= "salarymax" 
+            )
+        ns <- runDb $ search xs [] l o :: Application [PN.Personnel]
+        writeMapables ns 
 
 
 -- | The main entry point handler.
@@ -832,6 +854,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/returnCar", carReturn),
                 ("/Market/carParts", marketCarParts),
                 ("/Garage/addPart", addPart),
-                ("/Garage/removePart", removePart)
+                ("/Garage/removePart", removePart),
+                ("/Garage/personnel", garagePersonnel)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
