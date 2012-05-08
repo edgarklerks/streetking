@@ -816,13 +816,14 @@ addPart = do
 
 
 
-hirePersonnel :: Application ()
+{-
+ - hirePersonnel :: Application ()
 hirePersonnel = do 
     uid <- getUserId 
 
 
     return ()
-
+-}
 
 
 garagePersonnel :: Application ()
@@ -836,6 +837,36 @@ garagePersonnel = do
             )
         ns <- runDb $ search xs [Order ("sort",[]) True]  l o :: Application [PLD.PersonnelDetails]
         writeMapables ns 
+
+
+hirePersonnel :: Application ()
+hirePersonnel = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    let person = updateHashMap xs (def :: PLD.PersonnelDetails)
+    r <-  prc uid xs person 
+    writeResult ("You succesfully hired someone" :: String)
+         where prc uid xs car =  runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                cm <- load (fromJust $ PLD.personnel_id person) :: SqlTransaction Connection (Maybe PLD.PersonnelDetails)
+                case cm of 
+                        Nothing -> rollback "No such person found"
+                        Just car -> do  
+                
+                            -- pay hiring price of staff member plus one term's salary
+                            transactionMoney uid (def {
+                                    Transaction.amount = - abs(PLI.salary person + PLI.price person),
+                                    Transaction.type = "personnel_instance",
+                                    Transaction.type_id = fromJust $ PLI.id person
+                                })
+
+                             plid <- save ((def :: PLI.PersonnelInstance) {
+                                         PLI.garage_id =  G.id g,
+                                         PLI.personnel_id = fromJust $ PL.id person 
+                                    }) :: SqlTransaction Connection Integer
+                
+                           return True
+
 
 
 -- | The main entry point handler.
