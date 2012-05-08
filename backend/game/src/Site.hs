@@ -50,8 +50,11 @@ import qualified Model.CarInstanceParts as CIP
 import qualified Model.MarketCarInstanceParts as MCIP
 import qualified Model.CarStockParts as CSP
 import qualified Model.MarketPlaceCar as MPC
-import qualified Model.PersonnelDetails as PN 
-import qualified Model.Functions as DBF 
+import qualified Model.Personnel as PL
+import qualified Model.PersonnelDetails as PLD
+import qualified Model.PersonnelInstance as PLI
+import qualified Model.PersonnelInstanceDetails as PLID
+import qualified Model.Functions as DBF
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -831,7 +834,7 @@ garagePersonnel = do
                     "salary" +>= "salarymin" +&&
                     "salary" +<= "salarymax" 
             )
-        ns <- runDb $ search xs [Order ("sort",[]) True]  l o :: Application [PN.PersonnelDetails]
+        ns <- runDb $ search xs [Order ("sort",[]) True]  l o :: Application [PLD.PersonnelDetails]
         writeMapables ns 
 
 

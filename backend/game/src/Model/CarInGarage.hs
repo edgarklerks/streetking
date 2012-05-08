@@ -29,5 +29,7 @@ $(genAll "CarInGarage" "car_in_garage"
         ("total_price", ''Integer),
         ("account_id", ''Integer),
         ("level", ''Integer),
+        ("wear", ''Integer),
+        ("improvement", ''Integer),
         ("year", ''Integer)
     ])

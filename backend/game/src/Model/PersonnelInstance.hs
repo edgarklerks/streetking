@@ -18,15 +18,11 @@ import           Prelude hiding (id)
 type MInteger = Maybe Integer 
 $(genAll "PersonnelInstance" "personnel_instance" [
     ("id", ''Id),
-    ("name", ''String),
-    ("country_id", ''Integer),
     ("personnel_id", ''MInteger),
-    ("gender", ''Bool),
-    ("picture", ''String),
-    ("skill", ''Integer),
-    ("salary", ''Integer),
     ("garage_id", ''Integer),
-    ("personnel_type_id", ''Integer),
+    ("skill_repair", ''Integer),
+    ("skill_engineering", ''Integer),
+    ("salary", ''Integer),
     ("paid_until", ''Integer),
     ("busy_until", ''Integer)
     ])

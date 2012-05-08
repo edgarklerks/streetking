@@ -28,6 +28,8 @@ $(genAllId "MarketPlaceCar" "market_place_car" "car_instance_id" [
         ("manufacturer_name", ''String),
         ("level", ''Integer),
         ("year", ''Integer),
+        ("wear", ''Integer),
+        ("improvement", ''Integer),
         ("account_id", ''Integer),
         ("model", ''String)
     ])

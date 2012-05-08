@@ -16,16 +16,16 @@ import           Prelude hiding (id)
 
 
 type MInteger = Maybe Integer 
-$(genAll "PersonnelDetails" "personnel_details" [
-    ("id", ''Id),
+$(genAllId "PersonnelDetails" "personnel_details" "personnel_id" [
+    ("personnel_id", ''Id),
     ("name", ''String),
     ("country_name", ''String),
     ("country_shortname", ''String),
-    ("personnel_id", ''MInteger),
     ("gender", ''Bool),
     ("picture", ''String),
-    ("skill", ''Integer),
     ("salary", ''Integer),
     ("price", ''Integer),
+    ("skill_repair", ''Integer),
+    ("skill_engineering", ''Integer),
     ("sort", ''Integer)
     ])
