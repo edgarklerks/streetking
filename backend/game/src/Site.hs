@@ -846,7 +846,7 @@ hirePersonnel = do
     let person = updateHashMap xs (def :: PLD.PersonnelDetails)
     r <-  prc uid xs person 
     writeResult ("You succesfully hired someone" :: String)
-         where prc uid xs car =  runDb $ do 
+         where prc uid xs person =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                 cm <- load (fromJust $ PLD.personnel_id person) :: SqlTransaction Connection (Maybe PLD.PersonnelDetails)
                 case cm of 
@@ -855,17 +855,17 @@ hirePersonnel = do
                 
                             -- pay hiring price of staff member plus one term's salary
                             transactionMoney uid (def {
-                                    Transaction.amount = - abs(PLI.salary person + PLI.price person),
+                                    Transaction.amount = - abs(PLD.salary person + PLD.price person),
                                     Transaction.type = "personnel_instance",
-                                    Transaction.type_id = fromJust $ PLI.id person
+                                    Transaction.type_id = fromJust $ PLD.personnel_id person
                                 })
 
-                             plid <- save ((def :: PLI.PersonnelInstance) {
-                                         PLI.garage_id =  G.id g,
-                                         PLI.personnel_id = fromJust $ PL.id person 
+                            plid <- save ((def :: PLI.PersonnelInstance) {
+                                         PLI.garage_id =  fromJust $ G.id g,
+                                         PLI.personnel_id = PLD.personnel_id person 
                                     }) :: SqlTransaction Connection Integer
                 
-                           return True
+                            return True
 
 
 
