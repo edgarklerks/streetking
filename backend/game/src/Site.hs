@@ -149,7 +149,7 @@ userMe :: Application ()
 userMe = do 
     x <- getUserId 
     n <- runDb $ do 
-            p <- (load x) :: Application (Maybe AP.AccountProfile)
+            p <- (load x) :: SqlTransaction Connection  (Maybe AP.AccountProfile)
             DBF.account_update_energy x 
             return p
     case n of 
