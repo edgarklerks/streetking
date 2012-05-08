@@ -8,5 +8,5 @@ import Data.Database
 import Data.HashMap.Strict
 
 $(mkFunctions [
-    ("account_update_energy", [''Integer], undefined, Row)
+    ("account_update_energy", [''Integer], ''Bool, Scalar)
     ])
