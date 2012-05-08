@@ -149,8 +149,8 @@ userMe :: Application ()
 userMe = do 
     x <- getUserId 
     n <- runDb $ do 
-            p <- (load x) :: SqlTransaction Connection  (Maybe AP.AccountProfile)
             DBF.account_update_energy x 
+            p <- (load x) :: Application (Maybe AP.AccountProfile)
             return p
     case n of 
         Nothing -> internalError "You do not exist, kbye"
