@@ -51,6 +51,7 @@ import qualified Model.MarketCarInstanceParts as MCIP
 import qualified Model.CarStockParts as CSP
 import qualified Model.MarketPlaceCar as MPC
 import qualified Model.PersonnelDetails as PN 
+import qualified Model.Functions as DBF 
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -144,7 +145,10 @@ userData = do
 userMe :: Application ()
 userMe = do 
     x <- getUserId 
-    n <- runDb (load x) :: Application (Maybe AP.AccountProfile)
+    n <- runDb $ do 
+            p <- (load x) :: Application (Maybe AP.AccountProfile)
+            DBF.account_update_energy x 
+            return p
     case n of 
         Nothing -> internalError "You do not exist, kbye"
         Just x -> writeMapable x
