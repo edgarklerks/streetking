@@ -46,10 +46,14 @@ sqlFunctionToSql (SF name Scalar ra arg def ret) = funD (mkName name) [clausem]
                 where clausem = clause args (decs) [] 
 
                 -- Fold over the arguments to obtain the argument list 
-                      decs = normalB (sigE (appE (varE $ mkName "fromSql") (appE (appE (varE $ mkName "sqlGetOne") (stringE def)) argn)) (conT  ret))
+                -- (fmap fromSql)  (sqlGetOne def [toSql a1, toSql a2, toSql a3] :: ret)
+                      decs = normalB (sigE (appE (appE (varE $ mkName "fmap") $ varE $ mkName "fromSql") (appE (appE (varE $ mkName "sqlGetOne") (stringE def)) argn)) (tpl))
+                      tpl = appT (appT (conT (mkName "SqlTransaction")) (conT $ mkName "Connection")) (conT ret)
                       args = foldr step [] (arg `zip` [1..])
+                      -- make signature list: (a1 :: Integer) (a2 :: String) .. (an :: Tn)
                       step (x,i) z = sigP (varP (mkName ("a" ++ show i))) (tpe x) : z
                             where tpe x = conT x
+                            -- Make argument list for sqlGetOne :: [toSql a1, toSql a2, toSql a3.. toSql an]
                       argn = listE $ foldr (\i  z -> ((appE (varE $ mkName "toSql")) $ varE $ mkName $ "a" ++ show i) : z) [] (snd <$> arg `zip` [1..])
 
   
