@@ -14,6 +14,8 @@ import           Model.TH
 import           Prelude hiding (id)
 
 type MInteger = Maybe Integer 
+type MString = Maybe String
+type MBool = Maybe Bool 
 $(genAll "PersonnelReport" "personnel_reports" 
     [ ("id", ''Id),
         ("account_id", ''Integer),
@@ -24,5 +26,20 @@ $(genAll "PersonnelReport" "personnel_reports"
         ("part_instance_id", ''MInteger),
         ("personnel_instance_id", ''MInteger),
         ("cost", ''MInteger),
-        ("result", ''String)
+        ("result", ''String),
+        ("personnel_id", ''MInteger),
+        ("name", ''MString),
+        ("country_name", ''MString),
+        ("country_shortname", ''MString),
+        ("gender", ''MBool),
+        ("picture", ''MString),
+        ("salary", ''MInteger),
+        ("skill_repair", ''MInteger),
+        ("skill_engineering", ''MInteger),
+        ("busy_until", ''MInteger),
+        ("paid_until", ''MInteger),
+        ("garage_id", ''MInteger),
+        ("training_cost_repair", ''MInteger),
+        ("training_cost_engineering", ''MInteger)
+
     ])
