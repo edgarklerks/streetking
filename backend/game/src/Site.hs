@@ -581,7 +581,7 @@ transactionMoney uid tr' =   do
 
                                     -- save transaction 
 
-                                    save $ tr { Transaction.current = A.money a }
+                                    save $ tr { Transaction.current = A.money a, Transaction.account_id = uid }
                                     -- save user 
                                     save $ a { A.money = A.money a + Transaction.amount tr }
                                     return ()
@@ -816,14 +816,6 @@ addPart = do
 
 
 
-{-
- - hirePersonnel :: Application ()
-hirePersonnel = do 
-    uid <- getUserId 
-
-
-    return ()
--}
 
 
 garagePersonnel :: Application ()
@@ -909,3 +901,4 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/hire", hirePersonnel)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
+>>>>>>> other
