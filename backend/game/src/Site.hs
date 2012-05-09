@@ -861,9 +861,20 @@ trainPersonnel = do
 
                             -- train personnel
                             r <- DBF.personnel_train (fromJust $ PLI.id person) (fugly "type" xs) (fugly "level" xs)
+                            pm <- fromJust <$> load (fromJust $ PLI.id person) :: SqlTransaction Connection (PLI.PersonnelInstance)
+
+                            reportPersonnel uid (def { 
+                                            PR.report_descriptor = "train_personnel",
+                                            PR.personnel_instance_id = PLI.id person,
+                                            PR.result = show $ frm xs pm person,
+                                            PR.cost = Just $ abs(PLI.training_cost_repair person)
+                                        })
                             return r
                                 where fugly k xs = fromSql . fromJust $ HM.lookup k xs
-
+                                      frm xs p1 p2 = case fugly "type" xs of 
+                                                    ("repair" :: String) -> abs (PLI.skill_repair p1 - PLI.skill_repair p2)
+                                                    "engineering" -> abs ( PLI.skill_engineering p1 - PLI.skill_engineering p2 )
+                                                    otherwise -> error "no type defined"
 
 hirePersonnel :: Application ()
 hirePersonnel = do 
