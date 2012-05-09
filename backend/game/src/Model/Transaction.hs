@@ -19,5 +19,6 @@ $(genAll "Transaction" "transaction" [
     ("current", ''Integer),
     ("type", ''String),
     ("type_id", ''Integer),
-    ("time", ''Integer)
+    ("time", ''Integer),
+    ("account_id", ''Integer)
     ])

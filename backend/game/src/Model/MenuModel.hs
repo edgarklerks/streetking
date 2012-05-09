@@ -64,6 +64,7 @@ logintree = Node Root [Node (SubMenu "ACCOUNT" "" "")
 
 gametree = Node Root [
             Node (MenuItem "LOGOUT" "LOGOUT" "") [],
+            Node (MenuItem "REPORTS" "REPORTS" "") [],
             Node (SubMenu "SHOP" "" "") [
                                 Node (MenuItem "NEW_CARS" "MARKETPLACE_NEWCARS" "") [],
                                 Node (MenuItem "NEW_PARTS" "MARKETPLACE_NEWPARTS" "") [],
