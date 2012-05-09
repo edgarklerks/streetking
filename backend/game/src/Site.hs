@@ -54,6 +54,7 @@ import qualified Model.Personnel as PL
 import qualified Model.PersonnelDetails as PLD
 import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
+import qualified Model.ShopReport as SR 
 import qualified Model.Functions as DBF
 import           Control.Monad.Trans
 import           Application
@@ -929,7 +930,12 @@ firePersonnel = do
                            delete (undefined :: PLI.PersonnelInstance) ["id" |== toSql (PLI.id person), "garage_id" |== toSql (G.id g)] 
                            return True
 
-
+reportShopping :: Integer -> SR.ShopReport -> SqlTransaction Connection ()
+reportShopping uid x = do 
+                save (x {
+                        SR.account_id = uid
+                    })
+                return ()
 
 
 -- | The main entry point handler.
@@ -975,4 +981,3 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/train", trainPersonnel)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
->>>>>>> other
