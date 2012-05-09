@@ -984,6 +984,22 @@ userReports = do
         ns <- runDb $ search xs [] l o :: Application [GR.GeneralReport]
         writeMapables ns
 
+personnelReports :: Application ()
+personnelReports = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
+        ns <- runDb $ search xs [] l o :: Application [PR.PersonnelReport]
+        writeMapables ns
+
+shoppingReports :: Application ()
+shoppingReports = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
+        ns <- runDb $ search xs [] l o :: Application [SR.ShopReport]
+        writeMapables ns
+
+
+
 
 -- | The main entry point handler.
 site :: Application ()
@@ -1013,6 +1029,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/place", marketPlace),
                 ("/Market/trash", marketTrash),
                 ("/Market/buySecond", marketPlaceBuy),
+                ("/Market/reports", shoppingReports),
                 ("/Car/buy", carBuy),
                 ("/Car/parts", carParts),
                 ("/Car/part", carPart),
@@ -1026,6 +1043,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
                 ("/Personnel/train", trainPersonnel),
+                ("/Personnel/reports", personnelReports),
                 ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
