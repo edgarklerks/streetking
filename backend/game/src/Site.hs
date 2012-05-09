@@ -54,7 +54,9 @@ import qualified Model.Personnel as PL
 import qualified Model.PersonnelDetails as PLD
 import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
+import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
+import qualified Model.PersonnelReport as PR 
 import qualified Model.Functions as DBF
 import           Control.Monad.Trans
 import           Application
@@ -568,26 +570,6 @@ marketReturn = do
 
 
 ---
-transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
-transactionMoney uid tr' =   do 
-                            tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
-                            let tr = tr' {Transaction.time = tpsx }
-                            a <- load uid :: SqlTransaction Connection (Maybe A.Account)
-                            case a of 
-               
-                                Nothing -> rollback "tri tho serch yer paspoht suplieh bette, friennd"
-                                Just a -> do 
-
-                                    when (A.money a + Transaction.amount tr < 0) $ rollback "You don' tno thgave eninh monye, brotther"
-
-                                    -- save transaction 
-
-                                    save $ tr { Transaction.current = A.money a, Transaction.account_id = uid }
-                                    -- save user 
-                                    save $ a { A.money = A.money a + Transaction.amount tr }
-                                    return ()
-
-
 
 
 
@@ -911,6 +893,14 @@ hirePersonnel = do
                                          PLI.salary = PLD.salary person,
                                          PLI.paid_until = 1
                                     }) :: SqlTransaction Connection Integer
+
+                            reportPersonnel uid (def { 
+                                            PR.report_descriptor = "hire_personnel",
+                                            PR.personnel_instance_id = Just plid,
+                                            PR.result = "success",
+                                            PR.cost = Just $ abs(PLD.salary person + PLD.price person)
+                                        })
+ 
                 
                             return True
 
@@ -928,14 +918,67 @@ firePersonnel = do
                         Nothing -> rollback "No such person found"
                         Just person -> do
                            delete (undefined :: PLI.PersonnelInstance) ["id" |== toSql (PLI.id person), "garage_id" |== toSql (G.id g)] 
+                           reportPersonnel uid (def { 
+                                            PR.report_descriptor = "fire_personnel",
+                                            PR.personnel_instance_id = PLI.id person,
+                                            PR.result = "success"
+                                        })
                            return True
 
-reportShopping :: Integer -> SR.ShopReport -> SqlTransaction Connection ()
-reportShopping uid x = do 
-                save (x {
-                        SR.account_id = uid
+{-- Reporting functions --}
+{-- 
+ - @IN Integer
+ - @IN ShopReport
+ - @OUT SqlTransaction Connection ()
+ - @SIDEEFFECTS Save parameter object to database. Overrides the account identification number  
+ --}
+reportShopping :: Integer -> -- account_id, should exist and is a bigint 
+                 SR.ShopReport -> -- ShopReport is a named parameter object (Model/ShopReport) 
+                 SqlTransaction -- Executable and Composable Database Context for Forming Transactions 
+                    Connection -- Polymorphic Database Connection Descriptor.  
+                    () -- Resultant type of computation 
+reportShopping uid x = do -- syntactic sugar for heightening readability.  
+                -- some space to enforce enterprise ready deployability. 
+                save {-- Opening the save clause --} (x { -- Special parameter object to achieve object type safety. 
+                        SR.account_id = uid -- Setting the record type explicitely. 
+                    }) -- Ending the save clause 
+                -- overide the return type of the function. 
+                return () -- return unit type in order to satisfy the type system.
+
+reportPersonnel :: Integer -> PR.PersonnelReport -> SqlTransaction Connection ()
+reportPersonnel uid tr = do 
+                save (tr {
+                       PR.account_id = uid 
                     })
                 return ()
+
+{-- Money stuff --}
+transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
+transactionMoney uid tr' =   do 
+                            tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                            let tr = tr' {Transaction.time = tpsx }
+                            a <- load uid :: SqlTransaction Connection (Maybe A.Account)
+                            case a of 
+               
+                                Nothing -> rollback "tri tho serch yer paspoht suplieh bette, friennd"
+                                Just a -> do 
+
+                                    when (A.money a + Transaction.amount tr < 0) $ rollback "You don' tno thgave eninh monye, brotther"
+
+                                    -- save transaction 
+
+                                    save $ tr { Transaction.current = A.money a, Transaction.account_id = uid }
+                                    -- save user 
+                                    save $ a { A.money = A.money a + Transaction.amount tr }
+                                    return ()
+
+
+userReports :: Application ()
+userReports = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("report_type" +== "report_type" +&& "time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
+        ns <- runDb $ search xs [] l o :: Application [GR.GeneralReport]
+        writeMapables ns
 
 
 -- | The main entry point handler.
@@ -978,6 +1021,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/personnel", marketPersonnel),
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
-                ("/Personnel/train", trainPersonnel)
+                ("/Personnel/train", trainPersonnel),
+                ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
