@@ -826,12 +826,14 @@ hirePersonnel = do
 -}
 
 
-garagePersonnel :: Application ()
-garagePersonnel = do 
+marketPersonnel :: Application ()
+marketPersonnel = do 
         uid <- getUserId 
         ((l,o), xs) <- getPagesWithDTD (
-                    "skill" +>= "skillmin" +&&
-                    "skill" +<= "skillmax" +&&
+                    "skill_repair" +>= "repairmin" +&&
+                    "skill_repair" +<= "repairmax" +&&
+                    "skill_engineering" +>= "engineeringmin" +&&
+                    "skill_engineering" +<= "engineeringmax" +&&
                     "salary" +>= "salarymin" +&&
                     "salary" +<= "salarymax" 
             )
@@ -839,33 +841,102 @@ garagePersonnel = do
         writeMapables ns 
 
 
+
+garagePersonnel :: Application ()
+garagePersonnel = do 
+        uid <- getUserId 
+        ((l,o), xs) <- getPagesWithDTD (
+                    "skill_repair" +>= "repairmin" +&&
+                    "skill_repair" +<= "repairmax" +&&
+                    "skill_engineering" +>= "engineeringmin" +&&
+                    "skill_engineering" +<= "engineeringmax" +&&
+                    "salary" +>= "salarymin" +&&
+                    "salary" +<= "salarymax" 
+            )
+        let p = runDb $ do
+            g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+            ns <- search (xs ++ ["garage_id" |== (toSql $ G.id g) ]) [Order ("personnel_instance_id",[]) True]  l o
+            return ns 
+        ns <- p :: Application [PLID.PersonnelInstanceDetails]
+        writeMapables ns 
+
+
+trainPersonnel :: Application ()
+trainPersonnel = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    let person = updateHashMap xs (def :: PLI.PersonnelInstance)
+    r <-  prc uid xs person 
+    writeResult ("You succesfully trained this person" :: String)
+         where prc uid xs person =  runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                cm <- load (fromJust $ PLI.id person) :: SqlTransaction Connection (Maybe PLI.PersonnelInstance)
+                case cm of 
+                        Nothing -> rollback "No such person found"
+                        Just person -> do  
+                        
+                            -- pay training price
+                            transactionMoney uid (def {
+                                    Transaction.amount = - abs(PLI.training_cost_repair person),
+                                    Transaction.type = "personnel_train",
+                                    Transaction.type_id = fromJust $ PLI.id person
+                                })
+
+                            -- TODO: random skill increase
+                            -- run a function on the database
+
+                            return True
+
+
 hirePersonnel :: Application ()
 hirePersonnel = do 
     uid <- getUserId 
-    xs <- getJson >>= scheck ["id"]
+    xs <- getJson >>= scheck ["personnel_id"]
     let person = updateHashMap xs (def :: PLD.PersonnelDetails)
     r <-  prc uid xs person 
-    writeResult ("You succesfully hired someone" :: String)
+    writeResult ("You succesfully hired this person" :: String)
          where prc uid xs person =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                 cm <- load (fromJust $ PLD.personnel_id person) :: SqlTransaction Connection (Maybe PLD.PersonnelDetails)
                 case cm of 
                         Nothing -> rollback "No such person found"
-                        Just car -> do  
+                        Just person -> do  
                 
-                            -- pay hiring price of staff member plus one term's salary
+                            -- pay hiring price of staff member
                             transactionMoney uid (def {
                                     Transaction.amount = - abs(PLD.salary person + PLD.price person),
                                     Transaction.type = "personnel_instance",
                                     Transaction.type_id = fromJust $ PLD.personnel_id person
                                 })
-
+                            
+                            -- TODO: set paid_until for one term. use on-insert trigger
                             plid <- save ((def :: PLI.PersonnelInstance) {
                                          PLI.garage_id =  fromJust $ G.id g,
-                                         PLI.personnel_id = PLD.personnel_id person 
+                                         PLI.personnel_id = PLD.personnel_id person,
+                                         PLI.skill_repair = PLD.skill_repair person,
+                                         PLI.skill_engineering = PLD.skill_engineering person,
+                                         PLI.salary = PLD.salary person,
+                                         PLI.paid_until = 1
                                     }) :: SqlTransaction Connection Integer
                 
                             return True
+
+firePersonnel :: Application ()
+firePersonnel = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    let person = updateHashMap xs (def :: PLI.PersonnelInstance)
+    r <-  prc uid xs person 
+    writeResult ("You succesfully fired this person" :: String)
+         where prc uid xs person =  runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                cm <- load (fromJust $ PLI.id person) :: SqlTransaction Connection (Maybe PLI.PersonnelInstance)
+                case cm of 
+                        Nothing -> rollback "No such person found"
+                        Just person -> do
+                           delete (undefined :: PLI.PersonnelInstance) ["id" |== toSql (PLI.id person), "garage_id" |== toSql (G.id g)] 
+                           return True
+
 
 
 
@@ -906,6 +977,9 @@ site = CIO.catch (CIO.catch (route [
                 ("/Garage/addPart", addPart),
                 ("/Garage/removePart", removePart),
                 ("/Garage/personnel", garagePersonnel),
-                ("/Personnel/hire", hirePersonnel)
+                ("/Market/personnel", marketPersonnel),
+                ("/Personnel/hire", hirePersonnel),
+                ("/Personnel/fire", firePersonnel),
+                ("/Personnel/train", trainPersonnel)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))

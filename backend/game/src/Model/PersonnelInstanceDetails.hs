@@ -19,6 +19,7 @@ type MInteger = Maybe Integer
 $(genAllId "PersonnelInstanceDetails" "personnel_instance_details" "personnel_instance_id" [
     ("personnel_instance_id", ''Id),
     ("personnel_id", ''Id),
+    ("garage_id", ''Id),
     ("name", ''String),
     ("country_name", ''String),
     ("country_shortname", ''String),
@@ -27,6 +28,8 @@ $(genAllId "PersonnelInstanceDetails" "personnel_instance_details" "personnel_in
     ("salary", ''Integer),
     ("skill_repair", ''Integer),
     ("skill_engineering", ''Integer),
+    ("training_cost_repair", ''Integer),
+    ("training_cost_engineering", ''Integer),
     ("busy_until", ''Integer),
     ("paid_until", ''Integer)
     ])

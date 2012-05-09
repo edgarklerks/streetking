@@ -22,6 +22,8 @@ $(genAll "PersonnelInstance" "personnel_instance" [
     ("garage_id", ''Integer),
     ("skill_repair", ''Integer),
     ("skill_engineering", ''Integer),
+    ("training_cost_repair", ''Integer),
+    ("training_cost_engineering", ''Integer),
     ("salary", ''Integer),
     ("paid_until", ''Integer),
     ("busy_until", ''Integer)
