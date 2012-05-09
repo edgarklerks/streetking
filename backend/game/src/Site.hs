@@ -904,9 +904,7 @@ hirePersonnel = do
                                             PR.result = "success",
                                             PR.cost = Just $ abs(PLD.salary person + PLD.price person)
                                         })
- 
-                
-                                   return True
+                                    return True
 
 firePersonnel :: Application ()
 firePersonnel = do 
