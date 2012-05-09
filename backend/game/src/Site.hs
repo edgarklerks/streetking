@@ -58,6 +58,7 @@ import qualified Model.GeneralReport as GR
 import qualified Model.ShopReport as SR 
 import qualified Model.PersonnelReport as PR 
 import qualified Model.Functions as DBF
+import qualified Data.HashMap.Strict as HM
 import           Control.Monad.Trans
 import           Application
 import           Model.General (Mapable(..), Default(..), Database(..))
@@ -821,6 +822,7 @@ garagePersonnel :: Application ()
 garagePersonnel = do 
         uid <- getUserId 
         ((l,o), xs) <- getPagesWithDTD (
+                    "personnel_instance_id" +== "id" +&&
                     "skill_repair" +>= "repairmin" +&&
                     "skill_repair" +<= "repairmax" +&&
                     "skill_engineering" +>= "engineeringmin" +&&
@@ -839,7 +841,7 @@ garagePersonnel = do
 trainPersonnel :: Application ()
 trainPersonnel = do 
     uid <- getUserId 
-    xs <- getJson >>= scheck ["id"]
+    xs <- getJson >>= scheck ["id", "type", "level"]
     let person = updateHashMap xs (def :: PLI.PersonnelInstance)
     r <-  prc uid xs person 
     writeResult ("You succesfully trained this person" :: String)
@@ -857,10 +859,10 @@ trainPersonnel = do
                                     Transaction.type_id = fromJust $ PLI.id person
                                 })
 
-                            -- TODO: random skill increase
-                            -- run a function on the database
-
-                            return True
+                            -- train personnel
+                            r <- DBF.personnel_train (fromJust $ PLI.id person) (fugly "type" xs) (fugly "level" xs)
+                            return r
+                                where fugly k xs = fromSql . fromJust $ HM.lookup k xs
 
 
 hirePersonnel :: Application ()
@@ -872,29 +874,31 @@ hirePersonnel = do
     writeResult ("You succesfully hired this person" :: String)
          where prc uid xs person =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                cm <- load (fromJust $ PLD.personnel_id person) :: SqlTransaction Connection (Maybe PLD.PersonnelDetails)
-                case cm of 
-                        Nothing -> rollback "No such person found"
-                        Just person -> do  
-                
-                            -- pay hiring price of staff member
-                            transactionMoney uid (def {
-                                    Transaction.amount = - abs(PLD.salary person + PLD.price person),
-                                    Transaction.type = "personnel_instance",
-                                    Transaction.type_id = fromJust $ PLD.personnel_id person
-                                })
+                s <- search ["garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
+                case s of
+                    [_] -> rollback "You already have a mechanic"
+                    [] -> do
+                        cm <- load (fromJust $ PLD.personnel_id person) :: SqlTransaction Connection (Maybe PLD.PersonnelDetails)
+                        case cm of 
+                                Nothing -> rollback "No such person found"
+                                Just person -> do  
+                        
+                                    -- pay hiring price of staff member
+                                    transactionMoney uid (def {
+                                            Transaction.amount = - abs(PLD.salary person + PLD.price person),
+                                            Transaction.type = "personnel_instance",
+                                            Transaction.type_id = fromJust $ PLD.personnel_id person
+                                        })
                             
-                            -- TODO: set paid_until for one term. use on-insert trigger
-                            plid <- save ((def :: PLI.PersonnelInstance) {
-                                         PLI.garage_id =  fromJust $ G.id g,
-                                         PLI.personnel_id = PLD.personnel_id person,
-                                         PLI.skill_repair = PLD.skill_repair person,
-                                         PLI.skill_engineering = PLD.skill_engineering person,
-                                         PLI.salary = PLD.salary person,
-                                         PLI.paid_until = 1
-                                    }) :: SqlTransaction Connection Integer
+                                    plid <- save ((def :: PLI.PersonnelInstance) {
+                                             PLI.garage_id =  fromJust $ G.id g,
+                                             PLI.personnel_id = PLD.personnel_id person,
+                                             PLI.skill_repair = PLD.skill_repair person,
+                                             PLI.skill_engineering = PLD.skill_engineering person
+                                        }) :: SqlTransaction Connection Integer
+                    
 
-                            reportPersonnel uid (def { 
+                                    reportPersonnel uid (def { 
                                             PR.report_descriptor = "hire_personnel",
                                             PR.personnel_instance_id = Just plid,
                                             PR.result = "success",
@@ -902,7 +906,7 @@ hirePersonnel = do
                                         })
  
                 
-                            return True
+                                   return True
 
 firePersonnel :: Application ()
 firePersonnel = do 

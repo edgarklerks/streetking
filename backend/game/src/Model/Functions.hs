@@ -8,5 +8,6 @@ import Data.Database
 import Data.HashMap.Strict
 
 $(mkFunctions [
-    ("account_update_energy", [''Integer], ''Bool, Scalar)
+    ("account_update_energy", [''Integer], ''Bool, Scalar),
+    ("personnel_train", [''Integer, ''String, ''String], ''Bool, Scalar)
     ])
