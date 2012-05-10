@@ -85,7 +85,7 @@ instance Convertible SqlValue HStore where
         safeConvert = Right . parseHStore  
 
 instance Convertible HStore SqlValue where 
-        safeConvert = Right . SqlString .  show . toJSON  . unHS 
+        safeConvert = Right . encode . unHS 
 
 instance Default HStore where 
     def = HS $ S.empty
