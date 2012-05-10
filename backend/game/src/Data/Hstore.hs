@@ -31,7 +31,7 @@ parseHStore xs =  case parse parseEntries "" (fromSql xs :: String) of
                             Left e -> error (show e)
                             Right xs -> S.fromList xs 
 
-parseEntries :: Parser [(String,String)
+parseEntries :: Parser [(String,String)]
 parseEntries = parseEntry `sepBy` (char ',' <* spaces)
 
 parseEntry :: Parser (String, String)
