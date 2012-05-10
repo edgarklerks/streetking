@@ -954,6 +954,18 @@ taskPersonnel = do
                     where fugly k xs = fromSql . fromJust $ HM.lookup k xs
 
 
+cancelTaskPersonnel :: Application ()
+cancelTaskPersonnel = do
+    uid <- getUserId
+    xs <- getJson >>= scheck ["personnel_instance_id"]
+    r <- prc uid xs
+    writeResult ("You succesfully canceled this persons task" :: String)
+        where prc uid xs = runDb $ do
+                r <- DBF.personnel_cancel_task $ fugly "personnel_instance_id" xs
+                return r
+                    where fugly k xs = fromSql . fromJust $ HM.lookup k xs
+
+
 
 {-- Reporting functions --}
 {-- 
@@ -1070,6 +1082,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/fire", firePersonnel),
                 ("/Personnel/train", trainPersonnel),
                 ("/Personnel/task", taskPersonnel),
+                ("/Personnel/cancelTask", cancelTaskPersonnel),
                 ("/Personnel/reports", personnelReports),
                 ("/User/reports", userReports)
              ]
