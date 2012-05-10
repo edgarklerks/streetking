@@ -82,14 +82,4 @@ mco = (fmap) thsql
 
 mfp = (fmap catMaybes) . (fmap.fmap) fromHashMap
 
-instance Default Bool where 
-        def = False
 
-instance Convertible SqlValue HStore where 
-        safeConvert = Right . parseHStore  
-
-instance Convertible HStore SqlValue where 
-        safeConvert = Right . convert . ppHStore 
-
-instance Default HStore where 
-    def = S.empty
