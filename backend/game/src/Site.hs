@@ -939,8 +939,8 @@ firePersonnel = do
                              reportPersonnel uid (def { 
                                             PR.report_descriptor = "fire_personnel",
                                             PR.personnel_instance_id = PLI.id person,
-                                            PR.skill_repair = Just $ PLI.skill_repair person,
-                                            PR.skill_engineering = Just $ PLI.skill_engineering person,
+--                                            PR.skill_repair = Just $ PLI.skill_repair person,
+--                                            PR.skill_engineering = Just $ PLI.skill_engineering person,
                                             PR.result = "success"
                                         })
                              plid <- save $ person {
