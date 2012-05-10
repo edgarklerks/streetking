@@ -8,7 +8,6 @@ import           Model.General
 import           Data.Database 
 import           Control.Monad
 import           Data.Hstore
-import           Model.General
 
 import           Control.Applicative
 import qualified Data.Map as M
