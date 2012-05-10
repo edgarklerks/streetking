@@ -16,6 +16,7 @@ import qualified Data.Foldable as F
 import Data.List 
 import Data.Convertible
 import Data.Default
+import Data.Aeson 
 
 newtype HStore = HS {
     unHS ::S.HashMap String String 
@@ -84,7 +85,7 @@ instance Convertible SqlValue HStore where
         safeConvert = Right . parseHStore  
 
 instance Convertible HStore SqlValue where 
-        safeConvert = Right . toSql . unHS . ppHStore 
+        safeConvert = Right .SqlString .  show . toJSON  . unHS . ppHStore 
 
 instance Default HStore where 
     def = HS $ S.empty
