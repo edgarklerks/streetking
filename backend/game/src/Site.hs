@@ -879,14 +879,14 @@ trainPersonnel = do
                                                     ("repair" :: String) -> abs (PLI.skill_repair p1 - PLI.skill_repair p2)
                                                     "engineering" -> abs ( PLI.skill_engineering p1 - PLI.skill_engineering p2 )
                                                     otherwise -> error "no type defined"
-                                      cost xs p = (cbas xs p) * (cmul xs)
+                                      cost xs p = floor $ toRational (cbas xs p) * (cmul xs)
                                       cbas xs p = case fugly "type" xs of 
                                                     ("repair" :: String) -> PLI.training_cost_repair p
                                                     "engineering" -> PLI.training_cost_engineering p
                                                     otherwise -> error "no type defined"
                                       cmul xs = case fugly "level" xs of 
-                                                    ("high" :: String) -> 3
-                                                    "medium" -> 2
+                                                    ("high" :: String) -> 2
+                                                    "medium" -> 1.5
                                                     "low" -> 1
                                                     otherwise -> error "no level defined"
 
