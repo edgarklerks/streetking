@@ -933,13 +933,17 @@ firePersonnel = do
                 case cm of 
                         Nothing -> rollback "No such person found"
                         Just person -> do
-                           delete (undefined :: PLI.PersonnelInstance) ["id" |== toSql (PLI.id person), "garage_id" |== toSql (G.id g)] 
-                           reportPersonnel uid (def { 
+--                           delete (undefined :: PLI.PersonnelInstance) ["id" |== toSql (PLI.id person), "garage_id" |== toSql (G.id g)] 
+                            plid <- save ((def :: PLI.PersonnelInstance) {
+                                     PLI.deleted = True
+                                }) :: SqlTransaction Connection Integer
+
+                            reportPersonnel uid (def { 
                                             PR.report_descriptor = "fire_personnel",
                                             PR.personnel_instance_id = PLI.id person,
                                             PR.result = "success"
                                         })
-                           return True
+                            return True
 
 
 taskPersonnel :: Application ()
