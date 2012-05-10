@@ -42,7 +42,7 @@ parseEntries :: Parser [(String,String)]
 parseEntries = parseEntry `sepBy` (char ',' <* spaces)
 
 parseEntry :: Parser (String, String)
-parseEntry = (,) <$> (parseKey <* string "=>") <*> parseValue 
+parseEntry = (,) <$> (parseKey <* string "=>" <* spaces) <*> (spaces *> parseValue)
 
 
 parseKey :: Parser String 
