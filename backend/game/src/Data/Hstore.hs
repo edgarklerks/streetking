@@ -84,7 +84,7 @@ instance Convertible SqlValue HStore where
         safeConvert = Right . parseHStore  
 
 instance Convertible HStore SqlValue where 
-        safeConvert = Right . convert . ppHStore 
+        safeConvert = Right . toSql . unHS . ppHStore 
 
 instance Default HStore where 
     def = HS $ S.empty
