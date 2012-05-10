@@ -907,6 +907,7 @@ hirePersonnel = do
                             
                                     plid <- save ((def :: PLI.PersonnelInstance) {
                                              PLI.garage_id =  fromJust $ G.id g,
+                                             PLI.task_id = 1,
                                              PLI.personnel_id = PLD.personnel_id person,
                                              PLI.skill_repair = PLD.skill_repair person,
                                              PLI.skill_engineering = PLD.skill_engineering person
