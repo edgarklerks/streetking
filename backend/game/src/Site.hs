@@ -941,6 +941,20 @@ firePersonnel = do
                                         })
                            return True
 
+
+taskPersonnel :: Application ()
+taskPersonnel = do
+    uid <- getUserId
+    xs <- getJson >>= scheck ["personnel_instance_id", "task", "subject_id"]
+    r <- prc uid xs
+    writeResult ("You succesfully tasked this person" :: String)
+        where prc uid xs = runDb $ do
+                r <- DBF.personnel_train (fugly "personnel_instance_id" xs) (fugly "type" xs) (fugly "level" xs)
+                return r
+                    where fugly k xs = fromSql . fromJust $ HM.lookup k xs
+
+
+
 {-- Reporting functions --}
 {-- 
  - @IN Integer
@@ -1055,6 +1069,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
                 ("/Personnel/train", trainPersonnel),
+                ("/Personnel/task", taskPersonnel),
                 ("/Personnel/reports", personnelReports),
                 ("/User/reports", userReports)
              ]
