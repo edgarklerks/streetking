@@ -867,10 +867,10 @@ trainPersonnel = do
                             pm <- fromJust <$> load (fromJust $ PLI.id person) :: SqlTransaction Connection (PLI.PersonnelInstance)
 
                             reportPersonnel uid (def { 
-                                            PR.report_descriptor = "train_personnel",
-                                            PR.personnel_instance_id = PLI.id person,
+                                             PR.report_descriptor = "train_personnel",
+                                             PR.personnel_instance_id = PLI.id person,
                                              PR.result = show $ frm xs pm person,
-                                             PR.cost = Just $ abs(PLI.training_cost_repair person)
+                                             PR.cost = Just $ abs(PLI.training_cost_repair person),
                                              PR.data = fugly "type" xs 
                                         })
                             return r
@@ -949,8 +949,8 @@ taskPersonnel = do
     r <- prc uid xs
     writeResult ("You succesfully tasked this person" :: String)
         where prc uid xs = runDb $ do
-                r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
-                return r
+               r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
+               return r
                     where fugly k xs = fromSql . fromJust $ HM.lookup k xs
 
 
