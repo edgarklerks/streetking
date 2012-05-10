@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings, RankNTypes #-}
+
 {-|
 
 This is where all the routes and handlers are defined for your site. The
@@ -66,6 +67,7 @@ import           Data.Convertible
 import           Data.Time.Clock 
 import           Data.Time.Clock.POSIX
 import qualified Data.Foldable as F
+import           Data.Hstore
 
 import qualified Data.Digest.TigerHash as H
 import qualified Data.Digest.TigerHash.ByteString as H
@@ -788,6 +790,7 @@ addPart = do
                                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
         
                                 when (isJust (PI.car_instance_id x)) $ rollback "part already in car"
+
             
                                 save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
                                 return ()
@@ -861,9 +864,20 @@ trainPersonnel = do
 
                             -- train personnel
                             r <- DBF.personnel_train (fromJust $ PLI.id person) (fugly "type" xs) (fugly "level" xs)
+                            pm <- fromJust <$> load (fromJust $ PLI.id person) :: SqlTransaction Connection (PLI.PersonnelInstance)
+
+                            reportPersonnel uid (def { 
+                                            PR.report_descriptor = "train_personnel",
+                                            PR.personnel_instance_id = PLI.id person,
+                                             PR.result = show $ frm xs pm person,
+                                             PR.cost = Just $ abs(PLI.training_cost_repair person)
+                                        })
                             return r
                                 where fugly k xs = fromSql . fromJust $ HM.lookup k xs
-
+                                      frm xs p1 p2 = case fugly "type" xs of 
+                                                    ("repair" :: String) -> abs (PLI.skill_repair p1 - PLI.skill_repair p2)
+                                                    "engineering" -> abs ( PLI.skill_engineering p1 - PLI.skill_engineering p2 )
+                                                    otherwise -> error "no type defined"
 
 hirePersonnel :: Application ()
 hirePersonnel = do 
@@ -996,6 +1010,22 @@ userReports = do
         ns <- runDb $ search xs [] l o :: Application [GR.GeneralReport]
         writeMapables ns
 
+personnelReports :: Application ()
+personnelReports = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
+        ns <- runDb $ search xs [] l o :: Application [PR.PersonnelReport]
+        writeMapables ns
+
+shoppingReports :: Application ()
+shoppingReports = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
+        ns <- runDb $ search xs [] l o :: Application [SR.ShopReport]
+        writeMapables ns
+
+
+
 
 -- | The main entry point handler.
 site :: Application ()
@@ -1025,6 +1055,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/place", marketPlace),
                 ("/Market/trash", marketTrash),
                 ("/Market/buySecond", marketPlaceBuy),
+                ("/Market/reports", shoppingReports),
                 ("/Car/buy", carBuy),
                 ("/Car/parts", carParts),
                 ("/Car/part", carPart),
@@ -1039,6 +1070,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/fire", firePersonnel),
                 ("/Personnel/train", trainPersonnel),
                 ("/Personnel/task", taskPersonnel),
+                ("/Personnel/reports", personnelReports),
                 ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
