@@ -30,6 +30,11 @@ $(genAllId "PersonnelInstanceDetails" "personnel_instance_details" "personnel_in
     ("skill_engineering", ''Integer),
     ("training_cost_repair", ''Integer),
     ("training_cost_engineering", ''Integer),
-    ("busy_until", ''Integer),
+    ("task_id", ''Integer),
+    ("task_name", ''String),
+    ("task_started", ''Integer),
+    ("task_end", ''Integer),
+    ("task_updated", ''Integer),
+    ("task_subject_id", ''Integer),
     ("paid_until", ''Integer)
     ])

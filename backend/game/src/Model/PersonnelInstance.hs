@@ -26,6 +26,10 @@ $(genAll "PersonnelInstance" "personnel_instance" [
     ("training_cost_engineering", ''Integer),
     ("salary", ''Integer),
     ("paid_until", ''Integer),
-    ("busy_until", ''Integer),
+    ("task_id", ''Integer),
+    ("task_started", ''Integer),
+    ("task_end", ''Integer),
+    ("task_updated", ''Integer),
+    ("task_subject_id", ''Integer),
     ("deleted", ''Bool)
     ])
