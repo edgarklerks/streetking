@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings, RankNTypes #-}
+
 {-|
 
 This is where all the routes and handlers are defined for your site. The
@@ -788,6 +789,7 @@ addPart = do
                                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
         
                                 when (isJust (PI.car_instance_id x)) $ rollback "part already in car"
+
             
                                 save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
                                 return ()
@@ -866,8 +868,8 @@ trainPersonnel = do
                             reportPersonnel uid (def { 
                                             PR.report_descriptor = "train_personnel",
                                             PR.personnel_instance_id = PLI.id person,
-                                            PR.result = show $ frm xs pm person,
-                                            PR.cost = Just $ abs(PLI.training_cost_repair person)
+                                             PR.result = show $ frm xs pm person,
+                                             PR.cost = Just $ abs(PLI.training_cost_repair person)
                                         })
                             return r
                                 where fugly k xs = fromSql . fromJust $ HM.lookup k xs
