@@ -948,7 +948,7 @@ taskPersonnel = do
     r <- prc uid xs
     writeResult ("You succesfully tasked this person" :: String)
         where prc uid xs = runDb $ do
-                r <- DBF.personnel_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
+                r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
                 return r
                     where fugly k xs = fromSql . fromJust $ HM.lookup k xs
 
