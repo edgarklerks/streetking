@@ -17,6 +17,7 @@ import Data.List
 import Data.Convertible
 import Data.Default
 import Data.Aeson 
+import qualified Data.ByteString.Lazy.Char8 as L 
 
 newtype HStore = HS {
     unHS ::S.HashMap String String 
@@ -85,7 +86,7 @@ instance Convertible SqlValue HStore where
         safeConvert = Right . parseHStore  
 
 instance Convertible HStore SqlValue where 
-        safeConvert = Right . encode . unHS 
+        safeConvert = Right . L.unpack .  encode . unHS 
 
 instance Default HStore where 
     def = HS $ S.empty
