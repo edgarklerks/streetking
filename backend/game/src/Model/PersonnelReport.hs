@@ -23,23 +23,10 @@ $(genAll "PersonnelReport" "personnel_reports"
         ("report_type_id", ''Integer),
         ("report_type", ''String),
         ("report_descriptor", ''String),
-        ("part_instance_id", ''MInteger),
         ("personnel_instance_id", ''MInteger),
+        ("part_instance_id", ''MInteger),
         ("cost", ''MInteger),
         ("result", ''String),
-        ("personnel_id", ''MInteger),
-        ("name", ''MString),
-        ("country_name", ''MString),
-        ("country_shortname", ''MString),
-        ("gender", ''MBool),
-        ("picture", ''MString),
-        ("salary", ''MInteger),
-        ("skill_repair", ''MInteger),
-        ("skill_engineering", ''MInteger),
-        ("busy_until", ''MInteger),
-        ("paid_until", ''MInteger),
-        ("garage_id", ''MInteger),
-        ("training_cost_repair", ''MInteger),
-        ("training_cost_engineering", ''MInteger)
+        ("data", ''String)
 
     ])
