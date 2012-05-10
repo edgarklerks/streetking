@@ -86,7 +86,9 @@ instance Convertible SqlValue HStore where
         safeConvert = Right . parseHStore  
 
 instance Convertible HStore SqlValue where 
-        safeConvert = Right . SqlString . L.unpack .   encode . unHS 
+        safeConvert x = Right $ case unHS x == S.empty of 
+                                    True -> SqlString "\"\""
+                                    False -> (SqlString . L.unpack .   encode . unHS) x
 
 instance Default HStore where 
     def = HS $ S.empty

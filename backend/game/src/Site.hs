@@ -910,14 +910,13 @@ hirePersonnel = do
                                              PLI.skill_repair = PLD.skill_repair person,
                                              PLI.skill_engineering = PLD.skill_engineering person
                                         }) :: SqlTransaction Connection Integer
-                    
 
                                     reportPersonnel uid (def { 
                                             PR.report_descriptor = "hire_personnel",
                                             PR.personnel_instance_id = Just plid,
                                             PR.result = "success",
                                             PR.cost = Just $ abs(PLD.salary person + PLD.price person)
-                                        })
+                                        }) 
                                     return True
 
 firePersonnel :: Application ()
