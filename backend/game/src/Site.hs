@@ -816,7 +816,8 @@ marketPersonnel = do
                     "salary" +>= "salarymin" +&&
                     "salary" +<= "salarymax" 
             )
-        ns <- runDb $ search xs [Order ("sort",[]) True]  l o :: Application [PLD.PersonnelDetails]
+        r <- liftIO $ randomRIO (1, 101 :: Integer)
+        ns <- runDb $ search (("sort" |== (toSql r)) :xs) [Order ("sort",[]) True]  l o :: Application [PLD.PersonnelDetails]
         writeMapables ns 
 
 
