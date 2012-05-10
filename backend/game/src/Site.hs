@@ -867,10 +867,10 @@ trainPersonnel = do
                             pm <- fromJust <$> load (fromJust $ PLI.id person) :: SqlTransaction Connection (PLI.PersonnelInstance)
 
                             reportPersonnel uid (def { 
-                                            PR.report_descriptor = "train_personnel",
-                                            PR.personnel_instance_id = PLI.id person,
+                                             PR.report_descriptor = "train_personnel",
+                                             PR.personnel_instance_id = PLI.id person,
                                              PR.result = show $ frm xs pm person,
-                                             PR.cost = Just $ abs(PLI.training_cost_repair person)
+                                             PR.cost = Just $ abs(PLI.training_cost_repair person),
                                              PR.data = fugly "type" xs 
                                         })
                             return r
