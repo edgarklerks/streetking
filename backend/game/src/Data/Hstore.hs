@@ -35,7 +35,7 @@ escapeString =  concatMap step
 
 parseHStore :: SqlValue -> HStore 
 parseHStore xs =  HS $ case parse parseEntries "" (fromSql xs :: String) of 
-                            Left e -> error (show e)
+                            Left e -> error (show e ++ "," ++ show xs)
                             Right xs -> S.fromList xs 
 
 parseEntries :: Parser [(String,String)]
