@@ -7,6 +7,7 @@ import           Data.Convertible
 import           Model.General
 import           Data.Database 
 import           Control.Monad
+import           Data.Hstore
 
 import           Control.Applicative
 import qualified Data.Map as M
@@ -27,6 +28,6 @@ $(genAll "PersonnelReport" "personnel_reports"
         ("part_instance_id", ''MInteger),
         ("cost", ''MInteger),
         ("result", ''String),
-        ("data", ''String)
+        ("data", ''HStore)
 
     ])
