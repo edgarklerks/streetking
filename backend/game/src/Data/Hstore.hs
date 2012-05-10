@@ -1,6 +1,7 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Data.Hstore (
         parseHStore,
-        HStore,
+        HStore(..),
         ppHStore 
     ) where 
 
@@ -13,12 +14,17 @@ import Control.Applicative
 import Database.HDBC
 import qualified Data.Foldable as F
 import Data.List 
+import Data.Convertible
+import Data.Default
+import Data.Aeson 
 
-type HStore = S.HashMap String String 
+newtype HStore = HS {
+    unHS ::S.HashMap String String 
+    } deriving (Show, Eq)
 
 ppHStore :: HStore -> String 
 ppHStore xs = intercalate "," $ 
-              do (k,v) <- S.toList xs 
+              do (k,v) <- S.toList (unHS xs) 
                  return $ '"' : (escapeString k ++ "\"=>" ++ ('"' : escapeString v ++ ['"'])) 
  
 escapeString =  concatMap step 
@@ -27,7 +33,7 @@ escapeString =  concatMap step
         step x = [x]
 
 parseHStore :: SqlValue -> HStore 
-parseHStore xs =  case parse parseEntries "" (fromSql xs :: String) of 
+parseHStore xs =  HS $ case parse parseEntries "" (fromSql xs :: String) of 
                             Left e -> error (show e)
                             Right xs -> S.fromList xs 
 
@@ -72,4 +78,14 @@ uncharp = noneOf "\""
 
 
 
+instance Default Bool where 
+        def = False
 
+instance Convertible SqlValue HStore where 
+        safeConvert = Right . parseHStore  
+
+instance Convertible HStore SqlValue where 
+        safeConvert = Right . SqlString .  show . toJSON  . unHS 
+
+instance Default HStore where 
+    def = HS $ S.empty
