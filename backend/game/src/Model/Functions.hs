@@ -11,5 +11,6 @@ $(mkFunctions [
     ("account_update_energy", [''Integer], ''Bool, Scalar),
     ("personnel_train", [''Integer, ''String, ''String], ''Bool, Scalar),
     ("personnel_start_task", [''Integer, ''String, ''Integer], ''Bool, Scalar),
-    ("personnel_cancel_task", [''Integer], ''Bool, Scalar)
+    ("personnel_cancel_task", [''Integer], ''Bool, Scalar),
+    ("garage_actions_account", [''Integer], ''Bool, Scalar)
     ])

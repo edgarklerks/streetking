@@ -35,6 +35,7 @@ $(genAllId "PersonnelInstanceDetails" "personnel_instance_details" "personnel_in
     ("task_started", ''Integer),
     ("task_end", ''Integer),
     ("task_updated", ''Integer),
+    ("task_time_left", ''Integer),
     ("task_subject_id", ''Integer),
     ("paid_until", ''Integer)
     ])
