@@ -681,7 +681,6 @@ marketParts = do
 garageParts :: Application ()
 garageParts = do 
         uid <- getUserId 
-
         ((l, o), xs) <- getPagesWithDTD (
             "name" +== "part_type" +&& 
             "part_instance_id" +== "part_instance_id" +&& 
@@ -697,16 +696,26 @@ garageParts = do
                     
                 "account_id" +==| toSql uid
             )
-        ns <- runDb (search xs [] l o) :: Application [GPT.GaragePart]
-        writeMapables ns
+        let p = runDb $ do
+            r <- DBF.garage_actions_account uid
+            ns <- search xs [] l o
+            return ns 
+        ns <- p :: Application [GPT.GaragePart]
+        writeMapables ns 
 
            
 garageCar :: Application ()
 garageCar = do 
         uid <- getUserId 
         ((l,o), xs) <- getPagesWithDTD ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
-        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
-        writeMapables ps
+--        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
+        let p = runDb $ do
+            r <- DBF.garage_actions_account uid
+            ns <- search xs [] l o
+            return ns 
+        ns <- p :: Application [CIG.CarInGarage]
+        writeMapables ns 
+
 
 loadModel :: Application ()
 loadModel = do 
@@ -816,7 +825,7 @@ marketPersonnel = do
                     "salary" +>= "salarymin" +&&
                     "salary" +<= "salarymax" 
             )
-        r <- liftIO $ randomRIO (1, 101 :: Integer)
+        r <- liftIO $ randomRIO (1, 100 :: Integer)
         ns <- runDb $ search (("sort" |== (toSql r)) :xs) [Order ("sort",[]) True]  l o :: Application [PLD.PersonnelDetails]
         writeMapables ns 
 
@@ -835,6 +844,7 @@ garagePersonnel = do
                     "salary" +<= "salarymax" 
             )
         let p = runDb $ do
+            r <- DBF.garage_actions_account uid
             g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
             ns <- search (xs ++ ["garage_id" |== (toSql $ G.id g) ]) [Order ("personnel_instance_id",[]) True]  l o
             return ns 
@@ -944,7 +954,7 @@ firePersonnel = do
          where prc uid xs person =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
 --                cm <- load (fromJust $ PLI.id person) :: SqlTransaction Connection (Maybe PLI.PersonnelInstance)
-                cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ PLI.id person)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
+                cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ PLI.id person), "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
                 case cm of 
                         [] -> rollback "That is not your mechanic, friend"
                         [person] -> do
@@ -970,8 +980,12 @@ taskPersonnel = do
     writeResult ("You succesfully tasked this person" :: String)
         where prc uid xs = runDb $ do
                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-               r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
-               return r
+               cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ HM.lookup "personnel_instance_id" xs), "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
+               case cm of 
+                        [] -> rollback "That is not your mechanic, friend"
+                        [_] -> do
+                            r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
+                            return r
 
 
 cancelTaskPersonnel :: Application ()
@@ -981,8 +995,14 @@ cancelTaskPersonnel = do
     r <- prc uid xs
     writeResult ("You succesfully canceled this persons task" :: String)
         where prc uid xs = runDb $ do
-                r <- DBF.personnel_cancel_task $ fugly "personnel_instance_id" xs
-                return r
+               g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+               cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ HM.lookup "personnel_instance_id" xs), "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
+               case cm of 
+                        [] -> rollback "That is not your mechanic, friend"
+                        [_] -> do
+                            r <- DBF.personnel_cancel_task $ fugly "personnel_instance_id" xs
+                            return r
+
 
 -- fugly is fugly
 fugly k xs = fromSql . fromJust $ HM.lookup k xs
