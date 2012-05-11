@@ -875,17 +875,18 @@ trainPersonnel = do
                                              PR.data = fugly "type" xs 
                                         })
                             return r
-                                where fugly k xs = fromSql . fromJust $ HM.lookup k xs
-                                      frm xs p1 p2 = case fugly "type" xs of 
+                                where
+
+                                    frm xs p1 p2 = case fugly "type" xs of 
                                                     ("repair" :: String) -> abs (PLI.skill_repair p1 - PLI.skill_repair p2)
                                                     "engineering" -> abs ( PLI.skill_engineering p1 - PLI.skill_engineering p2 )
                                                     otherwise -> error "no type defined"
-                                      cost xs p = floor $ toRational (cbas xs p) * (cmul xs)
-                                      cbas xs p = case fugly "type" xs of 
+                                    cost xs p = floor $ toRational (cbas xs p) * (cmul xs)
+                                    cbas xs p = case fugly "type" xs of 
                                                     ("repair" :: String) -> PLI.training_cost_repair p
                                                     "engineering" -> PLI.training_cost_engineering p
                                                     otherwise -> error "no type defined"
-                                      cmul xs = case fugly "level" xs of 
+                                    cmul xs = case fugly "level" xs of 
                                                     ("high" :: String) -> 2
                                                     "medium" -> 1.5
                                                     "low" -> 1
@@ -942,23 +943,23 @@ firePersonnel = do
     writeResult ("You succesfully fired this person" :: String)
          where prc uid xs person =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                cm <- load (fromJust $ PLI.id person) :: SqlTransaction Connection (Maybe PLI.PersonnelInstance)
+--                cm <- load (fromJust $ PLI.id person) :: SqlTransaction Connection (Maybe PLI.PersonnelInstance)
+                cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ PLI.id person)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
                 case cm of 
-                        Nothing -> rollback "No such person found"
-                        Just person -> do
---                           delete (undefined :: PLI.PersonnelInstance) ["id" |== toSql (PLI.id person), "garage_id" |== toSql (G.id g)]
---
-                             reportPersonnel uid (def { 
-                                            PR.report_descriptor = "fire_personnel",
-                                            PR.personnel_instance_id = PLI.id person,
---                                            PR.skill_repair = Just $ PLI.skill_repair person,
---                                            PR.skill_engineering = Just $ PLI.skill_engineering person,
-                                            PR.result = "success"
-                                        })
-                             plid <- save $ person {
-                                     PLI.deleted = True
-                                } 
-                             return True
+                        [] -> rollback "That is not your mechanic, friend"
+                        [person] -> do
+
+                            reportPersonnel uid (def { 
+                                    PR.report_descriptor = "fire_personnel",
+                                    PR.personnel_instance_id = PLI.id person,
+                                    PR.result = "success"
+                                })
+
+                            plid <- save $ person {
+                                    PLI.deleted = True
+                                }
+
+                            return True
 
 
 taskPersonnel :: Application ()
@@ -968,9 +969,9 @@ taskPersonnel = do
     r <- prc uid xs
     writeResult ("You succesfully tasked this person" :: String)
         where prc uid xs = runDb $ do
+               g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
                return r
-                    where fugly k xs = fromSql . fromJust $ HM.lookup k xs
 
 
 cancelTaskPersonnel :: Application ()
@@ -982,8 +983,9 @@ cancelTaskPersonnel = do
         where prc uid xs = runDb $ do
                 r <- DBF.personnel_cancel_task $ fugly "personnel_instance_id" xs
                 return r
-                    where fugly k xs = fromSql . fromJust $ HM.lookup k xs
 
+-- fugly is fugly
+fugly k xs = fromSql . fromJust $ HM.lookup k xs
 
 
 {-- Reporting functions --}
