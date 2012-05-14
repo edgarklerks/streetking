@@ -105,8 +105,7 @@ writeMapables = writeResult . fmap toHashMap
 getUserId :: Application Integer 
 getUserId =  do 
         x <- getParam "userid"
-        trace (show x) $ 
-            case x of 
+        case x of 
                 Just y -> return (read $ B.unpack y)
                 Nothing -> internalError "No userid"
 

@@ -53,7 +53,7 @@ instance Convertible (Tree Menu) [MenuModel] where
 instance Convertible [MenuModel] (Tree Menu) where 
         safeConvert x = Right (fromFlat $ convert x)
 
-logintree = Node Root [Node (SubMenu "ACCOUNT" "" "") 
+logintree = Node Root $ reverse [Node (SubMenu "ACCOUNT" "" "") 
                             [ Node (MenuItem "LOGIN" "ACCOUNT_LOGIN" "dialog") [],
                                Node (MenuItem "REGISTER" "ACCOUNT_REGISTER" "dialog") []
 
@@ -62,7 +62,7 @@ logintree = Node Root [Node (SubMenu "ACCOUNT" "" "")
                           Node (MenuItem "MAIN" "MAIN" "") []
                         ]
 
-gametree = Node Root [
+gametree = Node Root $ reverse [
             Node (MenuItem "LOGOUT" "LOGOUT" "") [],
             Node (MenuItem "REPORTS" "REPORTS" "") [],
             Node (SubMenu "SHOP" "" "") [
