@@ -567,6 +567,9 @@ TemplateEvaluator = {
                         case '!':
                             stack.push(!res);
                         continue;
+                        case 'length':
+                            stack.push(res.length);
+                            continue;
                         case 'nl2br':
                             stack.push(res.replace("\r", "").split("\n").join("<br />"));
                             continue;
