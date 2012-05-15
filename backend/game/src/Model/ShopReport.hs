@@ -16,7 +16,6 @@ import           Prelude hiding (id)
 $(genAll "ShopReport" "shopping_reports" 
     [ ("id", ''Id),
         ("account_id", ''Integer),
-        ("title", ''String),
         ("time", ''Integer),
         ("report_type_id", ''Integer),
         ("report_type", ''String),
