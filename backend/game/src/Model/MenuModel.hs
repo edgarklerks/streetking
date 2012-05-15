@@ -75,7 +75,7 @@ gametree = Node Root $ reverse [
             Node (SubMenu "GARAGE" "" "") [
                 Node (MenuItem "CARS" "GARAGE_CARS" "") [],
                 Node (MenuItem "PARTS" "GARAGE_PARTS" "") [],
-                Node (MenuItem "PERSONNEL" "GARAGE_PERSONNEL" "") []
+                Node (MenuItem "STAFF" "GARAGE_PERSONNEL" "") []
 
             ],
             Node (MenuItem "HOME" "HOME" "") []

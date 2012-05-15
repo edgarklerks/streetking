@@ -518,13 +518,24 @@ marketPlaceBuy = do
                         transactionMoney uid (def {
                                 Transaction.amount = - abs(MP.price p),
                                 Transaction.type = "market_place_buy",
-                                Transaction.type_id = fromJust $ MP.id d 
+                                Transaction.type_id = fromJust $ MP.id p 
+                            })
+                        reportShopper uid (def {
+                                SR.part_instance_id = fromJust $ MP.id p,
+                                SR.amount = abs (MP.price p),
+                                SR.report_descriptor = "market_part_buy"
+                            })
+
+                        reportShopper (MP.account_id p) (def {
+                                SR.part_instance_id = fromJust $ MP.id p,
+                                SR.amount = abs (MP.price p),
+                                SR.report_descriptor = "market_part_sell"
                             })
 
                         transactionMoney (MP.account_id p) (def {
                                 Transaction.amount = abs(MP.price p),
                                 Transaction.type = "market_place_sell",
-                                Transaction.type_id = fromJust $ MP.id d
+                                Transaction.type_id = fromJust $ MP.id p
                             })
 
                         a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
@@ -631,6 +642,11 @@ marketTrash = do
             case pls of 
                 [] -> rollback "Cannot find garage part"
                 [d] -> do 
+                        reportShopper uid (def {
+                                SR.part_instance_id = GPT.part_instance_id d,
+                                SR.amount = abs (GPT.trash_price d),
+                                SR.report_descriptor = "part_trashed"
+                            })
                         transactionMoney uid (def { 
                                 Transaction.amount = abs (GPT.trash_price d), 
                                 Transaction.type = "garage_trash",
@@ -1014,13 +1030,14 @@ fugly k xs = fromSql . fromJust $ HM.lookup k xs
  - @IN ShopReport
  - @OUT SqlTransaction Connection ()
  - @SIDEEFFECTS Save parameter object to database. Overrides the account identification number  
+ - OBJECT-id: 1992771092736l
  --}
-reportShopping :: Integer -> -- account_id, should exist and is a bigint 
+reportShopper :: Integer -> -- account_id, should exist and is a bigint 
                  SR.ShopReport -> -- ShopReport is a named parameter object (Model/ShopReport) 
                  SqlTransaction -- Executable and Composable Database Context for Forming Transactions 
                     Connection -- Polymorphic Database Connection Descriptor.  
                     () -- Resultant type of computation 
-reportShopping uid x = do -- syntactic sugar for heightening readability.  
+reportShopper uid x = do -- syntactic sugar for heightening readability.  
                 -- some space to enforce enterprise ready deployability. 
                 save {-- Opening the save clause --} (x { -- Special parameter object to achieve object type safety. 
                         SR.account_id = uid -- Setting the record type explicitely. 

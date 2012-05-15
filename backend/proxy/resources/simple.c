@@ -9,6 +9,9 @@
 #include <sys/uio.h>
 #include <string.h>
 
+#define RUNS 500 
+#define THRS 40
+
 /* Never writes anything, just returns the size presented */
 size_t my_dummy_write(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
@@ -19,7 +22,7 @@ size_t my_dummy_write(char *ptr, size_t size, size_t nmemb, void *userdata)
 CURL * initr() {
   CURL * curl;    
   curl = curl_easy_init();
-  curl_easy_setopt(curl, CURLOPT_URL, "http://devel.graffity.me:9001/User/addSkill?application_token=7AXUYXU4ZIDSIXHFLC7MLQPOHHGXBJGDOZY6HXA%3D&user_token=KTDSZIK7LNYP6D3EN4LW7ETL3LLORKWIWRLOWDA%3D");
+  curl_easy_setopt(curl, CURLOPT_URL, "http://r2.graffity.me:9003/User/addSkill?application_token=7AXUYXU4ZIDSIXHFLC7MLQPOHHGXBJGDOZY6HXA%3D&user_token=KTDSZIK7LNYP6D3EN4LW7ETL3LLORKWIWRLOWDA%3D");
     /* Now specify the POST data */ 
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "{\"skill_acceleration\":\"1\" }");
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 0);
@@ -38,7 +41,7 @@ int main(int argc, char * argv[]){
       int fd;
 
       CURL * c = NULL;
-      for(i = 0; i < 40; i++){
+      for(i = 0; i < THRS; i++){
             if(!fork()){
                  c = initr();
                  break;
@@ -54,7 +57,7 @@ int main(int argc, char * argv[]){
               printf("Error");
               exit(-1);
       }
-      for(i = 0; i < 500; i++){ 
+      for(i = 0; i < RUNS; i++){ 
               curl_easy_perform(c);
       }
       e = time(NULL);
