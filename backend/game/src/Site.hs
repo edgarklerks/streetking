@@ -359,7 +359,7 @@ carBuy = do
 
                             reportShopper uid (def {
                                     SR.amount = abs(CM.price car),
-                                    SR.car_id = CM.id car,
+                                    SR.car_instance_id =  Just cid,
                                     SR.report_descriptor = "shop_car_buy"
                                 })
 
