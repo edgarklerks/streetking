@@ -38,7 +38,7 @@ $(genAll "ShopReport" "shopping_reports"
         ("car_level", ''MInteger),
         ("car_year", ''MInteger),
         ("car_price", ''MInteger),
-        ("car_weight", ''Minteger),
+        ("car_weight", ''MInteger),
         ("car_improvement", ''MInteger),
         ("car_wear", ''MInteger),
         ("part_weight", ''MInteger),
