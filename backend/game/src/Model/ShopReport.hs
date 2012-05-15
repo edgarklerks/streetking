@@ -13,6 +13,8 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
+type MInteger = Maybe Integer
+
 $(genAll "ShopReport" "shopping_reports" 
     [ ("id", ''Id),
         ("account_id", ''Integer),
@@ -20,7 +22,8 @@ $(genAll "ShopReport" "shopping_reports"
         ("report_type_id", ''Integer),
         ("report_type", ''String),
         ("report_descriptor", ''String),
-        ("part_instance_id", ''Integer),
+        ("part_instance_id", ''MInteger),
+        ("car_instance_id",''MInteger),
         ("part_id", ''Integer),
         ("amount", ''Integer)
     ])

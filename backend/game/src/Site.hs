@@ -247,12 +247,16 @@ marketBuy = do
 
                 -- Add to user garage 
 
-                save (def {
+                i <- save (def {
                             PI.garage_id = G.id (head grg), 
                             PI.part_id = fromJust $ Part.id item,
                             PI.account_id = uid 
                             } :: PI.PartInstance) 
-
+                reportShopper uid (def { 
+                        SR.amount = abs(Part.price item),
+                        SR.report_descriptor = "shop_part_buy",
+                        SR.part_instance_id = Just i
+                    })
                 -- write it away in transaction log 
                 transactionMoney uid  (def { 
                             Transaction.amount = - abs (Part.price item), 
@@ -302,7 +306,11 @@ marketSell = do
 
                     -- save part_instance as loon item 
                     save (x {PI.garage_id = Nothing })
-
+                    reportShopper uid (def {
+                            SR.amount = abs fee,
+                            SR.part_instance_id = MI.part_instance_id d,
+                            SR.report_descriptor = "market_part_fee"
+                        })
                     -- write it away in transaction log 
                     transactionMoney uid (def { 
                             Transaction.amount = -(abs fee), 
@@ -348,6 +356,12 @@ carBuy = do
                                     return ()
 
                             foldM_ step () pts  
+
+                            reportShopper uid (def {
+                                    SR.amount = abs(CM.price car),
+                                    SR.car_instance_id = CM.id car,
+                                    SR.report_descriptor = "shop_car_buy"
+                                })
 
                                     -- pay shit
                             transactionMoney uid (def {
@@ -397,6 +411,7 @@ carMarketBuy = do
              case mi of 
                 [] -> rollback "no such car"
                 [car] -> do 
+
                     transactionMoney uid (def { 
                                 Transaction.amount = - abs(MI.price car),
                                 Transaction.type = "garage_car_buy",
@@ -407,7 +422,16 @@ carMarketBuy = do
                             Transaction.type = "garage_car_sell",
                             Transaction.type_id = fromJust $ MI.car_instance_id car 
                         })
-
+                    reportShopper uid (def {
+                            SR.amount = abs(MI.price car),
+                            SR.car_instance_id = MI.car_instance_id car,
+                            SR.report_descriptor = "market_car_buy"
+                        })
+                    reportShopper (MI.account_id car) (def {
+                        SR.amount = abs(MI.price car),
+                        SR.car_instance_id = MI.car_instance_id car, 
+                        SR.report_descriptor = "market_car_sell"
+                        })
                     -- Remove car from market 
                     delete car ["id" |== toSql (MI.id car)] 
 
@@ -453,7 +477,11 @@ carSell = do
                                 Transaction.type_id = fromJust $ CIG.id car
                             })
 
-   
+                        reportShopper uid (def {    
+                                SR.amount = abs(fee),
+                                SR.car_instance_id = CIG.id car,
+                                SR.report_descriptor = "market_car_fee"
+                            })
                      -- 1. Add car to market 
                         save (def {
                                MI.car_instance_id =  CIG.id car,
@@ -484,7 +512,13 @@ carTrash = do
                 case cig of 
                     Nothing -> rollback "no such car"
                     Just car -> do 
-                        
+                        reportShopper uid (def {
+                                SR.part_instance_id = CIG.id car,
+                                SR.amount = abs (CIG.total_price car),
+                                SR.report_descriptor = "car_trashed"
+                            })
+
+
                         transactionMoney uid (def {
                                 Transaction.amount = abs (CIG.total_price  car),
                                 Transaction.type = "car_in_garage_trash",
@@ -521,13 +555,13 @@ marketPlaceBuy = do
                                 Transaction.type_id = fromJust $ MP.id p 
                             })
                         reportShopper uid (def {
-                                SR.part_instance_id = fromJust $ MP.id p,
+                                SR.part_instance_id = MP.id p,
                                 SR.amount = abs (MP.price p),
                                 SR.report_descriptor = "market_part_buy"
                             })
 
                         reportShopper (MP.account_id p) (def {
-                                SR.part_instance_id = fromJust $ MP.id p,
+                                SR.part_instance_id = MP.id p,
                                 SR.amount = abs (MP.price p),
                                 SR.report_descriptor = "market_part_sell"
                             })
@@ -643,7 +677,7 @@ marketTrash = do
                 [] -> rollback "Cannot find garage part"
                 [d] -> do 
                         reportShopper uid (def {
-                                SR.part_instance_id = GPT.part_instance_id d,
+                                SR.part_instance_id = Just $ GPT.part_instance_id d,
                                 SR.amount = abs (GPT.trash_price d),
                                 SR.report_descriptor = "part_trashed"
                             })
