@@ -36,7 +36,10 @@ $(genAll "PartMarket" "market_parts" [
     ("car_model", ''MString),
     ("manufacturer_name", ''MString),
     ("part_modifier", ''MString),
-    ("unique", ''Bool)
+    ("unique", ''Bool),
+    ("required", ''Bool),
+    ("fixed", ''Bool),
+    ("hidden", ''Bool)
  ])
 
 
