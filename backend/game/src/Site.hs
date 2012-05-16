@@ -307,7 +307,7 @@ marketSell = do
                     -- save part_instance as loon item 
                     save (x {PI.garage_id = Nothing })
                     reportShopper uid (def {
-                            SR.amount = abs fee,
+                            SR.amount = abs (MI.price d),
                             SR.part_instance_id = MI.part_instance_id d,
                             SR.report_descriptor = "market_part_fee"
                         })
@@ -478,7 +478,7 @@ carSell = do
                             })
 
                         reportShopper uid (def {    
-                                SR.amount = abs(fee),
+                                SR.amount = MI.price d,
                                 SR.car_instance_id = CIG.id car,
                                 SR.report_descriptor = "market_car_fee"
                             })

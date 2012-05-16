@@ -51,8 +51,16 @@ $(genAll "ShopReport" "shopping_reports"
         ("part_parameter1_type", ''MString),
         ("part_parameter2_type", ''MString),
         ("part_parameter3_type", ''MString),
+        ("part_parameter1_name", ''MString),
+        ("part_parameter2_name", ''MString),
+        ("part_parameter3_name", ''MString),
         ("part_modifier", ''MString),
         ("part_unique", ''MBool),
         ("part_improvement", ''MInteger),
-        ("part_wear", ''MInteger)
+        ("part_wear", ''MInteger),
+        ("part_type", ''MString),
+        ("part_manufacturer_name", ''MString),
+        ("part_parameter1_modifier", ''MString),
+        ("part_parameter2_modifier", ''MString),
+        ("part_parameter3_modifier", ''MString)
     ])
