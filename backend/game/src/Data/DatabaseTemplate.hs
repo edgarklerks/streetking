@@ -5,6 +5,7 @@ import qualified Data.HashMap.Strict as S
 import Data.SqlTransaction
 import Data.Maybe  
 import Database.HDBC.Types
+import Data.SortOrder 
 
 data DTD = Con D.ConOp String DTD 
         | And DTD DTD  
@@ -12,6 +13,9 @@ data DTD = Con D.ConOp String DTD
         | Lift String 
         | Fix SqlValue  
         | If String (String -> Bool) DTD DTD
+        | OrderedBy DTD [String]
+
+orderedBy = OrderedBy 
 
 (+&&) = And 
 (+||) = Or 
@@ -61,6 +65,7 @@ dtd :: DTD -> S.HashMap String SqlValue -> D.Constraints
 dtd x = maybeToList . evalDTD x
 
 evalDTD :: DTD -> S.HashMap String SqlValue -> Maybe D.Constraint
+evalDTD (OrderedBy _) = Nothing 
 evalDTD (If t pred i e) p = case S.lookup t p of 
                                 Nothing -> evalDTD e p 
                                 Just v -> case pred (fromSql v) of 
