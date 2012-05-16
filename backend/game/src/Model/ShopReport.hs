@@ -15,6 +15,7 @@ import           Prelude hiding (id)
 
 type MInteger = Maybe Integer
 type MString = Maybe String 
+type MBool = Maybe Bool
 
 $(genAll "ShopReport" "shopping_reports" 
     [ ("id", ''Id),
@@ -51,7 +52,7 @@ $(genAll "ShopReport" "shopping_reports"
         ("part_parameter2_type", ''MString),
         ("part_parameter3_type", ''MString),
         ("part_modifier", ''MString),
-        ("part_unique", ''Bool),
+        ("part_unique", ''MBool),
         ("part_improvement", ''MInteger),
         ("part_wear", ''MInteger)
     ])
