@@ -533,9 +533,34 @@ carTrash = do
                         forM_ xs $ \i -> save (i { PI.deleted = True }) 
                         save (ci { CarInstance.deleted = True }) 
 
-                                
 
-        
+
+carActivate :: Application ()
+carActivate = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    s <-  prc uid xs 
+    writeResult (s :: String)
+        where prc uid xs = runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                r <- DBF.car_set_active (fromJust $ G.id g) $ fugly "id" xs
+                case r of
+                    True -> return "You set your active car"
+                    False -> return "Could not set active car" 
+
+
+carDeactivate :: Application ()
+carDeactivate = do 
+    uid <- getUserId 
+    s <-  prc uid  
+    writeResult (s :: String)
+        where prc uid =  runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                r <- DBF.car_set_active_none $ fromJust $ G.id g
+                case r of
+                    True -> return "You deactivated the car"
+                    False -> return "Could not deactivate the car" 
+
 
 marketPlaceBuy :: Application ()
 marketPlaceBuy = do 
@@ -1165,6 +1190,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Car/parts", carParts),
                 ("/Car/part", carPart),
                 ("/Car/sell", carSell),
+                ("/Car/activate", carActivate),
+                ("/Car/deactivate", carDeactivate),
                 ("/Market/returnCar", carReturn),
                 ("/Market/carParts", marketCarParts),
                 ("/Garage/addPart", addPart),
