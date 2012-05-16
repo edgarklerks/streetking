@@ -731,15 +731,14 @@ marketParts = do
 garageParts :: Application ()
 garageParts = do 
         uid <- getUserId 
-        let p = runDb $ do 
                         
         (((l, o), xs),od) <- getPagesWithDTDOrdered ["level"] (
-            "name" +== "part_type" +&& 
-            "part_instance_id" +== "part_instance_id" +&& 
-            "level" +<= "level-max" +&& 
-            "level" +>= "level-min" +&&
-            "price" +>= "price-min" +&&
-            "price" +<= "price-max" +&& 
+                "name" +== "part_type" +&& 
+                "part_instance_id" +== "part_instance_id" +&& 
+                "level" +<= "level-max" +&& 
+                "level" +>= "level-min" +&&
+                "price" +>= "price-min" +&&
+                "price" +<= "price-max" +&& 
 
                 ifdtd "anycar" (=="1")
                     ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
