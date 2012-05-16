@@ -7,6 +7,7 @@ import Text.Parsec.Char
 import Control.Applicative
 import Data.Database
 import Control.Monad
+import qualified Data.Foldable as F 
 
 {-- Sortorder grammar: 
  -  start = stm
@@ -34,11 +35,11 @@ rtp Desc = False
 sortOrder :: SortOrder -> [String] -> Either String Orders 
 sortOrder (OrderBy x y) vs | x `elem` vs = return $ [Order (x, []) (rtp y)]
                            | otherwise = Left $ "Not a valid field: " ++ x
-sortOrder (Col xs) vs = foldM check [] xs 
+sortOrder (Col xs) vs = F.foldrM check [] xs 
     where 
-        check z (OrderBy x y) | x `elem` vs = return $ (Order (x,[]) (rtp y)) : z
+        check (OrderBy x y) z | x `elem` vs = return $ (Order (x,[]) (rtp y)) : z
                               | otherwise = Left $ "Not a valid field: " ++ x
-        check z t@(Col xs) = (++z) <$> sortOrder t vs  
+        check t@(Col xs) z = (++z) <$> sortOrder t vs  
                     
 
 {-- combinators --}
