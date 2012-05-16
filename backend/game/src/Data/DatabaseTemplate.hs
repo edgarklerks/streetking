@@ -65,7 +65,7 @@ dtd :: DTD -> S.HashMap String SqlValue -> D.Constraints
 dtd x = maybeToList . evalDTD x
 
 evalDTD :: DTD -> S.HashMap String SqlValue -> Maybe D.Constraint
-evalDTD (OrderedBy _) p = Nothing 
+evalDTD (OrderedBy _ _) p = Nothing 
 evalDTD (If t pred i e) p = case S.lookup t p of 
                                 Nothing -> evalDTD e p 
                                 Just v -> case pred (fromSql v) of 
