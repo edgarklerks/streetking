@@ -758,11 +758,11 @@ garageParts = do
 garageCar :: Application ()
 garageCar = do 
         uid <- getUserId 
-        ((l,o), xs) <- getPagesWithDTD ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
+        (((l,o), xs),od) <- getPagesWithDTDOrdered ["level"] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         let p = runDb $ do
             r <- DBF.garage_actions_account uid
-            ns <- search xs [] l o
+            ns <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
         writeMapables ns 
