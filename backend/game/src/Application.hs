@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable, OverloadedStrings #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable, OverloadedStrings, FlexibleContexts #-}
 {-
 
 This module defines our application's monad and any application-specific
@@ -18,6 +18,8 @@ module Application
   , getUserId 
   , getPages 
   , getPagesWithDTD
+  , getPagesWithDTDOrdered
+  , searchWithDTDOrdered
   , SqlMap 
   , writeResult 
   , writeError 
@@ -62,6 +64,7 @@ import qualified Data.Digest.TigerHash.ByteString as H
 import           Data.Monoid
 import           Debug.Trace
 import           Model.General (Mapable(..), Default(..), Database(..))
+import           Data.SortOrder 
 ------------------------------------------------------------------------------
 -- | 'Application' is our application's monad. It uses 'SnapExtend' from
 -- 'Snap.Extension' to provide us with an extended 'MonadSnap' making use of
@@ -151,6 +154,26 @@ getPages = do
     let b = S.lookupDefault (DB.SqlInteger 100) "limit" xs
     let o = S.lookupDefault (DB.SqlInteger 0) "offset" xs 
     return (DB.fromSql b, DB.fromSql o)
+
+getPagesWithDTDOrdered :: [String] -> DTD -> Application (((Integer, Integer), Constraints), Orders)
+getPagesWithDTDOrdered vs d = do 
+                xs <- getJson
+                let b = S.lookupDefault (DB.SqlInteger 100) "limit" xs
+                let o = S.lookupDefault (DB.SqlInteger 0) "offset" xs 
+                let od = S.lookupDefault "" "sql" xs
+                let cst = dtd d $ convert xs 
+                let od' = getSortOrder (convert od) >>= \od -> sortOrder od vs 
+                case od' of 
+                    Left e -> internalError e
+                    Right x -> do 
+                        return (((DB.fromSql b, DB.fromSql o), cst), x)
+
+
+searchWithDTDOrdered :: (Mapable a, Database Connection a) =>  [String] -> DTD -> Application [a] 
+searchWithDTDOrdered vs d = do 
+            (((l,o), xs), od) <- getPagesWithDTDOrdered vs d 
+            runDb $ search xs od l o
+                
 
 getPagesWithDTD :: DTD -> Application ((Integer, Integer), Constraints)
 getPagesWithDTD d = do 

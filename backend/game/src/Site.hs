@@ -731,7 +731,9 @@ marketParts = do
 garageParts :: Application ()
 garageParts = do 
         uid <- getUserId 
-        ((l, o), xs) <- getPagesWithDTD (
+        let p = runDb $ do 
+                        
+        (((l, o), xs),od) <- getPagesWithDTDOrdered ["level"] (
             "name" +== "part_type" +&& 
             "part_instance_id" +== "part_instance_id" +&& 
             "level" +<= "level-max" +&& 
@@ -748,7 +750,7 @@ garageParts = do
             )
         let p = runDb $ do
             r <- DBF.garage_actions_account uid
-            ns <- search xs [] l o
+            ns <- search xs od l o
             return ns 
         ns <- p :: Application [GPT.GaragePart]
         writeMapables ns 
