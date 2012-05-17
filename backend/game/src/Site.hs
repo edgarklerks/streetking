@@ -543,7 +543,7 @@ carActivate = do
     writeResult (s :: String)
         where prc uid xs = runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                r <- DBF.car_set_active (fromJust $ G.id g) $ fugly "id" xs
+                r <- DBF.garage_set_active_car (fromJust $ G.id g) $ fugly "id" xs
                 case r of
                     True -> return "You set your active car"
                     False -> return "Could not set active car" 
@@ -552,11 +552,12 @@ carActivate = do
 carDeactivate :: Application ()
 carDeactivate = do 
     uid <- getUserId 
-    s <-  prc uid  
+    xs <- getJson >>= scheck ["id"]
+    s <-  prc uid xs
     writeResult (s :: String)
-        where prc uid =  runDb $ do 
+        where prc uid xs =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                r <- DBF.car_set_active_none $ fromJust $ G.id g
+                r <- DBF.garage_unset_active_car (fromJust $ G.id g) $ fugly "id" xs
                 case r of
                     True -> return "You deactivated the car"
                     False -> return "Could not deactivate the car" 

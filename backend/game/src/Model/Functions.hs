@@ -13,6 +13,6 @@ $(mkFunctions [
     ("personnel_start_task", [''Integer, ''String, ''Integer], ''Bool, Scalar),
     ("personnel_cancel_task", [''Integer], ''Bool, Scalar),
     ("garage_actions_account", [''Integer], ''Bool, Scalar),
-    ("car_set_active_none", [''Integer], ''Bool, Scalar),
-    ("car_set_active", [''Integer, ''Integer], ''Bool, Scalar)
+    ("garage_set_active_car", [''Integer, ''Integer], ''Bool, Scalar),
+    ("garage_unset_active_car", [''Integer, ''Integer], ''Bool, Scalar)
     ])
