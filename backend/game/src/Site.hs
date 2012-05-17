@@ -57,6 +57,7 @@ import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
+import qualified Model.GarageReport as GRP
 import qualified Model.PersonnelReport as PR 
 import qualified Model.Functions as DBF
 import qualified Data.HashMap.Strict as HM
@@ -472,7 +473,7 @@ carSell = do
                      - 3. Remove car from garage
                      --}
                         transactionMoney uid (def {
-                                Transaction.amount = - abs(fee),
+                                Transaction.amount = -abs(fee),
                                 Transaction.type = "garage_car_on_market",
                                 Transaction.type_id = fromJust $ CIG.id car
                             })
@@ -839,7 +840,7 @@ userAddSkill = do
 
 removePart :: Application ()
 removePart = do 
-    uid <- getUserId 
+    uid <- getUserId
     xs <- getJson >>= scheck ["part_instance_id"]
     let d = updateHashMap xs (def :: MI.MarketItem)
     p uid d 
@@ -1060,7 +1061,12 @@ taskPersonnel = do
                cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ HM.lookup "personnel_instance_id" xs), "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
                case cm of 
                         [] -> rollback "That is not your mechanic, friend"
-                        [_] -> do
+                        [_] -> do 
+                            reportGarage uid (def {
+                                    GRP.part_instance_id = fromSql $ fromJust $ HM.lookup "subject_id" xs,
+                                    GRP.personnel_instance_id = fromSql $ fromJust $ HM.lookup "personnel_instance_id" xs,
+                                    GRP.task = fromSql $ fromJust $ HM.lookup "task" xs
+                                    })
                             r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
                             return r
 
@@ -1113,6 +1119,13 @@ reportPersonnel uid tr = do
                     })
                 return ()
 
+reportGarage :: Integer -> GRP.GarageReport -> SqlTransaction Connection ()
+reportGarage uid tr = do 
+            save (tr {  
+                GRP.account_id = uid
+                })
+            return ()
+
 {-- Money stuff --}
 transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
 transactionMoney uid tr' =   do 
@@ -1155,7 +1168,14 @@ shoppingReports = do
         ns <- runDb $ search xs [] l o :: Application [SR.ShopReport]
         writeMapables ns
 
+garageReports :: Application ()
+garageReports = do  
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
+        ns <- runDb $ search xs [] l o :: Application [GRP.GarageReport]
+        writeMapables ns
 
+   
 
 
 -- | The main entry point handler.
