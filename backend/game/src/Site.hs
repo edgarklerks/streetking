@@ -1172,9 +1172,10 @@ shoppingReports = do
 garageReports :: Application ()
 garageReports = do  
         uid <- getUserId 
-        DBF.garage_actions_account uid
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        ns <- runDb $ search xs [] l o :: Application [GRP.GarageReport]
+        ns <- runDb $ do 
+            DBF.garage_actions_account uid
+            search xs [] l o :: Application [GRP.GarageReport] 
         writeMapables ns
 
    
