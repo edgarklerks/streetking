@@ -32,5 +32,6 @@ $(genAll "CarInGarage" "car_in_garage"
         ("wear", ''Integer),
         ("improvement", ''Integer),
         ("active", ''Bool),
+        ("ready", ''Bool),
         ("year", ''Integer)
     ])
