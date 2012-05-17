@@ -564,6 +564,28 @@ carDeactivate = do
                     False -> return "Could not deactivate the car" 
 
 
+garageCarReady :: Application ()
+garageCarReady = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    s <-  prc uid xs 
+    writeResult s
+        where prc uid xs = runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                r <- DBF.garage_car_ready (fromJust $ G.id g) $ fugly "id" xs
+                return r
+
+garageActiveCarReady :: Application ()
+garageActiveCarReady = do 
+    uid <- getUserId 
+    s <-  prc uid
+    writeResult s
+        where prc uid = runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                r <- DBF.garage_active_car_ready (fromJust $ G.id g)
+                return r
+
+
 marketPlaceBuy :: Application ()
 marketPlaceBuy = do 
             uid <- getUserId
@@ -1221,6 +1243,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/personnel", marketPersonnel),
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
+                ("/Garage/carReady", garageCarReady),
+                ("/Garage/activeCarReady", garageActiveCarReady),
                 ("/Personnel/train", trainPersonnel),
                 ("/Personnel/task", taskPersonnel),
                 ("/Personnel/cancelTask", cancelTaskPersonnel),
