@@ -1065,7 +1065,8 @@ taskPersonnel = do
                             reportGarage uid (def {
                                     GRP.part_instance_id = fromSql $ fromJust $ HM.lookup "subject_id" xs,
                                     GRP.personnel_instance_id = fromSql $ fromJust $ HM.lookup "personnel_instance_id" xs,
-                                    GRP.task = fromSql $ fromJust $ HM.lookup "task" xs
+                                    GRP.task = fromSql $ fromJust $ HM.lookup "task" xs,
+                                    GRP.report_descriptor = "task_" ++ (show task)
                                     })
                             r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
                             return r
