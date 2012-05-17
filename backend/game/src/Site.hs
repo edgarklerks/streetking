@@ -1218,6 +1218,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Garage/addPart", addPart),
                 ("/Garage/removePart", removePart),
                 ("/Garage/personnel", garagePersonnel),
+                ("/Garage/reports", garageReports),
                 ("/Market/personnel", marketPersonnel),
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
