@@ -1087,7 +1087,8 @@ taskPersonnel = do
                             reportGarage uid (def {
                                     GRP.part_instance_id = fromSql $ fromJust $ HM.lookup "subject_id" xs,
                                     GRP.personnel_instance_id = fromSql $ fromJust $ HM.lookup "personnel_instance_id" xs,
-                                    GRP.task = fromSql $ fromJust $ HM.lookup "task" xs
+                                    GRP.task = fromSql $ fromJust $ HM.lookup "task" xs,
+                                    GRP.report_descriptor = "personnel_task"
                                     })
                             r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
                             return r
@@ -1194,8 +1195,10 @@ garageReports :: Application ()
 garageReports = do  
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        ns <- runDb $ search xs [] l o :: Application [GRP.GarageReport]
-        writeMapables ns
+        ns <- runDb $ do 
+            DBF.garage_actions_account uid
+            search xs [] l o 
+        writeMapables (ns :: [GRP.GarageReport])
 
    
 
@@ -1240,6 +1243,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Garage/addPart", addPart),
                 ("/Garage/removePart", removePart),
                 ("/Garage/personnel", garagePersonnel),
+                ("/Garage/reports", garageReports),
                 ("/Market/personnel", marketPersonnel),
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
