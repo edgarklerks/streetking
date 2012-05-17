@@ -64,14 +64,21 @@ logintree = Node Root $ reverse [Node (SubMenu "ACCOUNT" "" "")
 
 gametree = Node Root $ reverse [
             Node (MenuItem "LOGOUT" "LOGOUT" "") [],
+            Node (MenuItem "MARKETPLACE" "MARKETPLACE" "") [],
             Node (MenuItem "REPORTS" "REPORTS" "") [],
             Node (SubMenu "SHOP" "" "") [
-                                Node (MenuItem "NEW_CARS" "MARKETPLACE_NEWCARS" "") [],
-                                Node (MenuItem "NEW_PARTS" "MARKETPLACE_NEWPARTS" "") [],
-                                Node (MenuItem "USED_PARTS" "MARKETPLACE_USEDPARTS" "") []
+                    Node (MenuItem "NEW CARS" "MARKETPLACE_NEWCARS" "") [],
+                    Node (MenuItem "NEW PARTS" "MARKETPLACE_NEWPARTS" "") [],
+                    Node (MenuItem "USED PARTS" "MARKETPLACE_USEDPARTS" "") []
                             ],
             Node (MenuItem "PROFILE" "PROFILE" "") [],
-            Node (MenuItem "RACES" "RACES" "") [],
+            Node (SubMenu "EVENTS" "" "") [
+
+                    Node (MenuItem "RACES" "EVENTS_RACES" "") [],
+                    Node (MenuItem "TOURNAMENTS" "EVENTS_TOURNAMENTS" "") [],
+                    Node (MenuItem "MISSION" "EVENTS_MISSION" "") [],
+                    Node (MenuItem "TRAVEL" "EVENTS_TRAVEL" "") []
+            ],
             Node (SubMenu "GARAGE" "" "") [
                 Node (MenuItem "CARS" "GARAGE_CARS" "") [],
                 Node (MenuItem "PARTS" "GARAGE_PARTS" "") [],
