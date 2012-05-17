@@ -23,7 +23,6 @@ $(genAll "GarageReport" "garage_reports" [
                 ("account_id", ''Integer),
                 ("time", ''Integer),
                 ("report_type_id", ''Integer),
-                ("report_type", ''String),
                 ("report_descriptor", ''String),
                 ("personnel_instance_id", ''Integer),
                 ("part_instance_id", ''Integer),
