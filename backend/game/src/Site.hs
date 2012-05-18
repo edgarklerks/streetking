@@ -30,6 +30,8 @@ import qualified Model.MenuModel as MM
 import qualified Data.Tree as T
 import qualified Data.MenuTree as MM 
 import qualified Model.Garage as G 
+import qualified Model.Continent as Cont 
+import qualified Model.City as City
 import qualified Model.Manufacturer as M 
 import qualified Model.Car as Car 
 import qualified Model.CarInstance as CarInstance 
@@ -1196,6 +1198,21 @@ transactionMoney uid tr' =   do
                                     save $ a { A.money = A.money a + Transaction.amount tr }
                                     return ()
 
+cityList :: Application ()
+cityList = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("continent_id" +== "continent_id" +&& "level" +>= "levelmin" +&& "level" +<= "levelmax")
+        ns <- runDb $ search xs [Order ("continent",[]) True] l o :: Application [City.City]
+        writeMapables ns
+
+continentList :: Application ()
+continentList = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("id" +== "id")
+        ns <- runDb $ search xs [Order ("name",[]) True] l o :: Application [Cont.Continent]
+        writeMapables ns
+
+
 
 userReports :: Application ()
 userReports = do 
@@ -1282,6 +1299,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/task", taskPersonnel),
                 ("/Personnel/cancelTask", cancelTaskPersonnel),
                 ("/Personnel/reports", personnelReports),
+                ("/Continent/list", continentList),
+                ("/City/list", cityList),
                 ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
