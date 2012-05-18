@@ -816,6 +816,17 @@ garageCar = do
         ns <- p :: Application [CIG.CarInGarage]
         writeMapables ns 
 
+garageActiveCar :: Application ()
+garageActiveCar = do 
+        uid <- getUserId 
+        (((l,o), xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid) +&& "active" +==| SqlBool True) 
+        let p = runDb $ do
+            r <- DBF.garage_actions_account uid
+            ns <- search xs od l o
+            return ns 
+        ns <- p :: Application [CIG.CarInGarage]
+        writeMapables ns 
+
 
 loadModel :: Application ()
 loadModel = do 
@@ -1244,6 +1255,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Garage/removePart", removePart),
                 ("/Garage/personnel", garagePersonnel),
                 ("/Garage/reports", garageReports),
+                ("/Garage/activeCar", garageActiveCar),
                 ("/Market/personnel", marketPersonnel),
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
