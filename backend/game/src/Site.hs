@@ -1200,21 +1200,21 @@ userReports :: Application ()
 userReports = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("report_type" +== "report_type" +&& "time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        ns <- runDb $ search xs [] l o :: Application [GR.GeneralReport]
+        ns <- runDb $ search xs [Order ("time",[]) False] l o :: Application [GR.GeneralReport]
         writeMapables ns
 
 personnelReports :: Application ()
 personnelReports = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        ns <- runDb $ search xs [] l o :: Application [PR.PersonnelReport]
+        ns <- runDb $ search xs [Order ("time",[]) False] l o :: Application [PR.PersonnelReport]
         writeMapables ns
 
 shoppingReports :: Application ()
 shoppingReports = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        ns <- runDb $ search xs [] l o :: Application [SR.ShopReport]
+        ns <- runDb $ search xs [Order ("time",[]) False] l o :: Application [SR.ShopReport]
         writeMapables ns
 
 garageReports :: Application ()
@@ -1223,7 +1223,7 @@ garageReports = do
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
         ns <- runDb $ do 
             DBF.garage_actions_account uid
-            search xs [] l o 
+            search xs [Order ("time",[]) False] l o 
         writeMapables (ns :: [GRP.GarageReport])
 
    
