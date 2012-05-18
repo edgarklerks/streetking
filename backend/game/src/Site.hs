@@ -1199,7 +1199,23 @@ transactionMoney uid tr' =   do
                                     return ()
 
 cityTravel :: Application ()
-cityTravel = undefined
+cityTravel = do
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["id"]
+        let r = runDb $ do
+                a <- load uid :: SqlTransaction Connection (Maybe A.Account)
+                case a of 
+                        Nothing -> rollback "wait what"
+                        Just a -> do 
+                                let city = updateHashMap xs (def :: City.City)
+                                c <- load (fromJust $ City.id city) :: SqlTransaction Connection (Maybe City.City)
+                                case c of
+                                        Nothing -> rollback "Cannot find city, is it lost?"
+                                        Just city -> do
+                                                when ( (City.level city) > (A.level a)) $ rollback "You are not ready for this city"
+                                                save $ a { A.city = fromJust $ City.id city }
+                                                return True 
+        writeResult ("you travel to the city" :: String)
 
 cityList :: Application ()
 cityList = do 

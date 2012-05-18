@@ -36,6 +36,7 @@ $(genAll "Account" "account" [
                     ("busy_until", ''Integer),
                     ("password", ''String),
                     ("email", ''String),
-                    ("skill_unused", ''Integer)
+                    ("skill_unused", ''Integer),
+                    ("city", ''Integer)
     ]
     )
