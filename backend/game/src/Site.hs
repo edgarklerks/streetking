@@ -963,6 +963,22 @@ garagePersonnel = do
         writeMapables ns 
 
 
+partTasks :: Application ()
+partTasks = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    let ts = runDb $ do
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                ps <- search ["garage_id" |== (toSql $ G.id g), "part_instance_id" |== fugly "id" xs] [] 1 0 :: SqlTransaction Connection [GPT.GaragePart]
+                case ps of 
+                        [] -> rollback "Cannae glean yer partie"
+                        [part] -> do  
+                                ts <- search ["garage_id" |== (toSql $ G.id g), "subject_id" |== (toSql $ GPT.id part)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
+                                return ts
+    ns <- ts :: Application [PLID.PersonnelInstanceDetails]
+    writeMapables ns
+
+
 trainPersonnel :: Application ()
 trainPersonnel = do 
     uid <- getUserId 
@@ -1259,6 +1275,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Market/personnel", marketPersonnel),
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
+                ("/Part/tasks", partTasks),
                 ("/Garage/carReady", garageCarReady),
                 ("/Garage/activeCarReady", garageActiveCarReady),
                 ("/Personnel/train", trainPersonnel),
