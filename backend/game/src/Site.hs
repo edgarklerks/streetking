@@ -1205,7 +1205,7 @@ cityList :: Application ()
 cityList = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("continent_id" +== "continent_id" +&& "level" +>= "levelmin" +&& "level" +<= "levelmax")
-        ns <- runDb $ search xs [Order ("continent",[]) True] l o :: Application [City.City]
+        ns <- runDb $ search xs [Order ("continent_id",[]) True] l o :: Application [City.City]
         writeMapables ns
 
 continentList :: Application ()
