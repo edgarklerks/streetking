@@ -973,7 +973,7 @@ partTasks = do
                 case ps of 
                         [] -> rollback "Cannae glean yer partie"
                         [part] -> do  
-                                ts <- search ["garage_id" |== (toSql $ G.id g), "subject_id" |== (toSql $ GPT.id part)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
+                                ts <- search ["garage_id" |== (toSql $ G.id g), "task_subject_id" |== (toSql $ GPT.id part)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
                                 return ts
     ns <- ts :: Application [PLID.PersonnelInstanceDetails]
     writeMapables ns
