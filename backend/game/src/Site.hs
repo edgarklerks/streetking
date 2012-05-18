@@ -1202,7 +1202,7 @@ cityTravel :: Application ()
 cityTravel = do
         uid <- getUserId 
         xs <- getJson >>= scheck ["id"]
-        let r = runDb $ do
+        let tr = runDb $ do
                 a <- load uid :: SqlTransaction Connection (Maybe A.Account)
                 case a of 
                         Nothing -> rollback "wait what"
@@ -1215,6 +1215,7 @@ cityTravel = do
                                                 when ( (City.level city) > (A.level a)) $ rollback "You are not ready for this city"
                                                 save $ a { A.city = fromJust $ City.id city }
                                                 return True 
+        t <- tr
         writeResult ("you travel to the city" :: String)
 
 cityList :: Application ()
