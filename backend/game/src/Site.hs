@@ -1198,6 +1198,9 @@ transactionMoney uid tr' =   do
                                     save $ a { A.money = A.money a + Transaction.amount tr }
                                     return ()
 
+cityTravel :: Application ()
+cityTravel = undefined
+
 cityList :: Application ()
 cityList = do 
         uid <- getUserId 
@@ -1300,6 +1303,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/cancelTask", cancelTaskPersonnel),
                 ("/Personnel/reports", personnelReports),
                 ("/Continent/list", continentList),
+                ("/City/travel", cityTravel),
                 ("/City/list", cityList),
                 ("/User/reports", userReports)
              ]
