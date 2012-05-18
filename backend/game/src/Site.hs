@@ -968,11 +968,12 @@ partTasks = do
     uid <- getUserId 
     xs <- getJson >>= scheck ["id"]
     let ts = runDb $ do
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                 ps <- search ["account_id" |== (toSql $ uid), "part_instance_id" |== fugly "id" xs] [] 1 0 :: SqlTransaction Connection [GPT.GaragePart]
                 case ps of 
                         [] -> rollback "Cannae glean yer partie"
                         [part] -> do  
-                                ts <- search ["account_id" |== (toSql $ uid), "subject_id" |== (toSql $ GPT.id part)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
+                                ts <- search ["garage_id" |== (toSql $ G.id g), "subject_id" |== (toSql $ GPT.id part)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
                                 return ts
     ns <- ts :: Application [PLID.PersonnelInstanceDetails]
     writeMapables ns
