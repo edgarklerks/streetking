@@ -15,7 +15,7 @@ import           Prelude hiding (id)
 
 $(genAll "TrackContinent" "track_continent"
     [
-        ("id", ''Id),
+--        ("id", ''Id),
         ("continent_id", ''Integer),
         ("continent_name", ''String),
         ("continent_data", ''String),

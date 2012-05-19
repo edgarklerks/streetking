@@ -15,7 +15,7 @@ import           Prelude hiding (id)
 
 $(genAll "TrackMaster" "track_master"
     [
-        ("id", ''Id),
+--        ("id", ''Id),
         ("track_id", ''Integer),
         ("track_name", ''String),
         ("track_data", ''String),
