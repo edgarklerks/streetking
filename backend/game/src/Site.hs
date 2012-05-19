@@ -1225,21 +1225,24 @@ cityList :: Application ()
 cityList = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("continent_id" +== "continent" +&& "city_level" +>= "levelmin" +&& "city_level" +<= "levelmax")
-        ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_level",[]) True] l o :: Application [TCY.TrackCity]
+--        ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_level",[]) True] l o :: Application [TCY.TrackCity]
+        ns <- runDb $ search xs [] l o :: Application [TCY.TrackCity]
         writeMapables ns
 
 continentList :: Application ()
 continentList = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("continent_level" +>= "levelmin" +&& "continent_level" +<= "levelmax")
-        ns <- runDb $ search xs [Order ("continent_level",[]) True] l o :: Application [TCN.TrackContinent]
+--        ns <- runDb $ search xs [Order ("continent_level",[]) True] l o :: Application [TCN.TrackContinent]
+        ns <- runDb $ search xs [] l o :: Application [TCN.TrackContinent]
         writeMapables ns
 
 trackList :: Application ()
 trackList = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("city_id" +== "city" +&& "continent_id" +== "continent" +&& "track_level" +>= "levelmin" +&& "track_level" +<= "levelmax")
-        ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_id",[]) True, Order ("track_level",[]) True] l o :: Application [TT.TrackMaster]
+--        ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_id",[]) True, Order ("track_level",[]) True] l o :: Application [TT.TrackMaster]
+        ns <- runDb $ search xs [] l o :: Application [TT.TrackMaster]
         writeMapables ns
 
 
