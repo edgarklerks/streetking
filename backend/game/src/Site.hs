@@ -1232,7 +1232,7 @@ continentList :: Application ()
 continentList = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("continent_level" +>= "levelmin" +&& "continent_level" +<= "levelmax")
-        ns <- runDb $ search xs [Order ("name",[]) True] l o :: Application [TCN.TrackContinent]
+        ns <- runDb $ search xs [Order ("continent_level",[]) True] l o :: Application [TCN.TrackContinent]
         writeMapables ns
 
 trackList :: Application ()
