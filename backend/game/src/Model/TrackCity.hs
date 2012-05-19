@@ -15,7 +15,7 @@ import           Prelude hiding (id)
 
 $(genAll "TrackCity" "track_city"
     [
-        ("id", ''Id),
+--        ("id", ''Id),
         ("city_id", ''Integer),
         ("city_name", ''String),
         ("city_data", ''String),
