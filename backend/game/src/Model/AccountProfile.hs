@@ -37,10 +37,10 @@ $(genAll "AccountProfile" "account_profile" [
                     ("till", ''Integer),
                     ("city_id", ''Integer),
                     ("city_name", ''Integer),
-                    ("city_data", ''Integer),
+                    ("city_data", ''String),
                     ("continent_id", ''Integer),
                     ("continent_name", ''Integer),
-                    ("continent_data", ''Integer),
+                    ("continent_data", ''String),
                     ("skill_unused", ''Integer)
     ]
     )
