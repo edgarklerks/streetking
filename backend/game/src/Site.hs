@@ -32,6 +32,9 @@ import qualified Data.MenuTree as MM
 import qualified Model.Garage as G 
 import qualified Model.Continent as Cont 
 import qualified Model.City as City
+import qualified Model.TrackMaster as TT
+import qualified Model.TrackCity as TCY
+import qualified Model.TrackContinent as TCN
 import qualified Model.Manufacturer as M 
 import qualified Model.Car as Car 
 import qualified Model.CarInstance as CarInstance 
@@ -1205,7 +1208,7 @@ cityTravel = do
         let tr = runDb $ do
                 a <- load uid :: SqlTransaction Connection (Maybe A.Account)
                 case a of 
-                        Nothing -> rollback "wait what"
+                        Nothing -> rollback "oh noes diz can no happen"
                         Just a -> do 
                                 let city = updateHashMap xs (def :: City.City)
                                 c <- load (fromJust $ City.id city) :: SqlTransaction Connection (Maybe City.City)
@@ -1221,15 +1224,22 @@ cityTravel = do
 cityList :: Application ()
 cityList = do 
         uid <- getUserId 
-        ((l,o),xs) <- getPagesWithDTD ("continent_id" +== "continent_id" +&& "level" +>= "levelmin" +&& "level" +<= "levelmax")
-        ns <- runDb $ search xs [Order ("continent_id",[]) True] l o :: Application [City.City]
+        ((l,o),xs) <- getPagesWithDTD ("continent_id" +== "continent_id" +&& "city_level" +>= "levelmin" +&& "city_level" +<= "levelmax")
+        ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_level",[]) True] l o :: Application [TCY.TrackCity]
         writeMapables ns
 
 continentList :: Application ()
 continentList = do 
         uid <- getUserId 
-        ((l,o),xs) <- getPagesWithDTD ("id" +== "id")
-        ns <- runDb $ search xs [Order ("name",[]) True] l o :: Application [Cont.Continent]
+        ((l,o),xs) <- getPagesWithDTD ("continent_level" +>= "levelmin" +&& "continent_level" +<= "levelmax")
+        ns <- runDb $ search xs [Order ("name",[]) True] l o :: Application [TCN.TrackContinent]
+        writeMapables ns
+
+trackList :: Application ()
+trackList = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("city_id" +== "city_id" +&& "continent_id" +== "continent_id" +&& "track_level" +>= "levelmin" +&& "track_level" +<= "levelmax")
+        ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_id",[]) True, Order ("track_level",[]) True] l o :: Application [TT.TrackMaster]
         writeMapables ns
 
 
@@ -1320,8 +1330,9 @@ site = CIO.catch (CIO.catch (route [
                 ("/Personnel/cancelTask", cancelTaskPersonnel),
                 ("/Personnel/reports", personnelReports),
                 ("/Continent/list", continentList),
-                ("/City/travel", cityTravel),
                 ("/City/list", cityList),
+                ("/City/travel", cityTravel),
+                ("/Track/list", trackList),
                 ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))

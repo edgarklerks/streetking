@@ -19,6 +19,7 @@ $(genAll "City" "city"
         ("continent_id", ''Integer),
         ("level", ''Integer),
         ("name", ''String),
+        ("data", ''String),
         ("default", ''Bool)
     ]
  )
