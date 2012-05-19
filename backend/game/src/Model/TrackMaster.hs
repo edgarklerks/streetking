@@ -13,7 +13,7 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genAll "TrackMaster" "track_master1"
+$(genAll "TrackMaster" "track_master"
     [
         ("id", ''Id),
         ("track_id", ''Integer),
