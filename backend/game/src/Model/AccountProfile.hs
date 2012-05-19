@@ -36,11 +36,11 @@ $(genAll "AccountProfile" "account_profile" [
                     ("busy_until", ''Integer),
                     ("till", ''Integer),
                     ("city_id", ''Integer),
-                    ("city_name", ''String),
-                    ("city_data", ''String),
-                    ("continent_id", ''Integer),
-                    ("continent_name", ''String),
-                    ("continent_data", ''String),
+--                    ("city_name", ''String),
+--                    ("city_data", ''String),
+--                    ("continent_id", ''Integer),
+--                    ("continent_name", ''String),
+--                    ("continent_data", ''String),
                     ("skill_unused", ''Integer)
     ]
     )
