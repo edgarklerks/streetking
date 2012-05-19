@@ -35,12 +35,12 @@ $(genAll "AccountProfile" "account_profile" [
                     ("energy_updated", ''Integer),
                     ("busy_until", ''Integer),
                     ("till", ''Integer),
---                    ("city_id", ''Integer),
---                    ("city_name", ''Integer),
---                    ("city_data", ''String),
---                    ("continent_id", ''Integer),
---                    ("continent_name", ''Integer),
---                    ("continent_data", ''String),
+                    ("city_id", ''Integer),
+                    ("city_name", ''String),
+                    ("city_data", ''String),
+                    ("continent_id", ''Integer),
+                    ("continent_name", ''String),
+                    ("continent_data", ''String),
                     ("skill_unused", ''Integer)
     ]
     )
