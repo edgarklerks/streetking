@@ -59,6 +59,7 @@ import qualified Model.GeneralReport as GR
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
 import qualified Model.PersonnelReport as PR 
+import qualified Model.TravelReport as TR 
 import qualified Model.Functions as DBF
 import qualified Data.HashMap.Strict as HM
 import           Control.Monad.Trans
@@ -1179,6 +1180,12 @@ garageReports = do
         writeMapables (ns :: [GRP.GarageReport])
 
    
+travelReports :: Application ()
+travelReports = do 
+    uid <- getUserId 
+    ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
+    ns <- runDb (search xs [] l o)
+    writeMapables (ns :: [TR.TravelReport])
 
 
 -- | The main entry point handler.
