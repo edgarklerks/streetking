@@ -16,6 +16,7 @@ import           Prelude hiding (id)
 $(genAll "Continent" "continent"
     [
         ("id", ''Id),
-        ("name", ''String)
+        ("name", ''String),
+        ("data", ''String)
     ]
  )

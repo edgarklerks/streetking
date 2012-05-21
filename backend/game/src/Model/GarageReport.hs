@@ -55,7 +55,9 @@ $(genAll "GarageReport" "garage_reports" [
                 ("manufacturer_name", ''MString),
                 ("part_modifier", ''MString),
                 ("unique", ''Bool),
+                ("improvement", ''MInteger),
                 ("improvement_change", ''MInteger),
+                ("wear", ''MInteger),
                 ("wear_change", ''MInteger),
                 ("task", ''String)
 

@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
-module Model.City where 
+module Model.TrackCity where 
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -13,14 +13,17 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genAll "City" "city"
+$(genAll "TrackCity" "track_city"
     [
-        ("id", ''Id),
+--        ("id", ''Id),
+        ("city_id", ''Integer),
+        ("city_name", ''String),
+        ("city_data", ''String),
+        ("city_level", ''Integer),
+        ("city_tracks", ''Integer),
         ("continent_id", ''Integer),
-        ("level", ''Integer),
-        ("name", ''String),
-        ("data", ''String),
-        ("default", ''Bool)
+        ("continent_name", ''String),
+        ("continent_data", ''String)
     ]
  )
 
