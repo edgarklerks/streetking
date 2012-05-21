@@ -1339,6 +1339,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Continent/list", continentList),
                 ("/City/list", cityList),
                 ("/City/travel", cityTravel),
+                ("/City/reports", travelReports),
                 ("/Track/list", trackList),
                 ("/User/reports", userReports)
              ]
