@@ -44,6 +44,7 @@ $(genAll "GaragePart" "garage_parts" [
     ("trash_price", ''Integer),
     ("required", ''Bool),
     ("fixed", ''Bool),
+    ("task_subject", ''Bool),
     ("hidden", ''Bool)
  ])
 

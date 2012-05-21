@@ -30,6 +30,11 @@ import qualified Model.MenuModel as MM
 import qualified Data.Tree as T
 import qualified Data.MenuTree as MM 
 import qualified Model.Garage as G 
+import qualified Model.Continent as Cont 
+import qualified Model.City as City
+import qualified Model.TrackMaster as TT
+import qualified Model.TrackCity as TCY
+import qualified Model.TrackContinent as TCN
 import qualified Model.Manufacturer as M 
 import qualified Model.Car as Car 
 import qualified Model.CarInstance as CarInstance 
@@ -565,6 +570,28 @@ carDeactivate = do
                     False -> return "Could not deactivate the car" 
 
 
+garageCarReady :: Application ()
+garageCarReady = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    s <-  prc uid xs 
+    writeResult s
+        where prc uid xs = runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                r <- DBF.garage_car_ready (fromJust $ G.id g) $ fugly "id" xs
+                return r
+
+garageActiveCarReady :: Application ()
+garageActiveCarReady = do 
+    uid <- getUserId 
+    s <-  prc uid
+    writeResult s
+        where prc uid = runDb $ do 
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                r <- DBF.garage_active_car_ready (fromJust $ G.id g)
+                return r
+
+
 marketPlaceBuy :: Application ()
 marketPlaceBuy = do 
             uid <- getUserId
@@ -760,7 +787,7 @@ garageParts :: Application ()
 garageParts = do 
         uid <- getUserId 
                         
-        (((l, o), xs),od) <- getPagesWithDTDOrdered ["level"] (
+        (((l, o), xs),od) <- getPagesWithDTDOrdered ["level", "part_instance_id"] (
                 "name" +== "part_type" +&& 
                 "part_instance_id" +== "part_instance_id" +&& 
                 "level" +<= "level-max" +&& 
@@ -788,6 +815,17 @@ garageCar = do
         uid <- getUserId 
         (((l,o), xs),od) <- getPagesWithDTDOrdered ["active", "level"] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
+        let p = runDb $ do
+            r <- DBF.garage_actions_account uid
+            ns <- search xs od l o
+            return ns 
+        ns <- p :: Application [CIG.CarInGarage]
+        writeMapables ns 
+
+garageActiveCar :: Application ()
+garageActiveCar = do 
+        uid <- getUserId 
+        (((l,o), xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid) +&& "active" +==| SqlBool True) 
         let p = runDb $ do
             r <- DBF.garage_actions_account uid
             ns <- search xs od l o
@@ -929,6 +967,22 @@ garagePersonnel = do
             return ns 
         ns <- p :: Application [PLID.PersonnelInstanceDetails]
         writeMapables ns 
+
+
+partTasks :: Application ()
+partTasks = do 
+    uid <- getUserId 
+    xs <- getJson >>= scheck ["id"]
+    let ts = runDb $ do
+                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                ps <- search ["account_id" |== (toSql $ uid), "part_instance_id" |== fugly "id" xs] [] 1 0 :: SqlTransaction Connection [GPT.GaragePart]
+                case ps of 
+                        [] -> rollback "Cannae glean yer partie"
+                        [part] -> do  
+                                ts <- search ["garage_id" |== (toSql $ G.id g), "task_subject_id" |== (toSql $ GPT.part_instance_id part)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
+                                return ts
+    ns <- ts :: Application [PLID.PersonnelInstanceDetails]
+    writeMapables ns
 
 
 trainPersonnel :: Application ()
@@ -1148,26 +1202,68 @@ transactionMoney uid tr' =   do
                                     save $ a { A.money = A.money a + Transaction.amount tr }
                                     return ()
 
+cityTravel :: Application ()
+cityTravel = do
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["id"]
+        let tr = runDb $ do
+                a <- load uid :: SqlTransaction Connection (Maybe A.Account)
+                case a of 
+                        Nothing -> rollback "oh noes diz can no happen"
+                        Just a -> do 
+                                let city = updateHashMap xs (def :: City.City)
+                                c <- load (fromJust $ City.id city) :: SqlTransaction Connection (Maybe City.City)
+                                case c of
+                                        Nothing -> rollback "Cannot find city, is it lost?"
+                                        Just city -> do
+                                                when ( (City.level city) > (A.level a)) $ rollback "You are not ready for this city"
+                                                save $ a { A.city = fromJust $ City.id city }
+                                                return True 
+        t <- tr
+        writeResult ("you travel to the city" :: String)
+
+cityList :: Application ()
+cityList = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("continent_id" +== "continent" +&& "city_level" +>= "levelmin" +&& "city_level" +<= "levelmax")
+        ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_level",[]) True] l o :: Application [TCY.TrackCity]
+        writeMapables ns
+
+continentList :: Application ()
+continentList = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("continent_level" +>= "levelmin" +&& "continent_level" +<= "levelmax")
+        ns <- runDb $ search xs [Order ("continent_level",[]) True] l o :: Application [TCN.TrackContinent]
+        writeMapables ns
+
+trackList :: Application ()
+trackList = do 
+        uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("city_id" +== "city" +&& "continent_id" +== "continent" +&& "track_level" +>= "levelmin" +&& "track_level" +<= "levelmax")
+        ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_id",[]) True, Order ("track_level",[]) True] l o :: Application [TT.TrackMaster]
+        writeMapables ns
+
+
 
 userReports :: Application ()
 userReports = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("report_type" +== "report_type" +&& "time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        ns <- runDb $ search xs [] l o :: Application [GR.GeneralReport]
+        ns <- runDb $ search xs [Order ("time",[]) False] l o :: Application [GR.GeneralReport]
         writeMapables ns
 
 personnelReports :: Application ()
 personnelReports = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        ns <- runDb $ search xs [] l o :: Application [PR.PersonnelReport]
+        ns <- runDb $ search xs [Order ("time",[]) False] l o :: Application [PR.PersonnelReport]
         writeMapables ns
 
 shoppingReports :: Application ()
 shoppingReports = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        ns <- runDb $ search xs [] l o :: Application [SR.ShopReport]
+        ns <- runDb $ search xs [Order ("time",[]) False] l o :: Application [SR.ShopReport]
         writeMapables ns
 
 garageReports :: Application ()
@@ -1176,7 +1272,7 @@ garageReports = do
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
         ns <- runDb $ do 
             DBF.garage_actions_account uid
-            search xs [] l o 
+            search xs [Order ("time",[]) False] l o 
         writeMapables (ns :: [GRP.GarageReport])
 
    
@@ -1229,13 +1325,21 @@ site = CIO.catch (CIO.catch (route [
                 ("/Garage/removePart", removePart),
                 ("/Garage/personnel", garagePersonnel),
                 ("/Garage/reports", garageReports),
+                ("/Garage/activeCar", garageActiveCar),
                 ("/Market/personnel", marketPersonnel),
                 ("/Personnel/hire", hirePersonnel),
                 ("/Personnel/fire", firePersonnel),
+                ("/Part/tasks", partTasks),
+                ("/Garage/carReady", garageCarReady),
+                ("/Garage/activeCarReady", garageActiveCarReady),
                 ("/Personnel/train", trainPersonnel),
                 ("/Personnel/task", taskPersonnel),
                 ("/Personnel/cancelTask", cancelTaskPersonnel),
                 ("/Personnel/reports", personnelReports),
+                ("/Continent/list", continentList),
+                ("/City/list", cityList),
+                ("/City/travel", cityTravel),
+                ("/Track/list", trackList),
                 ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
