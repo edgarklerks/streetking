@@ -17,7 +17,7 @@ type MInteger = Maybe Integer
 type MString = Maybe String 
 type MBool = Maybe Bool
 
-$(genAll "TravelReport" "travel_report"
+$(genAll "TravelReport" "travel_reports"
     [ ("id", ''Id),
         ("account_id", ''Integer),
         ("time", ''Integer),
