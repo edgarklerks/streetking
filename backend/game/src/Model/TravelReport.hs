@@ -25,5 +25,6 @@ $(genAll "TravelReport" "travel_report"
         ("report_descriptor", ''String),
         ("city_to", ''String),
         ("city_from", ''String),
-        ("continent", ''MString)
+        ("continent_to", ''MString),
+        ("continent_from", ''MString)
     ]) 
