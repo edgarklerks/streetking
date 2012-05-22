@@ -1211,13 +1211,12 @@ cityTravel = do
                 case a of 
                         Nothing -> rollback "oh noes diz can no happen"
                         Just a -> do 
-                                let city = updateHashMap xs (def :: City.City)
-                                c <- load (fromJust $ City.id city) :: SqlTransaction Connection (Maybe City.City)
-                                case c of
-                                        Nothing -> rollback "Cannot find city, is it lost?"
-                                        Just city -> do
-                                                when ( (City.level city) > (A.level a)) $ rollback "You are not ready for this city"
-                                                save $ a { A.city = fromJust $ City.id city }
+                                cs <- search ["city_id" |== (toSql $ (fugly "id" xs :: Integer))] [] 1 0 :: SqlTransaction Connection [TCY.TrackCity]
+                                case cs of
+                                        [] -> rollback "Cannot find city, is it lost?"
+                                        [city] -> do
+                                                when ( (TCY.city_level city) > (A.level a)) $ rollback "You are not ready for this city"
+                                                save $ a { A.city = TCY.city_id city }
                                                 return True 
         t <- tr
         writeResult ("you travel to the city" :: String)
