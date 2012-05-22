@@ -22,7 +22,6 @@ $(genAll "TravelReport" "travel_report"
         ("account_id", ''Integer),
         ("time", ''Integer),
         ("report_type_id", ''Integer),
-        ("report_type", ''String),
         ("report_descriptor", ''String),
         ("city_to", ''String),
         ("city_from", ''String)

@@ -1279,8 +1279,8 @@ travelReports :: Application ()
 travelReports = do 
     uid <- getUserId 
     ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-    ns <- runDb (search xs [] l o)
-    writeMapables (ns :: [TR.TravelReport])
+    ns <- runDb (search xs [] l o) :: Application [TR.TravelReport]
+    writeMapables ns 
 
 
 -- | The main entry point handler.
