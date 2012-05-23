@@ -1250,7 +1250,7 @@ trackHere = do
                 case a of 
                         Nothing -> rollback "oh noes diz can no happen"
                         Just a -> do 
-                                ts <- search ["city_id" |== (toSql $ A.city a)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster]
+                                ts <- search ["city_id" |== (toSql $ A.city a)] [] 1000 0 :: SqlTransaction Connection [TT.TrackMaster]
                                 return ts
         ts <- tr
         writeMapables ts
