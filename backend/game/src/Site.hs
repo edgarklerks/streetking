@@ -1245,13 +1245,15 @@ trackList = do
 trackHere :: Application ()
 trackHere = do 
         uid <- getUserId 
+        ((l,o),xs) <- getPagesWithDTD ("track_level" +>= "levelmin" +&& "track_level" +<= "levelmax")
         let tr = runDb $ do
                 a <- load uid :: SqlTransaction Connection (Maybe A.Account)
                 case a of 
                         Nothing -> rollback "oh noes diz can no happen"
                         Just a -> do 
-                                ts <- search ["city_id" |== (toSql $ A.city a)] [] 1000 0 :: SqlTransaction Connection [TT.TrackMaster]
-                                return ts
+                                 ts <- search (["city_id" |== (toSql $ A.city a)] ++ xs) [Order ("track_level",[]) True] l o :: SqlTransaction Connection [TT.TrackMaster]
+--                                 ts <- search ["city_id" |== (toSql $ A.city a)] [] 1000 0 :: SqlTransaction Connection [TT.TrackMaster]
+                                 return ts
         ts <- tr
         writeMapables ts
 
