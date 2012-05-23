@@ -1246,6 +1246,7 @@ trackHere :: Application ()
 trackHere = do 
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("track_level" +>= "levelmin" +&& "track_level" +<= "levelmax")
+        liftIO $ print xs
         let tr = runDb $ do
                 a <- load uid :: SqlTransaction Connection (Maybe A.Account)
                 case a of 
