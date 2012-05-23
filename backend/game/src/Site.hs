@@ -1242,7 +1242,18 @@ trackList = do
         ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_id",[]) True, Order ("track_level",[]) True] l o :: Application [TT.TrackMaster]
         writeMapables ns
 
-
+trackHere :: Application ()
+trackHere = do 
+        uid <- getUserId 
+        let tr = runDb $ do
+                a <- load uid :: SqlTransaction Connection (Maybe A.Account)
+                case a of 
+                        Nothing -> rollback "oh noes diz can no happen"
+                        Just a -> do 
+                                ts <- search ["city_id" |== (toSql $ A.city a)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster]
+                                return ts
+        ts <- tr
+        writeMapables ts
 
 userReports :: Application ()
 userReports = do 
@@ -1340,6 +1351,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/City/travel", cityTravel),
                 ("/Travel/reports", travelReports),
                 ("/Track/list", trackList),
+                ("/Track/here", trackHere),
                 ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
