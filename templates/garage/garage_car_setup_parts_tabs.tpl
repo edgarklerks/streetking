@@ -1,0 +1,10 @@
+<ul class="sk-icon-tui-30x30">
+	<li class="sk-icon-30x30-wheel"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=wheel&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="wheel" title="wheel">&nbsp;</a></li>
+	<li class="sk-icon-30x30-brake"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=brake&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="brake" title="brake">&nbsp;</a></li>
+	<li class="sk-icon-30x30-suspension"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=suspension&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="suspension" title="suspension">&nbsp;</a></li>
+	<li class="sk-icon-30x30-engine"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=engine&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="engine" title="engine">&nbsp;</a></li>
+	<li class="sk-icon-30x30-spoiler"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=spoiler&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="spoiler" title="spoiler">&nbsp;</a></li>
+	<li class="sk-icon-30x30-aerodynamic"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=aerodynamic&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="aerodynamic" title="aerodynamic">&nbsp;</a></li>
+	<li class="sk-icon-30x30-turbo"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=turbo&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="turbo" title="turbo">&nbsp;</a></li>
+	<li class="sk-icon-30x30-nos"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=nos&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="nos" title="nos">&nbsp;</a></li>
+</ul>
