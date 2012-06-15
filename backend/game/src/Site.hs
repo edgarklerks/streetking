@@ -43,6 +43,7 @@ import qualified Model.Car3dModel as C3D
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
 import qualified Model.PartInstance as PI 
+import qualified Model.PartDetails as PD 
 import qualified Model.CarMarket as CM 
 import qualified Model.ManufacturerMarket as MAM 
 import qualified Model.MarketItem as MI 
@@ -885,13 +886,22 @@ removePart = do
     p uid d 
     writeResult ("You removed the part." :: String)
  where p uid d = runDb $ do 
-        -- move part from car_instance_id to garage_id 
-        pl <- load (fromJust $ MI.part_instance_id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
-        case pl of 
+
+        mt <- load (fromJust $ MI.part_instance_id d) :: SqlTransaction Connection (Maybe PD.PartDetails)
+        case mt of 
             Nothing -> rollback "No such part"
-            Just x -> do 
-               g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-               save (x { PI.garage_id = G.id g, PI.car_instance_id = Nothing })
+            Just t -> do 
+                case PD.fixed t of
+                    True -> rollback "This part cannot be removed"
+                    False -> do
+
+                        -- move part from car_instance_id to garage_id 
+                        pl <- load (fromJust $ MI.part_instance_id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
+                        case pl of 
+                            Nothing -> rollback "No such part (should not happen)"
+                            Just x -> do
+                                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
+                                save (x { PI.garage_id = G.id g, PI.car_instance_id = Nothing })
 
 addPart :: Application ()
 addPart = do 
