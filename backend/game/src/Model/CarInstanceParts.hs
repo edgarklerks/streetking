@@ -44,7 +44,10 @@ $(genAllId "CarInstanceParts" "car_instance_parts" "car_instance_id"
         ("unique", ''Bool),
         ("sort_part_type", ''Integer),
         ("new_price", ''Integer),
-        ("account_id", ''MInteger)
+        ("account_id", ''MInteger),
+        ("required", ''Bool),
+        ("fixed", ''Bool),
+        ("hidden", ''Bool)
 
     ])
 
