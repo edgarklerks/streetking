@@ -45,11 +45,36 @@ liftFst f xs = let (bs,as) = unzip xs
                in zip (f bs)  as
 
 
+difference :: Num a => [a] -> [a] 
+difference [] = []
+difference (x:[]) = [x] 
+difference (x:y:xs) = y - x : difference (y : xs)
+
+
+mergeSingle [x] = [0]
+mergeSingle (1:1:0:xs) = 0 : 1 : 0 : mergeSingle xs
+mergeSingle (x:xs) = x : mergeSingle xs 
+
+
+stepDetect [] = []
+stepDetect [x] = [0]
+stepDetect [x,y] = [0,0]
+stepDetect (x:y:z:xs) | x == y && x /= z = 0 : 0 : 1 : stepDetect xs 
+                       | y == z && x /= z = 1 : 0 : 0 : stepDetect xs
+                       | y == z && x == y = 0 : 0 : 0 : stepDetect xs
+                       | x /= y && y /= z = 0 : 1 : 0 : stepDetect xs
 
 slider :: Int -> ([b] -> b) -> [b] -> [b] 
 slider n f [] = []
 slider n f xs@(x:ys) = let ns = take n xs 
                 in f ns : slider n f ys 
+
+filterOnes :: Eq a => [a] -> [a] 
+filterOnes [] = []
+filterOnes [x] = [x]
+filterOnes [x,y] = [x,y]
+filterOnes (x:y:z:xs) | x == z = x:(filterOnes $ x:z:xs)
+                      | otherwise = x : (filterOnes $ y:z:xs)
 
 -- 0.1 0.1 0.2 0.2 0.3 0.3 
 weightedAverage :: [Double] -> [Double] -> [Double]

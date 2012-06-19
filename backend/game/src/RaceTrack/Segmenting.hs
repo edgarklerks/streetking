@@ -20,6 +20,7 @@ import Codec.Image.DevIL
 import qualified Data.Foldable as F
 import Data.Complex
 import Debug.Trace 
+import Data.List (groupBy)
 
 
 data Path = Path {
@@ -112,21 +113,32 @@ calculateThirdStepDifferenceRate = do
             Nothing -> return []
     b 
 
+collectSame :: Eq b => [(a,b)] -> [[a]]
+collectSame  = (fmap.fmap) fst . groupBy (\(x,y) (x',y') -> y == y') 
+
 writeThirdStepDifferenceRate = do 
     ilInit
+    fp <- head <$> getArgs
     p <- loadPath "dump.bin"    
-    forM_ (elems $ path p) printMatrix
+--    forM_ (elems $ path p) printMatrix
     let (a, b) = runSegmentMonad calculateThirdStepDifferenceRate p 
-    v <- loadVector "track_7.bmp"
+    v <- loadVector fp 
     let colorf (        x) | x == 0 = mk41 (255,0,0,0)
                            | x == 1 = mk41 (0,255,0,0)
                            | x == 2 = mk41 (0,0,255,0)
                            | x == 3 = mk41 (255,0,255,0)
                            | otherwise = mk41 (255,255,0,mkPolar x 0)
-    let weigh = weightedAverage (reverse [0.05,0.05,0.1,0.1,0.2,0.2,0.3])
-    let v' = labeledVectorToImage colorf p (liftSnd (fmap (fromIntegral . round) . weigh) b) v 
+    let weigh = weightedAverage [0.2,0.2,0.2,0.2,0.2]
+    let bs = liftSnd (fmap (fromIntegral . round) . weigh) b  
+    let v' = labeledVectorToImage colorf p bs v 
+    let r' = labeledVectorToImage colorf p ((liftSnd stepDetect) bs) v
+    putStrLn "Writing:"
+    putStrLn "images.."
+    saveImage "segments.bmp" (normalizeImage . vectorToImage $ v')
+    saveImage "partitions.bmp" (normalizeImage . vectorToImage $ r')
 
-    saveImage "segmenting.bmp" (normalizeImage . vectorToImage $ v')
+    putStrLn "dumping binary data"
+    B.writeFile "segments.bin" (encode $ collectSame  bs)
 
 
 calculateThirdStepDifferenceVector :: SegmentMonad [(Vector Double,Vector Double)]
@@ -280,11 +292,6 @@ labeledVectorToImage f p xs im@(Vector m n _) = addImage im np
                                 Nothing -> return ()
                         return a
                             
-
-
-
-            
-
 {--
 pathToImage' :: Path -> Vector Word32 
 pathToImage' p = Vector (1,1) e $ runSTArray $ do 
