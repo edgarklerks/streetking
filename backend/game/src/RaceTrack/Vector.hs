@@ -12,11 +12,15 @@ import Data.Foldable as F
 import Prelude hiding (foldr, foldl, foldl1, sum)
 import Data.List (permutations)
 import Debug.Trace
-
+import Data.Binary 
 
 -- rows x cols  
 data Vector a = Vector Int Int (Array (Int,Int) a)
     deriving (Show, Eq)
+
+instance Binary a =>  Binary (Vector a) where 
+    put (Vector x y a) = put x *> put y *> put a
+    get = Vector <$> get <*> get <*> get 
 
 instance Foldable (Vector) where 
     fold = foldr mappend mempty . elems . getInner 
