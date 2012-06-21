@@ -1,4 +1,4 @@
-{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE ViewPatterns, BangPatterns #-}
 module Image where 
 import Control.Applicative
 import Control.Monad
@@ -23,7 +23,7 @@ type VectorImage = Vector (Vector (Complex Double))
 type Kernel = Vector (Complex Double )
 
 flipVertImage :: ImageCH -> ImageCH 
-flipVertImage ch = array (bounds ch) [((rows - x,y,c),e) | ((x,y,c),e) <- assocs ch]
+flipVertImage ch = array (bounds ch) [e `seq` ((rows - x,y,c),e) | ((x,y,c),e) <- assocs ch]
     where (rows,cols,c) = snd $ bounds ch 
 
 
@@ -67,7 +67,8 @@ stepDetect (x:y:z:xs) | x == y && x /= z = 0 : 0 : 1 : stepDetect xs
 slider :: Int -> ([b] -> b) -> [b] -> [b] 
 slider n f [] = []
 slider n f xs@(x:ys) = let ns = take n xs 
-                in f ns : slider n f ys 
+                           a = f ns
+                in a `seq` a : slider n f ys 
 
 filterOnes :: Eq a => [a] -> [a] 
 filterOnes [] = []
@@ -77,14 +78,15 @@ filterOnes (x:y:z:xs) | x == z = x:(filterOnes $ x:z:xs)
                       | otherwise = x : (filterOnes $ y:z:xs)
 
 -- 0.1 0.1 0.2 0.2 0.3 0.3 
-weightedAverage :: [Double] -> [Double] -> [Double]
-weightedAverage w xs = slider (length w) (\xs -> sum (zipWith (*) w xs)) xs
+weightedAverage :: Num a => [a] -> [a] -> [a]
+weightedAverage w = slider (length w) (\xs -> sum (zipWith (*) w xs))
 
 loadImage :: FilePath -> IO ImageCH 
 loadImage = fmap flipVertImage . readImage  
 
 loadVector :: FilePath -> IO VectorImage
-loadVector = fmap imageToVector . loadImage
+loadVector = fmap imageToVector . readImage
+
 imageToVector :: ImageCH -> VectorImage 
 
 imageToVector im = let (rows, cols, ch) = snd $ bounds im in 
@@ -119,14 +121,14 @@ convoluteImage (Vector mi ni im) s (Vector m n kr) = Vector mi ni $ runSTArray $
                 forM_ [1..mi - m + 1] $ \i -> 
                     forM_ [1..ni - n + 1] $ \j -> do  
                         p <- convolutePixel s m n i j kr a  
-                        writeArray a (i,j) p
+                        p `seq` writeArray a (i,j) p
                 return a
 
 convolutePixel s m n i j kr px = foldM step (mk41 (0,0,0,0)) [1..m]
-            where step z k = foldM (step2 k) z [1..n]
-                    where step2 k z l = do 
+            where step z !k = foldM (step2 k) z [1..n]
+                    where step2 !k z !l = do 
                             x <- readArray px (i + k - 1, j + l - 1)
-                            return (z + fmap  ((*s).((kr ! (k,l))*)) x)
+                            x `seq` return (z + fmap  ((*s).((kr ! (k,l))*)) x)
 
 vectorToImage :: VectorImage -> ImageUN
 vectorToImage (Vector rows cols m) = runSTUArray $ do 

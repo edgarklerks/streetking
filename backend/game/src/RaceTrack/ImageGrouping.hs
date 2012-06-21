@@ -589,7 +589,7 @@ main = do
 analyzeImage :: Direction -> (Int, Int) -> FilePath -> IO ()
 analyzeImage sd sp fp = do 
     ilInit
-    xs <- flipVertImage <$> loadImage fp
+    xs <- loadImage fp
     putStrLn "Tracing path..."
     let (res, path, sprays, scans) = runAnt walkImage sp sd xs 
     let ys = flipVertImage xs

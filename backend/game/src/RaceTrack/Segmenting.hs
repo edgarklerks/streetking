@@ -116,6 +116,8 @@ calculateThirdStepDifferenceRate = do
 collectSame :: Eq b => [(a,b)] -> [[a]]
 collectSame  = (fmap.fmap) fst . groupBy (\(x,y) (x',y') -> y == y') 
 
+main = writeThirdStepDifferenceRate 
+
 writeThirdStepDifferenceRate = do 
     ilInit
     fp <- head <$> getArgs
@@ -128,8 +130,8 @@ writeThirdStepDifferenceRate = do
                            | x == 2 = mk41 (0,0,255,0)
                            | x == 3 = mk41 (255,0,255,0)
                            | otherwise = mk41 (255,255,0,mkPolar x 0)
-    let weigh = weightedAverage [0.2,0.2,0.2,0.2,0.2]
-    let bs = liftSnd (fmap (fromIntegral . round) . weigh) b  
+    let weigh = reverse . weightedAverage (replicate 4 0.25) . reverse 
+    let bs = liftSnd (fmap (fromIntegral . round) .  weigh) b  
     let v' = labeledVectorToImage colorf p bs v 
     let r' = labeledVectorToImage colorf p ((liftSnd stepDetect) bs) v
     putStrLn "Writing:"
