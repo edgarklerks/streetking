@@ -1,4 +1,5 @@
- module Vector where 
+{-# LANGUAGE BangPatterns #-}
+module Vector where 
 
 import Data.Array.Base
 import Data.Array.IArray
@@ -15,7 +16,7 @@ import Debug.Trace
 import Data.Binary 
 
 -- rows x cols  
-data Vector a = Vector Int Int (Array (Int,Int) a)
+data Vector a = Vector !Int !Int !(Array (Int,Int) a)
     deriving (Show, Eq)
 
 instance Binary a =>  Binary (Vector a) where 
@@ -108,6 +109,7 @@ findPivot k (Vector r c vec1) | r == c = maximumBy (\x y -> compare (fst x) (fst
                               | otherwise = error "cannot find pivot for a non square matrix"
 
 
+gaussianElim :: (Ord a, Fractional b, Real a) => Vector a -> Vector a -> Vector b 
 gaussianElim v res | square v = slice (getCols v + 1) (getCols v + getCols res) b  
                    | otherwise = error "Matrix is not square"
     where b = Vector (getRows v) (getCols v + getCols res) $ fmap fromRational $ runSTArray $ do 
@@ -152,12 +154,17 @@ firstCentralDifference [] = Nothing
 firstCentralDifference (x1:x2:x3:xs) =  Just $ (getY x3 - getY x1) / h
     where h = getX x3 - getX x1
 
+
 secondCentralDifference :: (Fractional a, Num a) => [Vector a] -> Maybe a
 secondCentralDifference [] = Nothing 
 secondCentralDifference (x1:x2:x3:x4:x5:xs) = Just $ (getY x5 - getY x3) / (hf * hc) - (getY x3 - getY x1) / (hc * hb)
     where hf = getX x5 - getX x3
           hc = getX x4 - getX x2 
           hb = getX x3 - getX x1
+firstStepDifferenceVector :: (Floating a) => [Vector a] -> Maybe (Vector a)
+firstStepDifferenceVector (x1:x2:x3:xs) = Just $ (x3 - x1) `scalarDiv` 2
+firstStepDifferenceVector otherwise = Nothing  
+
 
 -- Five points 
 -- xn - 2, xn - 1, xn , xn + 1, xn + 2
@@ -287,7 +294,7 @@ scalarOp f a@(Vector k l vec1) b@(Vector r s vec2) | (k == 1 && l == 1) = Vector
                                                                             
 
 zipVec :: (a -> a -> b) -> Vector a -> Vector a -> Vector b
-zipVec f a@(Vector k l vec1) b@(Vector r s vec2) | sameRank a b = Vector k l (listArray ((1,1),(k,l)) $ zipWith f (elems vec1) (elems vec2))
+zipVec f a@(Vector k l !vec1) b@(Vector r s !vec2) | sameRank a b = Vector k l (listArray ((1,1),(k,l)) $ zipWith f (elems vec1) (elems vec2))
                                                  | otherwise = error "cannot zip"
 multVec :: Num b => (a -> a -> b) -> Vector a -> Vector a -> Vector b
 multVec f a b | multiple a b = Vector ra cb $ runSTArray $ do

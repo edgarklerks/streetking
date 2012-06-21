@@ -886,8 +886,7 @@ removePart = do
     p uid d 
     writeResult ("You removed the part." :: String)
  where p uid d = runDb $ do 
-
-        mt <- load (fromJust $ MI.part_instance_id d) :: SqlTransaction Connection (Maybe PD.PartDetails)
+        mt <- load (fromJust $ MI.part_instance_id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
         case mt of 
             Nothing -> rollback "No such part"
             Just t -> do 
