@@ -886,7 +886,7 @@ removePart = do
     p uid d 
     writeResult ("You removed the part." :: String)
  where p uid d = runDb $ do 
-        mt <- search ("part_instance_id" |== toSql $ MI.part_instance_id d) [] 1 0 :: SqlTransaction Connection ([CIP.CarInstanceParts])
+        mt <- search ["part_instance_id" |== toSql ( MI.part_instance_id d)] [] 1 0 :: SqlTransaction Connection ([CIP.CarInstanceParts])
         case mt of 
             [] -> rollback "No such part"
             [t] -> do 
