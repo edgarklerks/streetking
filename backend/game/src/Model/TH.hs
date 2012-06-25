@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, NoMonomorphismRestriction #-}
+{-# LANGUAGE TemplateHaskell, NoMonomorphismRestriction, ViewPatterns #-}
 module Model.TH where 
 
 import Language.Haskell.TH
@@ -8,9 +8,15 @@ import Control.Monad
 import Data.Maybe 
 import Data.Default 
 import Database.HDBC 
+import Data.Database
+import Data.List
 
-checkTables :: String -> [String] -> Q ()
-checkTables tbl xs = runIO $ do 
+checkTables :: String -> [(String,a)] -> Q ()
+checkTables tbl (fmap fst -> xs) = runIO $ do 
+                c <- dbconn 
+                ns <- (fmap.fmap) fst $ describeTable c tbl 
+                when (not $ null (xs \\ ns)) $ error $ "table is not correctly defined: " ++ tbl ++ "classing fields: " ++ (show $ xs \\ ns) 
+                disconnect c
                 return ()
 
 {-- 
@@ -20,7 +26,8 @@ checkTables tbl xs = runIO $ do
  --}
 
 genAll :: String -> String -> [(String, Name)] ->  Q [Dec]
-genAll nm tbl xs = do r <- genRecord nm xs  
+genAll nm tbl xs = do checkTables tbl xs
+                      r <- genRecord nm xs  
                       i <- genInstance nm xs
                       d <- genDatabase nm tbl "id"
                       x <- genDefaultInstance nm xs
@@ -28,7 +35,8 @@ genAll nm tbl xs = do r <- genRecord nm xs
 
 genAllId :: String -> String -> String -> [(String, Name)] -> Q [Dec]
 genAllId nm tbl td xs = 
-                   do r <- genRecord nm xs  
+                   do checkTables tbl xs
+                      r <- genRecord nm xs  
                       i <- genInstance nm xs
                       d <- genDatabase nm tbl td
                       x <- genDefaultInstance nm xs
