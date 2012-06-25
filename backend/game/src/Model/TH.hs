@@ -15,6 +15,7 @@ checkTables :: String -> [(String,a)] -> Q ()
 checkTables tbl (fmap fst -> xs) = runIO $ do 
                 c <- dbconn 
                 ns <- (fmap.fmap) fst $ describeTable c tbl 
+                putStrLn $ "Checking " ++ (show tbl) ++ "..."
                 when (not $ null (xs \\ ns)) $ error $ "table is not correctly defined: " ++ tbl ++ "classing fields: " ++ (show $ xs \\ ns) 
                 disconnect c
                 return ()
