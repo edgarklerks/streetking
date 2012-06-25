@@ -62,7 +62,8 @@ Executable game
     hashable,
     smallcheck,
     hslua,
-    MonadRandom
+    MonadRandom,
+    haskell-src
 
   extensions: TypeSynonymInstances MultiParamTypeClasses ScopedTypeVariables DoAndIfThenElse NoMonomorphismRestriction ViewPatterns
 
