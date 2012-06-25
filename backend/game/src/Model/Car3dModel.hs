@@ -18,5 +18,6 @@ $(genAll "Car3dModel" "car_3d_model"
     [
         ("id", ''Id),
         ("name", ''String),
-        ("use_3d", ''String)
+        ("use_3d", ''String),
+        ("part_instance_id", ''String)
     ])
