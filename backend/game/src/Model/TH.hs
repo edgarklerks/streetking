@@ -2,14 +2,22 @@
 module Model.TH where 
 
 import Language.Haskell.TH
+import Language.Haskell.Syntax
 import Language.Haskell.TH.Lib
 import Control.Monad
 import Data.Maybe 
 import Data.Default 
+import Database.HDBC 
+
+checkTables :: String -> [String] -> Q ()
+checkTables tbl xs = runIO $ do 
+                return ()
 
 {-- 
  -
- - And God saideth, let there be light. And I turneth the switch. --}
+ - And God saideth, let there be light. And I turneth the switch. 
+ -
+ --}
 
 genAll :: String -> String -> [(String, Name)] ->  Q [Dec]
 genAll nm tbl xs = do r <- genRecord nm xs  
