@@ -667,27 +667,6 @@ marketReturn = do
 
  
 
-
-
-
-
-
-
----
-
-
-
-                                
-
-        
-
-
-
- 
-
-
-
-
 carParts :: Application ()
 carParts = do 
     uid <- getUserId
@@ -838,10 +817,9 @@ garageActiveCar = do
 loadModel :: Application ()
 loadModel = do 
         idp <- getOParam "car_id"
-        ns <- (runDb $ load $ convert idp) :: Application (Maybe C3D.Car3dModel)
-        case ns of 
-            Nothing -> internalError "No such car"
-            Just x -> writeMapable x
+        (((l,o),xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id")
+        ns <- runDb $ search xs od l o
+        writeMapables ns
 
 loadTemplate :: Application ()
 loadTemplate = do 
