@@ -816,7 +816,7 @@ garageActiveCar = do
 
 loadModel :: Application ()
 loadModel = do 
-        (((l,o),xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id", "part_instance_id" +== "part_instance_id")
+        (((l,o),xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id" +&& "part_instance_id" +== "part_instance_id")
         ns <- runDb $ search xs od l o :: Application [C3D.Car3dModel]
         writeMapables ns
 
