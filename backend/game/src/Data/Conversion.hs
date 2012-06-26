@@ -10,7 +10,6 @@ import Data.Ratio
 import Data.InRules
 
 import Data.Object
-import Data.Object.Yaml
 import Control.Monad
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Parser as A
@@ -34,7 +33,6 @@ import Data.Time.Clock
 import Data.Time.LocalTime
 import Data.Fixed
 
-type YAML = Object String String 
 
 
 stringLike ::  String -> String
@@ -98,29 +96,12 @@ localTimeToUnixTimeStamp (LocalTime x y) = (days x) + (timywimy y)
    --}      
     
 
-convYaml :: InRule -> B.ByteString  
-convYaml  = encode . preConvYaml 
 
 typedScalarMapping :: key -> val -> Object key val 
 typedScalarMapping k v = Mapping [(k, Scalar v)]
 
 typedMapping :: key -> Object key val -> Object key val 
 typedMapping k v = Mapping [(k, v)]
-
-preConvYaml :: InRule -> YAML 
-preConvYaml (InNumber r) =  typedScalarMapping "rational" $ show $ InNumber $ r
-preConvYaml (InInteger r) =  typedScalarMapping "integer" $ show r
-preConvYaml (InDouble r) = typedScalarMapping "double" $ show r
-preConvYaml (InBool True) =  typedScalarMapping "bool" $ "t"
-preConvYaml (InBool False) =  typedScalarMapping "bool" $ "f"
-preConvYaml InNull = typedScalarMapping "null" $ "null"
-preConvYaml (InString s) = typedScalarMapping "string" $  s
-preConvYaml (InArray vs) = typedMapping "array" $ numberedArray vs 
-preConvYaml (InObject xs) = typedMapping "object" $ Mapping $ Map.foldrWithKey step [] xs
-                where step k v z =  (k, preConvYaml v):z 
-
-numberedArray :: [InRule] -> YAML
-numberedArray xs = Mapping $ fmap show [0..] `zip` fmap preConvYaml xs 
 
 
 
@@ -190,8 +171,6 @@ toHstoreString _ = error "Need an object to map to an hstore string"
 testConv2SqlArray ::  [SqlValue]
 testConv2SqlArray = conv2SqlArray (InArray [ toInRule (timeStamp 2001 8 11 52 45 23), toInRule (timeStamp 2011 8 12 20 45 23)  ])
 
-testConv (InObject xs) = Map.foldrWithKey step [] xs
-                where step k v z =  (k, preConvYaml v):z  
 
 
 testConv2 ::  FromInRule b => InRule -> ([String], [b])
