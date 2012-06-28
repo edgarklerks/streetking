@@ -1302,7 +1302,7 @@ downloadCarImage :: Application ()
 downloadCarImage = do
     uid <- getUserId
     pl <- getOParam "car_instance_id"
-    let p = read (B.unpack pl) :: Integer 
+    let p = read (C.unpack pl) :: Integer 
     serveFile ("resource/static/carimages/" ++ (show p) ++ ".jpg")
 
 
