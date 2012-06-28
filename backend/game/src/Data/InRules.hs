@@ -18,7 +18,7 @@ import Data.Time.LocalTime
 import Data.Convertible
 import Data.Maybe
 import Control.Applicative
-import Data.Monoid hiding ((<>))
+import Data.Monoid -- hiding ((<>))
 import Control.Monad
 import Data.Pointed
 import Data.Copointed
