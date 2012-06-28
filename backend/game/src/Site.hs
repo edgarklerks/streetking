@@ -1336,6 +1336,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Car/sell", carSell),
                 ("/Car/activate", carActivate),
                 ("/Car/deactivate", carDeactivate),
+                ("/Car/uploadImage", uploadCarImage),
                 ("/Market/returnCar", carReturn),
                 ("/Market/carParts", marketCarParts),
                 ("/Garage/addPart", addPart),
