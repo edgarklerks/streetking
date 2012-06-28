@@ -11,8 +11,8 @@
 	<div class="sub-menu-container">
 		<ul class="sub-menu">
 			[:repeat data:menu.nodes as:submenu] {
-				<li class="li-sub-menu-item">
-					<div module="[:submenu.content.MenuItem.1]" class="menu_item [:submenu.content.MenuItem.2]">[:submenu.content.MenuItem.0]</div>  
+				<li class="li-sub-menu-item" module="[:submenu.content.MenuItem.1]">
+					<div class="menu_item [:submenu.content.MenuItem.2]">[:submenu.content.MenuItem.0]</div>  
 				</li>
 			}
 		</ul>
