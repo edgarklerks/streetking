@@ -1247,7 +1247,7 @@ trackHere = do
         writeMapables ts
 
 userReports :: Application ()
-userReports = do 
+userReports = do
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("report_type" +== "report_type" +&& "time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
         ns <- runDb $ search xs [Order ("time",[]) False] l o :: Application [GR.GeneralReport]
@@ -1306,8 +1306,11 @@ downloadCarImage = do
     serveFile ("resource/static/carimages/" ++ (show p) ++ ".jpg")
 
 
-
-     
+    
+crossDomain :: Application()
+crossDomain = do
+    -- send Content-Type: text/xml
+    writeResult ("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from-domain=\"*\" to-ports=\"9000-9005\"/></cross-domain-policy>" :: String)
 
 
 
@@ -1371,6 +1374,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Travel/reports", travelReports),
                 ("/Track/list", trackList),
                 ("/Track/here", trackHere),
-                ("/User/reports", userReports)
+                ("/User/reports", userReports),
+
+                ("crossdomain.xml", crossDomain)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
