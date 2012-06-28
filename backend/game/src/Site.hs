@@ -1292,7 +1292,7 @@ uploadCarImage = do
         case snd $ head xs of 
             Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
             Right e -> do 
-                    renameFile e (show uid  ++ ".jpg")
+                    liftIO $ renameFile e (show uid  ++ ".jpg")
                     return ()
 
     
