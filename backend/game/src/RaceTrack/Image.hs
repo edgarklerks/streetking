@@ -202,6 +202,15 @@ normalizeImage xs = let (r,g,b,t) = foldr step (0,0,0,0) (assocs xs)
                                         writeArray a (i,j,c) $ (round (255 * p)) 
                             return a
 
+gaussianOperator :: VectorImage -> VectorImage 
+gaussianOperator  v = convoluteImage v (1 / 273) (mkVector 5 5 [
+        1, 4, 7, 4, 1,
+        4,16,41, 16, 4,
+        7,41,41,41,7,
+        4,16,41,16,4,
+        1,4,7,4,1
+
+    ])
 
 sobelOperator :: (Complex Double) -> VectorImage -> VectorImage 
 sobelOperator s v = convoluteImage p s (mkn3 [(1,2,1),(0,0,0),(-1,-2,-1)])
@@ -224,7 +233,7 @@ testOperator s v = convoluteImage v s (mkn3 [(-3,2,-3),(1,8,1),(-3,2,-3)])
 testOperators = do 
     ilInit
     x <- loadVector "default.jpg"
-    saveImage "test.bmp" (normalizeImage . vectorToImage . testOperator (1/2) $ x)
+    saveImage "test.bmp" (normalizeImage . vectorToImage . gaussianOperator $ x)
 
 -- dft :: VectorImage -> VectorImage 
 {--

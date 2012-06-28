@@ -41,15 +41,15 @@ instance (Show a, Eq a, Num a) => Num (Vector a) where
         signum a = abs a -- `scalarDiv` abs a  
         fromInteger = mk11 . fromInteger 
 
-magnitude :: (Num a, Floating a) => Vector a -> Vector a
+magnitude :: (Num a, Floating a, Show a, Eq a) => Vector a -> Vector a
 magnitude v = sqrt $ abs v 
 
-normalize :: (Num a, Floating a) => Vector a -> Vector a
+normalize :: (Num a, Floating a, Show a, Eq a) => Vector a -> Vector a
 normalize v = v / magnitude v 
 
 theta21 v@(Vector 2 1 n)  = mk21 (fromScalar $ magnitude v, atan2 (n ! (2,1)) (n ! (1,1)))
 
-instance Floating a => Floating (Vector a) where 
+instance (Show a, Eq a, Floating a) => Floating (Vector a) where 
     sin = fmap sin 
     asin = fmap asin 
     cos = fmap cos 
@@ -109,7 +109,7 @@ findPivot k (Vector r c vec1) | r == c = maximumBy (\x y -> compare (fst x) (fst
                               | otherwise = error "cannot find pivot for a non square matrix"
 
 
-gaussianElim :: (Ord a, Fractional b, Real a) => Vector a -> Vector a -> Vector b 
+gaussianElim :: (Ord a, Fractional b, Real a, Show b) => Vector a -> Vector a -> Vector b 
 gaussianElim v res | square v = slice (getCols v + 1) (getCols v + getCols res) b  
                    | otherwise = error "Matrix is not square"
     where b = Vector (getRows v) (getCols v + getCols res) $ fmap fromRational $ runSTArray $ do 
@@ -161,7 +161,7 @@ secondCentralDifference (x1:x2:x3:x4:x5:xs) = Just $ (getY x5 - getY x3) / (hf *
     where hf = getX x5 - getX x3
           hc = getX x4 - getX x2 
           hb = getX x3 - getX x1
-firstStepDifferenceVector :: (Floating a) => [Vector a] -> Maybe (Vector a)
+firstStepDifferenceVector :: (Floating a, Eq a, Show a) => [Vector a] -> Maybe (Vector a)
 firstStepDifferenceVector (x1:x2:x3:xs) = Just $ (x3 - x1) `scalarDiv` 2
 firstStepDifferenceVector otherwise = Nothing  
 
@@ -169,7 +169,7 @@ firstStepDifferenceVector otherwise = Nothing
 -- Five points 
 -- xn - 2, xn - 1, xn , xn + 1, xn + 2
 -- x1    , x2    , x3 , x4    , x5
-secondStepDifferenceVector :: (Floating a) => [Vector a] -> Maybe (Vector a)
+secondStepDifferenceVector :: (Floating a, Eq a, Show a) => [Vector a] -> Maybe (Vector a)
 secondStepDifferenceVector (x1:x2:x3:x4:x5:xs) = Just $ (x5 - x3 + x1) `scalarDiv` 4
 secondStepDifferenceVector otherwise = Nothing  
 
@@ -181,16 +181,16 @@ testSecondStepDifference = secondStepDifferenceRate [
         mk21 (4,6)
     ]
 
-secondStepDifferenceRate :: (RealFloat a, Floating a) => [Vector a] -> Maybe a
+secondStepDifferenceRate :: (RealFloat a, Floating a, Show a) => [Vector a] -> Maybe a
 secondStepDifferenceRate =  fmap (fromScalar . magnitude ) . secondStepDifferenceVector
 
 
-thirdStepDifferenceVector :: (Floating a) => [Vector a] -> Maybe (Vector a)
+thirdStepDifferenceVector :: (Eq a, Show a, Floating a) => [Vector a] -> Maybe (Vector a)
 thirdStepDifferenceVector (x1:x2:x3:x4:x5:x6:x7:xs) = Just $ (x7 - (x5 + x5 + x5) + (x3 + x3 + x3) - x1) 
 thirdStepDifferenceVector otherwise = Nothing 
 
 
-thirdStepDifferenceRate :: (RealFloat a, Floating a) => [Vector a] -> Maybe a
+thirdStepDifferenceRate :: (RealFloat a, Show a, Floating a) => [Vector a] -> Maybe a
 thirdStepDifferenceRate = fmap (fromScalar . magnitude) . thirdStepDifferenceVector 
 
 inverse v | square v = gaussianElim  v (identityMatrix (getRows v))
@@ -216,7 +216,7 @@ append (Vector r1 c1 vec1) (Vector r2 c2 vec2) | r1 == r2 = Vector r1 (c1 + c2) 
                                                             return a
                                          | otherwise = error "cannot append matrices"
 
-instance (Floating a, Fractional a) => Fractional (Vector a) where 
+instance (Eq a,Show a,Floating a, Fractional a) => Fractional (Vector a) where 
         fromRational = mk11 . fromRational
         (/) a b = multVec (*) a (recip b)
 --        recip (Vector k l vec1) =  
