@@ -7,4 +7,5 @@
 	<li class="sk-icon-30x30-aerodynamic"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=aerodynamic&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="aerodynamic" title="aerodynamic">&nbsp;</a></li>
 	<li class="sk-icon-30x30-turbo"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=turbo&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="turbo" title="turbo">&nbsp;</a></li>
 	<li class="sk-icon-30x30-nos"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=nos&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="nos" title="nos">&nbsp;</a></li>
+	<li class="sk-icon-30x30-paint"><a class="sk-icon-t30x30" href="#Garage/parts/?part_type=paint&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_PAINT_TAB" alt="paint" title="paint">&nbsp;</a></li>
 </ul>
