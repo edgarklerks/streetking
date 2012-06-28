@@ -290,7 +290,6 @@ prop_isomorph_value_inrule = property prop_isomorph_value_inrule'
 smallArgs = Args {
         replay = Nothing,
         maxSuccess = 10000,
-        maxDiscard = 10000,
         maxSize = 30,
         chatty = True
     }
@@ -345,7 +344,6 @@ instance Arbitrary InRule where
 cArgs = Args {
         replay = Nothing,
         maxSuccess = 10000,
-        maxDiscard = 10000,
         maxSize = 10000,
         chatty = True
     }

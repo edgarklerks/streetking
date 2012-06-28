@@ -29,7 +29,7 @@ Executable game
     snap-server == 0.5.*,
     text >= 0.11,
     time >= 1.1,
-    xmlhtml == 0.1.*,
+    xmlhtml ,
     directory,
     binary >= 0.5,
     TigerHash,
