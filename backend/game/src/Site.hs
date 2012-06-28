@@ -1307,7 +1307,7 @@ downloadCarImage = do
 
 
     
-crossDomain :: Application()
+crossDomain :: Application ()
 crossDomain = do
     -- send Content-Type: text/xml
     writeResult ("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from-domain=\"*\" to-ports=\"9000-9005\"/></cross-domain-policy>" :: String)
