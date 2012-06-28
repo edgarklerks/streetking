@@ -44,3 +44,7 @@
 	</div>
 	<div class="clearfix"></div>
 </div>
+<div class="user-place">
+	<div class="">[:continent_name]</div>
+	<div class="">[:city_name]</div>
+</div>
