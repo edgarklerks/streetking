@@ -21,6 +21,7 @@ import           Data.DatabaseTemplate
 import           Database.HDBC (toSql, fromSql)
 import qualified Data.ByteString.Char8 as C
 import qualified Data.Text.Encoding as T
+import qualified Data.Text as T 
 import           Snap.Util.FileServe
 import           Snap.Util.FileUploads
 import           Snap.Types
@@ -1289,7 +1290,7 @@ uploadCarImage = do
     handleFileUploads "resources/static/userimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
         when (null xs)  $ internalError "no file uploaded"
         case snd $ head xs of 
-            Left x -> internalError (policyViolationExceptionReason x)
+            Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
             Right e -> do 
                     renameFile e (show uid  ++ ".jpg")
                     return ()
