@@ -1287,12 +1287,14 @@ travelReports = do
 uploadCarImage :: Application ()
 uploadCarImage = do 
     uid <- getUserId
-    handleFileUploads "resources/static/userimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
+    xs <- getJson >>= scheck ["car_instance_id"]
+    let ns = updateHashMap xs (def :: PI.PartInstance)
+    handleFileUploads "resources/static/carimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
         when (null xs)  $ internalError "no file uploaded"
         case snd $ head xs of 
             Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
             Right e -> do 
-                    liftIO $ renameFile e (show uid  ++ ".jpg")
+                    liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
                     return ()
 
     
