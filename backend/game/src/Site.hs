@@ -84,6 +84,7 @@ import           Data.Conversion
 import           Data.InRules
 import           Data.Tools
 import           System.FilePath.Posix
+import           System.Directory
 import           Data.String
 import           GHC.Exception (SomeException)
 
