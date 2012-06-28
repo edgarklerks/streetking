@@ -1,4 +1,4 @@
-<div id="setup-car-box" title="Set up your car ([:0.manufacturer_name]&nbsp;&bull;&nbsp;[:0.name]&nbsp;&bull;&nbsp;[:0.year]&nbsp;&bull;&nbsp;level [:0.level])">
+<div id="setup-car-box" car_id="[:0.id]" title="Set up your car">
 	<div class="setup-car-box">
 		<div id="player-streetKING" class="setup-car-player-box">
 			<div class="missing">
@@ -6,8 +6,22 @@
 			</div>
 		</div>
 		<div class="setup-car-info-box">
+			<div class="setup-car-info-data-box">
+				<div class="setup-car-info-data-box-left">
+					<div class="setup-car-info-data-logo-box ui-corner-all">
+						<div class="setup-car-info-data-logo-box-image ui-corner-all" style="background-image:url(images/manufacturers/[:0.manufacturer_name]_logo.png);"></div>
+						<div class="setup-car-info-data-box-overlay ui-corner-all"></div>
+					</div>
+				</div>
+				<div class="setup-car-info-data-box-right">
+					<div>Manufacturer:&nbsp;<b>[:0.manufacturer_name]</b></div>
+					<div>Model:&nbsp;<b>[:0.name]</b></div>
+					<div>Year:&nbsp;<b>[:0.year]</b></div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
 			<div id="setup-car-parts-info-box" class="setup-car-parts-info-box"></div>
-			<div id="setup-car-part-info-box" class="setup-car-part-info-box ui-corner-all"></div>
+			<div id="setup-car-part-info-box" class="setup-car-part-info-box"></div>
 		</div>
 		<div class="clearfix"></div>
 	</div>
