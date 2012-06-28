@@ -23,6 +23,7 @@ import Control.Monad
 import Data.Pointed
 import Data.Copointed
 import Data.Semigroup
+import qualified Data.List.NonEmpty as N
 infixr 6 ==>
 infixr 6 .>
 infixl 6 .>>
@@ -121,9 +122,9 @@ alter (PM g) (PM f) = PM $ \a ->
 apoint a = PM $ \s -> if s == a then accept else reject 
 
 x :: PathAcceptor Int 
-x = sconcat [apoint 2, apoint 2, apoint 3, apoint 3]
+x = sconcat $ N.fromList [apoint 2, apoint 2, apoint 3, apoint 3]
 y :: PathAcceptor Int 
-y = sconcat [apoint 2, apoint 2, apoint 3, apoint 4]
+y = sconcat $ N.fromList [apoint 2, apoint 2, apoint 3, apoint 4]
 
 z :: PathAcceptor Int 
 z = alter x y
