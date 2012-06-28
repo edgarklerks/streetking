@@ -22,6 +22,7 @@ import           Database.HDBC (toSql, fromSql)
 import qualified Data.ByteString.Char8 as C
 import qualified Data.Text.Encoding as T
 import           Snap.Util.FileServe
+import           Snap.Util.FileUploads
 import           Snap.Types
 import qualified Data.Aeson as AS 
 import qualified Model.Account as A 
@@ -1280,6 +1281,22 @@ travelReports = do
     ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
     ns <- runDb (search xs [] l o) :: Application [TR.TravelReport]
     writeMapables ns 
+
+uploadCarImage :: Application ()
+uploadCarImage = do 
+    uid <- getUserId
+    handleFileUploads "resources/static/userimages" (setProcessFormInputs 1 $ setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
+        when (null xs)  $ internalError "no file uploaded"
+        case head xs of 
+            Left x -> internalError (policyViolationExceptionReason x)
+            Right e -> do 
+                    renameFile e (show uid  ++ ".jpg")
+                    return ()
+
+    
+
+     
+
 
 
 -- | The main entry point handler.
