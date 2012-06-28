@@ -1297,7 +1297,15 @@ uploadCarImage = do
                     liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
                     return ()
 
-    
+   
+downloadCarImage :: Application ()
+downloadCarImage = do
+    uid <- getUserId
+    pl <- getOParam "car_instance_id"
+    let p = read pl :: Integer 
+    serveFile ("resource/static/carimages/" ++ (show p) ++ ".jpg")
+
+
 
      
 
@@ -1339,6 +1347,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Car/activate", carActivate),
                 ("/Car/deactivate", carDeactivate),
                 ("/Car/uploadImage", uploadCarImage),
+                ("/Car/image", downloadCarImage),
                 ("/Market/returnCar", carReturn),
                 ("/Market/carParts", marketCarParts),
                 ("/Garage/addPart", addPart),
