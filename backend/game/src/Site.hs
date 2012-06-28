@@ -1286,7 +1286,7 @@ travelReports = do
 uploadCarImage :: Application ()
 uploadCarImage = do 
     uid <- getUserId
-    handleFileUploads "resources/static/userimages" (setProcessFormInputs 1 $ setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
+    handleFileUploads "resources/static/userimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
         when (null xs)  $ internalError "no file uploaded"
         case snd $ head xs of 
             Left x -> internalError (policyViolationExceptionReason x)
