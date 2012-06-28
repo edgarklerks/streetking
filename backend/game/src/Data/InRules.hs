@@ -121,9 +121,9 @@ alter (PM g) (PM f) = PM $ \a ->
 apoint a = PM $ \s -> if s == a then accept else reject 
 
 x :: PathAcceptor Int 
-x = apoint 2 <> apoint 2 <> apoint 3 <> apoint 3
+x = sconcat [apoint 2, apoint 2, apoint 3, apoint 3]
 y :: PathAcceptor Int 
-y = apoint 2 <> apoint 2 <> apoint 3 <> apoint 4
+y = sconcat [apoint 2, apoint 2, apoint 3, apoint 4]
 
 z :: PathAcceptor Int 
 z = alter x y
