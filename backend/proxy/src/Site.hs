@@ -208,7 +208,7 @@ roleUser = (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":"
 crossDomain :: Application()
 crossDomain = do
     modifyResponse (addHeader "Content-Type" "text/xml")
-    writeBS $ B.pack $ ("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from-domain=\"*\" to-ports=\"9000-9005\"/></cross-domain-policy>" :: String)
+    writeBS $ B.pack $ ("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\"/></cross-domain-policy>" :: String)
 
 
 ------------------------------------------------------------------------------
