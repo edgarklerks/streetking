@@ -1296,8 +1296,7 @@ uploadCarImage = do
             Right e -> do 
                     liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
                     return ()
-
-   
+  
 downloadCarImage :: Application ()
 downloadCarImage = do
     uid <- getUserId
@@ -1305,12 +1304,6 @@ downloadCarImage = do
     let p = read (C.unpack pl) :: Integer 
     serveFile ("resource/static/carimages/" ++ (show p) ++ ".jpg")
 
-
-    
-crossDomain :: Application ()
-crossDomain = do
-    -- send Content-Type: text/xml
-    writeResult ("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from-domain=\"*\" to-ports=\"9000-9005\"/></cross-domain-policy>" :: String)
 
 
 
@@ -1374,8 +1367,6 @@ site = CIO.catch (CIO.catch (route [
                 ("/Travel/reports", travelReports),
                 ("/Track/list", trackList),
                 ("/Track/here", trackHere),
-                ("/User/reports", userReports),
-
-                ("crossdomain.xml", crossDomain)
+                ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))

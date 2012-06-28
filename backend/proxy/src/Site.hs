@@ -204,6 +204,12 @@ roleUser :: Application()
 roleUser = (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":" `BL.append` ) . (`BL.append` "}") . A.encode
 
 
+-- cross domain shizzle for unity
+crossDomain :: Application()
+crossDomain = do
+    modifyResponse (addHeader "Content-Type" "text/xml")
+    writeBS $ B.pack $ ("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from-domain=\"*\" to-ports=\"9000-9005\"/></cross-domain-policy>" :: String)
+
 
 ------------------------------------------------------------------------------
 -- | The main entry point handler.
@@ -218,6 +224,7 @@ site = do
             ("/User/logout", logout),
             ("/Role/application", roleApp),
             ("/Role/user", roleUser),
+            ("/crossdomain.xml", crossDomain),
             ("/", proxy) ] ) $ \(UserErrorE e) -> 
                 writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" )
 
@@ -244,3 +251,5 @@ allowMethods = modifyResponse (addHeader "Access-Control-Allow-Methods" "POST, G
 
 allowHeaders :: Application ()
 allowHeaders = modifyResponse (addHeader "Access-Control-Allow-Headers" "origin, content-type, accept, cookie");
+
+
