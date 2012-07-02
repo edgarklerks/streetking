@@ -18,8 +18,6 @@ import           Data.Maybe
 import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL
 import qualified Data.Text.Encoding as T
-import           Snap.Extension.Heist
-import           Snap.Extension.Timer
 --import           Snap.Extension.Decoder
 import           Snap.Util.FileServe
 import           Snap.Types
@@ -209,7 +207,7 @@ roleUser = do
             [User (Nothing)] -> writeLBS "{\"result\":0}" 
 
 
-    (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":" `BL.append` ) . (`BL.append` "}") . A.encode
+--    (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":" `BL.append` ) . (`BL.append` "}") . A.encode
 
 
 -- cross domain shizzle for unity
