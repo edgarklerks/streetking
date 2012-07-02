@@ -201,7 +201,15 @@ roleApp :: Application()
 roleApp = (not.null) <$>  getRoles "application_token" >>= writeLBS .  ("{\"result\":" `BL.append`) . (`BL.append` "}") . A.encode 
 
 roleUser :: Application()
-roleUser = (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":" `BL.append` ) . (`BL.append` "}") . A.encode
+roleUser = do 
+        xs <- getRoles "user_token"
+        case xs of 
+            [] -> writeLBS "{\"result\":0}" 
+            [User (Just x)] -> writeLBS "{\"result\":1}" 
+            [User (Nothing)] -> writeLBS "{\"result\":0}" 
+
+
+    (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":" `BL.append` ) . (`BL.append` "}") . A.encode
 
 
 -- cross domain shizzle for unity
