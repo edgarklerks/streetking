@@ -1311,7 +1311,7 @@ carGetOptions :: Application ()
 carGetOptions = do 
         uid <- getUserId
         ((l,o), xs) <- getPagesWithDTD ("car_instance_id" +== "car_instance_id" +&& "key"  +== "key" +&& "account_id" +==| (toSql uid)) 
-        xs <- runDb $ search xs [] l o :: Application [(CO.CarOptions)]
+2       xs <- runDb $ search xs [] l o :: Application [(COE.CarOptionsExtended)]
         writeMapables xs
 
 
