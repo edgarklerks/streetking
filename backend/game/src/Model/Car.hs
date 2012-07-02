@@ -28,3 +28,4 @@ $(genAll "Car" "car_model"
         ("level", ''Integer),
         ("price", ''Integer)
     ])
+
