@@ -1329,7 +1329,13 @@ carSetOptions = do
                 Nothing -> rollback "no such car"
                 Just x -> do 
                     when (COW.account_id x /= uid) $ rollback "You're not the car owner"
-                    save co 
+                    s <- search  ["car_instance_id" |== toSql (CO.car_instance_id co), "key" |== toSql (CO.key co)] [] 1 0 :: SqlTransaction Connection [CO.CarOptions] 
+                    case s of 
+                        [] -> do 
+                                save co 
+                        [id] -> do
+                            save (co {CO.id = CO.id id})
+                                
         writeResult b
          
 
