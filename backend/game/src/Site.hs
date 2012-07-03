@@ -56,6 +56,9 @@ import qualified Model.Config as CFG
 import qualified Model.MarketPlace as MP
 import qualified Model.PartType as PT 
 import qualified Model.CarInstanceParts as CIP
+import qualified Model.CarOptions as CO
+import qualified Model.CarOptionsExtended as COE
+import qualified Model.CarOwners as COW
 import qualified Model.MarketCarInstanceParts as MCIP
 import qualified Model.CarStockParts as CSP
 import qualified Model.MarketPlaceCar as MPC
@@ -1241,7 +1244,7 @@ trackHere = do
                         Nothing -> rollback "oh noes diz can no happen"
                         Just a -> do 
                                  ts <- search (["city_id" |== (toSql $ A.city a)] ++ xs) [Order ("track_level",[]) True] l o :: SqlTransaction Connection [TT.TrackMaster]
---                                 ts <- search ["city_id" |== (toSql $ A.city a)] [] 1000 0 :: SqlTransaction Connection [TT.TrackMaster]
+                                 ts <- search ["city_id" |== (toSql $ A.city a)] [] 1000 0 :: SqlTransaction Connection [TT.TrackMaster]
                                  return ts
         ts <- tr
         writeMapables ts
@@ -1304,8 +1307,39 @@ downloadCarImage = do
     let p = read (C.unpack pl) :: Integer 
     serveFile ("resource/static/carimages/" ++ (show p) ++ ".jpg")
 
+carGetOptions :: Application ()
+carGetOptions = do 
+        uid <- getUserId
+        ((l,o), xs) <- getPagesWithDTD ("car_instance_id" +== "car_instance_id" +&& "key"  +== "key" +&& "account_id" +==| (toSql uid)) 
+        xs <- runDb $ search xs [] l o :: Application [(COE.CarOptionsExtended)]
+        writeMapables xs
 
 
+
+
+carSetOptions :: Application ()
+carSetOptions = do 
+        uid <- getUserId 
+        xs <- getJsons
+        
+        forM_ xs $ \xs -> do 
+            scheck ["car_instance_id", "key", "value"] xs  
+            runDb $ do 
+                let co = updateHashMap xs def :: CO.CarOptions 
+                x <- load (CO.car_instance_id co) :: SqlTransaction Connection (Maybe COW.CarOwners)
+                case x of 
+                    Nothing -> rollback "no such car"
+                    Just x -> do 
+                        when (COW.account_id x /= uid) $ rollback "You're not the car owner"
+                        s <- search  ["car_instance_id" |== toSql (CO.car_instance_id co), "key" |== toSql (CO.key co)] [] 1 0 :: SqlTransaction Connection [CO.CarOptions] 
+                        case s of 
+                            [] -> do 
+                                    save co 
+                            [id] -> do
+                                save (co {CO.id = CO.id id})
+                                
+        writeResult (1 :: Integer)
+         
 
 -- | The main entry point handler.
 site :: Application ()
@@ -1344,6 +1378,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Car/deactivate", carDeactivate),
                 ("/Car/uploadImage", uploadCarImage),
                 ("/Car/image", downloadCarImage),
+                ("/Car/getOptions", carGetOptions),
+                ("/Car/setOptions", carSetOptions),
                 ("/Market/returnCar", carReturn),
                 ("/Market/carParts", marketCarParts),
                 ("/Garage/addPart", addPart),

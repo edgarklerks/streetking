@@ -14,8 +14,26 @@ data DTD = Con D.ConOp String DTD
         | Fix SqlValue  
         | If String (String -> Bool) DTD DTD
         | OrderedBy DTD [String]
+        | Nop
 
 orderedBy = OrderedBy 
+
+transformDTD :: (DTD -> DTD) -> DTD -> DTD 
+transformDTD f z = p z 
+    where 
+        p (And x y) = f $ And (transformDTD f x) (transformDTD f y)
+        p (Or x y) = f $ Or (transformDTD f x) (transformDTD f y)
+        p (Con x y z) = f $ Con x (y) (transformDTD f z)
+        p t@(Lift x) = f t
+        p t@(Fix a) = f t
+        p (If v p d e) = f $ If v p (transformDTD f d) (transformDTD f e)
+        p (OrderedBy x y) = f $ OrderedBy (transformDTD f x) y
+
+filterDTD :: (DTD -> Bool) -> DTD -> DTD 
+filterDTD f = transformDTD step 
+    where 
+        step x | f x   = Nop 
+               | otherwise = x
 
 (+&&) = And 
 (+||) = Or 
@@ -65,6 +83,7 @@ dtd :: DTD -> S.HashMap String SqlValue -> D.Constraints
 dtd x = maybeToList . evalDTD x
 
 evalDTD :: DTD -> S.HashMap String SqlValue -> Maybe D.Constraint
+evalDTD Nop p = Nothing 
 evalDTD (OrderedBy _ _) p = Nothing 
 evalDTD (If t pred i e) p = case S.lookup t p of 
                                 Nothing -> evalDTD e p 
