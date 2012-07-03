@@ -1320,23 +1320,25 @@ carGetOptions = do
 carSetOptions :: Application ()
 carSetOptions = do 
         uid <- getUserId 
-        xs <- getJson >>= scheck ["car_instance_id", "key", "value"]
-
-        b <- runDb $ do 
-            let co = updateHashMap xs def :: CO.CarOptions 
-            x <- load (CO.car_instance_id co) :: SqlTransaction Connection (Maybe COW.CarOwners)
-            case x of 
-                Nothing -> rollback "no such car"
-                Just x -> do 
-                    when (COW.account_id x /= uid) $ rollback "You're not the car owner"
-                    s <- search  ["car_instance_id" |== toSql (CO.car_instance_id co), "key" |== toSql (CO.key co)] [] 1 0 :: SqlTransaction Connection [CO.CarOptions] 
-                    case s of 
-                        [] -> do 
-                                save co 
-                        [id] -> do
-                            save (co {CO.id = CO.id id})
+        xs <- getJsons
+        
+        forM_ xs $ \xs -> do 
+            scheck ["car_instance_id", "key", "value"] xs  
+            runDb $ do 
+                let co = updateHashMap xs def :: CO.CarOptions 
+                x <- load (CO.car_instance_id co) :: SqlTransaction Connection (Maybe COW.CarOwners)
+                case x of 
+                    Nothing -> rollback "no such car"
+                    Just x -> do 
+                        when (COW.account_id x /= uid) $ rollback "You're not the car owner"
+                        s <- search  ["car_instance_id" |== toSql (CO.car_instance_id co), "key" |== toSql (CO.key co)] [] 1 0 :: SqlTransaction Connection [CO.CarOptions] 
+                        case s of 
+                            [] -> do 
+                                    save co 
+                            [id] -> do
+                                save (co {CO.id = CO.id id})
                                 
-        writeResult b
+        writeResult (1 :: Integer)
          
 
 -- | The main entry point handler.
