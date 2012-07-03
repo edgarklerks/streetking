@@ -14,6 +14,7 @@ module Application
   , addRole 
   , ApplicationException(..)
   , getJson 
+  , getJsons
   , getId 
   , getUserId 
   , getPages 
@@ -132,6 +133,13 @@ getJson = do
     case t of 
         (Done _ v)  -> return (fromInRule $ toInRule v)
         otherwise -> return S.empty --- internalError "No json provided" 
+
+getJsons :: Application [SqlMap]
+getJsons = do 
+    t <- parse json <$> getRequestBody 
+    case t of 
+        (Done _ v)  -> return (fromInRule $ toInRule v)
+        otherwise -> return [] --- internalError "No json provided" 
 
 getId :: Application Integer 
 getId = do 

@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
-module Model.Car where 
+module Model.CarOwners where 
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -13,19 +13,10 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genAll "Car" "car_model"
+type MString = Maybe String 
+
+$(genAll "CarOwners" "car_owners"
     [
         ("id", ''Id),
-        ("manufacturer_id", ''Integer),
-        ("top_speed", ''Integer),
-        ("acceleration", ''Integer),
-        ("braking", ''Integer),
-        ("nos", ''Integer),
-        ("handling", ''Integer),
-        ("name", ''String),
-        ("use_3d", ''String),
-        ("year", ''Integer),
-        ("level", ''Integer),
-        ("price", ''Integer)
+        ("account_id", ''Integer)
     ])
-
