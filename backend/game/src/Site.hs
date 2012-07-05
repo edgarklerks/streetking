@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, RankNTypes #-}
+{-# LANGUAGE OverloadedStrings, RankNTypes, DisambiguateRecordFields #-}
 
 {-|
 
@@ -98,6 +98,11 @@ import           Lua.Monad
 import           Lua.Prim
 import           Debug.Trace
 import           Control.Monad.Random 
+import           Data.Constants
+import           Data.Car
+import           Data.Environment
+import           Data.Racing
+
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
 --
@@ -803,10 +808,23 @@ garageCar = do
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         let p = runDb $ do
             r <- DBF.garage_actions_account uid
-            ns <- search xs od l o
+            (ns :: [CIG.CarInGarage]) <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
-        writeMapables ns 
+        writeMapables (props <$> ns)
+    where
+        props :: CIG.CarInGarage -> CIG.CarInGarage
+        props c = c {
+                CIG.acceleration = cast $ acceleration car defaultEnvironment,
+                CIG.top_speed = cast $ topspeed car defaultEnvironment,
+                CIG.cornering = cast $ cornering car defaultEnvironment,
+                CIG.stopping = cast $ stopping car defaultEnvironment,
+                CIG.nitrous = cast $ nitrous car defaultEnvironment
+            }
+                where
+                    cast :: Double -> Integer
+                    cast = (1000 *) . floor
+                    car = Car 1 2 3 4 5 6 7
 
 garageActiveCar :: Application ()
 garageActiveCar = do 
@@ -1406,3 +1424,6 @@ site = CIO.catch (CIO.catch (route [
                 ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
+
+
+
