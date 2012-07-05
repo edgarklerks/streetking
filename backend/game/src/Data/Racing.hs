@@ -75,7 +75,7 @@ acceleration :: Car -> Environment -> Double
 acceleration c e = accelerationTime c e $ 100 * (constant "kmh")
 
 topspeed :: Car -> Environment -> Double
-topspeed c e = (constant "kmh") * (p / ak) ** (1.0/3.0)
+topspeed c e = (p / ak) ** (1.0/3.0) / (constant "kmh")
     where
         p = pwr c
         ak = 0.5 * (rho e) * (cda c)
