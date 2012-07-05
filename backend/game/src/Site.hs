@@ -826,7 +826,7 @@ garageCar = do
 
 
 todbi :: Double -> Integer
-todbi = (10000 *) . floor
+todbi = floor . (10000 *)
 fromdbi :: Integer -> Double
 fromdbi = (/ 10000) . fromInteger
 
