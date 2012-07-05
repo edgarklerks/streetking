@@ -19,6 +19,7 @@ $(genAll "CarInGarage" "car_in_garage"
         ("car_id", ''Integer),
         ("manufacturer_name", ''String),
         ("manufacturer_picture", ''String),
+        ("weight", ''Integer),
         ("top_speed", ''Integer),
         ("acceleration", ''Integer),
         ("stopping", ''Integer),

@@ -815,16 +815,21 @@ garageCar = do
     where
         props :: CIG.CarInGarage -> CIG.CarInGarage
         props c = c {
-                CIG.acceleration = cast $ acceleration car defaultEnvironment,
-                CIG.top_speed = cast $ topspeed car defaultEnvironment,
-                CIG.cornering = cast $ cornering car defaultEnvironment,
-                CIG.stopping = cast $ stopping car defaultEnvironment,
-                CIG.nitrous = cast $ nitrous car defaultEnvironment
+                CIG.acceleration = todbi $ acceleration car defaultEnvironment,
+                CIG.top_speed = todbi $ topspeed car defaultEnvironment,
+                CIG.cornering = todbi $ cornering car defaultEnvironment,
+                CIG.stopping = todbi $ stopping car defaultEnvironment,
+                CIG.nitrous = todbi $ nitrous car defaultEnvironment
             }
                 where
-                    cast :: Double -> Integer
-                    cast = (1000 *) . floor
-                    car = Car 1 2 3 4 5 6 7
+                    car = Car (fromdbi $ CIG.weight c) (fromdbi $ CIG.power c) (fromdbi $ CIG.traction c) (fromdbi $ CIG.handling c) (fromdbi $ CIG.braking c) (fromdbi $ CIG.aero c) (fromdbi $ CIG.nos c)
+
+
+todbi :: Double -> Integer
+todbi = (10000 *) . floor
+fromdbi :: Integer -> Double
+fromdbi = (* 10000) . fromInteger
+
 
 garageActiveCar :: Application ()
 garageActiveCar = do 
