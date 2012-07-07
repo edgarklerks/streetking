@@ -16,6 +16,7 @@ module Application
   , R.Role(..)
   , R.RestRight(..)
   , R.Resource
+  , R.Method(..)
   , dropRoles
   , getRoles
   , getServer
