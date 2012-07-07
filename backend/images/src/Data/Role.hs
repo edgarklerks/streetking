@@ -1,4 +1,4 @@
-{-# LANGUAGE ViewPatterns, BangPatterns #-}
+{-# LANGUAGE ViewPatterns, BangPatterns, DoAndIfThenElse #-}
 module Data.Role where 
    
 import qualified Data.TimedMap as T 
@@ -14,7 +14,6 @@ import           Control.Concurrent
 import qualified Data.Map as M 
 import           Data.List (isInfixOf, sort, group, head, findIndex)
 import           System.Entropy 
-import           Data.Digest.TigerHash 
 import           Control.Monad.Trans
 import qualified Data.ByteString as B           
 import qualified Data.ByteString.Lazy as BL 

@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, NoMonomorphismRestriction #-}
+{-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, NoMonomorphismRestriction, OverloadedStrings #-}
 module Model.General
     (
         module Data.Default,
@@ -33,6 +33,7 @@ import           Control.Monad
 import           Data.Database
 import           Data.Default
 import           Data.Hstore 
+import qualified Data.ByteString as B 
 
 class H.IConnection c => Database c a where 
     save :: a -> SqlTransaction c Integer
@@ -83,3 +84,6 @@ mco = (fmap) thsql
 mfp = (fmap catMaybes) . (fmap.fmap) fromHashMap
 
 
+instance Default B.ByteString where 
+
+    def = ""
