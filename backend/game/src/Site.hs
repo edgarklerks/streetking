@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, RankNTypes #-}
+{-# LANGUAGE OverloadedStrings, RankNTypes, DisambiguateRecordFields #-}
 
 {-|
 
@@ -98,6 +98,11 @@ import           Lua.Monad
 import           Lua.Prim
 import           Debug.Trace
 import           Control.Monad.Random 
+import           Data.Constants
+import           Data.Car
+import           Data.Environment
+import           Data.Racing
+
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
 --
@@ -803,10 +808,28 @@ garageCar = do
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         let p = runDb $ do
             r <- DBF.garage_actions_account uid
-            ns <- search xs od l o
+            (ns :: [CIG.CarInGarage]) <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
-        writeMapables ns 
+        writeMapables (props <$> ns)
+    where
+        props :: CIG.CarInGarage -> CIG.CarInGarage
+        props c = c {
+                CIG.acceleration = todbi $ acceleration car defaultEnvironment,
+                CIG.top_speed = todbi $ topspeed car defaultEnvironment,
+                CIG.cornering = todbi $ cornering car defaultEnvironment,
+                CIG.stopping = todbi $ stopping car defaultEnvironment,
+                CIG.nitrous = todbi $ nitrous car defaultEnvironment
+            }
+                where
+                    car = Car (fromInteger $ CIG.weight c) (fromdbi $ CIG.power c) (fromdbi $ CIG.traction c) (fromdbi $ CIG.handling c) (fromdbi $ CIG.braking c) (fromdbi $ CIG.aero c) (fromdbi $ CIG.nos c)
+
+
+todbi :: Double -> Integer
+todbi = floor . (10000 *)
+fromdbi :: Integer -> Double
+fromdbi = (/ 10000) . fromInteger
+
 
 garageActiveCar :: Application ()
 garageActiveCar = do 
@@ -1406,3 +1429,6 @@ site = CIO.catch (CIO.catch (route [
                 ("/User/reports", userReports)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
+
+
+
