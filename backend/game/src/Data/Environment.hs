@@ -9,6 +9,7 @@ data Environment = Environment {
     humidity :: Double      -- humidity (not currently used, greater humidity reduces rho)
 } deriving Show
 
+defaultEnvironment :: Environment
 defaultEnvironment = Environment 1 15 0.5 
 
 -- density of air 
