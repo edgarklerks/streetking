@@ -3,6 +3,7 @@ module Main where
 import Color 
 import Image 
 import Vector 
+import Cell 
 
 import Data.List 
 import Data.Binary 
@@ -11,18 +12,6 @@ import Control.Monad.Fix
 import qualified Data.ByteString.Lazy as B 
 import Control.Applicative
 import Control.Applicative
-
-data Cell = Cell {
-        begin :: Vector Double,
-        end :: Vector Double,
-        curvature :: Maybe Double,
-        radius :: Maybe Double,
-        arclength :: Double 
-    }
-
-instance Binary Cell where 
-    put (Cell a b c d e) = put a >> put b >> put c >> put d >> put e
-    get = Cell <$> get <*> get <*> get <*> get <*> get
 
 main :: IO ()
 main = do 
