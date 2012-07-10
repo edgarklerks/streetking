@@ -1,4 +1,4 @@
-module Celling where 
+module Main where 
 
 import Color 
 import Image 
@@ -10,6 +10,7 @@ import Data.Maybe
 import Control.Monad.Fix
 import qualified Data.ByteString.Lazy as B 
 import Control.Applicative
+import Control.Applicative
 
 data Cell = Cell {
         begin :: Vector Double,
@@ -18,6 +19,15 @@ data Cell = Cell {
         radius :: Maybe Double,
         arclength :: Double 
     }
+
+instance Binary Cell where 
+    put (Cell a b c d e) = put a >> put b >> put c >> put d >> put e
+    get = Cell <$> get <*> get <*> get <*> get <*> get
+
+main :: IO ()
+main = do 
+    xs <- calculateCells "segments.bin"
+    B.writeFile "cells.bin" (encode xs)
 
 instance Show Cell where 
     show (Cell b e c r a) = "\n[\nbounds: \n" ++ (pmatrix b ++ "\n" ++ pmatrix e) ++ "\ncurvature: " ++ (show c) ++ "\narclength: " ++ (show a) ++ "\nradius:" ++ (show r) ++ "\n]"
