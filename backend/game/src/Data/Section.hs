@@ -1,42 +1,40 @@
 
-module Celling where 
+module Data.Section where 
 
-import Color 
-import Image 
-import Vector 
+import Data.Matrix 
+import Data.Maybe
 
-import Data.List 
-import Data.Binary 
-import Data.Maybe 
-import Control.Monad.Fix
-import qualified Data.ByteString.Lazy as B 
-import Control.Applicative
+data Section = Section {
+        radius :: Maybe Double,     -- section curve radius
+        arclength :: Double         -- section length
+    } deriving Show
 
-data Cell = Cell {
-        begin :: Vector Double,
-        end :: Vector Double,
-        curvature :: Maybe Double,
-        radius :: Maybe Double,
-        arclength :: Double 
-    }
+radius' :: Section -> Double
+radius' = fromJust . radius
+
+-- section curve angle (length = angle * radius)
+angle :: Section -> Maybe Double
+angle s = case (radius s) of
+    Nothing -> Nothing
+    Just r -> Just $ (arclength s) / r
+
+angle' :: Section -> Double
+angle' = fromJust . angle
+
+-- section curve curvature is 1 / (curve radius)
+curvature :: Section -> Maybe Double
+curvature s = case (radius s) of
+    Nothing -> Nothing
+    Just r -> Just $ 1 / r
+
+
+{-
 
 instance Show Cell where 
     show (Cell b e c r a) = "\n[\nbounds: \n" ++ (pmatrix b ++ "\n" ++ pmatrix e) ++ "\ncurvature: " ++ (show c) ++ "\narclength: " ++ (show a) ++ "\nradius:" ++ (show r) ++ "\n]"
 
-arc :: Cell -> Double
-arc c = f (radius c) (arclength c)
-    where
-        f Nothing _ = 0
-        f (Just r) a = a/r
-
-loadSegments :: FilePath -> IO [[Vector Double]]
-loadSegments = fmap decode . B.readFile  
-
-calculateCells = fmap getCellParameters . loadSegments 
-
 -- calcCurvatures :: [[Vector Double]] -> [(Vector Double, Maybe Double)]
 calcCurvatures xs = fmap (\x -> averageCurvature x) xs
-
 calcArcLengths xs = fmap (\x -> arcLength x) xs 
 
 
@@ -63,3 +61,4 @@ arcLength :: [Vector Double] -> Double
 arcLength [] = 0
 arcLength [a] = 1
 arcLength (x:y:xs) = (fromScalar $ magnitude (y - x)) + arcLength (y:xs)
+-}
