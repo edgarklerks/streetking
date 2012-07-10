@@ -11,21 +11,10 @@ import qualified Data.ByteString.Lazy as B
 import Control.Applicative
 import Control.Monad
 import Data.Maybe 
+import Cell 
 
 
 db = connectPostgreSQL "host=db.graffity.me user=deosx password=#*rl& dbname=streetking_dev";
-
-data Cell = Cell {
-        begin :: Vector Double,
-        end :: Vector Double,
-        curvature :: Maybe Double,
-        radius :: Maybe Double,
-        arclength :: Double 
-    }
-
-instance Binary Cell where 
-    put (Cell a b c d e) = put a >> put b >> put c >> put d >> put e
-    get = Cell <$> get <*> get <*> get <*> get <*> get
 
 
 main :: IO ()
