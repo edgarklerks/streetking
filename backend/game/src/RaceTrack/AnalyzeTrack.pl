@@ -23,7 +23,7 @@ use warnings;
 use File::Basename;
 use File::Copy;
 use Term::ANSIColor;
-use subs qw|consoleInfo consoleWarning consoleOk consoleError|;
+use subs qw|consoleInfo consoleWarn consoleOk consoleError help|;
 use DBI;
 use Config::Tiny;
 
@@ -32,7 +32,12 @@ my $ini = Config::Tiny->new;
 
 
 my $config = "dump/";
-my $info =  $ARGV[0];
+my $info =  $ARGV[0] || "";
+
+if($info eq "help"){
+    help "help file outputted";
+
+}
 
 
 my $user = "deosx";
@@ -47,6 +52,8 @@ my $dbh = DBI->connect("dbi:Pg:dbname=$db password=$password host=$host user=$us
 
 
 unless(-r $info){
+    help "cannot open info file";
+
     consoleError "Not given an info file";
 }
 
@@ -57,7 +64,8 @@ my $pos = $ini->{setup}->{pos};
 my $img = $ini->{setup}->{img}; 
 my $dist = $ini->{distance}->{pixeldist};
 my $tid = $ini->{track}->{track_id};
-
+my $passes = $ini->{optimizer}->{passes} || 2;
+my $minlen = $ini->{optimizer}->{minlen} || 2;
 
 consoleInfo "Check prequisities";
 unless(-d $config){
@@ -75,12 +83,18 @@ if(! -r $img){
 unless($dir =~ /^(U|D|L|R|UL|UR|DL|DR)?$/){
     consoleError "not a valid direction";
 }
-unless(-x "./ImageGrouping" && -x "./Segmenting" && -x "./Celling"){
-    consoleError "Missing programs: ImageGrouping, Segmenting, Celling. Did you compile them?";
+unless(-x "./ImageGrouping" && -x "./Segmenting" && -x "./Celling" && -x "./Optimize" && -x "./DatabasePump"){
+    consoleError "Missing programs: ImageGrouping, Segmenting, Celling. Optimize. DatabasePump. Did you compile them?";
 }
 
 unless($dist =~  /^[0-9]+$/){
     consoleError "pixeldist should be an integer";
+}
+unless($minlen =~ /^[0-9]+$/){
+    consoleError "minlen should be initeger";
+}
+unless ($passes =~ /^[0-9]+$/){
+    consoleError "passes should be an integer";
 }
 
 my ($filename, $directory, $suffix) = fileparse($img);
@@ -88,20 +102,25 @@ my ($filename, $directory, $suffix) = fileparse($img);
 my ($tdir) = split /\./, $filename;
 
 consoleInfo "Adding info to ini";
+$ini->{optimizer}->{minlen} = $minlen;
 
+$ini->{optimizer}->{passes} = $passes;
+
+my $datadir = $config . $tdir;
+consoleInfo "Saving ini to $datadir";
+
+$ini->write("$datadir/track.info");
 
 consoleOk "Everything looks ok";
 
-my $datadir = $config . $tdir;
 
 if(-d $datadir){
-    consoleWarning "Directory already exists: $datadir";
+    consoleWarn "Directory already exists: $datadir";
 }
 
 consoleInfo "Creating datadir $datadir for track";
 mkdir($datadir);
 
-copy $info,"$datadir/track.info";
 
 consoleInfo "Opening log file";
 
@@ -110,6 +129,9 @@ open my $fh, ">$datadir/racetrack.log";
 ImageGrouping();
 Segmenting();
 Celling();
+for(my $i = 0; $i < $passes; $i++){
+    Optimize();
+}
 Database();
 
 
@@ -119,6 +141,13 @@ close $fh;
 
 exit;
 
+sub Optimize {
+    print $fh "\n\n=============Database==================\n\n";
+    consoleInfo "Running Optimizer"; 
+    my $out = `./Optimize cells.bin $minlen`;
+    print $fh $out;
+    consoleOk "Optimizer runned";
+}
 
 sub Database {
     print $fh "\n\n=============Database==================\n\n";
@@ -167,6 +196,7 @@ sub Segmenting {
 
     copy "segments.bin", "$datadir/segments.bin";
     copy "partitions.bmp", "$datadir/partition.bmp";
+    copy "raw.bmp", "$datadir/raw.bmp";
     copy "segments.bmp", "$datadir/segments.bmp";
 
 }
@@ -185,11 +215,12 @@ sub Celling {
         consoleError "Celling failed. Check log file";
     }
 
+    consoleOk "Save results to $datadir";
 
     copy "cells.bin", "$datadir/cells.bin";
 } 
 
-sub consoleWarning {
+sub consoleWarn {
     my $text = shift;
     print color "bold yellow";
     print "[w] " . $text . "\n";
@@ -220,5 +251,20 @@ sub consoleError {
 }
 
 
+sub help {
+    my $error = shift;
+    consoleWarn "Usage:";
+    consoleWarn "";
+    consoleWarn "<program> file.info\n";
+    consoleWarn "info should contain:\n";
+    consoleWarn "[setup]";
+    consoleWarn "dir=(UL|DL|UR|DR|U|L|R|D)";
+    consoleWarn "pos=([0-9]+,[0-9]+)";
+    consoleWarn "img=[a-z]+.(jpg|jpeg|bmp|png)";
+    consoleWarn "[distance]";
+    consoleWarn "pixeldist=[0-9]+";
+    consoleWarn "[track]";
+    consoleWarn "track_id=[0-9]+";
+    consoleError $error; 
 
-
+}

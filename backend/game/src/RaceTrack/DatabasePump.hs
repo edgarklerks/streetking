@@ -44,6 +44,8 @@ dumpDatabase :: Int -> [(Int,Int)] -> [[Vector Double]] -> [Cell] -> String -> I
 dumpDatabase (fromIntegral -> dst) dsb seg cel cid = do 
                                   let xs = getData cel dsb 
                                   c <- db 
+                                  std <- prepare c "delete from track_section where track_id = ?"
+                                  execute std [toSql cid]
                                   stm <- prepare c "insert into track_section (track_id, radius,length,segment) values (?,?,?,?)" 
                                   forM_ xs $ \(c, ps) -> do 
                                                 let r = fromMaybe 0 (radius c)
@@ -58,5 +60,5 @@ getData c xs = foldr step [] c
         where step x z = (x, takeWhile (/=e') . dropWhile (/=b') $ xs) : z
                 where b = begin x
                       e = end x 
-                      b' = (truncate $ getX b, truncate $ getY b) 
-                      e' = (truncate $ getX e, truncate $ getY e)
+                      b' = (truncate $ getY b, truncate $ getX b) 
+                      e' = (truncate $ getY e, truncate $ getX e)
