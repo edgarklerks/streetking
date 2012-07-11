@@ -2,7 +2,7 @@
 module Data.Driver where
 
 import Data.Constants
-import Model.Account
+import qualified Model.Account as A
 
 -- driver skills are projected percentage scores
 -- in a test run with just one driver, skills are projected based on relative strength (weight of skill in sum of all skills)
@@ -25,8 +25,18 @@ foolDriver = Driver 0.4 0.2 0.3 0.01 0.5
 leetDriver :: Driver
 leetDriver = Driver 0.4 0.2 0.3 0.99 0.5
 
--- TODO: normalize skills by relative values between skills
-accountDriver :: Account -> Driver
-accountDriver a = Driver ((fromInteger . skill_acceleration) a) ((fromInteger . skill_braking) a) ((fromInteger . skill_control) a) ((fromInteger . skill_intelligence) a) ((fromInteger . skill_reactions) a)
+accountDriver :: A.Account -> Driver
+accountDriver a = Driver (m acc) (m brk) (m ctl) (m itl) (m rct)
+    where
+        m = (/sm) -- TODO: nicer algorithm.
+        sm = acc + brk + ctl + itl + rct
+        acc = (fromInteger . A.skill_acceleration) a
+        brk = (fromInteger . A.skill_braking) a
+        ctl = (fromInteger . A.skill_control) a
+        itl = (fromInteger . A.skill_intelligence) a
+        rct = (fromInteger . A.skill_reactions) a
+        
 
 -- TODO: make drivers from list of accounts -> normalize skills by relative values between accounts
+manyDrivers :: [A.Account] -> [Driver]
+manyDrivers = undefined
