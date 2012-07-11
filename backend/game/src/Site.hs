@@ -1409,6 +1409,7 @@ racePractice = do
         -- write results                 
         liftIO $ print "7"
         writeMapable rs
+        liftIO $ print "8"
 
 -- | The main entry point handler.
 site :: Application ()
