@@ -1370,46 +1370,42 @@ carSetOptions = do
 
 racePractice :: Application ()
 racePractice = do
-        liftIO $ print "1"
         uid <- getUserId
         -- get track id
         xs <- getJson >>= scheck ["track"]
         let tid = fugly "track" xs :: Integer
-        liftIO $ print "2"
         -- get account
         rs <- runDb $ do
-            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+            as <- traceShow tid $ search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
-                    liftIO $ print "3"
                     --  -> make Driver 
                     let d = accountDriver a
                     -- get active car
-                    gcs <- search ["active" |== SqlBool True] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
+                    gcs <- traceShow as $ search ["active" |== SqlBool True] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
                     case gcs of
                         [] -> rollback "you have no active car"
                         [gc] -> do
-                            liftIO $ print "4"
                             -- make Car
                             let c = carInGarageCar gc
                             -- get track sections
                             --  -> make track
-                            tss <- search ["track_id" |== SqlInteger tid] [] 1 0 :: SqlTransaction Connection [TD.TrackDetails]
+                            tss <- traceShow gcs $ search ["track_id" |== SqlInteger tid] [] 1 0 :: SqlTransaction Connection [TD.TrackDetails]
                             case tss of
                                 [] -> rollback "no data found for track"
-                                _ -> do
-                                    liftIO $ print "5"
+                                _ -> traceShow tss $ do
+                                    
                                     -- make Track
                                     let ss = trackDetailsTrack tss
                                     -- get environment from track data
                                     let e = defaultEnvironment
                                     -- run race
-                                    return $ runRace ss d c e
+                                    return $ traceShow ss $ runRace ss d c e
         -- write results                 
         liftIO $ print "7"
         writeMapable rs
-        liftIO $ print "8"
+        liftIO $ print rs 
 
 -- | The main entry point handler.
 site :: Application ()
