@@ -198,12 +198,13 @@ data IState = IState Time' Length Speed Speed Bool
 runSection :: Section -> Path -> Speed -> Speed -> Driver -> Car -> Environment -> SectionResult
 runSection s p vin vnext d c e = proc $ IState 0 0 vin vin False
     where
+        kmh = (/ (constant "kmh"))
         s' = pathSection s p
         l = arclength s'
         vlim = topSpeed s d c e
         proc :: IState -> SectionResult
-        proc (IState t x vm v b) = case (x > l) of
-            True -> SectionResult p vm (l/t) v t
+        proc (IState t x vm v b) = case (x >= l) of
+            True -> SectionResult p (kmh vm) (kmh (l/t)) (kmh v) t
             False -> proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b'
                 where
                     -- determine distance needed to brake to vnext
