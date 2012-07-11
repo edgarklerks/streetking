@@ -1371,7 +1371,9 @@ carSetOptions = do
 racePractice :: Application ()
 racePractice = do
         uid <- getUserId
-        let tid = 7 -- get from params
+        -- get track id
+        xs <- getJson >>= scheck ["track"]
+        let tid = fugly "track" xs :: Integer
         -- get account
         rs <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
@@ -1389,7 +1391,7 @@ racePractice = do
                             let c = carInGarageCar gc
                             -- get track sections
                             --  -> make track
-                            tss <- search ["id" |== SqlInteger tid] [] 1 0 :: SqlTransaction Connection [TD.TrackDetails]
+                            tss <- search ["track_id" |== SqlInteger tid] [] 1 0 :: SqlTransaction Connection [TD.TrackDetails]
                             case tss of
                                 [] -> rollback "no data found for track"
                                 _ -> do
