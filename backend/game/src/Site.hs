@@ -1403,7 +1403,7 @@ racePractice = do
                                     -- run race
                                     return $ traceShow ss $ runRace ss d c e
         -- write results                 
-        traceShow rs $ writeMapable rs
+        writeResult (show rs)
 
 -- | The main entry point handler.
 site :: Application ()
