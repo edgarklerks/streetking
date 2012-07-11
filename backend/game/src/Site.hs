@@ -1375,7 +1375,7 @@ racePractice = do
         xs <- getJson >>= scheck ["track"]
         let tid = fugly "track" xs :: Integer
         -- get account
-        rs <- runDb $ do
+        r <- runDb $ do
             as <- traceShow tid $ search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
@@ -1401,9 +1401,11 @@ racePractice = do
                                     -- get environment from track data
                                     let e = defaultEnvironment
                                     -- run race
-                                    return $ traceShow ss $ runRace ss d c e
+--                                    return $ traceShow ss $ runRace ss d c e
+                                    return $ runRace ss d c e
         -- write results                 
-        writeResult (show rs)
+--        writeResult (show rs)
+        writeResult $ mapRaceResult r
 
 -- | The main entry point handler.
 site :: Application ()

@@ -13,6 +13,7 @@ import Model.General
 import Data.InRules
 import Data.Conversion
 import Database.HDBC
+import qualified Data.HashMap.Strict as H
 
 type Path = Double
 type Speed = Double
@@ -72,6 +73,18 @@ $(genMapableRecord "RaceResult"
             ("raceSpeedFin", ''Speed),
             ("sectionResults", ''SectionResults)
         ])
+
+mapRaceResult :: RaceResult -> [H.HashMap String SqlValue]
+mapRaceResult = (map mapSectionResult) . sectionResults
+
+mapSectionResult :: SectionResult -> H.HashMap String SqlValue
+mapSectionResult s = H.fromList $ [
+        ("time", toSql $ sectionTime s),
+        ("path", toSql $ sectionPath s),
+        ("speed_max", toSql $ sectionSpeedMax s),
+        ("speed_avg", toSql $ sectionSpeedAvg s),
+        ("speed_out", toSql $ sectionSpeedOut s)
+   ]
 
 -- 500m straight
 testSection1 = Section Nothing 500
