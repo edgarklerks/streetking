@@ -43,6 +43,12 @@ genAllId nm tbl td xs =
                       x <- genDefaultInstance nm xs
                       return $ r ++ i ++ d ++ x
 
+-- genMapableRecord :: String -> [(String, Name)] -> Q [Dec]
+genMapableRecord nm xs = do 
+                r <- genRecord nm xs
+                i <- genInstance nm xs
+                d <- genDefaultInstance nm xs
+                return $ r ++ i ++ d
 
 genRecord :: String -> [(String, Name)] -> Q [Dec]
 genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] ([''Show, ''Eq])]

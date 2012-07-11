@@ -1,4 +1,4 @@
-
+{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms #-}
 
 module Data.Racing where
 
@@ -8,6 +8,11 @@ import Data.Driver
 import Data.Environment
 import Data.Section
 import Data.Maybe
+import Model.TH
+import Model.General
+import Data.InRules
+import Data.Conversion
+import Database.HDBC
 
 type Path = Double
 type Speed = Double
@@ -28,6 +33,7 @@ initialSpeed = 0
 trackWidth :: Radius
 trackWidth = 10.0 -- road width in metres. TODO: this should be a variable in every section.
 
+{--
 data RaceResult = RaceResult {
     raceTime :: Time',
     raceSpeedMax :: Speed,
@@ -43,6 +49,29 @@ data SectionResult = SectionResult {
     sectionSpeedOut :: Speed,   -- speed on leaving section
     sectionTime :: Time'        -- time taken for section
 } deriving Show
+--}
+
+$(genMapableRecord "SectionResult" 
+    [
+        ("sectionPath", ''Path),
+        ("sectionSpeedMax", ''Speed),
+        ("sectionSpeedAvg", ''Speed),
+        ("sectionSpeedOut", ''Speed),
+        ("sectionTime", ''Time')
+        ])
+
+type SectionResults = [SectionResult]
+instance FromInRule SectionResult 
+instance ToInRule SectionResult
+
+$(genMapableRecord "RaceResult"
+    [
+            ("raceTime", ''Time'),
+            ("raceSpeedMax", ''Speed),
+            ("raceSpeedAvg", ''Speed),
+            ("raceSpeedFin", ''Speed),
+            ("sectionResults", ''SectionResults)
+        ])
 
 -- 500m straight
 testSection1 = Section Nothing 500
