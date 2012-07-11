@@ -1372,8 +1372,8 @@ racePractice :: Application ()
 racePractice = do
         uid <- getUserId
         -- get track id
-        xs <- getJson >>= scheck ["track"]
-        let tid = fugly "track" xs :: Integer
+        xs <- getJson >>= scheck ["track_id"]
+        let tid = fugly "track_id" xs :: Integer
         -- get account
         r <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
