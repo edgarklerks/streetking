@@ -34,6 +34,7 @@ import qualified Data.MenuTree as MM
 import qualified Model.Garage as G 
 import qualified Model.Continent as Cont 
 import qualified Model.City as City
+import qualified Model.TrackDetails as TD
 import qualified Model.TrackMaster as TT
 import qualified Model.TrackCity as TCY
 import qualified Model.TrackContinent as TCN
@@ -102,6 +103,10 @@ import           Data.Constants
 import           Data.Car
 import           Data.Environment
 import           Data.Racing
+import           Data.Section
+import           Data.Track
+import           Data.Driver
+import           Data.Car
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -1362,7 +1367,40 @@ carSetOptions = do
                                 save (co {CO.id = CO.id id})
                                 
         writeResult (1 :: Integer)
-         
+
+racePractice :: Application ()
+racePractice = do
+        uid <- getUserId
+        let tid = 7 -- get from params
+        -- get account
+        rs <- runDb $ do
+            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+            case as of
+                [] -> rollback "you dont exist, go away."
+                [a] -> do
+                    --  -> make Driver 
+                    let d = accountDriver a
+                    -- get active car
+                    gcs <- search ["active" |== SqlBool True] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
+                    case gcs of
+                        [] -> rollback "you have no active car"
+                        [gc] -> do
+                            -- make Car
+                            let c = carInGarageCar gc
+                            -- get track sections
+                            --  -> make track
+                            tss <- search ["id" |== SqlInteger tid] [] 1 0 :: SqlTransaction Connection [TD.TrackDetails]
+                            case tss of
+                                [] -> rollback "no data found for track"
+                                _ -> do
+                                    -- make Track
+                                    let ss = trackDetailsTrack tss
+                                    -- get environment from track data
+                                    let e = defaultEnvironment
+                                    -- run race
+                                    return $ runRace ss d c e
+        -- write results                 
+        writeMapable rs
 
 -- | The main entry point handler.
 site :: Application ()
@@ -1426,7 +1464,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Travel/reports", travelReports),
                 ("/Track/list", trackList),
                 ("/Track/here", trackHere),
-                ("/User/reports", userReports)
+                ("/User/reports", userReports),
+                ("/Race/practice", racePractice)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 

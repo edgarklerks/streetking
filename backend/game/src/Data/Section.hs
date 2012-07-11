@@ -3,11 +3,21 @@ module Data.Section where
 
 import Data.Matrix 
 import Data.Maybe
+import qualified Model.TrackDetails as TD
 
 data Section = Section {
         radius :: Maybe Double,     -- section curve radius
         arclength :: Double         -- section length
     } deriving Show
+
+section :: Double -> Double -> Section
+section r = case (r < 0.01) of
+    True -> Section Nothing
+    False -> Section (Just r)
+
+
+trackDetailsSection :: TD.TrackDetails -> Section
+trackDetailsSection t = section (TD.radius t) (TD.length t)
 
 radius' :: Section -> Double
 radius' = fromJust . radius
