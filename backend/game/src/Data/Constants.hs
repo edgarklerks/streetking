@@ -26,8 +26,8 @@ constants = p [
         ("rhoV", -0.004351),                -- air density variation per K around 273K
         ("rho0", 1.2922),                   -- air density at 273K
 
-        ("p0", 75),                         -- car power hp base
-        ("pR", 425),                        -- car power hp range
+        ("p0", 0),                          -- car power hp base
+        ("pR", 500),                        -- car power hp range
 
         ("mu0", 0.75),                      -- car traction coefficient base
         ("muR", 0.75),                      -- car traction coefficient range
