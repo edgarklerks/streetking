@@ -1403,10 +1403,7 @@ racePractice = do
                                     -- run race
                                     return $ traceShow ss $ runRace ss d c e
         -- write results                 
-        liftIO $ print "7"
---         writeMapable rs
-   --      liftIO $ print rs 
-        writeBS "asdasd"
+        writeMapable rs
 
 -- | The main entry point handler.
 site :: Application ()
