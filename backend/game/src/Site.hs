@@ -1387,22 +1387,25 @@ racePractice = do
                     case gcs of
                         [] -> rollback "you have no active car"
                         [gc] -> do
-                            -- make Car
-                            let c = carInGarageCar gc
-                            -- get track sections
-                            --  -> make track
-                            tss <- search ["track_id" |== SqlInteger tid] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
-                            case tss of
-                                [] -> rollback "no data found for track"
-                                _ -> traceShow tss $ do
-                                    
-                                    -- make Track
-                                    let ss = trackDetailsTrack tss
-                                    -- get environment from track data
-                                    let e = defaultEnvironment
-                                    -- run race
---                                    return $ traceShow ss $ runRace ss d c e
-                                    return $ runRace ss d c e
+                            g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                            ry <- DBF.garage_active_car_ready (fromJust $ G.id g)
+                            case ry of
+                                x:xs -> rollback "your active car is not ready"
+                                _ -> do
+                                    -- make Car
+                                    let c = carInGarageCar gc
+                                    -- get track sections
+                                    --  -> make track
+                                    tss <- search ["track_id" |== SqlInteger tid] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
+                                    case tss of
+                                        [] -> rollback "no data found for track"
+                                        _ -> do
+                                            -- make Track
+                                            let ss = trackDetailsTrack tss
+                                            -- get environment from track data
+                                            let e = defaultEnvironment
+                                            -- run race
+                                            return $ runRace ss d c e
         -- write results                 
         writeResult $ mapRaceResult r
 

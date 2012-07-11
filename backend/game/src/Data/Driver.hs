@@ -28,15 +28,16 @@ leetDriver = Driver 0.4 0.2 0.3 0.99 0.5
 accountDriver :: A.Account -> Driver
 accountDriver a = Driver (m acc) (m brk) (m ctl) (m itl) (m rct)
     where
-        m = (/sm) -- TODO: nicer algorithm.
-        sm = acc + brk + ctl + itl + rct
+        m = normalizeSkill 
         acc = (fromInteger . A.skill_acceleration) a
         brk = (fromInteger . A.skill_braking) a
         ctl = (fromInteger . A.skill_control) a
         itl = (fromInteger . A.skill_intelligence) a
         rct = (fromInteger . A.skill_reactions) a
-        
 
--- TODO: make drivers from list of accounts -> normalize skills by relative values between accounts
-manyDrivers :: [A.Account] -> [Driver]
-manyDrivers = undefined
+skillCushionFactor :: Double
+skillCushionFactor = 40
+
+normalizeSkill :: Double -> Double
+normalizeSkill = (1-) . (1/) . (1+) . (/skillCushionFactor)
+
