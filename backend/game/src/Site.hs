@@ -1376,14 +1376,14 @@ racePractice = do
         let tid = fugly "track" xs :: Integer
         -- get account
         r <- runDb $ do
-            as <- traceShow tid $ search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
                     --  -> make Driver 
                     let d = accountDriver a
                     -- get active car
-                    gcs <- traceShow as $ search ["active" |== SqlBool True] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
+                    gcs <- search ["active" |== SqlBool True] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
                     case gcs of
                         [] -> rollback "you have no active car"
                         [gc] -> do
@@ -1391,7 +1391,7 @@ racePractice = do
                             let c = carInGarageCar gc
                             -- get track sections
                             --  -> make track
-                            tss <- traceShow gcs $ search ["track_id" |== SqlInteger tid] [] 1 0 :: SqlTransaction Connection [TD.TrackDetails]
+                            tss <- search ["track_id" |== SqlInteger tid] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
                             case tss of
                                 [] -> rollback "no data found for track"
                                 _ -> traceShow tss $ do
@@ -1404,7 +1404,7 @@ racePractice = do
 --                                    return $ traceShow ss $ runRace ss d c e
                                     return $ runRace ss d c e
         -- write results                 
-        writeResult $ traceShow (mapRaceResult r) $ mapRaceResult r
+        writeResult $ mapRaceResult r
 
 -- | The main entry point handler.
 site :: Application ()
