@@ -3,6 +3,7 @@
 module Data.Car where
 
 import Data.Constants
+import qualified Model.CarInGarage as CIG
 
 data Car = Car {
     mass :: Double,     -- kg
@@ -14,6 +15,16 @@ data Car = Car {
     nos :: Double       -- %
 } deriving Show
 
+dbCar :: Integer -> Integer -> Integer -> Integer -> Integer -> Integer -> Integer -> Car
+dbCar m p t h b a n = Car (fromInteger m) (cast p) (cast t) (cast h) (cast b) (cast a) (cast n)
+    where
+        cast = (/10000) . fromInteger
+
+carInGarageCar :: CIG.CarInGarage -> Car
+carInGarageCar gc = dbCar (CIG.weight gc) (CIG.power gc) (CIG.traction gc) (CIG.handling gc) (CIG.braking gc) (CIG.aero gc) (CIG.nos gc)
+
+
+testCar :: Car
 testCar = Car 1200 0.6 0.3 0.2 0.4 0.1 0.2
 
 -- power in hp

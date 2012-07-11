@@ -1,8 +1,9 @@
-module Celling where 
+module Main where 
 
 import Color 
 import Image 
 import Vector 
+import Cell 
 
 import Data.List 
 import Data.Binary 
@@ -10,17 +11,22 @@ import Data.Maybe
 import Control.Monad.Fix
 import qualified Data.ByteString.Lazy as B 
 import Control.Applicative
+import Control.Applicative
 
-data Cell = Cell {
-        begin :: Vector Double,
-        end :: Vector Double,
-        curvature :: Maybe Double,
-        radius :: Maybe Double,
-        arclength :: Double 
-    }
+main :: IO ()
+main = do 
+    xs <- calculateCells "segments.bin"
+    B.writeFile "cells.bin" (encode xs)
 
 instance Show Cell where 
     show (Cell b e c r a) = "\n[\nbounds: \n" ++ (pmatrix b ++ "\n" ++ pmatrix e) ++ "\ncurvature: " ++ (show c) ++ "\narclength: " ++ (show a) ++ "\nradius:" ++ (show r) ++ "\n]"
+
+arc :: Cell -> Double
+arc c = f (radius c) (arclength c)
+    where
+        f Nothing _ = 0
+        f (Just r) a = a/r
+
 loadSegments :: FilePath -> IO [[Vector Double]]
 loadSegments = fmap decode . B.readFile  
 

@@ -134,13 +134,15 @@ writeThirdStepDifferenceRate = do
     let bs = liftSnd (fmap (fromIntegral . round) .  weigh) b  
     let v' = labeledVectorToImage colorf p bs v 
     let r' = labeledVectorToImage colorf p ((liftSnd stepDetect) bs) v
+    putStrLn "dumping binary data"
+    B.writeFile "segments.bin" (encode $ collectSame  bs)
+
+
     putStrLn "Writing:"
     putStrLn "images.."
     saveImage "segments.bmp" (normalizeImage . vectorToImage $ v')
     saveImage "partitions.bmp" (normalizeImage . vectorToImage $ r')
 
-    putStrLn "dumping binary data"
-    B.writeFile "segments.bin" (encode $ collectSame  bs)
 
 
 calculateThirdStepDifferenceVector :: SegmentMonad [(Vector Double,Vector Double)]
