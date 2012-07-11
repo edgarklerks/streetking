@@ -1370,16 +1370,19 @@ carSetOptions = do
 
 racePractice :: Application ()
 racePractice = do
+        liftIO $ print "1"
         uid <- getUserId
         -- get track id
         xs <- getJson >>= scheck ["track"]
         let tid = fugly "track" xs :: Integer
+        liftIO $ print "2"
         -- get account
         rs <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
+                    liftIO $ print "3"
                     --  -> make Driver 
                     let d = accountDriver a
                     -- get active car
@@ -1387,6 +1390,7 @@ racePractice = do
                     case gcs of
                         [] -> rollback "you have no active car"
                         [gc] -> do
+                            liftIO $ print "4"
                             -- make Car
                             let c = carInGarageCar gc
                             -- get track sections
@@ -1395,6 +1399,7 @@ racePractice = do
                             case tss of
                                 [] -> rollback "no data found for track"
                                 _ -> do
+                                    liftIO $ print "5"
                                     -- make Track
                                     let ss = trackDetailsTrack tss
                                     -- get environment from track data
@@ -1402,6 +1407,7 @@ racePractice = do
                                     -- run race
                                     return $ runRace ss d c e
         -- write results                 
+        liftIO $ print "7"
         writeMapable rs
 
 -- | The main entry point handler.
