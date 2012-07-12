@@ -4,10 +4,6 @@ module Data.Driver where
 import Data.Constants
 import qualified Model.Account as A
 
--- driver skills are projected percentage scores
--- in a test run with just one driver, skills are projected based on relative strength (weight of skill in sum of all skills)
--- in a race with more than one driver, skills are projected based on comparison with other driver(s) (weight of skill in sum of same skill for all drivers)
-
 data Driver = Driver {
     skillAcceleration :: Double,
     skillBraking :: Double,
@@ -16,14 +12,17 @@ data Driver = Driver {
     skillReactions :: Double
 } deriving Show
 
-testDriver :: Driver
-testDriver = Driver 0.4 0.2 0.3 0.6 0.5
+defaultDriver :: Driver
+defaultDriver = Driver 0.5 0.5 0.5 0.5 0.5
 
-foolDriver :: Driver
-foolDriver = Driver 0.4 0.2 0.3 0.01 0.5
+testDriver :: Driver
+testDriver = defaultDriver 
+
+noobDriver :: Driver
+noobDriver = Driver 0.05 0.05 0.05 0.05 0.05
 
 leetDriver :: Driver
-leetDriver = Driver 0.4 0.2 0.3 0.99 0.5
+leetDriver = Driver 0.8 0.8 0.8 0.8 0.8
 
 accountDriver :: A.Account -> Driver
 accountDriver a = Driver (m acc) (m brk) (m ctl) (m itl) (m rct)

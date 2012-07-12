@@ -104,20 +104,27 @@ testSection2 = Section (Just 15) 25
 -- 300m weak turn
 testSection3 = Section (Just 100) 300
 
--- race track
-testTrack = [
-        Section Nothing 1000,
-        Section (Just 20) 30,
-        Section Nothing 250,
-        Section (Just 100) 300,
-        Section Nothing 500
-    ]
+-- race tracks
+track0 = [Section Nothing 10000]
 
 track1 = [
-        Section Nothing 100,
-        Section (Just 20) 30,
-        Section Nothing 100
+        Section Nothing 2000,
+        Section (Just 20) 33,
+        Section Nothing 3000
     ]
+
+track2 = [
+        Section Nothing 2000,
+        Section (Just 100) 200,
+        Section (Just 20) 30,
+        Section (Just 100) 150,
+        Section (Just 20) 30,
+        Section (Just 100) 200,
+        Section Nothing 3000
+    ]
+
+track3 = [Section (Just 100) 700]
+track4 = [Section Nothing 700]
 
 -- run a path using driver skills. path is a double 0 - 1 indicating the quality of the traveled path.
 -- from this and the section properties, the effective radius and path length are calculated.
@@ -153,7 +160,6 @@ sectionPathAngle s p = case (radius s) of
                 a0 = (/2) $ fromJust $ angle s
                 d = pathDeviation p
 
--- TODO: path generally worse than section line if radius is very large. disallow large radii or fix path in these instances
 sectionPathRadius :: Section -> Path -> Maybe Radius
 sectionPathRadius s p = case (radius s) of
     Nothing -> Nothing
