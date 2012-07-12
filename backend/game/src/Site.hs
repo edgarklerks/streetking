@@ -1383,11 +1383,11 @@ racePractice = do
                     --  -> make Driver 
                     let d = accountDriver a
                     -- get active car
-                    gcs <- search ["active" |== SqlBool True] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
+                    g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                    gcs <- search ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
                     case gcs of
                         [] -> rollback "you have no active car"
                         [gc] -> do
-                            g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                             ry <- DBF.garage_active_car_ready (fromJust $ G.id g)
                             case ry of
                                 x:xs -> rollback "your active car is not ready"

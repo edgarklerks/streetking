@@ -23,9 +23,22 @@ dbCar m p t h b a n = Car (fromInteger m) (cast p) (cast t) (cast h) (cast b) (c
 carInGarageCar :: CIG.CarInGarage -> Car
 carInGarageCar gc = dbCar (CIG.weight gc) (CIG.power gc) (CIG.traction gc) (CIG.handling gc) (CIG.braking gc) (CIG.aero gc) (CIG.nos gc)
 
+noobCar :: Car
+noobCar = Car 1800 0.1 0.1 0.1 0.1 0.1 0.1
+
+defaultCar :: Car
+defaultCar = Car 1400 0.5 0.5 0.5 0.5 0.5 0.5
+
+leetCar :: Car
+leetCar = Car 1200 0.9 0.9 0.9 0.9 0.9 0.9
 
 testCar :: Car
-testCar = Car 1200 0.6 0.3 0.2 0.4 0.1 0.2
+testCar = defaultCar
+
+nznCar :: Car
+nznCar = Car 1329 0.35 0.3 0.66 0.0061 0.3 0
+
+
 
 -- power in hp
 pwr' :: Car -> Double
