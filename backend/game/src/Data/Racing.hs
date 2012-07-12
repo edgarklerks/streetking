@@ -207,25 +207,26 @@ runRace' sps d c e = fst $ foldl step ([], 0) sps
                 res = runSection s p vin vnx d c e
 
 -- integration state: current time, distance traveled, highest speed, current speed, currently braking
-data IState = IState Time' Length Speed Speed Bool
+data IState = IState Time' Length Speed Speed Bool Integer
 
 -- runSection: integrate over section 
 runSection :: Section -> Path -> Speed -> Speed -> Driver -> Car -> Environment -> SectionResult
-runSection s p vin vnext d c e = proc $ IState 0 0 vin vin False
+runSection s p vin vnext d c e = proc $ IState 0 0 vin vin False 0
     where
         s' = pathSection s p
         l = arclength s'
         vlim = topSpeed s d c e
         proc :: IState -> SectionResult
-        proc (IState t x vm v b) = case (x >= l) of
---            True -> SectionResult p (kmh vm) (kmh (l/t)) (kmh v) t
-            True -> SectionResult p vm (l/t) v t
---            False -> traceShow ((show s) ++ " -- " ++ (show t) ++ "s, " ++ (show x) ++ "m, " ++ (show v) ++ "m/s") $ proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b'
-            False -> proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b'
+        proc ist@(IState t x vm v b n) = case (x >= l) of
+            True -> SectionResult p (max v vm) (l/t) v t
+            False -> (tr t x vm v b n) $ proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b' (n+1)
                 where
                     -- determine distance needed to brake to vnext
                     -- TODO: driver always brakes too early: (l - x + err). err is reduced by driver skill.
                     -- TODO: speed reduction is based on braking only and should account for drag force, too.
+                    tr t x vm v b n = case (mod n 10) of
+--                        0 -> traceShow ((show s) ++ " - #" ++ (show n) ++ " - " ++ (show t) ++ "s - " ++ (show x) ++ "m - " ++ (show v) ++ "m/s")
+                        _ -> id
                     b' = (||) b $ (speedReductionDistance c e v vnext) >= (l-x)
                     v' = case b' of
                         True -> max vnext $ v - deltaTime * ((brakingForce c e) + (dragForce c e v)) / (mass c)
