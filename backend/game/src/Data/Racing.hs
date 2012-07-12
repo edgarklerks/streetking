@@ -14,6 +14,7 @@ import Data.InRules
 import Data.Conversion
 import Database.HDBC
 import qualified Data.HashMap.Strict as H
+import Debug.Trace
 
 type Path = Double
 type Speed = Double
@@ -74,9 +75,17 @@ $(genMapableRecord "RaceResult"
             ("sectionResults", ''SectionResults)
         ])
 
+raceResult2FE :: RaceResult -> RaceResult
+raceResult2FE (RaceResult t vm va vf ss) = RaceResult t (ms2kmh vm) (ms2kmh va) (ms2kmh vf) (map sectionResult2FE ss)
+
+sectionResult2FE :: SectionResult -> SectionResult
+sectionResult2FE (SectionResult p vm va vo t)  = SectionResult p (ms2kmh vm) (ms2kmh va) (ms2kmh vo) t
+
+-- RaceResult to writable HashMap list
 mapRaceResult :: RaceResult -> [H.HashMap String SqlValue]
 mapRaceResult = (map mapSectionResult) . sectionResults
 
+-- SectionResult to writable HashMap;
 mapSectionResult :: SectionResult -> H.HashMap String SqlValue
 mapSectionResult s = H.fromList $ [
         ("time", toSql $ sectionTime s),
@@ -102,6 +111,12 @@ testTrack = [
         Section Nothing 250,
         Section (Just 100) 300,
         Section Nothing 500
+    ]
+
+track1 = [
+        Section Nothing 100,
+        Section (Just 20) 30,
+        Section Nothing 100
     ]
 
 -- run a path using driver skills. path is a double 0 - 1 indicating the quality of the traveled path.
@@ -198,13 +213,14 @@ data IState = IState Time' Length Speed Speed Bool
 runSection :: Section -> Path -> Speed -> Speed -> Driver -> Car -> Environment -> SectionResult
 runSection s p vin vnext d c e = proc $ IState 0 0 vin vin False
     where
-        kmh = (/ (constant "kmh"))
         s' = pathSection s p
         l = arclength s'
         vlim = topSpeed s d c e
         proc :: IState -> SectionResult
         proc (IState t x vm v b) = case (x >= l) of
-            True -> SectionResult p (kmh vm) (kmh (l/t)) (kmh v) t
+--            True -> SectionResult p (kmh vm) (kmh (l/t)) (kmh v) t
+            True -> SectionResult p vm (l/t) v t
+--            False -> traceShow ((show s) ++ " -- " ++ (show t) ++ "s, " ++ (show x) ++ "m, " ++ (show v) ++ "m/s") $ proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b'
             False -> proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b'
                 where
                     -- determine distance needed to brake to vnext
