@@ -1,6 +1,6 @@
 
 module Data.Constants (
-    constant
+    constant, ms2kmh, kmh2ms
 ) where
 
 import Data.HashMap.Strict as H
@@ -49,4 +49,11 @@ constant :: String -> Double
 constant k = case H.lookup k constants of
     Just v -> v
     Nothing -> error $ "constant doesn't exist: " ++ k 
+
+ms2kmh :: Double -> Double
+ms2kmh = (/ (constant "kmh"))
+
+kmh2ms :: Double -> Double
+kmh2ms = (* (constant "kmh"))
+
 

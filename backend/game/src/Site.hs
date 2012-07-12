@@ -1407,7 +1407,7 @@ racePractice = do
                                             -- run race
                                             return $ runRace ss d c e
         -- write results                 
-        writeResult $ mapRaceResult r
+        writeResult $ mapRaceResult $ raceResult2FE r
 
 -- | The main entry point handler.
 site :: Application ()
