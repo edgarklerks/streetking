@@ -1406,14 +1406,22 @@ racePractice = do
                                             let ss = trackDetailsTrack tss
                                             -- get environment from track data
                                             let e = defaultEnvironment
+
                                             -- run race
                                             let rs = runRace ss d c e
 
+                                            -- get time
+                                            stt <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                                            let fint = (stt + ) $ ceiling $ raceTime rs
+
                                             -- store race in database
                                             let race = def :: R.Race
-                                            rid <- save (race { R.track_id = 1, R.start_time = 1, R.end_time = 2 })
+                                            rid <- save (race { R.track_id = tid, R.start_time = stt, R.end_time = fint })
                                            
-                                            -- store section results in database
+                                            -- store section results in database for each participant and section
+                                            --let race = def :: R.Race
+                                            -- rid <- save (race { R.track_id = tid, R.start_time = stt, R.end_time = fint })
+                                             
                                             return rs
          -- write results                 
         writeResult $ mapRaceResult $ raceResult2FE r
