@@ -40,3 +40,4 @@ skillCushionFactor = 40
 normalizeSkill :: Double -> Double
 normalizeSkill = (1-) . (1/) . (1+) . (/skillCushionFactor)
 
+

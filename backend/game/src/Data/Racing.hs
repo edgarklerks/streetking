@@ -344,3 +344,12 @@ nitrous :: Car -> Environment -> Double
 nitrous c e = nos c
 
 
+{-
+ - Randomization
+ -}
+
+-- take a double x 0-1
+-- produce a random double y 0-1
+-- use a skewed normal distribution centered on x
+foo :: Double -> Double
+foo = undefined
