@@ -67,6 +67,8 @@ import qualified Model.Personnel as PL
 import qualified Model.PersonnelDetails as PLD
 import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
+import qualified Model.Race as R
+import qualified Model.RaceResult as RR
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1405,8 +1407,15 @@ racePractice = do
                                             -- get environment from track data
                                             let e = defaultEnvironment
                                             -- run race
-                                            return $ runRace ss d c e
-        -- write results                 
+                                            let rs = runRace ss d c e
+
+                                            -- store race in database
+                                            let race = def :: R.Race
+                                            rid <- save (race { R.track_id = 1, R.start_time = 1, R.end_time = 2 })
+                                           
+                                            -- store section results in database
+                                            return rs
+         -- write results                 
         writeResult $ mapRaceResult $ raceResult2FE r
 
 -- | The main entry point handler.
