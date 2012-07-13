@@ -6,6 +6,7 @@ import Data.Constants
 import Data.Car
 import Data.Driver
 import Data.Environment
+import Data.Track
 import Data.Section
 import Data.Maybe
 import Model.TH
@@ -55,6 +56,7 @@ data SectionResult = SectionResult {
 
 $(genMapableRecord "SectionResult" 
     [
+        ("sectionId", ''Integer),
         ("sectionPath", ''Path),
         ("sectionSpeedMax", ''Speed),
         ("sectionSpeedAvg", ''Speed),
@@ -68,6 +70,7 @@ instance ToInRule SectionResult
 
 $(genMapableRecord "RaceResult"
     [
+            ("trackId", ''Integer),
             ("raceTime", ''Time'),
             ("raceSpeedMax", ''Speed),
             ("raceSpeedAvg", ''Speed),
@@ -76,10 +79,10 @@ $(genMapableRecord "RaceResult"
         ])
 
 raceResult2FE :: RaceResult -> RaceResult
-raceResult2FE (RaceResult t vm va vf ss) = RaceResult t (ms2kmh vm) (ms2kmh va) (ms2kmh vf) (map sectionResult2FE ss)
+raceResult2FE (RaceResult i t vm va vf ss) = RaceResult i t (ms2kmh vm) (ms2kmh va) (ms2kmh vf) (map sectionResult2FE ss)
 
 sectionResult2FE :: SectionResult -> SectionResult
-sectionResult2FE (SectionResult p vm va vo t)  = SectionResult p (ms2kmh vm) (ms2kmh va) (ms2kmh vo) t
+sectionResult2FE (SectionResult i p vm va vo t)  = SectionResult i p (ms2kmh vm) (ms2kmh va) (ms2kmh vo) t
 
 -- RaceResult to writable HashMap list
 mapRaceResult :: RaceResult -> [H.HashMap String SqlValue]
@@ -90,41 +93,42 @@ mapSectionResult :: SectionResult -> H.HashMap String SqlValue
 mapSectionResult s = H.fromList $ [
         ("time", toSql $ sectionTime s),
         ("path", toSql $ sectionPath s),
+        ("section_id", toSql $ sectionId s),
         ("speed_max", toSql $ sectionSpeedMax s),
         ("speed_avg", toSql $ sectionSpeedAvg s),
         ("speed_out", toSql $ sectionSpeedOut s)
    ]
 
 -- 500m straight
-testSection1 = Section Nothing 500
+testSection1 = Section 0 Nothing 500
 
 -- 25m sharp turn, approx. quarter circle
-testSection2 = Section (Just 15) 25
+testSection2 = Section 0 (Just 15) 25
 
 -- 300m weak turn
-testSection3 = Section (Just 100) 300
+testSection3 = Section 0 (Just 100) 300
 
 -- race tracks
-track0 = [Section Nothing 10000]
+track0 = [Section 0 Nothing 10000]
 
-track1 = [
-        Section Nothing 2000,
-        Section (Just 20) 33,
-        Section Nothing 3000
+track1 = Track 0 [
+        Section 0 Nothing 2000,
+        Section 0 (Just 20) 33,
+        Section 0 Nothing 3000
     ]
 
-track2 = [
-        Section Nothing 2000,
-        Section (Just 100) 200,
-        Section (Just 20) 30,
-        Section (Just 100) 150,
-        Section (Just 20) 30,
-        Section (Just 100) 200,
-        Section Nothing 3000
+track2 = Track 0 [
+        Section 0 Nothing 2000,
+        Section 0 (Just 100) 200,
+        Section 0 (Just 20) 30,
+        Section 0 (Just 100) 150,
+        Section 0 (Just 20) 30,
+        Section 0 (Just 100) 200,
+        Section 0 Nothing 3000
     ]
 
-track3 = [Section (Just 100) 700]
-track4 = [Section Nothing 700]
+track3 = Track 0 [Section 0 (Just 100) 700]
+track4 = Track 0 [Section 0 Nothing 700]
 
 -- run a path using driver skills. path is a double 0 - 1 indicating the quality of the traveled path.
 -- from this and the section properties, the effective radius and path length are calculated.
@@ -133,7 +137,7 @@ path d = skillIntelligence d -- TODO: randomize
 
 -- "correct" a section, i.e. take into account the path and modify the angle, arclength and radius accordingly
 pathSection :: Section -> Path -> Section
-pathSection s p = Section (sectionPathRadius s p) (sectionPathLength s p)
+pathSection s@(Section i _ _) p = Section i (sectionPathRadius s p) (sectionPathLength s p)
 
 {-
 sectionPathAngle :: Section -> Path -> Maybe Angle
@@ -186,8 +190,8 @@ topSpeed s d c e = case (radius s) of
     Just r -> corneringSpeed c e r -- TODO: account for driver handling skill
 
 -- for a driver, car and environment, given a list of sections, make a list of section results
-runRace :: [Section] -> Driver -> Car -> Environment -> RaceResult
-runRace ss d c e = res $ runRace' ss' d c e
+runRace :: Track -> Driver -> Car -> Environment -> RaceResult
+runRace (Track i ss) d c e = res $ runRace' ss' d c e
     where
         ss' :: [(Section, Path, Speed)] -- each section with a path and the exit speed limit (i.e., the max speed in the next section). the last section effectively has no exit speed limit.
         ss' = zipWith3 (\s p v -> (s,p,v)) ss ps (tail $ vs ++ [lightSpeed])
@@ -196,7 +200,7 @@ runRace ss d c e = res $ runRace' ss' d c e
         ps :: [Path] -- a path for each section, based on driver only
         ps = map (\_ -> path d) ss
         res :: [SectionResult] -> RaceResult
-        res rs = RaceResult t vm va vf rs
+        res rs = RaceResult i t vm va vf rs
             where
                 t = sum $ map sectionTime rs
                 vm = maximum $ map sectionSpeedMax rs
@@ -217,14 +221,14 @@ data IState = IState Time' Length Speed Speed Bool Integer
 
 -- runSection: integrate over section 
 runSection :: Section -> Path -> Speed -> Speed -> Driver -> Car -> Environment -> SectionResult
-runSection s p vin vnext d c e = proc $ IState 0 0 vin vin False 0
+runSection s@(Section i _ _) p vin vnext d c e = proc $ IState 0 0 vin vin False 0
     where
         s' = pathSection s p
         l = arclength s'
         vlim = topSpeed s d c e
         proc :: IState -> SectionResult
         proc ist@(IState t x vm v b n) = case (x >= l) of
-            True -> SectionResult p (max v vm) (l/t) v t
+            True -> SectionResult i p (max v vm) (l/t) v t
             False -> (tr t x vm v b n) $ proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b' (n+1)
                 where
                     -- determine distance needed to brake to vnext
