@@ -1421,7 +1421,7 @@ racePractice = do
                                                         t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
                                                         let race = def :: R.Race
                                                         rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs) })
-                                                        putSections u (trackId rs) $ sectionResults rs 
+                                                        putSections u rid $ sectionResults rs 
                                                         return rid
                                                     
                                                     putSections :: Integer -> Integer -> SectionResults -> SqlTransaction Connection ()
