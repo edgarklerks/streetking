@@ -17,7 +17,7 @@ section i r = case (r < 0.01) of
     False -> Section i (Just r)
 
 trackDetailsSection :: TD.TrackDetails -> Section
-trackDetailsSection t = section (TD.track_id t) (TD.radius t) (TD.length t)
+trackDetailsSection t = section (fromJust $ TD.id t) (TD.radius t) (TD.length t)
 
 radius' :: Section -> Double
 radius' = fromJust . radius
