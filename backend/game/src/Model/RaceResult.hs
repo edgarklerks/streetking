@@ -15,6 +15,7 @@ import           Prelude hiding (id)
 
 $(genAll "RaceResult" "race_results" [             
                     ("id", ''Id),
+                    ("race_id", ''Integer),
                     ("account_id", ''Integer),
                     ("section_id", ''Integer),
                     ("time", ''Double),

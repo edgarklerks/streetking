@@ -1410,20 +1410,41 @@ racePractice = do
                                             -- run race
                                             let rs = runRace ss d c e
 
-                                            -- get time
-                                            stt <- liftIO (floor <$> getPOSIXTime :: IO Integer )
-                                            let fint = (stt + ) $ ceiling $ raceTime rs
-
                                             -- store race in database
-                                            let race = def :: R.Race
-                                            rid <- save (race { R.track_id = tid, R.start_time = stt, R.end_time = fint })
-                                           
-                                            -- store section results in database for each participant and section
-                                            --let race = def :: R.Race
-                                            -- rid <- save (race { R.track_id = tid, R.start_time = stt, R.end_time = fint })
+                                            rid <- putRace uid rs 
                                              
                                             return rs
-         -- write results                 
+
+                                                where
+                                                    putRace :: Integer -> RaceResult -> SqlTransaction Connection Integer 
+                                                    putRace u rs = do
+                                                        t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                                                        let race = def :: R.Race
+                                                        rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs) })
+                                                        putSections u (trackId rs) $ sectionResults rs 
+                                                        return rid
+                                                    
+                                                    putSections :: Integer -> Integer -> SectionResults -> SqlTransaction Connection ()
+                                                    putSections u r [] = return ()
+                                                    putSections u r (s:ss) = do
+                                                        putSection u r s
+                                                        putSections u r ss
+
+                                                    putSection :: Integer -> Integer -> SectionResult -> SqlTransaction Connection Integer 
+                                                    putSection u r s = do
+                                                        let rres = def :: RR.RaceResult
+                                                        save (rres { 
+                                                                RR.race_id = r,
+                                                                RR.account_id = u,
+                                                                RR.section_id = (sectionId s),
+                                                                RR.time = (sectionTime s),
+                                                                RR.path = (sectionPath s),
+                                                                RR.speed_max = (sectionSpeedMax s),
+                                                                RR.speed_avg = (sectionSpeedAvg s),
+                                                                RR.speed_out = (sectionSpeedOut s)
+                                                            })
+ 
+         -- write results
         writeResult $ mapRaceResult $ raceResult2FE r
 
 -- | The main entry point handler.
