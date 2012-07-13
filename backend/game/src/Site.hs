@@ -69,6 +69,7 @@ import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
 import qualified Model.Race as R
 import qualified Model.RaceResult as RR
+import qualified Model.CurrentRaceDetails as CRD
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1447,6 +1448,19 @@ racePractice = do
          -- write results
         writeResult $ mapRaceResult $ raceResult2FE r
 
+
+userCurrentRace :: Application ()
+userCurrentRace = do
+        uid <- getUserId
+        rs <- runDb $ do
+            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+            case as of
+                [] -> rollback "you dont exist, go away."
+                [a] -> do
+                    search ["account_id" |== (toSql $ A.id a)] [] 1000 0 :: SqlTransaction Connection [CRD.CurrentRaceDetails]
+        writeMapables rs
+
+
 -- | The main entry point handler.
 site :: Application ()
 site = CIO.catch (CIO.catch (route [ 
@@ -1455,6 +1469,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/User/register", userRegister),
                 ("/User/data", userData),
                 ("/User/me", userMe),
+                ("/User/currentRace", userCurrentRace),
                 -- skill_acceleration: <number>
                 ("/User/addSkill", userAddSkill),
                 ("/Market/manufacturer", marketManufacturer),
