@@ -1421,7 +1421,7 @@ racePractice = do
                                                     putRace u rs = do
                                                         t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
                                                         let race = def :: R.Race
-                                                        rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs) })
+                                                        rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1 })
                                                         putSections u rid $ sectionResults rs 
                                                         return rid
                                                     
