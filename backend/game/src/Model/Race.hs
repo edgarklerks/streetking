@@ -17,6 +17,7 @@ $(genAll "Race" "races" [
                     ("id", ''Id),
                     ("track_id", ''Integer),
                     ("start_time", ''Integer),
-                    ("end_time", ''Integer)
+                    ("end_time", ''Integer),
+                    ("type", ''Integer)
     ]
     )

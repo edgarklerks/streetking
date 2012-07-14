@@ -26,6 +26,7 @@ $(genAll "CurrentRaceDetails" "current_race_details" [
                     ("path", ''Double),
                     ("speed_max", ''Double),
                     ("speed_avg", ''Double),
-                    ("speed_out", ''Double)
+                    ("speed_out", ''Double),
+                    ("race_type", ''String)
     ]
     )
