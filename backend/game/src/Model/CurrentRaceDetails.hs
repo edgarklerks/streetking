@@ -21,6 +21,7 @@ $(genAll "CurrentRaceDetails" "current_race_details" [
                     ("account_id", ''Integer),
                     ("start_time", ''Integer),
                     ("end_time", ''Integer),
+                    ("time_left", ''Integer),
                     ("time", ''Double),
                     ("path", ''Double),
                     ("speed_max", ''Double),
