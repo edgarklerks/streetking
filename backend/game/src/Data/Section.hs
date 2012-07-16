@@ -6,18 +6,18 @@ import Data.Maybe
 import qualified Model.TrackDetails as TD
 
 data Section = Section {
+        section_id :: Integer,
         radius :: Maybe Double,     -- section curve radius
         arclength :: Double         -- section length
     } deriving Show
 
-section :: Double -> Double -> Section
-section r = case (r < 0.01) of
-    True -> Section Nothing
-    False -> Section (Just r)
-
+section :: Integer -> Double -> Double -> Section
+section i r = case (r < 0.01) of
+    True -> Section i Nothing
+    False -> Section i (Just r)
 
 trackDetailsSection :: TD.TrackDetails -> Section
-trackDetailsSection t = section (TD.radius t) (TD.length t)
+trackDetailsSection t = section (fromJust $ TD.id t) (TD.radius t) (TD.length t)
 
 radius' :: Section -> Double
 radius' = fromJust . radius

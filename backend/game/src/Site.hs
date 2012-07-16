@@ -67,6 +67,9 @@ import qualified Model.Personnel as PL
 import qualified Model.PersonnelDetails as PLD
 import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
+import qualified Model.Race as R
+import qualified Model.RaceResult as RR
+import qualified Model.CurrentRaceDetails as CRD
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1383,28 +1386,80 @@ racePractice = do
                     --  -> make Driver 
                     let d = accountDriver a
                     -- get active car
-                    gcs <- search ["active" |== SqlBool True] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
+                    g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+                    gcs <- search ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [CIG.CarInGarage]
                     case gcs of
                         [] -> rollback "you have no active car"
                         [gc] -> do
-                            -- make Car
-                            let c = carInGarageCar gc
-                            -- get track sections
-                            --  -> make track
-                            tss <- search ["track_id" |== SqlInteger tid] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
-                            case tss of
-                                [] -> rollback "no data found for track"
-                                _ -> traceShow tss $ do
-                                    
-                                    -- make Track
-                                    let ss = trackDetailsTrack tss
-                                    -- get environment from track data
-                                    let e = defaultEnvironment
-                                    -- run race
---                                    return $ traceShow ss $ runRace ss d c e
-                                    return $ runRace ss d c e
-        -- write results                 
-        writeResult $ mapRaceResult r
+                            ry <- DBF.garage_active_car_ready (fromJust $ G.id g)
+                            case ry of
+                                x:xs -> rollback "your active car is not ready"
+                                _ -> do
+                                    -- make Car
+                                    let c = carInGarageCar gc
+                                    -- get track sections
+                                    --  -> make track
+                                    tss <- search ["track_id" |== SqlInteger tid] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
+                                    case tss of
+                                        [] -> rollback "no data found for track"
+                                        _ -> do
+                                            -- make Track
+                                            let ss = trackDetailsTrack tss
+                                            -- get environment from track data
+                                            let e = defaultEnvironment
+
+                                            -- run race
+                                            let rs = runRace ss d c e
+
+                                            -- store race in database
+                                            rid <- putRace uid rs 
+                                             
+                                            return rs
+
+                                                where
+                                                    putRace :: Integer -> RaceResult -> SqlTransaction Connection Integer 
+                                                    putRace u rs = do
+                                                        t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                                                        let race = def :: R.Race
+                                                        rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1 })
+                                                        putSections u rid $ sectionResults rs 
+                                                        return rid
+                                                    
+                                                    putSections :: Integer -> Integer -> SectionResults -> SqlTransaction Connection ()
+                                                    putSections u r [] = return ()
+                                                    putSections u r (s:ss) = do
+                                                        putSection u r s
+                                                        putSections u r ss
+
+                                                    putSection :: Integer -> Integer -> SectionResult -> SqlTransaction Connection Integer 
+                                                    putSection u r s = do
+                                                        let rres = def :: RR.RaceResult
+                                                        save (rres { 
+                                                                RR.race_id = r,
+                                                                RR.account_id = u,
+                                                                RR.section_id = (sectionId s),
+                                                                RR.time = (sectionTime s),
+                                                                RR.path = (sectionPath s),
+                                                                RR.speed_max = (sectionSpeedMax s),
+                                                                RR.speed_avg = (sectionSpeedAvg s),
+                                                                RR.speed_out = (sectionSpeedOut s)
+                                                            })
+ 
+         -- write results
+        writeResult $ mapRaceResult $ raceResult2FE r
+
+
+userCurrentRace :: Application ()
+userCurrentRace = do
+        uid <- getUserId
+        rs <- runDb $ do
+            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+            case as of
+                [] -> rollback "you dont exist, go away."
+                [a] -> do
+                    search ["account_id" |== (toSql $ A.id a)] [] 1000 0 :: SqlTransaction Connection [CRD.CurrentRaceDetails]
+        writeMapables rs
+
 
 -- | The main entry point handler.
 site :: Application ()
@@ -1414,6 +1469,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/User/register", userRegister),
                 ("/User/data", userData),
                 ("/User/me", userMe),
+                ("/User/currentRace", userCurrentRace),
                 -- skill_acceleration: <number>
                 ("/User/addSkill", userAddSkill),
                 ("/Market/manufacturer", marketManufacturer),
