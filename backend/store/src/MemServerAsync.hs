@@ -41,7 +41,8 @@ data ProtoConfig = PC {
         context :: Context,
         updates :: Socket Pull, 
         answers :: TVar (H.HashMap NodeAddr (Socket Push)),
-        outgoingchannel :: OutgoingChannel 
+        outgoingchannel :: OutgoingChannel,
+        inDebug :: Bool 
     }
 
 type OutgoingChannel = TChan (Proto)
@@ -52,9 +53,12 @@ outgoingManager = void  $ forkProto $ do
                 sl <- asks selfPull 
                 let p = outgoingchannel g 
                 forever $ do 
-                    p <- runSTM $ readTChan p 
-                    let rq = addRoute sl p 
-                    toNodes rq  
+                    ps <- runSTM $ readTChan p 
+                    case sl `inRoute` ps of
+                            True -> debug "circular detected" >> return ()
+                            False -> do 
+                                let rq = addRoute sl ps 
+                                toNodes rq  
 
 
 handleRequest :: (forall p. ProtoMonad p ())
@@ -62,7 +66,8 @@ handleRequest = do
             inc <- asks incoming 
             forever $ do 
                 x <- receiveProto inc
-                liftIO $ print x
+                debug "handleRequest"
+                debug x
                 casePayload (\x -> sendProto inc (result $ Empty))  (handleQuery inc) (handleCommand inc) x 
 handleUpdates :: ProtoMonad p ()
 handleUpdates = do 
@@ -76,8 +81,8 @@ handleUpdates = do
 
 handleCommand :: Sender a => Socket a -> Proto -> ProtoMonad p ()
 handleCommand s p = do 
-            liftIO $ print "Handle command"
-            liftIO $ print (getCommand p) 
+            debug "Handle command"
+            debug (getCommand p) 
             case fromJust $ getCommand p of 
                Sync -> do 
                         lst <- asks outgoing
@@ -101,7 +106,10 @@ handleCommand s p = do
                     debug "next"
 
 debug :: Show a => a  -> ProtoMonad p ()
-debug = liftIO . print 
+debug p = do 
+    s <- asks inDebug         
+    when s $ (liftIO . print) p
+
 connectToNode :: NodeAddr -> ProtoMonad p ()
 connectToNode ad = do 
             p <- asks outgoing 
@@ -325,12 +333,21 @@ newProtoConfig addrs addr fp = do
                             context = ctx,
                             updates = pl,
                             answers = ans,
-                            outgoingchannel = outc
+                            outgoingchannel = outc,
+                            inDebug = True
                         }
 
 
 topError :: (forall p. ProtoMonad p a) -> ProtoMonad p a
 topError m = catchProtoError m throwError
+
+
+startNode :: ProtoConfig -> IO ()
+startNode c = let step = do forkProto handleRequest 
+                            outgoingManager 
+                            handleUpdates
+              in runProtoMonad step c *> return ()
+
 
 
 checkVersion :: Int -> ProtoMonad p () 
