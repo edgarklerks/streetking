@@ -8,15 +8,13 @@ import           Control.Applicative
 import qualified Data.ByteString as B 
 import qualified Data.ByteString.Char8 as C
 import           Control.Concurrent.STM
-import           System.ZMQ3
 import           System.Directory
 import qualified Data.Serialize as S  
 import qualified Data.ByteString as B 
-import           Data.Generics
 import           Control.Concurrent
 import           Debug.Trace 
 import           Control.Monad.CatchIO
-
+import           Data.Word
 
 
 data MemState = MS {
@@ -30,6 +28,9 @@ type Snapshot = H.HashMap B.ByteString B.ByteString
 instance S.Serialize Snapshot where 
             put = S.put . H.toList
             get = H.fromList <$> S.get
+
+newQueryChan :: IO QueryChan 
+newQueryChan = newTChanIO
 
 addCounter :: MemState -> STM ()
 addCounter = flip modifyTVar (+1) . changes 
@@ -104,18 +105,47 @@ newMemState fp = do
                    p <- newTVarIO (H.empty)
                    l <- newTVarIO 0 
                    return (MS p t l)
---}
 
 data Query where 
         Insert :: B.ByteString -> B.ByteString -> Query 
         Delete :: B.ByteString -> Query 
         Query :: B.ByteString -> Query  
+            deriving Show
+
+
+instance S.Serialize Query where 
+        put (Insert b x) = S.put (0 :: Word8) *> S.put b *> S.put x
+        put (Delete b) = S.put (1 :: Word8) *> S.put b 
+        put (Query b) = S.put (2 :: Word8) *> S.put b
+        get = do 
+            b <- S.get :: S.Get Word8
+            case b of 
+                0 -> Insert <$> S.get <*> S.get
+                1 -> Delete <$> S.get
+                2 -> Query <$> S.get 
 
 data Result where 
         Value :: B.ByteString -> Result 
         NotFound :: Result 
         Empty :: Result 
+        Except :: String -> Result 
+        KeyVal :: B.ByteString -> B.ByteString -> Result 
     deriving Show
+
+instance S.Serialize Result where 
+        put (Value b) = S.put (0 :: Word8) *> S.put b
+        put (NotFound) = S.put (1 :: Word8) 
+        put Empty = S.put (2 :: Word8)
+        put (Except b) = S.put (3 :: Word8) *> S.put b
+        put (KeyVal b a) = S.put (4 :: Word8) *> S.put b *> S.put a
+        get = do 
+            b <- S.get :: S.Get Word8 
+            case b of 
+                0 -> Value <$> S.get 
+                1 -> pure NotFound 
+                2 -> pure Empty 
+                3 -> Except <$> S.get 
+                4 -> KeyVal <$> S.get <*> S.get
 
 data Op = I | D | Q
 
