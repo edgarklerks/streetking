@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RankNTypes,StandaloneDeriving, MultiParamTypeClasses, TypeSynonymInstances, LiberalTypeSynonyms, FunctionalDependencies, FlexibleContexts, FlexibleInstances, ExistentialQuantification #-}
+{-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RankNTypes,StandaloneDeriving, MultiParamTypeClasses, TypeSynonymInstances, ViewPatterns, LiberalTypeSynonyms, FunctionalDependencies, FlexibleContexts, FlexibleInstances, ExistentialQuantification, RankNTypes #-}
 module MemServerAsync where 
 
 import Data.MemState 
@@ -18,11 +18,13 @@ import qualified Control.Monad.CatchIO as CIO
 
 import Control.Concurrent 
 import Control.Concurrent.STM 
+import Control.Arrow 
 
 import qualified Data.ByteString as B 
 import qualified Data.ByteString.Char8 as C
 
 import Data.List ((\\)) 
+import Data.DVars
 
 import Data.Typeable 
 import GHC.Exception (SomeException)
@@ -30,35 +32,37 @@ import Proto
 import Data.Maybe 
 import Unsafe.Coerce 
 import Control.Monad.Error 
+import Data.IORef 
 
 data ProtoConfig = PC {
         version :: Int,
         self :: NodeAddr,
         selfPull :: NodeAddr, 
-        incoming :: Socket Rep,
-        outgoing :: TVar (H.HashMap NodeAddr (Socket Req)),
+        incoming :: Incoming,
+        outgoing :: TVar (H.HashMap NodeAddr Outgoing),
         memstate :: QueryChan, 
         context :: Context,
-        updates :: Socket Pull, 
-        answers :: TVar (H.HashMap NodeAddr (Socket Push)),
+        updates :: Update, 
+        answers :: TVar (H.HashMap NodeAddr Answer),
         outgoingchannel :: OutgoingChannel,
+--         listeners :: TVar (H.HashMap B.ByteString NodeAddr)
         inDebug :: Bool 
     }
 
-type OutgoingChannel = TChan (Proto)
+type OutgoingChannel = TChan Proto
+type Outgoing = Socket Req 
+type Answer = Socket Push 
+type Update = Socket Pull 
+type Incoming = Socket Rep
 
+-- | Handles outgoing requests to other nodes 
 outgoingManager :: ProtoMonad p ()
 outgoingManager = void  $ forkProto $ do 
-                g <- ask 
                 sl <- asks selfPull 
-                let p = outgoingchannel g 
                 forever $ do 
-                    ps <- runSTM $ readTChan p 
-                    case sl `inRoute` ps of
-                            True -> debug "circular detected" >> return ()
-                            False -> do 
-                                let rq = addRoute sl ps 
-                                toNodes rq  
+                    ps <- takesDVar outgoingchannel
+                    -- prevent circular packets 
+                    unless (sl `inRoute` ps) $ toNodes (addRoute sl ps)
 
 
 handleRequest :: (forall p. ProtoMonad p ())
@@ -66,44 +70,24 @@ handleRequest = do
             inc <- asks incoming 
             forever $ do 
                 x <- receiveProto inc
-                debug "handleRequest"
-                debug x
                 casePayload (\x -> sendProto inc (result $ Empty))  (handleQuery inc) (handleCommand inc) x 
+
 handleUpdates :: ProtoMonad p ()
 handleUpdates = do 
         upd <- asks updates 
-        forever $ do 
-            x <- receiveProto upd 
-            debug "in updates"
-            debug "handle result"
-            debug x
-            handleResult  x 
+        forever $ receiveProto upd >>= handleResult
 
 handleCommand :: Sender a => Socket a -> Proto -> ProtoMonad p ()
-handleCommand s p = do 
-            debug "Handle command"
-            debug (getCommand p) 
-            case fromJust $ getCommand p of 
-               Sync -> do 
-                        lst <- asks outgoing
-                        xs <- runSTM $ H.keys <$> readTVar lst 
-                        sendProto s (nodeList xs)
+handleCommand s (fromJust . getCommand -> p) = do 
+            case p of 
+               Sync -> do H.keys <$> readsDVar outgoing  >>= sendProto s . nodeList 
                NodeList xs -> forM_ xs connectToNode *> sendProto s (result Empty)
                StartSync -> sendUpstream sync *> sendProto s (result Empty) 
                DumpInfo -> do 
-                        os <- asks outgoing 
-                        as <- asks answers 
-                        ps <- runSTM $ H.keys <$> readTVar os  
-                        ns <- runSTM $ H.keys <$> readTVar as 
-                        sendProto s (result . Value $ C.pack $ show (ps,ns))
-
-
-               Advertisement n -> do 
-                    debug $ "Connecting to node " ++ n
-                    connectToNode n 
-                    debug  "Sending back result"
-                    sendProto s (result Empty)
-                    debug "next"
+                        ps <- H.keys <$> readsDVar outgoing 
+                        ns <- H.keys <$> readsDVar answers  
+                        sendProto s . result . Value . C.pack . show $ (ps,ns)
+               Advertisement n -> connectToNode n *> sendProto s ( result Empty)
 
 debug :: Show a => a  -> ProtoMonad p ()
 debug p = do 
@@ -112,69 +96,37 @@ debug p = do
 
 connectToNode :: NodeAddr -> ProtoMonad p ()
 connectToNode ad = do 
-            p <- asks outgoing 
-            ps <- runSTM $ readTVar p 
-            case H.lookup ad ps of 
-                    Just a -> return ()
-                    Nothing -> do 
-                        ctx <- asks context 
-                        s <- liftIO $ socket ctx Req 
-                        liftIO $ connect s ad 
-                        runSTM $ modifyTVar p (H.insert ad s)
+            ps <- readsDVar outgoing 
+            unless (H.member ad ps) $ do 
+                        s <- newConnectedSocket Req ad 
+                        modifysDVar outgoing (H.insert ad s)
 
-
-
-
-
-            
 
 
 
 sendUpstream :: Proto -> ProtoMonad p ()
-sendUpstream p = do  
-            s <- asks outgoingchannel
-            runSTM $ writeTChan s p 
+sendUpstream  = putsDVar outgoingchannel
 
 
 handleQuery :: Sender a => Socket a -> Proto -> ProtoMonad p () 
 handleQuery s p = do 
             let (Just rt) = headRoute p 
             let (Just query) = getQuery p 
-            debug (listRoute p)
             case query of 
-
-               Insert k v -> do 
-                        debug "running insert"
-                        n <- runMemQuery (Insert k v)
-                        sendProto s (result n)
-
                Query b -> do 
-                    debug "running query"
                     n <- runMemQuery (Query b)
                     case n of 
                         NotFound -> do 
                                 case getTTL p of 
-                                    Just 0 -> debug "end of packet life" >> return ()
-                                    Just _ -> sendUpstream (predTTL p)
-                                    Nothing -> debug "package without ttl"
+                                    Just 0 -> return ()
+                                    Nothing -> return () 
+                                    _ -> sendUpstream (predTTL p)
                         b -> case tailRoute p of 
-                                Nothing -> do 
-                                        debug b
-                                              
-                                        debug "Sending answer"
-                                        debug rt
-                                        sendAnswer rt (result b)
-                                Just p -> do 
-                                    debug b
-                                    debug "Sending answer"
-                                    debug rt
-                                    sendAnswer rt (addRoutes p $ result b)
+                                Nothing -> sendAnswer rt (result b)
+                                Just p -> sendAnswer rt (addRoutes p $ result b)
                     sendProto s (result Empty)
 
-               Delete b -> do 
-                        ms <- asks memstate 
-                        n <- runMemQuery (Delete b) 
-                        sendProto s (result n) 
+               x -> runMemQuery x >>= sendProto s . result 
 
 runMemQuery :: Query -> ProtoMonad r Result 
 runMemQuery (Query a) = do 
@@ -190,53 +142,51 @@ runMemQuery q = do
 
 sendAnswer :: NodeAddr -> Proto -> ProtoMonad p ()
 sendAnswer a pr = do 
-            ptvar <- asks answers 
-            ps <- runSTM $ readTVar ptvar 
+            ps <- readsDVar answers 
             case H.lookup a ps of 
-                Just s -> do 
-                    debug "sendAnswer directly"
-                    sendProto s pr 
+                Just s -> forkTimeout 100000 $ sendProto s pr 
                 Nothing -> do 
-                    ctx <- asks context
-                    s <- liftIO $ socket ctx Push  
-                    debug "connect and send answer"
-                    debug $ "address" ++ a
-                    liftIO $ connect s a 
-                    runSTM $ modifyTVar ptvar (H.insert a s)
-                    sendProto s pr 
-                    debug "Send answer"
+                    s <- newConnectedSocket Push a 
+                    modifysDVar answers (H.insert a s)
+                    forkTimeout 100000 $ sendProto s pr 
 
+newConnectedSocket :: SocketType a => a -> NodeAddr -> ProtoMonad p (Socket a)
+newConnectedSocket a addr = do 
+                ctx <- asks context 
+                s <- liftIO $ socket ctx a
+                liftIO $ connect s addr 
+                return s
+
+newBindedSocket :: SocketType a => a -> NodeAddr -> ProtoMonad p (Socket a)
+newBindedSocket a addr = do 
+                ctx <- asks context 
+                s <- liftIO $ socket ctx a 
+                liftIO $ bind s addr 
+                return s
 
 handleResult ::  Proto -> ProtoMonad p ()
 handleResult p = do 
                 s <- asks self 
-                debug s 
-                debug p 
-                debug "in result"
                 case headRoute p of 
                         Nothing -> let (Just res) = getResult p 
-                                   in do case res of 
-                                            NotFound -> return () 
-                                            KeyVal k v -> runMemQuery (Insert k v) >> return ()
-                                            Empty -> return ()
+                                   in case res of 
+                                            KeyVal k v -> void $ runMemQuery (Insert k v)
+                                            _ -> pure ()
 
                         Just rt -> let (Just res) = getResult p 
                                    in do case res of 
-                                            NotFound -> return ()
-                                            KeyVal k v -> runMemQuery (Insert k v) >> return ()
-                                            Empty -> return ()
+                                            KeyVal k v -> void $ runMemQuery (Insert k v) 
+                                            _ -> pure  ()
                                          case tailRoute p of 
-                                                Nothing -> return ()
                                                 Just l -> sendAnswer rt l
+                                                Nothing -> pure ()
 
 
 
 
 
-outgoingNodes :: ProtoMonad p [Socket Req]
-outgoingNodes = do 
-            x <- asks outgoing 
-            runSTM $ H.elems <$> readTVar x
+outgoingNodes :: ProtoMonad p [Outgoing]
+outgoingNodes = H.elems <$> readsDVar outgoing 
 
 toNodes :: Proto -> ProtoMonad p ()
 toNodes p = do 
@@ -249,20 +199,18 @@ toNodes p = do
 
 
 sendProto :: (Sender a, MonadIO m) => Socket a -> Proto -> m ()
-sendProto s p = liftIO $ send s [] (S.encode p) 
+sendProto s = liftIO . send s [] . S.encode
 
 receiveProto :: (MonadIO m, Receiver a) => Socket a -> m Proto   
 receiveProto s  = do 
                     x <- liftIO $ receive s 
                     case S.decode x of 
-                            Left s -> error "problem decoding"
+                            Left s -> error $ "problem decoding" ++ s
                             Right a -> return a
 
 
-addAnswers :: NodeAddr -> Socket Push -> ProtoMonad p ()
-addAnswers n sp = do 
-                ts <- asks answers 
-                runSTM $ modifyTVar ts (H.insert n sp)
+addAnswers :: NodeAddr -> Answer -> ProtoMonad p ()
+addAnswers n = modifysDVar answers . H.insert n
 
 rankProto :: ProtoMonad p a -> (forall p. ProtoMonad p a)
 rankProto = unsafeCoerce   
@@ -279,8 +227,6 @@ instance MonadError ProtoException (ProtoMonad p) where
                                 Right a -> return a
 
 
-runSTM :: STM a -> ProtoMonad r a 
-runSTM = liftIO . atomically 
 
 catchProtoError :: (forall p. ProtoMonad p b) -> (ProtoException -> ProtoMonad p b) -> ProtoMonad p b
 catchProtoError m f = do 
@@ -296,16 +242,20 @@ newtype ProtoMonad p a = PM {
             } deriving (Functor, Applicative, Monad, MonadDelimitedCont (Prompt p) (SubCont p (ReaderT ProtoConfig (ErrorT ProtoException IO))), MonadReader ProtoConfig, MonadIO) 
 
 
-
 runProtoMonad :: (forall p. ProtoMonad p a) -> ProtoConfig -> IO (Either ProtoException a)
 runProtoMonad m = runErrorT . runReaderT (runCCT (unPM m)) 
 
-testProto :: ProtoMonad p () 
-testProto = reset $ \p -> catchError (step p) (\x -> liftIO $ print x *> return ())
-    where step p = do 
-                liftIO $ print "forked"
-                shift p $ \k -> k (return 10) 
-                return ()
+forkTimeout :: Int -> (forall p. ProtoMonad p ()) -> ProtoMonad p ()
+forkTimeout n m = do 
+                    s <- liftIO $ newMVar ()
+                    x <- forkProto (m <* liftIO (takeMVar s))
+                    forkProto $ liftIO $ do 
+                        threadDelay n 
+                        b <- isEmptyMVar s 
+                        unless b $ do 
+                                killThread x 
+                                print "server Thread killed"
+                    return ()
 
 forkProto ::  (forall p. ProtoMonad p ()) -> ProtoMonad p ThreadId 
 forkProto m = (liftIO . forkIO . void . runProtoMonad m) =<< ask 
@@ -315,14 +265,14 @@ newProtoConfig addrs addr fp = do
                 ctx <- System.ZMQ3.init 1
                 is <- socket ctx Rep 
                 bind is addrs
-                ps <- newTVarIO H.empty 
+                ps <- newDVar H.empty 
                 l <- newMemState fp 
-                s <- newTChanIO 
-                ans <- newTVarIO H.empty 
+                s <- newEmptyDVar  
+                ans <- newDVar H.empty 
                 pl <- socket ctx Pull 
                 bind pl addr 
                 forkIO $ queryManager fp l s  
-                outc <- newTChanIO 
+                outc <- newEmptyDVar 
                 return $ PC {
                             version = versionConst,
                             self = addrs,
@@ -334,7 +284,7 @@ newProtoConfig addrs addr fp = do
                             updates = pl,
                             answers = ans,
                             outgoingchannel = outc,
-                            inDebug = True
+                            inDebug = True 
                         }
 
 
@@ -342,11 +292,14 @@ topError :: (forall p. ProtoMonad p a) -> ProtoMonad p a
 topError m = catchProtoError m throwError
 
 
-startNode :: ProtoConfig -> IO ()
-startNode c = let step = do forkProto handleRequest 
+startNode :: NodeAddr -> NodeAddr -> FilePath  -> IO ()
+startNode f g fp = let step = do 
+                            forkProto handleRequest 
                             outgoingManager 
                             handleUpdates
-              in runProtoMonad step c *> return ()
+                    in do 
+                        c <- newProtoConfig f g fp
+                        runProtoMonad step c *> pure ()
 
 
 
@@ -363,12 +316,31 @@ client n1 n2 p = withContext 1 $ \c ->
             do 
                 ds <- bind d n1 
                 connect r n2 
-                
                 sendProto r (addRoute n1 $ p) 
                 x <- receiveProto r
-                print x
-                y <- receiveProto d 
-                print y
+                s <- newEmptyMVar 
+                l <- forkIO $ do
+                        p <- receiveProto d 
+                        s =$ p 
+                n <- waitOnResult l s
+                print $ show n
+
+-- waitOnResult :: ThreadId -> MVar Proto -> IO Proto 
+waitOnResult l m = runCCT $ reset $ \p -> do 
+                                            forM_ [1..1000] $ \x -> do 
+                                                a <- liftIO $ isEmptyMVar m
+                                                liftIO $ print x
+                                                if a then liftIO $ do
+                                                     when (x == 1000) $ killThread l *> print "killedThread"
+                                                     threadDelay 100
+                                                     return (result NotFound)
+                                                 else do 
+                                                    shift0 p $ \k ->  liftIO $ takeMVar m 
+                                            liftIO $ killThread l 
+                                            return (result NotFound)
+
+                                        
+
 clientCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
 clientCommand n1 n2 p = withContext 1 $ \c -> 
          withSocket c Req $ \r -> 
@@ -376,13 +348,26 @@ clientCommand n1 n2 p = withContext 1 $ \c ->
             do 
                 ds <- bind d n1 
                 connect r n2 
-                print "sending" 
                 sendProto r p
-                print "waiting"
                 x <- receiveProto r
-                print "received"
-                print x
-                
+                print x 
 
 
-            
+modifysDVar :: (MonadGetter m s, MonadIO m, ModifyDVar m f) => (s -> f b) -> (b -> b) -> m ()
+modifysDVar f p = do 
+                s <- getter f
+                modifyDVar s p 
+
+putsDVar :: (MonadGetter m s, MonadIO m, PutDVar m f) => (s -> f b) -> b -> m ()
+putsDVar f p = do 
+            s <- getter f 
+            putDVar s p 
+
+readsDVar :: (MonadGetter m s, MonadIO m, ReadDVar m f) => (s -> f b) -> m b
+readsDVar f = getterM (readDVar . f) 
+
+takesDVar :: (MonadGetter m s, MonadIO m, TakeDVar m f) => (s -> f b) -> m b
+takesDVar f = getterM (takeDVar . f)
+
+instance MonadGetter (ProtoMonad p) ProtoConfig where 
+        getter = asks
