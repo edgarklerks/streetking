@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
-module Model.CurrentRaceDetails where
+module Model.RaceDetails where
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -13,7 +13,7 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genAll "CurrentRaceDetails" "current_race_details" [             
+$(genAll "RaceDetails" "race_details" [             
 --                    ("id", ''Id),
                     ("race_id", ''Integer),
                     ("track_id", ''Integer),
