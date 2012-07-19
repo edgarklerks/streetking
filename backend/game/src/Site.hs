@@ -70,7 +70,7 @@ import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
 import qualified Model.Race as R
 import qualified Model.RaceResult as RR
-import qualified Model.CurrentRaceDetails as CRD
+import qualified Model.RaceDetails as RD
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1459,6 +1459,14 @@ testWrite = do
 result :: LB.ByteString -> LB.ByteString
 result s = LB.concat ["{\"result\":", s, "}"]
 
+--raceDetails :: Application ()
+--raceDetails = do
+--        uid <- getUserId
+--        rs <- runDb $ do
+--            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+            
+
+-- TODO: return 
 userCurrentRace :: Application ()
 userCurrentRace = do
         uid <- getUserId
@@ -1467,7 +1475,8 @@ userCurrentRace = do
             case as of
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
-                    search ["account_id" |== (toSql $ A.id a)] [] 1000 0 :: SqlTransaction Connection [CRD.CurrentRaceDetails]
+                    t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                    search ["account_id" |== (toSql $ A.id a), "time_left" |> (toSql t)] [] 1000 0 :: SqlTransaction Connection [RD.RaceDetails]
         writeMapables rs
 
 
