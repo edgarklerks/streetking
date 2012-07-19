@@ -40,7 +40,9 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
         
         liftIO $ forkIO $ startNode ctr upd svn 
 
-        liftIO $ forM_  (toStrings ns) $ ccl . advertise
+        liftIO $ forkIO $ forever $  do 
+                forM_  (toStrings ns) $ ccl . advertise
+                threadDelay 100000000        
 
         return $ DHC cl 
 
