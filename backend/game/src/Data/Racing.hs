@@ -139,7 +139,7 @@ track4 = Track 0 [Section 0 Nothing 700]
 -- run a path using driver skills. path is a double 0 - 1 indicating the quality of the traveled path.
 -- from this and the section properties, the effective radius and path length are calculated.
 path :: Driver -> Path
-path d =  undefined --  drand $ skillIntelligence d 
+path d =  skillIntelligence d 
 
 -- "correct" a section, i.e. take into account the path and modify the angle, arclength and radius accordingly
 pathSection :: Section -> Path -> Section
