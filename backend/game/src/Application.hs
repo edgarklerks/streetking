@@ -26,6 +26,7 @@ module Application
   , writeError 
   , writeMapable
   , writeMapables
+  , writeAeson
   , internalError
   , getOParam
   ) where

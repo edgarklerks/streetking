@@ -1445,8 +1445,14 @@ racePractice = do
                                                                 RR.speed_out = (sectionSpeedOut s)
                                                             })
  
-         -- write results
+        -- write results
         writeResult $ mapRaceResult $ raceResult2FE r
+
+testWrite :: Application ()
+testWrite = do
+        uid <- getUserId
+ --       return ()
+        writeLBS $ AS.encode $ HM.fromList [("bla" :: C.ByteString, AS.toJSON (1 :: Integer))]
 
 
 userCurrentRace :: Application ()
@@ -1525,6 +1531,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Track/list", trackList),
                 ("/Track/here", trackHere),
                 ("/User/reports", userReports),
+                ("/Test/write", testWrite),
                 ("/Race/practice", racePractice)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
