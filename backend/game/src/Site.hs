@@ -20,6 +20,7 @@ import           Data.Database
 import           Data.DatabaseTemplate
 import           Database.HDBC (toSql, fromSql)
 import qualified Data.ByteString.Char8 as C
+import qualified Data.ByteString.Lazy as LB
 import qualified Data.Text.Encoding as T
 import qualified Data.Text as T 
 import           Snap.Util.FileServe
@@ -1451,9 +1452,10 @@ racePractice = do
 testWrite :: Application ()
 testWrite = do
         uid <- getUserId
- --       return ()
-        writeLBS $ AS.encode $ HM.fromList [("bla" :: C.ByteString, AS.toJSON (1 :: Integer))]
+        writeLBS $ result $ AS.encode $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
+result :: LB.ByteString -> LB.ByteString
+result s = LB.concat ["{\"result\":", s, "}"]
 
 userCurrentRace :: Application ()
 userCurrentRace = do
