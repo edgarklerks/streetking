@@ -1415,7 +1415,8 @@ racePractice = do
                                             -- store race in database
                                             rid <- putRace uid rs 
                                              
-                                            return rs
+--                                            return rs
+                                            return rid
 
                                                 where
                                                     putRace :: Integer -> RaceResult -> SqlTransaction Connection Integer 
@@ -1447,7 +1448,8 @@ racePractice = do
                                                             })
  
         -- write results
-        writeResult $ mapRaceResult $ raceResult2FE r
+--        writeResult $ mapRaceResult $ raceResult2FE r
+        writeResult r
 
 testWrite :: Application ()
 testWrite = do
