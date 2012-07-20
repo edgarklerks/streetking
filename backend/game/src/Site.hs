@@ -1406,7 +1406,10 @@ racePractice = do
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
                     t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+
+                    -- TODO: disallow racing if busy
 --                   case A.busy_until > t of -- etc. rollback "you are busy"
+                   
                     -- fetch profile
                     [ap] <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [AP.AccountProfile]
                     --  -> make Driver 
@@ -1482,6 +1485,7 @@ racePractice = do
                                                                 RR.speed_out = (sectionSpeedOut s)
                                                             })
 -}
+
         -- write results
         writeResult r
 
@@ -1490,24 +1494,14 @@ testWrite = do
         uid <- getUserId
         writeLBS $ AS.encode $ jsonResult $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
---result :: LB.ByteString -> LB.ByteString
---result s = "{\"result\":" <> s <> "}"
-
 jsonResult :: AS.Value -> AS.Value
 jsonResult a = AS.toJSON $ HM.fromList [("result" :: LB.ByteString, AS.toJSON a)]
 
-{-
-raceDetails :: Application ()
-raceDetails = do
-        uid <- getUserId
-        xs <- getJson >>= scheck ["race_id"]
-        let rid = fugly "race_id" xs :: Integer
-        r <- runDb $ do
-            rs <- search ["race_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [RD.RaceDetails]
--}        
-            
-
--- TODO: return data in raceDetails style 
+getRace :: Application ()
+getRace = do
+        ((l,o),xs) <- getPagesWithDTD ("id" +==| "race_id")
+        rs <- runDb (search xs [] l o) :: Application [R.Race]
+        writeMapables rs
 
 userCurrentRace :: Application ()
 userCurrentRace = do
@@ -1585,7 +1579,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Track/here", trackHere),
                 ("/User/reports", userReports),
                 ("/Test/write", testWrite),
-                ("/Race/practice", racePractice)
+                ("/Race/practice", racePractice),
+                ("/Race/get", getRace)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
