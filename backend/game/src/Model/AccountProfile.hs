@@ -12,6 +12,11 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Aeson as AS
+
 $(genAll "AccountProfile" "account_profile" [             
                     ("id", ''Id),
                     ("firstname", ''String),
@@ -42,5 +47,11 @@ $(genAll "AccountProfile" "account_profile" [
                     ("continent_name", ''String),
 --                    ("continent_data", ''String),
                     ("skill_unused", ''Integer)
-    ]
-    )
+        ])
+
+instance AS.ToJSON AccountProfile where
+        toJSON c = AS.toJSON $ HM.fromList $ [ 
+                        ("user_id", AS.toJSON $  id c),
+                        ("firstname", AS.toJSON $ firstname c)
+                    ]
+       

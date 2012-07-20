@@ -13,6 +13,10 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Aeson as AS
+
 $(genAll "CarInGarage" "car_in_garage"
     [
         ("id", ''Id),
@@ -43,3 +47,10 @@ $(genAll "CarInGarage" "car_in_garage"
         ("year", ''Integer),
         ("car_color", ''String)
     ])
+
+instance AS.ToJSON CarInGarage where
+        toJSON c = AS.toJSON $ HM.fromList $ [ 
+                        ("user_id", AS.toJSON $  id c),
+                        ("name", AS.toJSON $  name c)
+                    ]
+

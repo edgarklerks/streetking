@@ -69,8 +69,6 @@ import qualified Model.PersonnelDetails as PLD
 import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
 import qualified Model.Race as R
-import qualified Model.RaceResult as RR
-import qualified Model.RaceDetails as RD
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1372,6 +1370,30 @@ carSetOptions = do
                                 
         writeResult (1 :: Integer)
 
+
+
+-- TODO:
+--      generate ToJSON and FromJSON instances for template objects 
+
+data RaceData = RaceData {
+        rd_user :: AP.AccountProfile,
+        rd_car :: CIG.CarInGarage,
+        rd_result :: RaceResult
+    }
+
+instance AS.ToJSON RaceData where
+        toJSON d = AS.toJSON $ HM.fromList $ [
+                ("user" :: LB.ByteString, AS.toJSON $ rd_user d),
+                ("car", AS.toJSON $ rd_car d),
+                ("result", AS.toJSON $ rd_result d)
+            ]
+
+-- read JSON data and rebuild RaceData object
+instance AS.FromJSON RaceData where
+        parseJSON d = undefined
+
+
+
 racePractice :: Application ()
 racePractice = do
         uid <- getUserId
@@ -1384,6 +1406,8 @@ racePractice = do
             case as of
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
+                    -- fetch profile
+                    [ap] <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [AP.AccountProfile]
                     --  -> make Driver 
                     let d = accountDriver a
                     -- get active car
@@ -1393,9 +1417,9 @@ racePractice = do
                         [] -> rollback "you have no active car"
                         [gc] -> do
                             ry <- DBF.garage_active_car_ready (fromJust $ G.id g)
-                            case ry of
-                                x:xs -> rollback "your active car is not ready"
-                                _ -> do
+                            case length ry > 0 of
+                                True -> rollback "your active car is not ready"
+                                False -> do
                                     -- make Car
                                     let c = carInGarageCar gc
                                     -- get track sections
@@ -1410,22 +1434,26 @@ racePractice = do
                                             let e = defaultEnvironment
 
                                             -- run race
-                                            let rs = runRace ss d c e
+                                            let rs = raceResult2FE $ runRace ss d c e
+                                            
+                                            -- make race data
+                                            let rd = RaceData ap gc rs
+                                            
+                                            -- store data and return race ID
+                                            t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                                            let race = def :: R.Race
+                                            save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1, R.data = AS.encode rd })
 
-                                            -- store race in database
-                                            rid <- putRace uid rs 
-                                             
---                                            return rs
-                                            return rid
-
+{-
                                                 where
-                                                    putRace :: Integer -> RaceResult -> SqlTransaction Connection Integer 
-                                                    putRace u rs = do
-                                                        t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
-                                                        let race = def :: R.Race
-                                                        rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1 })
-                                                        putSections u rid $ sectionResults rs 
-                                                        return rid
+
+                                                    putRace :: RaceResult -> RaceData -> SqlTransaction Connection Integer 
+                                                    putRace rs rd = do
+                                                     t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                                                    let race = def :: R.Race
+                                                    rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1, R.data = AS.encode rd })
+                                                    putSections u rid $ sectionResults rs 
+                                                    return rid
                                                     
                                                     putSections :: Integer -> Integer -> SectionResults -> SqlTransaction Connection ()
                                                     putSections u r [] = return ()
@@ -1446,9 +1474,8 @@ racePractice = do
                                                                 RR.speed_avg = (sectionSpeedAvg s),
                                                                 RR.speed_out = (sectionSpeedOut s)
                                                             })
- 
+-}
         -- write results
---        writeResult $ mapRaceResult $ raceResult2FE r
         writeResult r
 
 testWrite :: Application ()
@@ -1457,28 +1484,34 @@ testWrite = do
         writeLBS $ result $ AS.encode $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
 result :: LB.ByteString -> LB.ByteString
-result s = LB.concat ["{\"result\":", s, "}"]
+result s = "{\"result\":" <> s <> "}"
 
---raceDetails :: Application ()
---raceDetails = do
---        uid <- getUserId
---        rs <- runDb $ do
---            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+{-
+raceDetails :: Application ()
+raceDetails = do
+        uid <- getUserId
+        xs <- getJson >>= scheck ["race_id"]
+        let rid = fugly "race_id" xs :: Integer
+        r <- runDb $ do
+            rs <- search ["race_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [RD.RaceDetails]
+-}        
             
 
--- TODO: return 
+-- TODO: return data in raceDetails style 
+
 userCurrentRace :: Application ()
-userCurrentRace = do
+userCurrentRace = undefined
+{- do
         uid <- getUserId
         rs <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
-                    t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
-                    search ["account_id" |== (toSql $ A.id a), "time_left" |> (toSql t)] [] 1000 0 :: SqlTransaction Connection [RD.RaceDetails]
+                    -- No no. get race id from account activity subject, then get race details.
+                    search ["account_id" |== (toSql $ A.id a), "time_left" |> (SqlInteger 0)] [] 1000 0 :: SqlTransaction Connection [RD.RaceDetails]
         writeMapables rs
-
+-}
 
 -- | The main entry point handler.
 site :: Application ()

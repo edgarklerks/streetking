@@ -13,11 +13,16 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
+import qualified Data.ByteString.Lazy as LB
+
+instance Default LB.ByteString where
+    def = LB.empty 
+
 $(genAll "Race" "races" [             
                     ("id", ''Id),
                     ("track_id", ''Integer),
                     ("start_time", ''Integer),
                     ("end_time", ''Integer),
-                    ("type", ''Integer)
-    ]
-    )
+                    ("type", ''Integer),
+                    ("data", ''LB.ByteString)
+    ])
