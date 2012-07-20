@@ -1499,7 +1499,7 @@ jsonResult a = AS.toJSON $ HM.fromList [("result" :: LB.ByteString, AS.toJSON a)
 
 getRace :: Application ()
 getRace = do
-        ((l,o),xs) <- getPagesWithDTD ("id" +==| "race_id")
+        ((l,o),xs) <- getPagesWithDTD ("id" +== "race_id")
         rs <- runDb (search xs [] l o) :: Application [R.Race]
         writeMapables rs
 
