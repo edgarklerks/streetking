@@ -1393,7 +1393,6 @@ instance AS.FromJSON RaceData where
         parseJSON d = undefined
 
 
-
 racePractice :: Application ()
 racePractice = do
         uid <- getUserId
@@ -1439,10 +1438,16 @@ racePractice = do
                                             -- make race data
                                             let rd = RaceData ap gc rs
                                             
-                                            -- store data and return race ID
+                                            -- store data
                                             t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
                                             let race = def :: R.Race
-                                            save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1, R.data = AS.encode rd })
+                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1, R.data = AS.encode rd })
+
+                                            -- set account busy
+                                            save (a { A.busy_type = 2, A.busy_subject_id = rid })
+
+                                            -- return race id
+                                            return rid
 
 {-
                                                 where
