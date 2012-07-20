@@ -1405,6 +1405,8 @@ racePractice = do
             case as of
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
+                    t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+--                   case A.busy_until > t of -- etc. rollback "you are busy"
                     -- fetch profile
                     [ap] <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [AP.AccountProfile]
                     --  -> make Driver 
@@ -1439,7 +1441,6 @@ racePractice = do
                                             let rd = RaceData ap gc rs
                                             
                                             -- store data
-                                            t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
                                             let te = (t + ) $ ceiling $ raceTime rs
                                             let race = def :: R.Race
                                             rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = AS.encode rd })
@@ -1487,10 +1488,13 @@ racePractice = do
 testWrite :: Application ()
 testWrite = do
         uid <- getUserId
-        writeLBS $ result $ AS.encode $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
+        writeLBS $ AS.encode $ jsonResult $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
-result :: LB.ByteString -> LB.ByteString
-result s = "{\"result\":" <> s <> "}"
+--result :: LB.ByteString -> LB.ByteString
+--result s = "{\"result\":" <> s <> "}"
+
+jsonResult :: AS.Value -> AS.Value
+jsonResult a = AS.toJSON $ HM.fromList [("result" :: LB.ByteString, AS.toJSON a)]
 
 {-
 raceDetails :: Application ()
@@ -1506,18 +1510,15 @@ raceDetails = do
 -- TODO: return data in raceDetails style 
 
 userCurrentRace :: Application ()
-userCurrentRace = undefined
-{- do
+userCurrentRace = do
         uid <- getUserId
         rs <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
                 [a] -> do
-                    -- No no. get race id from account activity subject, then get race details.
-                    search ["account_id" |== (toSql $ A.id a), "time_left" |> (SqlInteger 0)] [] 1000 0 :: SqlTransaction Connection [RD.RaceDetails]
+                    search ["id" |== (toSql $ A.busy_subject_id a)] [] 1000 0 :: SqlTransaction Connection [R.Race]
         writeMapables rs
--}
 
 -- | The main entry point handler.
 site :: Application ()
