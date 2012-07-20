@@ -1440,11 +1440,12 @@ racePractice = do
                                             
                                             -- store data
                                             t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+                                            let te = (t + ) $ ceiling $ raceTime rs
                                             let race = def :: R.Race
-                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1, R.data = AS.encode rd })
+                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = AS.encode rd })
 
                                             -- set account busy
-                                            save (a { A.busy_type = 2, A.busy_subject_id = rid })
+                                            save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
 
                                             -- return race id
                                             return rid
