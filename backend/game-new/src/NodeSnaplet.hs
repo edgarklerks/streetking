@@ -35,6 +35,7 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
         let (Just (StringC upd)) = lookupConfig "DHT" xs >>= lookupVar "data"
         let (Just (ArrayC ns)) = lookupConfig "DHT" xs >>= lookupVar "nodes"
         let cl = client ctr "tcp://127.0.0.1:91281"
+
         let (Just (StringC svn)) = lookupConfig "DHT" xs >>= lookupVar "dump"
         
         liftIO $ forkIO $ startNode ctr upd svn 

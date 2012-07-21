@@ -118,9 +118,8 @@ import           SqlTransactionSnaplet (initSqlTransactionSnaplet)
 import           ConfigSnaplet 
 import           RandomSnaplet (l32, initRandomSnaplet)
 import           NodeSnaplet 
-
-import qualified Data.Digest.TigerHash as H
-import qualified Data.Digest.TigerHash.ByteString as H
+import qualified Codec.Binary.Base32 as B32 
+import Data.Tiger
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -153,7 +152,7 @@ userRegister = do
            x <- getJson >>= scheck ["email", "password", "nickname"] 
            scfilter x [("email", email), ("password", minl 6), ("nickname", minl 3 `andcf` maxl 16)]
            let m = updateHashMap x (def :: A.Account)
-           let c = m { A.password = H.b32TigerHash (H.tigerHash $ C.pack (A.password m) `mappend` salt) }
+           let c = m { A.password = tiger32 $ C.pack (A.password m) `mappend` salt }
            let g = def :: G.Garage  
 
             -- save all  
@@ -172,7 +171,7 @@ userLogin = do
     u <- runDb (search ["email" |== toSql (A.email m)] [] 1 0) :: Application [A.Account]
     when (null u) $ internalError "Username or password is wrong, please try it again"
     let user = head u
-    if ((H.b32TigerHash . H.tigerHash) (C.pack ( A.password m) `mappend` salt) == A.password user)
+    if (tiger32 (C.pack ( A.password m) `mappend` salt) == A.password user)
         then do 
 
             k <- getUniqueKey 

@@ -17,7 +17,7 @@ Flag development
 Executable game-new
   hs-source-dirs: src
   main-is: Main.hs
-  Extensions: DoAndIfThenElse, ViewPatterns, ScopedTypeVariables
+  Extensions: DoAndIfThenElse, ViewPatterns, ScopedTypeVariables, EmptyDataDecls
 
   Build-depends:
     base >= 4 && < 5,
@@ -34,8 +34,8 @@ Executable game-new
     text >= 0.11 && < 0.12,
     time >= 1.1 && < 1.5,
     xmlhtml >= 0.1,
-    TigerHash,
     cereal,
+    dataenc,
     directory,
     stm,
     unordered-containers,
