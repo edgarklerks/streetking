@@ -45,9 +45,9 @@ import           Application
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = let ?proxyTransform = id in [ 
-        ("/identify", identify),
-         ("/", transparent)
-
+          ("/identify", identify)
+         , ("/test", writeBS "Hello world")
+        , ("/", transparent)
          ]
 
 
@@ -55,11 +55,12 @@ routes = let ?proxyTransform = id in [
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "app" "An snaplet example application." Nothing $ do
-    p <- nestSnaplet "sql" sql $ initSqlTransactionSnaplet "resources/server.ini"  
-    prx <- nestSnaplet "proxy" proxy $ initProxy "resources/server.ini"
-    dht <- nestSnaplet "node" node $ initDHTConfig "resources/server.ini"
-    rnd <- nestSnaplet "rnd" rnd $ initRandomSnaplet l64  
-    ps <- nestSnaplet "rls" roles $ initRoleSnaplet 
+    p <- nestSnaplet "" sql $ initSqlTransactionSnaplet "resources/server.ini"  
+    prx <- nestSnaplet "" proxy $ initProxy "resources/server.ini"
+    dht <- nestSnaplet "" node $ initDHTConfig "resources/server.ini"
+
+    rnd <- nestSnaplet "" rnd $ initRandomSnaplet l64  
+    ps <- nestSnaplet "" roles $ initRoleSnaplet rnd dht 
     addRoutes routes
 
     return $ App prx dht p rnd ps 
@@ -74,8 +75,10 @@ instance CIO.Exception UserException
 
 internalError = terminateConnection . UE 
 
-checkPerm :: (?proxyTransform :: B.ByteString -> B.ByteString) =>  Request -> Handler App App () 
-checkPerm req = with roles $ may uri method >>= guard 
+checkPerm req = do
+            liftIO $ print uri 
+            liftIO $ print method 
+            (with roles $ may uri method) >>= guard 
     where uri = stripSL $ B.unpack $ ?proxyTransform $ B.tail  (req $> rqContextPath) `B.append` (req $> rqPathInfo) 
           method = frm $ req $> rqMethod 
           frm :: Method -> RestRight 
@@ -88,19 +91,33 @@ checkPerm req = with roles $ may uri method >>= guard
           stripSL [] = []
           stripSL (x:xs) = x : stripSL xs 
 
-transparent :: (?proxyTransform :: B.ByteString -> B.ByteString) => Handler App App ()  
-transparent = withRequest $ \req -> checkPerm req *> with proxy runProxy 
+getUserId = foldr step []
+        where step (User (Just x)) z = ("userid",Just $ B.pack $ show x) : z
+              step _ z = z
+
+getDeveloperId  = foldr step [] 
+    where step (Developer (Just x)) z = ("devid", Just $ B.pack $ show x) : z
+          step _ z = z
+
+
+transparent = do
+        withRequest $ \req -> checkPerm req *> do 
+                                                  ns <- with roles $ getRoles "user_token"
+                                                  ps <- with roles $ getRoles "application_token"
+                                                  with proxy (runProxy $ (getUserId ns) ++ (getDeveloperId ps))
 
 ($>) a f = f a
 
 identify = do 
         b <- getOpParam "token"
-        u <- runDb $ search ["application_token" |== toSql b] [] 1 0
-        case u of 
-            [] -> internalError "need token"
-            [u] -> with roles $ addRole "application_token" (Developer $ A.id u) 
+        liftIO $ print b
+        u <- runDb $ (search ["token" |== toSql b] [] 1 0 :: SqlTransaction Connection [A.Application])
+        withTop roles $ 
+            case u of 
+                [] -> internalError "need token"
+                [u] -> addRole "application_token" (Developer $ A.id u)  >> return ()
 
-runDb x = with' S.sqlLens $ S.runDb internalError  x
+runDb x = with sql $ S.runDb internalError  x
 
 
 getOpParam s = do 

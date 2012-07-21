@@ -309,7 +309,7 @@ checkVersion n = do
             when (v /= n) $ versionMismatch v n 
 
 
-client :: NodeAddr -> NodeAddr -> Proto -> IO Proto 
+client :: NodeAddr -> NodeAddr -> Proto -> IO Proto
 client n1 n2 p = withContext 1 $ \c -> 
          withSocket c Req $ \r -> 
          withSocket c Pull $ \d -> 
@@ -327,12 +327,11 @@ client n1 n2 p = withContext 1 $ \c ->
 
 -- waitOnResult :: ThreadId -> MVar Proto -> IO Proto 
 waitOnResult l m = runCCT $ reset $ \p -> do 
-                                            forM_ [1..1000] $ \x -> do 
+                                            forM_ [1..10] $ \x -> do 
                                                 a <- liftIO $ isEmptyMVar m
-                                                liftIO $ print x
                                                 if a then liftIO $ do
-                                                     when (x == 1000) $ killThread l *> print "killedThread"
-                                                     threadDelay 100
+                                                     when (x == 10) $ killThread l 
+                                                     threadDelay 10000
                                                      return (result NotFound)
                                                  else do 
                                                     shift0 p $ \k ->  liftIO $ takeMVar m 

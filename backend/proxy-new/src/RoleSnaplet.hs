@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts, FlexibleInstances, NoMonomorphismRestriction, ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, FlexibleInstances, NoMonomorphismRestriction, ScopedTypeVariables, TemplateHaskell #-}
 module RoleSnaplet ( 
     may,
     addRole,
@@ -39,18 +39,28 @@ import qualified Data.Text as T
 import Control.Monad.STM
 import Control.Concurrent.STM
 
-import System.Random
 import qualified Crypto.Hash.Tiger as H
 
 import NodeSnaplet 
 import RandomSnaplet 
 
 data RoleSnaplet = RoleSnaplet {
-        runRS :: R.RolePair B.ByteString
+        runRS :: R.RolePair B.ByteString,
+        _random :: Snaplet (RandomConfig),
+        _dht :: Snaplet (DHTConfig) 
+
+
     }
 
+$(makeLenses [''RoleSnaplet])
 class HasRoleSnaplet b where 
     roleLens :: Lens (Snaplet b) (Snaplet RoleSnaplet)
+
+instance HasDHT RoleSnaplet where 
+    dhtLens = subSnaplet dht 
+
+instance HasRandom RoleSnaplet where 
+    randomLens = subSnaplet random 
 
 may rs rr = do 
     ct <- getCookie "user_token"
@@ -62,9 +72,11 @@ may rs rr = do
     let ls' = catMaybes [at', ct']
     ts <- foldM (getRoles xs) [R.All] (ls ++ ls')
     b <- foldM (getPerms xs rr rs) False ts 
+    liftIO $ print b
     return b
  where getRoles xs zs x = do 
             z <- getRoles' x 
+            liftIO $ print z
             return (z ++ zs)
        getPerms xs rr rs zs x = do 
             b <- R.may xs rs x rr 
@@ -82,27 +94,27 @@ dropRoles s = error "not implemented"
 
 -- addRole :: (MonadState RoleSnaplet m, MonadSnap m) => C.ByteString -> R.Role -> m () 
 addRole s r = do 
-    xs <- with roleLens $ gets runRS 
-    h <- with randomLens getUniqueKey 
+    xs <- gets runRS 
+    h <- with random $  getUniqueKey 
     let ck = Cookie s h Nothing Nothing (Just "/") False False
-    insertBinary h r
+    with dht $ insertBinary h r
     modifyResponse . addResponseCookie $ ck 
     modifyRequest $ \r -> r { rqCookies = ck : rqCookies r }
-    writeBS $ "{\"result\"}\"" `C.append` h `C.append` "\"}\"}"
+    writeBS $ "{\"result\":\"" `C.append` h `C.append` "\"}"
     return () 
 
 withRoleState :: (MonadState RoleSnaplet m) => (R.RolePair B.ByteString -> m a)  -> m a
 withRoleState f = f =<< gets runRS
 
 
-initRoleSnaplet = makeSnaplet "RoleSnaplet" "User/Application role manager" Nothing $ do 
+initRoleSnaplet a s = makeSnaplet "RoleSnaplet" "User/Application role manager" Nothing $ do 
   rso <- R.initRP "resources/roleSet.cfg" 
-  liftIO $ R.runRestore rso (R.fileRestore "resources/dump")
-
-  return (RoleSnaplet rso)
+--   a' <- nestSnaplet "rnd" random $ a 
+--   b <- nestSnaplet "nodesnaplet" dht $ s 
+  return (RoleSnaplet rso a s)
 
 getRoles' k = do 
-        x <- lookupBinary k   
+        x <- with dht $ lookupBinary k   
         case x of 
             Nothing -> return []
             Just a -> return [a]

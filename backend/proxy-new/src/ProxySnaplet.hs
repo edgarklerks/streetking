@@ -19,6 +19,7 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as C 
 import Data.Maybe
 import Control.Arrow
+import qualified Data.Map as M 
 
 import Control.Concurrent 
 import Control.Monad.Fix 
@@ -40,6 +41,7 @@ import Blaze.ByteString.Builder
 import Blaze.ByteString.Builder.ByteString
 import Snap.Iteratee
 import Data.Monoid
+import NodeSnaplet 
 
 
 
@@ -188,8 +190,8 @@ sendAbroad r rq = do
                     let enum = mapEnum toByteString fromByteString p
                     in (r {requestBody = RequestBodyEnumChunked enum })
         
-runProxy :: (?proxyTransform :: B.ByteString -> B.ByteString) =>  (MonadState ProxySnaplet m, MonadSnap m) => m () 
-runProxy = do 
+-- runProxy :: (?proxyTransform :: B.ByteString -> B.ByteString) =>  (MonadState ProxySnaplet m, MonadSnap m) => m () 
+runProxy prs = do 
     ps <- gets _proxy
     (host,port) <- liftIO ps 
     req <- getRequest 
@@ -198,8 +200,8 @@ runProxy = do
     let  uri = req $> rqURI
     let  resource = req $> rqContextPath 
     let  subresource = req $> rqPathInfo 
-    let  params = req $> rqParams 
-    let  request = HE.def {HE.method = C.pack . show $ method, HE.path = (?proxyTransform $ resource `B.append` subresource), HE.host = host, HE.port = port}  
+    let  params = fmap (second (Just . Prelude.head)) $ M.toList $ req $> rqParams 
+    let  request = HE.def {HE.method = C.pack . show $ method, HE.path = (?proxyTransform $ resource `B.append` subresource), HE.host = host, HE.port = port, HE.queryString = params ++ prs}  
     sendAbroad req request 
     return ()
 
