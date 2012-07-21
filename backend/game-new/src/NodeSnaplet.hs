@@ -41,7 +41,9 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
         liftIO $ forkIO $ startNode ctr upd svn 
 
         liftIO $ forkIO $ forever $  do 
-                forM_  (toStrings ns) $ ccl . advertise
+                forM_  (toStrings ns) $ \i ->  do 
+                        (ccl . advertise) i
+                        clientCommand i "tcp://127.0.0.1:999231" (advertise ctr)
                 threadDelay 100000000        
 
         return $ DHC cl 
