@@ -17,8 +17,10 @@ import qualified Data.Binary as B
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L 
 import Data.MemState 
+import System.Random 
+import Proto 
 data DHTConfig = DHC {
-        _query :: Proto -> IO Proto  
+        _query :: MVar (Proto -> IO Proto)
     }
 
 class HasDHT b where 
@@ -28,7 +30,8 @@ class HasDHT b where
 sendQuery :: (MonadState DHTConfig m, MonadIO m) => Proto -> m Proto 
 sendQuery r = do 
         p <- gets _query 
-        liftIO $ p r
+        liftIO $ withMVar p $ \x -> do 
+            x r
 
 $(makeLenses [''DHTConfig])
 
@@ -36,28 +39,27 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
         xs <- liftIO $ readConfig fp  
         let (Just (StringC ctr)) = lookupConfig "DHT" xs >>= lookupVar "ctrl"
         let (Just (StringC upd)) = lookupConfig "DHT" xs >>= lookupVar "data"
-        let (Just (ArrayC ns)) = lookupConfig "DHT" xs >>= lookupVar "nodes"
-        let cl = client ctr "tcp://127.0.0.1:91281"
+        let (Just (StringC lcl)) = lookupConfig "DHT" xs >>= lookupVar "local"
+
+        let cl = client lcl ctr
 
         let (Just (StringC svn)) = lookupConfig "DHT" xs >>= lookupVar "dump"
         
         liftIO $ forkIO $ startNode ctr upd svn 
-
-        return $ DHC cl 
+        p <- liftIO $ newMVar cl 
+        return $ DHC p
 
 
 -- addBinary :: Binary a => a -> IO ()
-insertBinary k s = with dhtLens $ do 
-            p <- gets _query  
-            liftIO $ p (insert k (fromLazy s))
+insertBinary k s = sendQuery (insert k (fromLazy s))
 
-lookupBinary k = with dhtLens $ do 
-            p <- gets _query 
-            (Result d) <- liftIO $ p (Proto.query 0 k)
-            case d of 
-                (NotFound) -> return $ Nothing 
-                (KeyVal k v) -> return $ Just $ decodeL v 
-                (Value k) -> return $ Just $ decodeL k 
+lookupBinary k = do 
+            x <- sendQuery (Proto.query 2 k)
+            liftIO $ print x
+            case getResult x of 
+                (Just (NotFound)) -> return $ Nothing 
+                (Just (KeyVal k v)) -> return $ Just $ decodeL v 
+                (Just (Value k)) -> return $ Just $ decodeL k 
             
 
 
