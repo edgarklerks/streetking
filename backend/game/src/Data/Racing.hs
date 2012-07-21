@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings #-}
 
 module Data.Racing where
 
@@ -111,7 +111,7 @@ mapSectionResult s = H.fromList $ [
 
 instance AS.ToJSON RaceResult where
     toJSON r = AS.toJSON $ H.fromList $ [
-                        ("track_id", AS.toJSON $ trackId r),
+                        ("track_id" :: LB.ByteString, AS.toJSON $ trackId r),
                         ("time", AS.toJSON $ raceTime r),
                         ("speed_max", AS.toJSON $ raceSpeedMax r),
                         ("speed_avg", AS.toJSON $ raceSpeedAvg r),
@@ -119,9 +119,18 @@ instance AS.ToJSON RaceResult where
                         ("sections", AS.toJSON $ map AS.toJSON $ sectionResults r)
                     ] 
 
+instance AS.FromJSON RaceResult where
+    parseJSON (AS.Object v) = RaceResult <$>
+            v AS..: "track_id" <*>
+            v AS..: "time" <*>
+            v AS..: "speed_max" <*>
+            v AS..: "speed_avg" <*>
+            v AS..: "speed_fin" <*>
+            v AS..: "sections"
+
 instance AS.ToJSON SectionResult where
     toJSON s = AS.toJSON $ H.fromList $ [
-                       ("section_id", AS.toJSON $ sectionId s),
+                       ("section_id" :: LB.ByteString, AS.toJSON $ sectionId s),
                        ("path", AS.toJSON $ sectionPath s),
                        ("time", AS.toJSON $ sectionTime s),
                        ("speed_out", AS.toJSON $ sectionSpeedOut s),
@@ -129,6 +138,15 @@ instance AS.ToJSON SectionResult where
                        ("speed_max", AS.toJSON $ sectionSpeedMax s)
                     ]
 
+instance AS.FromJSON SectionResult where
+    parseJSON (AS.Object v) = SectionResult <$>
+            v AS..: "section_id" <*>
+            v AS..: "path" <*>
+            v AS..: "speed_max" <*>
+            v AS..: "speed_avg" <*>
+            v AS..: "speed_out" <*>
+            v AS..: "time"
+ 
 
 -- 500m straight
 testSection1 = Section 0 Nothing 500

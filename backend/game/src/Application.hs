@@ -22,11 +22,14 @@ module Application
   , getPagesWithDTDOrdered
   , searchWithDTDOrdered
   , SqlMap 
+  , writeResult' 
+  , writeError'
   , writeResult 
   , writeError 
   , writeMapable
   , writeMapables
   , writeAeson
+  , writeAeson'
   , internalError
   , getOParam
   ) where
@@ -99,6 +102,15 @@ writeError x = writeAeson $ S.fromList [("error" :: String, x)]
 
 writeResult :: ToInRule a => a -> Application ()
 writeResult x = writeAeson $ S.fromList [("result" :: String, x)]
+
+writeAeson' :: ToJSON a => a -> Application ()
+writeAeson' = writeLBS . Data.Aeson.encode
+
+writeError' :: ToJSON a => a -> Application ()
+writeError' x = writeAeson' $ S.fromList [("error" :: String, x)]
+
+writeResult' :: ToJSON a => a -> Application ()
+writeResult' x = writeAeson' $ S.fromList [("result" :: String, x)]
 
 writeMapable :: Mapable a => a -> Application ()
 writeMapable = writeResult . toHashMap 
