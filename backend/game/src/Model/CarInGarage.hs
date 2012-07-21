@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 module Model.CarInGarage where 
 
 import           Data.SqlTransaction
@@ -50,7 +50,14 @@ $(genAll "CarInGarage" "car_in_garage"
 
 instance AS.ToJSON CarInGarage where
         toJSON c = AS.toJSON $ HM.fromList $ [ 
-                        ("user_id", AS.toJSON $  id c),
+                        ("car_instance_id" :: LB.ByteString, AS.toJSON $  id c),
                         ("name", AS.toJSON $  name c)
                     ]
+
+instance AS.FromJSON CarInGarage where
+        parseJSON (AS.Object v) = do
+            i <- v AS..: "car_instance_id"
+            n <- v AS..: "name"
+            return $ (def :: CarInGarage) { id = i, name = n }
+
 

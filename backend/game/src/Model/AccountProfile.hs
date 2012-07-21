@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 module Model.AccountProfile where 
 
 import           Data.SqlTransaction
@@ -51,7 +51,14 @@ $(genAll "AccountProfile" "account_profile" [
 
 instance AS.ToJSON AccountProfile where
         toJSON c = AS.toJSON $ HM.fromList $ [ 
-                        ("user_id", AS.toJSON $  id c),
+                        ("user_id" :: LB.ByteString, AS.toJSON $ id c),
                         ("firstname", AS.toJSON $ firstname c)
                     ]
-       
+
+instance AS.FromJSON AccountProfile where
+        parseJSON (AS.Object v) = do
+            userid <- v AS..: "user_id"
+            fn <- v AS..: "firstname"
+            return $ (def :: AccountProfile) { id = userid, firstname = fn }
+
+      
