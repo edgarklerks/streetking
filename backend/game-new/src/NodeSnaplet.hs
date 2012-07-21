@@ -34,17 +34,10 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
         let (Just (StringC ctr)) = lookupConfig "DHT" xs >>= lookupVar "ctrl"
         let (Just (StringC upd)) = lookupConfig "DHT" xs >>= lookupVar "data"
         let (Just (ArrayC ns)) = lookupConfig "DHT" xs >>= lookupVar "nodes"
-        let ccl = clientCommand ctr "tcp://127.0.0.1:99912"
         let cl = client ctr "tcp://127.0.0.1:91281"
         let (Just (StringC svn)) = lookupConfig "DHT" xs >>= lookupVar "dump"
         
         liftIO $ forkIO $ startNode ctr upd svn 
-
-        liftIO $ forkIO $ forever $  do 
-                forM_  (toStrings ns) $ \i ->  do 
-                        (ccl . advertise) i
-                        clientCommand i "tcp://127.0.0.1:999231" (advertise ctr)
-                threadDelay 100000000        
 
         return $ DHC cl 
 

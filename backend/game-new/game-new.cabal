@@ -17,6 +17,7 @@ Flag development
 Executable game-new
   hs-source-dirs: src
   main-is: Main.hs
+  Extensions: DoAndIfThenElse, ViewPatterns, ScopedTypeVariables
 
   Build-depends:
     base >= 4 && < 5,
@@ -32,7 +33,44 @@ Executable game-new
     snap-loader-static == 0.9.*,
     text >= 0.11 && < 0.12,
     time >= 1.1 && < 1.5,
-    xmlhtml >= 0.1
+    xmlhtml >= 0.1,
+    TigerHash,
+    cereal,
+    directory,
+    stm,
+    unordered-containers,
+    CC-delcont,
+    zeromq3-haskell,
+    parsec,
+    containers,
+    vector,
+    primitive,
+    mwc-random,
+    HDBC,
+    HDBC-postgresql,
+    convertible,
+    hashable,
+    random,
+    semigroups,
+    pointed,
+    regex-base,
+    regex-tdfa,
+    comonad,
+    array,
+    data-default,
+    template-haskell,
+    haskell-src,
+    aeson,
+    binary,
+    QuickCheck,
+    attoparsec,
+    data-object,
+    MonadRandom,
+    hslua,
+    filepath,
+    cryptohash,
+    entropy,
+    smallcheck
 
   if flag(development)
     build-depends:
