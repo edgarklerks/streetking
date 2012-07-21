@@ -15,6 +15,8 @@ import Data.InRules
 import Data.Conversion
 import Database.HDBC
 import qualified Data.HashMap.Strict as H
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.Aeson as AS
 import Debug.Trace
 import System.Random
 import Control.Monad.State 
@@ -90,6 +92,7 @@ raceResult2FE (RaceResult i t vm va vf ss) = RaceResult i t (ms2kmh vm) (ms2kmh 
 sectionResult2FE :: SectionResult -> SectionResult
 sectionResult2FE (SectionResult i p vm va vo t)  = SectionResult i p (ms2kmh vm) (ms2kmh va) (ms2kmh vo) t
 
+{-
 -- RaceResult to writable HashMap list
 mapRaceResult :: RaceResult -> [H.HashMap String SqlValue]
 mapRaceResult = (map mapSectionResult) . sectionResults
@@ -104,6 +107,28 @@ mapSectionResult s = H.fromList $ [
         ("speed_avg", toSql $ sectionSpeedAvg s),
         ("speed_out", toSql $ sectionSpeedOut s)
    ]
+-}
+
+instance AS.ToJSON RaceResult where
+    toJSON r = AS.toJSON $ H.fromList $ [
+                        ("track_id", AS.toJSON $ trackId r),
+                        ("time", AS.toJSON $ raceTime r),
+                        ("speed_max", AS.toJSON $ raceSpeedMax r),
+                        ("speed_avg", AS.toJSON $ raceSpeedAvg r),
+                        ("speed_fin", AS.toJSON $ raceSpeedFin r),
+                        ("sections", AS.toJSON $ map AS.toJSON $ sectionResults r)
+                    ] 
+
+instance AS.ToJSON SectionResult where
+    toJSON s = AS.toJSON $ H.fromList $ [
+                       ("section_id", AS.toJSON $ sectionId s),
+                       ("path", AS.toJSON $ sectionPath s),
+                       ("time", AS.toJSON $ sectionTime s),
+                       ("speed_out", AS.toJSON $ sectionSpeedOut s),
+                       ("speed_avg", AS.toJSON $ sectionSpeedAvg s),
+                       ("speed_max", AS.toJSON $ sectionSpeedMax s)
+                    ]
+
 
 -- 500m straight
 testSection1 = Section 0 Nothing 500
