@@ -1372,9 +1372,6 @@ carSetOptions = do
 
 
 
--- TODO:
---      generate ToJSON and FromJSON instances for template objects 
-
 data RaceData = RaceData {
         rd_user :: AP.AccountProfile,
         rd_car :: CIG.CarInGarage,
@@ -1388,9 +1385,8 @@ instance AS.ToJSON RaceData where
                 ("result", AS.toJSON $ rd_result d)
             ]
 
--- read JSON data and rebuild RaceData object
 instance AS.FromJSON RaceData where
-        parseJSON d = undefined
+        parseJSON (AS.Object v) = RaceData <$> v AS..: "user" <*> v AS..: "car" <*> v AS..: "result"
 
 
 racePractice :: Application ()
@@ -1492,10 +1488,7 @@ racePractice = do
 testWrite :: Application ()
 testWrite = do
         uid <- getUserId
-        writeLBS $ AS.encode $ jsonResult $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
-
-jsonResult :: AS.Value -> AS.Value
-jsonResult a = AS.toJSON $ HM.fromList [("result" :: LB.ByteString, AS.toJSON a)]
+        writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
 getRace :: Application ()
 getRace = do
