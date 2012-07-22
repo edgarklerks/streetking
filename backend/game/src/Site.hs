@@ -1490,6 +1490,8 @@ testWrite = do
         uid <- getUserId
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
+
+-- TODO: fix it, it's broken
 getRace :: Application ()
 getRace = do
         ((l,o),xs) <- getPagesWithDTD ("id" +== "race_id")

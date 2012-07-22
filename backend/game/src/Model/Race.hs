@@ -13,11 +13,14 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-import qualified Data.Aeson as AS
+import Data.Aeson 
+import Data.Aeson.Parser
+import Data.Aeson.Types 
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 
 import Data.Maybe
+import Model.FindInterface
 
 -- move this somewhere proper
 instance Default LB.ByteString where
@@ -32,23 +35,17 @@ $(genAll "Race" "races" [
                     ("data", ''LB.ByteString)
     ])
 
-instance AS.ToJSON Race where
-        toJSON c = AS.toJSON $ HM.fromList $ [ 
-                        ("race_id" :: LB.ByteString, AS.toJSON $  id c),
-                        ("track_id", AS.toJSON $ track_id c),
-                        ("start_time", AS.toJSON $ start_time c),
-                        ("end_time", AS.toJSON $ end_time c),
-                        ("type", AS.toJSON $ Model.Race.type c),
---                        ("data", AS.toJSON $ Model.Race.data c)
-                        ("data", maybe (AS.toJSON LB.empty) fromJust $ AS.decode $ Model.Race.data c)
-                    ]
+$(mkInstanceDeclFromJSON "Race" ["id", "track_id", "start_time", "end_time", "type", "data"])
+$(mkInstanceDeclToJSON "Race" ["id", "track_id", "start_time", "end_time", "type", "data"])
 
-instance AS.FromJSON Race where
-        parseJSON (AS.Object v) = Race <$>
-            v AS..: "race_id" <*>
-            v AS..: "track_id" <*>
-            v AS..: "start_time" <*>
-            v AS..: "end_time" <*>
-            v AS..: "type" <*>
-            v AS..: "data"
+{--
+instance FromJSON Race where
+        parseJSON (Object v) = Race <$>
+            v .: "race_id" <*>
+            v .: "track_id" <*>
+            v .: "start_time" <*>
+            v .: "end_time" <*>
+            v .: "type" <*>
+            v .: "data"
+--}
 
