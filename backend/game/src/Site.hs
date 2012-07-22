@@ -1501,13 +1501,18 @@ getRace = do
 userCurrentRace :: Application ()
 userCurrentRace = do
         uid <- getUserId
-        rs <- runDb $ do
+        dat <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
-            case as of
-                [] -> rollback "you dont exist, go away."
-                [a] -> do
-                    search ["id" |== (toSql $ A.busy_subject_id a)] [] 1000 0 :: SqlTransaction Connection [R.Race]
-        writeMapables rs
+            case length as > 0 of
+                False -> rollback "you dont exist, go away."
+                True -> do
+                    rs <- search ["id" |== (toSql $ A.busy_subject_id (head as))] [] 1000 0 :: SqlTransaction Connection [R.Race]
+                    case length rs > 0 of
+                        False -> rollback "error: race not found"
+                        True -> return $ fromJust (AS.decode (R.data $ head rs) :: Maybe RaceData)
+
+--        writeMapables rs
+        writeResult' $ AS.toJSON dat
 
 -- | The main entry point handler.
 site :: Application ()
