@@ -1372,23 +1372,6 @@ carSetOptions = do
 
 
 
-data RaceData = RaceData {
-        rd_user :: AP.AccountProfile,
-        rd_car :: CIG.CarInGarage,
-        rd_result :: RaceResult
-    }
-
-instance AS.ToJSON RaceData where
-        toJSON d = AS.toJSON $ HM.fromList $ [
-                ("user" :: LB.ByteString, AS.toJSON $ rd_user d),
-                ("car", AS.toJSON $ rd_car d),
-                ("result", AS.toJSON $ rd_result d)
-            ]
-
-instance AS.FromJSON RaceData where
-        parseJSON (AS.Object v) = RaceData <$> v AS..: "user" <*> v AS..: "car" <*> v AS..: "result"
-
-
 racePractice :: Application ()
 racePractice = do
         uid <- getUserId
@@ -1437,7 +1420,7 @@ racePractice = do
                                             let rs = raceResult2FE $ runRace ss d c e
                                             
                                             -- make race data
-                                            let rd = RaceData ap gc rs
+                                            let rd = [RaceData ap gc rs]
                                             
                                             -- store data
                                             let te = (t + ) $ ceiling $ raceTime rs

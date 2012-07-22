@@ -25,6 +25,9 @@ import Control.Monad.Writer
 import Control.Monad
 import Control.Applicative
 
+import qualified Model.AccountProfile as AP
+import qualified Model.CarInGarage as CIG
+
 type Path = Double
 type Speed = Double
 type Radius = Double
@@ -147,6 +150,26 @@ instance AS.FromJSON SectionResult where
             v AS..: "speed_out" <*>
             v AS..: "time"
  
+
+data RaceData = RaceData {
+        rd_user :: AP.AccountProfile,
+        rd_car :: CIG.CarInGarage,
+        rd_result :: RaceResult
+    } deriving (Show, Eq)
+
+instance Default RaceData where
+    def = RaceData (def :: AP.AccountProfile) (def :: CIG.CarInGarage) (def :: RaceResult)
+
+instance AS.ToJSON RaceData where
+        toJSON d = AS.toJSON $ H.fromList $ [
+                ("user" :: LB.ByteString, AS.toJSON $ rd_user d),
+                ("car", AS.toJSON $ rd_car d),
+                ("result", AS.toJSON $ rd_result d)
+            ]
+
+instance AS.FromJSON RaceData where
+        parseJSON (AS.Object v) = RaceData <$> v AS..: "user" <*> v AS..: "car" <*> v AS..: "result"
+
 
 -- 500m straight
 testSection1 = Section 0 Nothing 500
