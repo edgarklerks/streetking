@@ -1481,7 +1481,7 @@ raceChallenge = do
         xs <- getJson >>= scheck ["track_id"] -- TODO: send race type (money/car); send participants >= 2
         let tid = fugly "track_id" xs :: Integer
         i <- runDb $ do
-            rs <- search ["id" |== (SqlInteger uid)] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
+            rs <- search ["account_id" |== (SqlInteger uid)] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
             case length rs > 0 of
                 True -> rollback "you already challenged"
                 False -> do
