@@ -1483,8 +1483,8 @@ raceChallenge = do
         i <- runDb $ do
             rs <- search ["id" |== (SqlInteger uid)] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
             case length rs > 0 of
-                False -> rollback "error: race not found"
-                True -> do
+                True -> rollback "you already challenged"
+                False -> do
                     save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = 2, Chg.type = 1 })
         writeResult i
 
