@@ -1492,7 +1492,7 @@ userCurrentRace = do
                     rs <- search ["id" |== (toSql $ A.busy_subject_id (head as))] [] 1000 0 :: SqlTransaction Connection [R.Race]
                     case length rs > 0 of
                         False -> rollback "error: race not found"
-                        True -> return $ fromJust (AS.decode (R.data $ head rs) :: Maybe RaceData)
+                        True -> return $ fromJust (AS.decode (R.data $ head rs) :: Maybe [RaceData])
 
 --        writeMapables rs
         writeResult' $ AS.toJSON dat
