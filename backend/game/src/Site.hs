@@ -68,6 +68,8 @@ import qualified Model.Personnel as PL
 import qualified Model.PersonnelDetails as PLD
 import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
+import qualified Model.Challenge as Chg
+import qualified Model.ChallengeAccept as ChgA
 import qualified Model.Race as R
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
@@ -1473,6 +1475,22 @@ testWrite = do
         uid <- getUserId
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
+raceChallenge :: Application ()
+raceChallenge = do
+        uid <- getUserId
+        xs <- getJson >>= scheck ["track_id"] -- TODO: send race type (money/car); send participants >= 2
+        let tid = fugly "track_id" xs :: Integer
+        i <- runDb $ do
+            rs <- search ["id" |== (SqlInteger uid)] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
+            case length rs > 0 of
+                False -> rollback "error: race not found"
+                True -> do
+                    save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = 2, Chg.type = 1 })
+        writeResult i
+
+
+raceChallengeAccept :: Application ()
+raceChallengeAccept = undefined
 
 -- TODO: fix it, it's broken
 getRace :: Application ()
@@ -1562,6 +1580,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Track/here", trackHere),
                 ("/User/reports", userReports),
                 ("/Test/write", testWrite),
+                ("/Race/challenge", raceChallenge),
+                ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/practice", racePractice),
                 ("/Race/get", getRace)
              ]
