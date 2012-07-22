@@ -19,6 +19,8 @@ import Data.Aeson.Types
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 
+import Data.Racing
+
 import Data.Maybe
 import Model.FindInterface
 
