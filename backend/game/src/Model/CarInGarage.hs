@@ -47,7 +47,7 @@ $(genAll "CarInGarage" "car_in_garage"
         ("year", ''Integer),
         ("car_color", ''String)
     ])
-
+{-
 instance AS.ToJSON CarInGarage where
         toJSON c = AS.toJSON $ HM.fromList $ [ 
                         ("car_instance_id" :: LB.ByteString, AS.toJSON $  id c),
@@ -60,4 +60,4 @@ instance AS.FromJSON CarInGarage where
             n <- v AS..: "name"
             return $ (def :: CarInGarage) { id = i, name = n }
 
-
+-}

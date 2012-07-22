@@ -13,16 +13,16 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-import Data.Aeson 
+import qualified Data.Aeson as AS
 import Data.Aeson.Parser
 import Data.Aeson.Types 
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 
-import Data.Racing
+--import Data.Racing
 
 import Data.Maybe
-import Model.FindInterface
+--import Model.FindInterface
 
 -- move this somewhere proper
 instance Default LB.ByteString where
@@ -37,8 +37,8 @@ $(genAll "Race" "races" [
                     ("data", ''LB.ByteString)
     ])
 
-$(mkInstanceDeclFromJSON "Race" ["id", "track_id", "start_time", "end_time", "type", "data"])
-$(mkInstanceDeclToJSON "Race" ["id", "track_id", "start_time", "end_time", "type", "data"])
+-- $(mkInstanceDeclFromJSON "Race" ["id", "track_id", "start_time", "end_time", "type", "data"])
+-- $(mkInstanceDeclToJSON "Race" ["id", "track_id", "start_time", "end_time", "type", "data"])
 
 {--
 instance FromJSON Race where

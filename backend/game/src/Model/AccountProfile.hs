@@ -48,7 +48,7 @@ $(genAll "AccountProfile" "account_profile" [
 --                    ("continent_data", ''String),
                     ("skill_unused", ''Integer)
         ])
-
+{-
 instance AS.ToJSON AccountProfile where
         toJSON c = AS.toJSON $ HM.fromList $ [ 
                         ("user_id" :: LB.ByteString, AS.toJSON $ id c),
@@ -60,5 +60,5 @@ instance AS.FromJSON AccountProfile where
             userid <- v AS..: "user_id"
             fn <- v AS..: "firstname"
             return $ (def :: AccountProfile) { id = userid, firstname = fn }
-
+-}
       
