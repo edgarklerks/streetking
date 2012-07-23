@@ -71,6 +71,7 @@ import qualified Model.PersonnelInstanceDetails as PLID
 import qualified Model.Challenge as Chg
 import qualified Model.ChallengeAccept as ChgA
 import qualified Model.Race as R
+import qualified Model.RaceDetails as RAD
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1503,7 +1504,7 @@ userCurrentRace = do
             case length as > 0 of
                 False -> rollback "you dont exist, go away."
                 True -> do
-                    rs <- search ["id" |== (toSql $ A.busy_subject_id (head as))] [] 1000 0 :: SqlTransaction Connection [R.Race]
+                    rs <- search ["race_id" |== (toSql $ A.busy_subject_id (head as))] [] 1 0 :: SqlTransaction Connection [RAD.RaceDetails]
                     case length rs > 0 of
                         False -> rollback "error: race not found"
                         True -> return $ head rs
