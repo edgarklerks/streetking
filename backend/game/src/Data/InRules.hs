@@ -11,6 +11,7 @@ import Data.Word
 import Data.Int
 
 import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Lazy as LB
 
 import Data.Time.Calendar
 import Data.Time.Clock 
@@ -22,8 +23,10 @@ import Data.Monoid -- hiding ((<>))
 import Control.Monad
 import Data.Pointed
 import Data.Copointed
+import Data.Word 
 import Data.Semigroup
 import qualified Data.List.NonEmpty as N
+import qualified Data.Serialize as S 
 infixr 6 ==>
 infixr 6 .>
 infixl 6 .>>
@@ -37,16 +40,68 @@ hmapWithKey f xs = Map.foldrWithKey step Map.empty xs
 -- think about adding timestamp without timezone as some kind of double
 -- with pretty print... 
 
-data InRule = InString String
-      | InByteString B.ByteString
-	  | InInteger Integer
-	  | InDouble Double
-	  | InNumber Rational
-	  | InBool Bool
+data InRule = 
+        InString !String
+      | InByteString !B.ByteString
+	  | InInteger !Integer
+	  | InDouble !Double
+	  | InNumber !Rational
+	  | InBool !Bool
 	  | InNull
 	  | InArray [InRule]
 	  | InObject (Map.HashMap String InRule) 
-    deriving (Eq)
+    deriving (Eq, Show)
+
+put8 :: Word8 -> S.Put 
+put8 = S.put 
+
+toWord64 :: Int -> Word64 
+toWord64 = fromIntegral
+
+instance S.Serialize InRule where 
+    put x = S.put (B.pack "fugly&(*&") *> put' x
+        where 
+            put' (InByteString b) = put8 0  *> S.put b
+            put' (InInteger b) = put8 1 *> S.put b
+            put' (InDouble b) = put8 2 *> S.put b
+            put' (InNumber b) = put8 3 *> S.put b 
+            put' (InBool b) = put8 4 *> S.put b
+            put' (InNull) = put8 5
+            put' (InArray xs) = put8 6 *> S.put (toWord64 $ length xs) *> void (forM_ xs S.put)
+            put' (InObject xs) = put8 7 *> serializeHashMap xs
+            put' (InString x) = put8 8 *> S.put x 
+
+    get = get' 
+        where get' = do 
+                 p <- S.get :: S.Get B.ByteString 
+                 unless (p == B.pack "fugly&(*&") $ fail "fali"
+                 c <- S.get :: S.Get Word8 
+                 case c of 
+                    0 -> InByteString <$> S.get 
+                    1 -> InInteger <$> S.get 
+                    2 -> InDouble <$> S.get 
+                    3 -> InNumber <$> S.get 
+                    4 -> InBool <$> S.get 
+                    5 -> pure InNull 
+                    6 -> do 
+                        lt <- S.get :: S.Get Word64 
+                        xs <- replicateM (fromIntegral lt) $ S.get 
+                        return (InArray xs)
+                    7 -> do
+                        lt <- S.get :: S.Get Word64 
+                        xs <- replicateM (fromIntegral lt) $ (,) <$> S.get <*> S.get 
+                        return (InObject $ Map.fromList xs)
+                    8 -> InString <$> S.get
+                    n -> fail (show n)
+                
+
+
+
+serializeHashMap xs = let ys = Map.toList xs
+                      in S.put (toWord64 $ length ys) *> 
+                            forM_ ys (\(k,v) -> 
+                                S.put k *> S.put v)
+                        
 
 newtype Readable = Readable {
         unReadable :: String 
@@ -212,8 +267,6 @@ asReadable (InByteString x) = readable (B.unpack x)
 asReadable (InBool x) = readable (show x)
 asReadable _ = error "Not an readable object"
 
-instance Show InRule where 
-    show = toString 
 -- Just InRules :P
 type InRules = [InRule]
  
