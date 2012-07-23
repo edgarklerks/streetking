@@ -292,7 +292,8 @@ smallArgs = Args {
         replay = Nothing,
         maxSuccess = 10000,
         maxSize = 30,
-        chatty = True
+        chatty = True,
+        maxDiscardRatio = 10
     }
 
 instance Arbitrary IsomorphT where 
@@ -346,7 +347,8 @@ cArgs = Args {
         replay = Nothing,
         maxSuccess = 10000,
         maxSize = 10000,
-        chatty = True
+        chatty = True,
+        maxDiscardRatio = 10
     }
 prop_find_all = property prop_find_all'
 

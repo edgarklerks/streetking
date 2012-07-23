@@ -72,11 +72,9 @@ may rs rr = do
     let ls' = catMaybes [at', ct']
     ts <- foldM (getRoles xs) [R.All] (ls ++ ls')
     b <- foldM (getPerms xs rr rs) False ts 
-    liftIO $ print b
     return b
  where getRoles xs zs x = do 
             z <- getRoles' x 
-            liftIO $ print z
             return (z ++ zs)
        getPerms xs rr rs zs x = do 
             b <- R.may xs rs x rr 
