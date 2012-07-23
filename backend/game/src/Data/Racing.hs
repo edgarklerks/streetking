@@ -24,6 +24,7 @@ import Control.Monad.Random
 import Control.Monad.Writer 
 import Control.Monad
 import Control.Applicative
+import Data.InRules
 
 import qualified Model.AccountProfile as AP
 import qualified Model.CarInGarage as CIG
@@ -170,6 +171,20 @@ instance AS.ToJSON RaceData where
 instance AS.FromJSON RaceData where
         parseJSON (AS.Object v) = RaceData <$> v AS..: "user" <*> v AS..: "car" <*> v AS..: "result"
 
+-- TODO: to/from inrule and sqlvalue (conversion)
+
+instance ToInRule RaceData where
+         toInRule d = InObject $ H.fromList $ [
+                ("user", toInRule $ rd_user d),
+                ("car", toInRule $ rd_car d),
+                ("result", toInRule $ rd_result d)
+            ]
+
+instance FromInRule RaceData where
+         fromInRule (InObject d) = RaceData (foo "user") (foo "car") (foo "result")
+            where
+                foo k = fromJust $ H.lookup k d
+       
 
 -- 500m straight
 testSection1 = Section 0 Nothing 500
