@@ -36,7 +36,8 @@ module Data.SqlTransaction (
     sqlGetAllAssoc,
     sqlExecute,
 	quickInsert,
-    Connection
+    Connection,
+    withEncoding
 
 ) where 
 
@@ -168,6 +169,12 @@ sqlExecute s xs = do
                     stm <- prepare s
                     execute stm xs
                     return ()
+
+withEncoding :: H.IConnection c => String -> SqlTransaction c a -> SqlTransaction c a
+withEncoding n m = 
+            quickQuery ("SET CLIENT_ENCODING TO " ++ n ) [] *> m <* 
+            quickQuery ("SET CLIENT_ENCODING TO " ++ n) []
+        
 
 {-
 	Query helper functions

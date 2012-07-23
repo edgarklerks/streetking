@@ -33,6 +33,8 @@ import Data.Time.Calendar
 import Data.Time.Clock 
 import Data.Time.LocalTime
 import Data.Fixed
+import Codec.Compression.GZip
+import Data.ByteString.Base64
 
 
 
@@ -108,7 +110,7 @@ typedMapping k v = Mapping [(k, v)]
 
 convFromSql :: SqlValue -> InRule  
 convFromSql (SqlString s) = toInRule s
-convFromSql (SqlByteString  s) = case S.decode s of 
+convFromSql (SqlByteString  s) = case (S.decode <=< decode) s of 
                                     Left _ -> toInRule s
                                     Right a -> a
 convFromSql (SqlWord32  s) = toInRule s
@@ -152,7 +154,7 @@ conv2Sql (InBool False) = toSql  False
 conv2Sql InNull = SqlNull
 conv2Sql (InString s) =  toSql s
 conv2Sql (InByteString s) = toSql s
-conv2Sql r = SqlByteString (S.encode r)  
+conv2Sql r = SqlByteString (encode $ S.encode r)  
 
 
 conv2SqlArray :: InRule -> [SqlValue]

@@ -312,12 +312,12 @@ data RaceConfig = RC {
 -- State 
 -- IO 
 -- a
---
+
+{----
 
 newtype RaceMonad a = RM {
         unRM :: RandT StdGen (State RaceConfig) a 
     } deriving (Monad, Functor, Applicative, MonadState RaceConfig, MonadRandom) 
-
 runRaceMonad :: RaceMonad a -> StdGen -> RaceConfig -> a 
 runRaceMonad m g c = evalState (evalRandT (unRM m) g) c
 
@@ -326,7 +326,7 @@ raceM = do
     p <- gets driver 
     (r :: Double) <- getRandomR (0, 1)
     return []
-
+--}
   
 -- for a driver, car and environment, given a list of sections, make a list of section results
 runRace :: Track -> Driver -> Car -> Environment -> RaceResult
