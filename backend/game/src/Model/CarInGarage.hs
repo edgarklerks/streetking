@@ -17,6 +17,8 @@ import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
 
+import Data.InRules
+
 $(genAll "CarInGarage" "car_in_garage"
     [
         ("id", ''Id),

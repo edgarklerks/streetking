@@ -14,6 +14,7 @@ import Control.Applicative
 import qualified Data.Aeson as AS
 import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString as B
+import Data.InRules
 
 
 checkTables :: String -> [(String,a)] -> Q ()
@@ -39,7 +40,9 @@ genAll nm tbl xs = do checkTables tbl xs
                       x <- genDefaultInstance nm xs
                       fj <- genInstanceFromJSON nm xs
                       tj <- genInstanceToJSON nm xs
-                      return $ r ++ i ++ d ++ x ++ fj ++ tj
+                      fir <- genInstanceFromInRule nm xs
+                      tir <- genInstanceToInRule nm xs
+                      return $ r ++ i ++ d ++ x ++ fj ++ tj ++ fir ++ tir
 
 genAllId :: String -> String -> String -> [(String, Name)] -> Q [Dec]
 genAllId nm tbl td xs = 
@@ -48,10 +51,9 @@ genAllId nm tbl td xs =
                       i <- genInstance nm xs
                       d <- genDatabase nm tbl td
                       x <- genDefaultInstance nm xs
---                      fj <- mkInstanceDeclFromJSON nm xs
---                      tj <- mkInstanceDeclToJSON nm xs
---                      return $ r ++ i ++ d ++ x ++ fj ++ tj
-                      return $ r ++ i ++ d ++ x
+                      fj <- genInstanceFromJSON nm xs
+                      tj <- genInstanceToJSON nm xs
+                      return $ r ++ i ++ d ++ x ++ fj ++ tj
 
 -- genMapableRecord :: String -> [(String, Name)] -> Q [Dec]
 genMapableRecord nm xs = do 
@@ -160,10 +162,44 @@ mkToJson xs = funD (mkName "toJSON") [cls]
           start = [| AS.toJSON|] 
           vn = mkName "v"
           step x z = appE (appE (appE hinsert ((stringE x))) (appE start (appE (varE (mkName x)) (varE vn) ))) z
-          hinsert = [|H.insert|] 
+          hinsert = [|H.insert|]
+
 hempty :: H.HashMap String AS.Value 
-hempty = H.empty 
+hempty = H.empty
+
+hiempty :: H.HashMap String InRule 
+hiempty = H.empty
+
+
 hfromlist :: [(String, AS.Value)] -> H.HashMap String AS.Value 
-hfromlist = H.fromList 
+hfromlist = H.fromList
+
+hmlookup :: String -> H.HashMap String b -> b
+hmlookup k m = fromJust $ H.lookup k m
+
+genInstanceToInRule name xs = sequence [instanceD (return []) (appT (conT ''Data.InRules.ToInRule) (conT $ mkName name)) ([mkToInRule $ map fst xs])]
+genInstanceFromInRule name xs = sequence [instanceD (return []) (appT (conT ''Data.InRules.FromInRule) (conT $ mkName name)) $ [mkFromInRule name $ map fst xs ]]
+
+mkFromInRule :: String -> [String] ->  Q Dec  
+mkFromInRule cnst (x1:xs)  = funD (mkName "fromInRule") [cls]
+    where cls = clause [] body []  
+          body = normalB (lamE [varP vn] $ mby `appE` foldl step start xs )
+          apl = [|(<*>)|]
+          start = appE (appE (varE (mkName "fmap")) (conE $ mkName cnst)) (appE (appE lku (varE vn)) (stringE x1))
+          vn = mkName "v"
+          lku = [|(\x y -> fromInRule <$>  (.>) x y)|]
+          mby = [|fromJust|]
+          step z x = appE (appE apl z) (appE (appE lku (varE vn)) (stringE x))
+
+
+
+mkToInRule :: [String] -> Q Dec 
+mkToInRule xs = funD (mkName "toInRule") [cls]
+    where cls = clause [] body []
+          body = normalB $ (lamE [varP vn]) (appE start (foldr step (varE $ mkName "hiempty") xs))
+          start = [|toInRule|] 
+          vn = mkName "v"
+          step x z = appE (appE (appE hinsert ((stringE x))) (appE start (appE (varE (mkName x)) (varE vn) ))) z
+          hinsert = [|H.insert|]
 
 
