@@ -28,6 +28,7 @@ import Data.InRules
 
 import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
+import qualified Model.TrackDetails as TD
 
 type Path = Double
 type Speed = Double
@@ -92,6 +93,7 @@ $(genMapableRecord "RaceData"
     [
             ("rd_user", ''APM.AccountProfileMin),
             ("rd_car", ''CIG.CarInGarage),
+            ("rd_track", ''TD.TrackDetailss),
             ("rd_result", ''RaceResult)
        ])
 
