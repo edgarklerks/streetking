@@ -1499,7 +1499,7 @@ getRace = do
 userCurrentRace :: Application ()
 userCurrentRace = do
         uid <- getUserId
-        (dat, tr) <- runDb $ do
+        (dat, td, ts) <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case length as > 0 of
                 False -> rollback "you dont exist, go away."
@@ -1510,8 +1510,9 @@ userCurrentRace = do
                         True -> do
                             let r = head rs
                             ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
-                            return (r, ts) 
-        writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track", AS.toJSON tr)]
+                            td <- head <$> (search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster])
+                            return (r, td, ts) 
+        writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
 -- | The main entry point handler.
 site :: Application ()
