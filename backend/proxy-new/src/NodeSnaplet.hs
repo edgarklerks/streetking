@@ -41,11 +41,11 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
         let (Just (StringC upd)) = lookupConfig "DHT" xs >>= lookupVar "data"
         let (Just (StringC lcl)) = lookupConfig "DHT" xs >>= lookupVar "local"
 
-        let cl = client lcl ctr
 
         let (Just (StringC svn)) = lookupConfig "DHT" xs >>= lookupVar "dump"
         
-        liftIO $ forkIO $ startNode ctr upd svn 
+        s <- liftIO $ startNode ctr upd svn 
+        let cl = queryNode s lcl ctr
         p <- liftIO $ newMVar cl 
         return $ DHC p
 
@@ -55,7 +55,6 @@ insertBinary k s = sendQuery (insert k (fromLazy s))
 
 lookupBinary k = do 
             x <- sendQuery (Proto.query 2 k)
-            liftIO $ print x
             case getResult x of 
                 (Just (NotFound)) -> return $ Nothing 
                 (Just (KeyVal k v)) -> return $ Just $ decodeL v 

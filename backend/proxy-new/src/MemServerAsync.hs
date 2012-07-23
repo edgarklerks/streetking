@@ -292,14 +292,15 @@ topError :: (forall p. ProtoMonad p a) -> ProtoMonad p a
 topError m = catchProtoError m throwError
 
 
-startNode :: NodeAddr -> NodeAddr -> FilePath  -> IO ()
+startNode :: NodeAddr -> NodeAddr -> FilePath  -> IO ProtoConfig  
 startNode f g fp = let step = do 
                             forkProto handleRequest 
                             outgoingManager 
                             handleUpdates
                     in do 
                         c <- newProtoConfig f g fp
-                        runProtoMonad step c *> pure ()
+                        forkIO $ runProtoMonad step c *> pure ()
+                        return c
 
 
 
@@ -307,6 +308,19 @@ checkVersion :: Int -> ProtoMonad p ()
 checkVersion n = do 
             v <- asks version 
             when (v /= n) $ versionMismatch v n 
+
+queryNode :: ProtoConfig -> NodeAddr -> NodeAddr -> Proto -> IO Proto 
+queryNode pc n1 n2 p = do 
+            case getQuery p of 
+                Nothing -> client n1 n2 p 
+                Just t@(Query a) -> do 
+                    s <- runQuery (memstate pc) t
+                    case s of 
+                        NotFound -> client n1 n2 p 
+                        (Value v) -> return $ result (KeyVal a v)
+                        (KeyVal a v) -> return $ result (KeyVal a v)
+                        (Empty) -> client n1 n2 p 
+                Just a -> forkIO (void $ client n1 n2 p) *> return (result Empty)
 
 
 client :: NodeAddr -> NodeAddr -> Proto -> IO Proto
