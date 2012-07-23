@@ -45,10 +45,10 @@ import NodeSnaplet
 
 
 
+
 data ProxySnaplet = PS {
         _proxy :: IO (B.ByteString, Int),
         _manager :: Manager 
-
     } 
 
 
@@ -146,6 +146,18 @@ listEnumeratee f  = checkDone (continue . step f)
                 fx <- lift $ f x
                 k (Chunks fx) >>== checkDoneEx (Chunks xs) ( flip (loop f) xs)
 
+mvarEnum :: MVar (Maybe [a]) -> Enumerator a IO b 
+mvarEnum n f = do 
+        p <- liftIO $ takeMVar n 
+        case p of 
+            Nothing -> case f of 
+                        Continue g -> g EOF 
+                        a -> returnI a
+            Just a -> case f of 
+                        Continue g -> do 
+                            step <- lift $ runIteratee $ g $ Chunks a
+                            mvarEnum n step 
+
 chanEnum :: Chan (Maybe [a]) -> Enumerator a IO b 
 chanEnum n f = do 
         p <- liftIO $ readChan n 
@@ -164,6 +176,12 @@ iterPrint = continue (go [])
     where go z (Chunks xs) = continue (go (z ++ xs))
           go z (EOF) = liftIO (print z) >> E.yield () EOF
 
+mvarIterator :: MVar (Maybe [a]) -> Iteratee a IO ()
+mvarIterator f = continue go    
+        where go (Chunks xs) = do 
+                        liftIO $ putMVar f (Just xs)
+                        continue go 
+              go EOF = liftIO (putMVar f Nothing) >> E.yield () EOF 
 
 chanIterator :: Chan (Maybe [a]) -> Iteratee a IO ()
 chanIterator f = continue go 
@@ -180,10 +198,8 @@ sendAbroad r rq = do
     resp <- getResponse
     p <- liftIO $ newChan 
     m <- gets _manager 
-    liftIO $ do 
-            run_ $  http r' (\_ _ -> chanIterator p) m  
-            closeManager m
-    finishWith (setResponseBody (mapEnum toByteString fromByteString $ chanEnum p) resp)
+    liftIO $ forkIO $ run_ $  http r' (\_ _ -> chanIterator p) m
+    finishWith (setResponseBody (mapEnum toByteString fromByteString $ chanEnum p) resp) 
     return ()
     where   t :: HE.Request IO -> (forall a. Enumerator B.ByteString IO a) -> HE.Request IO
             t r (p :: (forall a. Enumerator B.ByteString IO a)) =
@@ -210,8 +226,8 @@ initProxy fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other sid
         xs <- liftIO $ readConfig fp 
         let (Just (ArrayC c)) = lookupConfig "proxy" xs >>= lookupVar "pool"
         s <- liftIO $ tiemvar (fmap (first C.pack . second (read . tail) . Prelude.break (==':')) $ arrayToString c)  
-        m <- liftIO $ newManager 
-        return $ PS s m
+        h <- liftIO $ newManager 
+        return $ PS s h
 
 
 

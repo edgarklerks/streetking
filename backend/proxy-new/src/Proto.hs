@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable, FlexibleContexts, ScopedTypeVariables, RankNTypes #-}
+{-# LANGUAGE DeriveDataTypeable, FlexibleContexts, ScopedTypeVariables, RankNTypes, BangPatterns #-}
 module Proto where 
 
 import           Data.MemState 
@@ -12,16 +12,16 @@ import qualified Data.ByteString as B
 import           Data.Maybe 
 import GHC.Exception (SomeException)
 
-data Proto = TTLReq TTL Query 
-           | Version Int Proto
-           | Route NodeAddr Proto 
+data Proto = TTLReq !TTL !Query 
+           | Version !Int !Proto
+           | Route !NodeAddr !Proto 
            | NodeList [NodeAddr]
-           | Advertisement NodeAddr 
-           | Error String 
+           | Advertisement !NodeAddr 
+           | Error !String 
            | Sync 
            | StartSync 
            | DumpInfo 
-           | Result Result 
+           | Result !Result 
     deriving Show 
 {-- Payload --}
 
