@@ -18,7 +18,6 @@ import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
 import Data.InRules
 
-import Data.InRules
 
 $(genAll "AccountProfile" "account_profile" [             
                     ("id", ''Id),
@@ -54,17 +53,4 @@ $(genAll "AccountProfile" "account_profile" [
                     ("busy_type", ''String),
                     ("busy_timeleft", ''Integer)
         ])
-{-
-instance AS.ToJSON AccountProfile where
-        toJSON c = AS.toJSON $ HM.fromList $ [ 
-                        ("user_id" :: LB.ByteString, AS.toJSON $ id c),
-                        ("firstname", AS.toJSON $ firstname c)
-                    ]
-
-instance AS.FromJSON AccountProfile where
-        parseJSON (AS.Object v) = do
-            userid <- v AS..: "user_id"
-            fn <- v AS..: "firstname"
-            return $ (def :: AccountProfile) { id = userid, firstname = fn }
--}
-      
+     
