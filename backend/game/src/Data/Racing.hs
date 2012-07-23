@@ -77,8 +77,6 @@ $(genMapableRecord "SectionResult"
         ])
 
 type SectionResults = [SectionResult]
-instance FromInRule SectionResult 
-instance ToInRule SectionResult
 
 $(genMapableRecord "RaceResult"
     [
@@ -89,6 +87,15 @@ $(genMapableRecord "RaceResult"
             ("raceSpeedFin", ''Speed),
             ("sectionResults", ''SectionResults)
         ])
+
+$(genMapableRecord "RaceData"
+    [
+            ("rd_user", ''AP.AccountProfile),
+            ("rd_car", ''CIG.CarInGarage),
+            ("rd_result", ''RaceResult)
+       ])
+
+type RaceDatas = [RaceData]
 
 raceResult2FE :: RaceResult -> RaceResult
 raceResult2FE (RaceResult i t vm va vf ss) = RaceResult i t (ms2kmh vm) (ms2kmh va) (ms2kmh vf) (map sectionResult2FE ss)
@@ -111,7 +118,6 @@ mapSectionResult s = H.fromList $ [
         ("speed_avg", toSql $ sectionSpeedAvg s),
         ("speed_out", toSql $ sectionSpeedOut s)
    ]
--}
 
 instance AS.ToJSON RaceResult where
     toJSON r = AS.toJSON $ H.fromList $ [
@@ -151,7 +157,23 @@ instance AS.FromJSON SectionResult where
             v AS..: "speed_out" <*>
             v AS..: "time"
  
+instance ToInRule RaceResult where
+        toInRule r = InObject $ H.fromList $ [
+                        ("track_id", toInRule $ trackId r),
+                        ("time", toInRule $ raceTime r),
+                        ("speed_max", toInRule $ raceSpeedMax r),
+                        ("speed_avg", toInRule $ raceSpeedAvg r),
+                        ("speed_fin", toInRule $ raceSpeedFin r),
+                        ("sections", toInRule $ map toInRule $ sectionResults r)
+                    ]
 
+instance FromInRule RaceResult where
+         fromInRule (InObject d) = RaceResult (foo "track_id") (foo "time") (foo "speed_max") (foo "speed_avg") (foo "speed_fin") (foo "sections")
+            where
+                foo k = fromInRule $ fromJust $ H.lookup k d
+ -}
+
+{-
 data RaceData = RaceData {
         rd_user :: AP.AccountProfile,
         rd_car :: CIG.CarInGarage,
@@ -171,8 +193,6 @@ instance AS.ToJSON RaceData where
 instance AS.FromJSON RaceData where
         parseJSON (AS.Object v) = RaceData <$> v AS..: "user" <*> v AS..: "car" <*> v AS..: "result"
 
--- TODO: to/from inrule and sqlvalue (conversion)
-
 instance ToInRule RaceData where
          toInRule d = InObject $ H.fromList $ [
                 ("user", toInRule $ rd_user d),
@@ -183,8 +203,9 @@ instance ToInRule RaceData where
 instance FromInRule RaceData where
          fromInRule (InObject d) = RaceData (foo "user") (foo "car") (foo "result")
             where
-                foo k = fromJust $ H.lookup k d
+                foo k = fromInRule $ fromJust $ H.lookup k d
        
+-}
 
 -- 500m straight
 testSection1 = Section 0 Nothing 500

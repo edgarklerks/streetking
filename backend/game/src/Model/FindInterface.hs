@@ -5,6 +5,7 @@ import Language.Haskell.TH
 import Language.Haskell.TH.Syntax
 import Control.Applicative
 import qualified Data.Aeson as AS
+import Data.InRules
 import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString as B
 

@@ -9,6 +9,7 @@ import           Data.Database
 import           Data.InRules
 import           Control.Monad
 import qualified Data.Aeson as AS
+import Data.InRules
 
 import           Control.Applicative
 import qualified Data.Map as M

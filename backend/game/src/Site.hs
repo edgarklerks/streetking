@@ -196,14 +196,6 @@ loadMenu = do
     n <- runDb (search ["menu_type" |== (toSql mt) ] [Order ("number", []) True] 100000 0) :: Application [MM.MenuModel] 
     writeResult  (AS.toJSON (MM.fromFlat (convert n :: MM.FlatTree)))
 
-{-- 
- - {
- -  manufacturer_id: 2,
- -  car_model_id: 3
- -
- -
- --}
-
 marketPlace :: Application ()
 marketPlace = do 
            uid <- getUserId
@@ -1421,13 +1413,10 @@ racePractice = do
                                             -- run race
                                             let rs = raceResult2FE $ runRace ss d c e
                                             
-                                            -- make race data
-                                            let rd = [RaceData ap gc rs]
-                                            
                                             -- store data
                                             let te = (t + ) $ ceiling $ raceTime rs
                                             let race = def :: R.Race
-                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = AS.encode rd })
+                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc rs] })
 
                                             -- set account busy
                                             save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
@@ -1517,7 +1506,7 @@ userCurrentRace = do
                     rs <- search ["id" |== (toSql $ A.busy_subject_id (head as))] [] 1000 0 :: SqlTransaction Connection [R.Race]
                     case length rs > 0 of
                         False -> rollback "error: race not found"
-                        True -> return $ fromJust (AS.decode (R.data $ head rs) :: Maybe [RaceData])
+                        True -> return $ head rs
 
 --        writeMapables rs
         writeResult' $ AS.toJSON dat

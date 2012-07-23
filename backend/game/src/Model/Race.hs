@@ -14,6 +14,7 @@ import           Model.TH
 import           Prelude hiding (id)
 
 import qualified Data.Aeson as AS
+import Data.InRules
 import Data.Aeson.Parser
 import Data.Aeson.Types 
 import qualified Data.ByteString.Lazy as LB
@@ -34,7 +35,7 @@ $(genAll "Race" "races" [
                     ("start_time", ''Integer),
                     ("end_time", ''Integer),
                     ("type", ''Integer),
-                    ("data", ''RaceData)
+                    ("data", ''RaceDatas)
 --                    ("data", ''LB.ByteString)
     ])
 

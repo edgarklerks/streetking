@@ -12,6 +12,7 @@ import Data.Database
 import Data.List
 import Control.Applicative
 import qualified Data.Aeson as AS
+import Data.InRules
 import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString as B
 import Data.InRules
@@ -53,14 +54,20 @@ genAllId nm tbl td xs =
                       x <- genDefaultInstance nm xs
                       fj <- genInstanceFromJSON nm xs
                       tj <- genInstanceToJSON nm xs
-                      return $ r ++ i ++ d ++ x ++ fj ++ tj
+                      fir <- genInstanceFromInRule nm xs
+                      tir <- genInstanceToInRule nm xs
+                      return $ r ++ i ++ d ++ x ++ fj ++ tj ++ fir ++ tir
 
 -- genMapableRecord :: String -> [(String, Name)] -> Q [Dec]
 genMapableRecord nm xs = do 
                 r <- genRecord nm xs
                 i <- genInstance nm xs
                 d <- genDefaultInstance nm xs
-                return $ r ++ i ++ d
+                fj <- genInstanceFromJSON nm xs
+                tj <- genInstanceToJSON nm xs
+                fir <- genInstanceFromInRule nm xs
+                tir <- genInstanceToInRule nm xs
+                return $ r ++ i ++ d ++ fj ++ tj ++ fir ++ tir
 
 genRecord :: String -> [(String, Name)] -> Q [Dec]
 genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] ([''Show, ''Eq])]

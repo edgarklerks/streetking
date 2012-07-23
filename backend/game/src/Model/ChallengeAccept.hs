@@ -15,6 +15,7 @@ import           Model.TH
 import           Prelude hiding (id)
 
 import qualified Data.Aeson as AS
+import Data.InRules
 
 import Data.Maybe
 import Application
