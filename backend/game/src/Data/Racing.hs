@@ -103,6 +103,10 @@ raceResult2FE (RaceResult i t vm va vf ss) = RaceResult i t (ms2kmh vm) (ms2kmh 
 sectionResult2FE :: SectionResult -> SectionResult
 sectionResult2FE (SectionResult i p vm va vo t)  = SectionResult i p (ms2kmh vm) (ms2kmh va) (ms2kmh vo) t
 
+-- instance Convertible 
+
+
+
 {-
 -- RaceResult to writable HashMap list
 mapRaceResult :: RaceResult -> [H.HashMap String SqlValue]
