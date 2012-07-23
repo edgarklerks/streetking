@@ -29,6 +29,7 @@ import           Snap.Types
 import qualified Data.Aeson as AS 
 import qualified Model.Account as A 
 import qualified Model.AccountProfile as AP 
+import qualified Model.AccountProfileMin as APM
 import qualified Model.MenuModel as MM 
 import qualified Data.Tree as T
 import qualified Data.MenuTree as MM 
@@ -1385,7 +1386,7 @@ racePractice = do
 --                   case A.busy_until > t of -- etc. rollback "you are busy"
                    
                     -- fetch profile
-                    [ap] <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [AP.AccountProfile]
+                    [ap] <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [APM.AccountProfileMin]
                     --  -> make Driver 
                     let d = accountDriver a
                     -- get active car
