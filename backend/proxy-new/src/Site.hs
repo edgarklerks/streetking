@@ -33,21 +33,36 @@ import Control.Monad.State
 import Data.Database hiding (sql, Delete)
 import Data.SqlTransaction
 import Model.General
+import Data.Monoid 
 import Database.HDBC.SqlValue
 import qualified Model.Application as A
+import  Control.Arrow (second)
 ------------------------------------------------------------------------------
 import           Application
 
+data ApplicationException = UserErrorE C.ByteString
+    deriving (Typeable, Show)
+
+instance CIO.Exception ApplicationException
+
+
+
+enroute x = do 
+        g <- rqMethod <$> getRequest 
+        case g of 
+            OPTIONS -> allowAll 
+            otherwise -> allowAll *> CIO.catch x (\(UserErrorE e) -> writeBS $ "{\"error\":\"" <> e <> "\"}")
 
 
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = let ?proxyTransform = id in [ 
-          ("/identify", identify)
+routes = let ?proxyTransform = id in fmap (second enroute) $ [ 
+          ("/Application/identify", identify)
+         , ("/User/logout", return ())
          , ("/test", writeBS "Hello world")
-        , ("/", transparent)
+         , ("/", transparent)
          ]
 
 
@@ -65,20 +80,10 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
 
     return $ App prx dht p rnd ps 
 
-data UserException = UE String 
-        deriving Typeable 
 
-instance Show (UserException) where 
-        show (UE s) = s
+internalError = terminateConnection . UserErrorE . C.pack  
 
-instance CIO.Exception UserException 
-
-internalError = terminateConnection . UE 
-
-checkPerm req = do
-            liftIO $ print uri 
-            liftIO $ print method 
-            (with roles $ may uri method) >>= guard 
+checkPerm req = (with roles $ may uri method) >>= \x -> when x (internalError "You are not allowed to access the resource")
     where uri = stripSL $ B.unpack $ ?proxyTransform $ B.tail  (req $> rqContextPath) `B.append` (req $> rqPathInfo) 
           method = frm $ req $> rqMethod 
           frm :: Method -> RestRight 
@@ -110,7 +115,6 @@ transparent = do
 
 identify = do 
         b <- getOpParam "token"
-        liftIO $ print b
         u <- runDb $ (search ["token" |== toSql b] [] 1 0 :: SqlTransaction Connection [A.Application])
         withTop roles $ 
             case u of 
@@ -126,4 +130,28 @@ getOpParam s = do
             Nothing -> internalError ("parameter " ++ B.unpack s ++ " not in querystring") 
             Just a -> return a
             
+allowAll = allowCredentials *> allowOrigin *> allowMethods *> allowHeaders
+        
+-- -Access-Control-Allow-Origin: * 
+
+allowOrigin :: Application ()
+allowOrigin = do 
+            g <- getRequest
+            modifyResponse (addHeader "Content-Type" "text/plain")
+            modifyResponse (\x -> 
+               case getHeader "Origin" g <|> getHeader "Referer" g of 
+                    Nothing -> addHeader "Access-Control-Allow-Origin" "*" x
+                    Just n -> addHeader "Access-Control-Allow-Origin" n x
+                )
+-- Access-Control-Allow-Credentials: true  
+
+allowCredentials :: Application () 
+allowCredentials = modifyResponse (addHeader "Access-Control-Allow-Credentials" "true")
+
+allowMethods :: Application ()
+allowMethods = modifyResponse (addHeader "Access-Control-Allow-Methods" "POST, GET, OPTIONS, PUT")
+
+allowHeaders :: Application ()
+allowHeaders = modifyResponse (addHeader "Access-Control-Allow-Headers" "origin, content-type, accept, cookie");
+
 

@@ -28,6 +28,7 @@ import Magic
 import Magic.Data 
 import qualified Data.Text as T
 import Data.List 
+import qualified SqlTransactionSnaplet as S
 
 
 data ImageConfig = IC {
