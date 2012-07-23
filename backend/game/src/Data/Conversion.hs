@@ -33,7 +33,7 @@ import Data.Time.Calendar
 import Data.Time.Clock 
 import Data.Time.LocalTime
 import Data.Fixed
-import Codec.Compression.GZip
+--import Codec.Compression.GZip
 import Data.ByteString.Base64
 
 

@@ -13,7 +13,7 @@ import Data.InRules
 import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
-import           Prelude hiding (id)
+import           Prelude hiding (id, length)
 
 $(genAll "TrackMaster" "track_master"
     [
@@ -27,7 +27,14 @@ $(genAll "TrackMaster" "track_master"
         ("city_data", ''String),
         ("continent_id", ''Integer),
         ("continent_name", ''String),
-        ("continent_data", ''String)
+        ("continent_data", ''String),
+        ("length", ''Double),
+        ("top_time", ''Double),
+        ("top_time_id", ''Integer),
+        ("top_time_name", ''String),
+        ("top_time_picture_small", ''String),
+        ("top_time_picture_medium", ''String),
+        ("top_time_picture_large", ''String)
     ]
  )
 

@@ -29,6 +29,7 @@ import           Snap.Types
 import qualified Data.Aeson as AS 
 import qualified Model.Account as A 
 import qualified Model.AccountProfile as AP 
+import qualified Model.AccountProfileMin as APM
 import qualified Model.MenuModel as MM 
 import qualified Data.Tree as T
 import qualified Data.MenuTree as MM 
@@ -71,6 +72,7 @@ import qualified Model.PersonnelInstanceDetails as PLID
 import qualified Model.Challenge as Chg
 import qualified Model.ChallengeAccept as ChgA
 import qualified Model.Race as R
+import qualified Model.RaceDetails as RAD
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1384,7 +1386,7 @@ racePractice = do
 --                   case A.busy_until > t of -- etc. rollback "you are busy"
                    
                     -- fetch profile
-                    [ap] <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [AP.AccountProfile]
+                    [ap] <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [APM.AccountProfileMin]
                     --  -> make Driver 
                     let d = accountDriver a
                     -- get active car
@@ -1488,7 +1490,6 @@ raceChallengeAccept = undefined
 getRaceChallenge :: Application ()
 getRaceChallenge = undefined
 
--- TODO: fix it, it's broken
 getRace :: Application ()
 getRace = do
         ((l,o),xs) <- getPagesWithDTD ("id" +== "race_id")
@@ -1498,18 +1499,20 @@ getRace = do
 userCurrentRace :: Application ()
 userCurrentRace = do
         uid <- getUserId
-        dat <- runDb $ do
+        (dat, td, ts) <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case length as > 0 of
                 False -> rollback "you dont exist, go away."
                 True -> do
-                    rs <- search ["id" |== (toSql $ A.busy_subject_id (head as))] [] 1000 0 :: SqlTransaction Connection [R.Race]
+                    rs <- search ["race_id" |== (toSql $ A.busy_subject_id (head as))] [] 1 0 :: SqlTransaction Connection [RAD.RaceDetails]
                     case length rs > 0 of
                         False -> rollback "error: race not found"
-                        True -> return $ head rs
-
---        writeMapables rs
-        writeResult' $ AS.toJSON dat
+                        True -> do
+                            let r = head rs
+                            ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
+                            td <- head <$> (search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster])
+                            return (r, td, ts) 
+        writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
 -- | The main entry point handler.
 site :: Application ()

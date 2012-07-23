@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
-module Model.Race where
+module Model.RaceDetails where
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -23,18 +23,15 @@ import qualified Data.HashMap.Strict as HM
 import Data.Racing
 
 import Data.Maybe
---import Model.FindInterface
 
--- move this somewhere proper
-instance Default LB.ByteString where
-    def = LB.empty
-
-$(genAll "Race" "races" [             
-                    ("id", ''Id),
+$(genAll "RaceDetails" "race_details" [             
+--                    ("id", ''Id),
+                    ("race_id", ''Integer),
                     ("track_id", ''Integer),
                     ("start_time", ''Integer),
                     ("end_time", ''Integer),
-                    ("type", ''Integer),
+                    ("time_left", ''Integer),
+                    ("type", ''String),
                     ("data", ''RaceDatas)
     ])
 

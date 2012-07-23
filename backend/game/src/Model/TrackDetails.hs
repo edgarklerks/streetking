@@ -21,3 +21,5 @@ $(genAll "TrackDetails" "track_details" [
                     ("length", ''Double)
     ]
     )
+
+type TrackDetailss = [TrackDetails]
