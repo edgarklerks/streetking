@@ -14,8 +14,6 @@ import Snap.Snaplet.Session
 import ConfigSnaplet
 import SqlTransactionSnaplet
 import ImageSnapLet
-import ProxySnaplet
-import RoleSnaplet 
 
 ------------------------------------------------------------------------------
 data App = App
@@ -23,8 +21,6 @@ data App = App
     , _config :: Snaplet ConfigSnaplet 
     , _sql :: Snaplet SqlTransactionConfig
     , _img :: Snaplet ImageConfig 
-    , _proxy :: Snaplet ProxySnaplet
-    , _roles :: Snaplet RoleSnaplet
     }
 
 makeLens ''App
@@ -41,11 +37,7 @@ instance HasSqlTransaction App where
 instance HasImageSnapLet App where 
     imageLens = subSnaplet img 
 
-instance HasProxy App where 
-    proxyLens = subSnaplet proxy
 
-instance HasRoleSnaplet App where 
-    roleLens = subSnaplet roles
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
 

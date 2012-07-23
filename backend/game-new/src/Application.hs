@@ -161,3 +161,15 @@ addRole i k =  with nde $ do
         where rs = B.pack $ L.unpack $ BI.encode $ User (Just i) 
 
 
+
+writeError' :: ToJSON a => a -> Application ()
+writeError' x = writeAeson' $ S.fromList [("error" :: String, x)]
+
+
+writeAeson' :: ToJSON a => a -> Application ()
+writeAeson' = writeLBS . Data.Aeson.encode
+
+
+
+
+

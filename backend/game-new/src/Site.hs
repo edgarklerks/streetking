@@ -5,7 +5,7 @@
 -- site. The 'app' function is the initializer that combines everything
 -- together and is exported by this module.
 module Site
-  ( app
+  ( Site.app
   ) where
 
 ------------------------------------------------------------------------------
@@ -118,8 +118,8 @@ import           SqlTransactionSnaplet (initSqlTransactionSnaplet)
 import           ConfigSnaplet 
 import           RandomSnaplet (l32, initRandomSnaplet)
 import           NodeSnaplet 
-import qualified Codec.Binary.Base32 as B32 
-import Data.Tiger
+import           Data.Tiger
+import           Control.Arrow 
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -1391,11 +1391,12 @@ userCurrentRace = do
 
 
 
+wrapErrors x = CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = [ 
+routes = fmap (second wrapErrors) $ [ 
                 ("/", index),
                 ("/User/login", userLogin),
                 ("/User/register", userRegister),
