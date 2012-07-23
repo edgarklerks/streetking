@@ -1418,7 +1418,7 @@ racePractice = do
                                             -- store data
                                             let te = (t + ) $ ceiling $ raceTime rs
                                             let race = def :: R.Race
-                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc rs] })
+                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc tss rs] })
 
                                             -- set account busy
                                             save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
@@ -1490,7 +1490,6 @@ raceChallengeAccept = undefined
 getRaceChallenge :: Application ()
 getRaceChallenge = undefined
 
--- TODO: fix it, it's broken
 getRace :: Application ()
 getRace = do
         ((l,o),xs) <- getPagesWithDTD ("id" +== "race_id")

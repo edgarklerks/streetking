@@ -36,20 +36,6 @@ $(genAll "Race" "races" [
                     ("end_time", ''Integer),
                     ("type", ''Integer),
                     ("data", ''RaceDatas)
---                    ("data", ''LB.ByteString)
     ])
 
--- $(mkInstanceDeclFromJSON "Race" ["id", "track_id", "start_time", "end_time", "type", "data"])
--- $(mkInstanceDeclToJSON "Race" ["id", "track_id", "start_time", "end_time", "type", "data"])
-
-{--
-instance FromJSON Race where
-        parseJSON (Object v) = Race <$>
-            v .: "race_id" <*>
-            v .: "track_id" <*>
-            v .: "start_time" <*>
-            v .: "end_time" <*>
-            v .: "type" <*>
-            v .: "data"
---}
 
