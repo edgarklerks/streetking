@@ -93,7 +93,6 @@ $(genMapableRecord "RaceData"
     [
             ("rd_user", ''APM.AccountProfileMin),
             ("rd_car", ''CIG.CarInGarage),
-            ("rd_track", ''TD.TrackDetailss),
             ("rd_result", ''RaceResult)
        ])
 

@@ -1418,7 +1418,7 @@ racePractice = do
                                             -- store data
                                             let te = (t + ) $ ceiling $ raceTime rs
                                             let race = def :: R.Race
-                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc tss rs] })
+                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc rs] })
 
                                             -- set account busy
                                             save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
@@ -1499,7 +1499,7 @@ getRace = do
 userCurrentRace :: Application ()
 userCurrentRace = do
         uid <- getUserId
-        dat <- runDb $ do
+        (dat, tr) <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case length as > 0 of
                 False -> rollback "you dont exist, go away."
@@ -1507,10 +1507,11 @@ userCurrentRace = do
                     rs <- search ["race_id" |== (toSql $ A.busy_subject_id (head as))] [] 1 0 :: SqlTransaction Connection [RAD.RaceDetails]
                     case length rs > 0 of
                         False -> rollback "error: race not found"
-                        True -> return $ head rs
-
---        writeMapables rs
-        writeResult' $ AS.toJSON dat
+                        True -> do
+                            let r = head rs
+                            ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
+                            return (r, ts) 
+        writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track", AS.toJSON tr)]
 
 -- | The main entry point handler.
 site :: Application ()
