@@ -1491,6 +1491,13 @@ raceChallenge = do
 
 raceChallengeAccept :: Application ()
 raceChallengeAccept = undefined
+    -- fetch challenge by id
+    -- -> cannot accept your own challenge
+    -- insert a challenge accept
+    -- if no. accepts >= participants, start race, delete challenge and accepts
+
+getRaceChallenge :: Application ()
+getRaceChallenge = undefined
 
 -- TODO: fix it, it's broken
 getRace :: Application ()
@@ -1582,6 +1589,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Test/write", testWrite),
                 ("/Race/challenge", raceChallenge),
                 ("/Race/challengeAccept", raceChallengeAccept),
+                ("/Race/challengeGet", getRaceChallenge),
                 ("/Race/practice", racePractice),
                 ("/Race/get", getRace)
              ]

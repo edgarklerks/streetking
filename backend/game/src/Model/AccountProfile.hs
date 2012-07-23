@@ -46,7 +46,10 @@ $(genAll "AccountProfile" "account_profile" [
                     ("continent_id", ''Integer),
                     ("continent_name", ''String),
 --                    ("continent_data", ''String),
-                    ("skill_unused", ''Integer)
+                    ("skill_unused", ''Integer),
+                    ("busy_subject_id", ''Integer),
+                    ("busy_type", ''String),
+                    ("busy_timeleft", ''Integer)
         ])
 {-
 instance AS.ToJSON AccountProfile where
