@@ -1453,9 +1453,9 @@ tassert :: Bool -> SqlTransaction Connection () -> SqlTransaction Connection ()
 tassert b f = unless b f 
 
 -- get one record or run f if none found
-aget :: Database Connection a => Constraints -> Orders -> SqlTransaction Connection () -> SqlTransaction Connection a
-aget cs os f = do
-    ss <- search cs os 1 0
+aget :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection a
+aget cs f = do
+    ss <- search cs [] 1 0
     tassert (not $ null ss) f
     return $ head ss
 
@@ -1485,30 +1485,69 @@ raceChallengeWith p = do
         let tid = fugly  "track_id" xs :: Integer
         let tp = fugly "type" xs :: String
         i <- runDb $ do
-            a <- aget ["id" |== toSql uid] [] (rollback "account not found") :: SqlTransaction Connection A.Account
-            t <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] [] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
+            a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
+            ap <- aget ["id" |== toSql uid] (rollback "account profile not found") :: SqlTransaction Connection AP.AccountProfile
+            c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            t <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _ <- adeny ["account_id" |== SqlInteger uid] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
-            n <- aget ["name" |== SqlString tp] [] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
-            save $ (def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = p, Chg.type = (fromJust $ ChgT.id n) }
+            n <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
+            save $ (def :: Chg.Challenge) {
+                    Chg.track_id = tid,
+                    Chg.account_id = uid,
+                    Chg.participants = p,
+                    Chg.type = (fromJust $ ChgT.id n),
+                    Chg.account = ap,
+                    Chg.car = c
+                }
         writeResult i
+        
+raceChallengeAccept :: Application ()
+raceChallengeAccept = undefined
 
+{-
 raceChallengeAccept :: Application ()
 raceChallengeAccept = do
-        uid <- getUserId
+        uid <- getUserId :: Application Integer
         xs <- getJson >>= scheck ["challenge_id"]
         let cid = fugly "challenge_id" xs :: Integer 
         res <- runDb $ do
             a <- aget ["id" |== toSql uid] [] (rollback "account not found") :: SqlTransaction Connection A.Account
-            c <- aget ["challenge_id" |== toSql cid] [] (rollback "challenge not found") :: SqlTransaction Connection ChgE.ChallengeExtended
+            c <- aget ["challenge_id" |== toSql cid, "account_id" |<> toSql uid ] [] (rollback "challenge not found") :: SqlTransaction Connection ChgE.ChallengeExtended
             t <- aget ["track_id" |== (SqlInteger $ ChgE.track_id c), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] [] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             -- TODO: check user busy
-            let r = (>= 0) $  2 + (ChgE.accepts c) - (ChgE.participants c)  -- condition for starting race; +2 b/c challenger and current user must be counted 
-            do case r of
-                    False -> save $ (def :: ChgA.ChallengeAccept) { ChgA.account_id = (fromJust $ A.id a), ChgA.challenge_id = cid  }
-                    True -> undefined -- fetch all accounts and active cars, run race, delete all challenges
-            return r
-        writeResult res
+--            _ <- adeny ["account_id" |== SqlInteger uid] (rollback "you already accepted a challenge") :: SqlTransaction Connection [ChgA.ChallengeAccept]
+--            save $ (def :: ChgA.ChallengeAccept) { ChgA.account_id = (fromJust $ A.id a), ChgA.challenge_id = cid }
+           
+            ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id t) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
 
+            -- make Driver
+            let d =undefined 
+
+            -- make Car
+            let c = undefined 
+
+            -- make Track
+            let tr = trackDetailsTrack ts
+
+            -- get environment from track data
+            let e = defaultEnvironment
+
+            -- run race
+            let rs = undefined -- raceResult2FE $ runRace ss d c e
+                                            
+            -- store data
+            let te = (t + ) $ ceiling $ raceTime rs
+            let race = def :: R.Race
+            rid <-  undefined -- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData a c rs] })
+
+            -- set account busy
+            save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
+
+            -- return race id
+            return rid
+            
+        writeResult res
+-}
 getRaceChallenge :: Application ()
 getRaceChallenge = do
         uid <- getUserId 
