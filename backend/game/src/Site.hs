@@ -1500,34 +1500,34 @@ raceChallengeWith p = do
         
 raceChallengeAccept :: Application ()
 raceChallengeAccept = do
+
         uid <- getUserId :: Application Integer
         xs <- getJson >>= scheck ["challenge_id"]
+
         let cid = extract "challenge_id" xs :: Integer 
+
         res <- runDb $ do
         
+            chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid ] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
+
+            -- TODO: check user busy
+
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid ] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
             tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
-            
-            -- TODO: check user busy
            
             -- get track section data
             ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
             
-            let opa = Chg.account chg
-            let opc = Chg.car chg
-
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            oma <- aget ["id" |== (SqlInteger $ fromJust $ A.id opa)] (rollback "opponent account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
+            oma <- aget ["id" |== (toSql $ Chg.account_id chg)] (rollback "opponent account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
 
-            
             let env = defaultEnvironment
             let trk = trackDetailsTrack ts
 
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
-            let ors = raceResult2FE $ runRace trk (accountDriver opa) (carInGarageCar opc) env
+            let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
             
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
 
@@ -1535,7 +1535,7 @@ raceChallengeAccept = do
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
             let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
             let race = def :: R.Race
-            rid <-  save (race { R.track_id = (TT.track_id tr), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData oma opc ors] })
+            rid <-  save (race { R.track_id = (TT.track_id tr), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData oma (Chg.car chg) ors] })
 
             -- set account busy
             -- TODO: also set / modify challenger account busy
