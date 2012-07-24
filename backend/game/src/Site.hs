@@ -1505,23 +1505,14 @@ raceChallengeAccept = do
             let r = (>= 0) $  2 + (ChgE.accepts c) - (ChgE.participants c)  -- condition for starting race; +2 b/c challenger and current user must be counted 
             do case r of
                     False -> save $ (def :: ChgA.ChallengeAccept) { ChgA.account_id = (fromJust $ A.id a), ChgA.challenge_id = cid  }
-                    True -> undefined
+                    True -> undefined -- fetch all accounts and active cars, run race, delete all challenges
             return r
-
-
         writeResult res
-
-      
-
--- fetch challenge by id
-    -- -> cannot accept your own challenge
-    -- insert a challenge accept
-    -- if no. accepts >= participants, start race, delete challenge and accepts
 
 getRaceChallenge :: Application ()
 getRaceChallenge = do
         uid <- getUserId 
-        cs <- runDb $ search [] [Order ("id",[]) False] 10000 0 :: Application [ChgE.ChallengeExtended]
+        cs <- runDb $ search [] [Order ("challenge_id",[]) False] 10000 0 :: Application [ChgE.ChallengeExtended]
         writeMapables cs
 
 
