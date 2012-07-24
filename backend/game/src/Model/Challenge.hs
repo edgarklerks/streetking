@@ -19,13 +19,16 @@ import Data.InRules
 
 import Data.Maybe
 import Application
-
+import qualified Model.AccountProfile as AP
+import qualified Model.CarInGarage as CIG
 
 $(genAll "Challenge" "challenge" [
                     ("id", ''Id),
                     ("account_id", ''Integer),
                     ("track_id", ''Integer),
                     ("participants", ''Integer),
-                    ("type", ''Integer)
+                    ("type", ''Integer),
+                    ("account", ''AP.AccountProfile),
+                    ("car", ''CIG.CarInGarage)
    ])
 
