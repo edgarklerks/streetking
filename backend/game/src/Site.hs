@@ -1483,17 +1483,14 @@ getJsonVal k = do
 
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
-        xs <- getJson 
-        liftIO (print xs)
+        xs <- getJson
         -- TODO: check track level with account level
         -- check user location??
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         uid <- getUserId
-        tid <- getJsonVal "track_id" :: Application Integer
-        tp <- getJsonVal "type" :: Application String
-        liftIO (print tp)
-        writeResult (1 :: Integer) 
-{-        i <- runDb $ do
+        let tid = fugly  "track_id" xs :: Integer
+        let tp = fugly "type" xs :: String
+        i <- runDb $ do
             xs <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case xs of
                 [] -> rollback "account not found"
