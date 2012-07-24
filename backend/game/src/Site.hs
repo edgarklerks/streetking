@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, RankNTypes, DisambiguateRecordFields, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings, RankNTypes, DisambiguateRecordFields, FlexibleContexts  #-}
 
 {-|
 
@@ -1474,13 +1474,27 @@ testWrite = do
         uid <- getUserId
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
-tassert :: Bool -> SqlTransaction Connection () -> SqlTransaction Connection ()
-tassert b f = do
-    case b of
-        False -> f
-        True -> return ()
-        
-    
+tassert :: Bool -> SqlTransaction Connection () -> SqlTransaction Connection () 
+tassert b f = unless b f 
+
+aget :: Database Connection a => Constraints -> Orders -> SqlTransaction Connection () -> SqlTransaction Connection a
+aget cs os f = do
+    ss <- search cs os 1 0
+    tassert (not $ null ss) f
+    return $ head ss
+
+
+agetlist :: Database Connection a => Constraints -> Orders -> SqlTransaction Connection () -> SqlTransaction Connection [a]
+agetlist cs os f = do
+    ss <- search cs os 1000 0
+    tassert (not $ null ss) f
+    return ss
+ 
+adeny :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection [a]
+adeny cs f = do
+    ss <- search cs [] 1 0
+    tassert (null ss) f
+    return ss
 
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
@@ -1492,25 +1506,13 @@ raceChallengeWith p = do
         let tid = fugly  "track_id" xs :: Integer
         let tp = fugly "type" xs :: String
         i <- runDb $ do
-            ss <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
-            tassert False (rollback "account not found")
-            case ss of
-                [] -> rollback "account not found"
-                a:_ -> do
---            a <- aget "account not found" ["id" !== toSql uid] [] :: SqlTransaction Connection [Account]
-                    ss <- search ["track_id" |== toSql tid] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster]
-                    case ss of
-                        [] -> rollback "track not found"
-                        t:_ -> do
-                            ss <- search ["account_id" |== SqlInteger uid] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
-                            case ss of
-                                _:_ -> rollback "you're already challenging"
-                                otherwise -> do
-                                    ss <- search ["name" |== SqlString tp] [] 1 0 :: SqlTransaction Connection [ChgT.ChallengeType]
-                                    case ss of
-                                        [] -> rollback "unknown challenge type"
-                                        t:_ -> do
-                                        save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = p, Chg.type = (fromJust $ ChgT.id t) })
+            a <- aget ["id" |== toSql uid] [] (rollback "account not found") :: SqlTransaction Connection A.Account
+            t <- aget ["track_id" |== toSql tid] [] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
+--            z <- search ["account_id" |== SqlInteger uid] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
+--            tassert (null z) (rollback "you're already challenging")
+            _ <- adeny ["account_id" |== SqlInteger uid] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
+            n <- aget ["name" |== SqlString tp] [] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
+            save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = p, Chg.type = (fromJust $ ChgT.id n) })
         writeResult i
 
 raceChallenge :: Application ()
