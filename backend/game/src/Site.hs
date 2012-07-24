@@ -1477,6 +1477,7 @@ testWrite = do
 getJsonVal :: (FromInRule a, Convertible SqlValue a) => String -> Application a 
 getJsonVal k = do
         xs <- getJson >>= scheck [k] 
+        liftIO (print xs)
         return $ fromSql $ fromJust $ HM.lookup k xs
 
 raceChallengeWith :: Integer -> Application ()
