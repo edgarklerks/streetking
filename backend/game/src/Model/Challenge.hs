@@ -21,8 +21,7 @@ import Data.Maybe
 import Application
 
 
-
-$(genAll "Challenge" "challenge" [             
+$(genAll "Challenge" "challenge" [
                     ("id", ''Id),
                     ("account_id", ''Integer),
                     ("track_id", ''Integer),
