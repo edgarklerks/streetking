@@ -469,6 +469,7 @@ instance FromInRule Float where
     fromInRule (InInteger x) = fromIntegral x
     fromInRule x = viaReadable x 
 
+
 {--
 instance ToInRule Fractional where
     toInRule x = InDouble x
