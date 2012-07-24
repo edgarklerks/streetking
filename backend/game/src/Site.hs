@@ -1474,13 +1474,6 @@ testWrite = do
         uid <- getUserId
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
-getJsonVal :: (FromInRule a, Convertible SqlValue a) => String -> Application a 
-getJsonVal k = do
-        xs <- getJson >>= scheck [k] 
-        liftIO (print xs)
-        let a = fromSql $ fromJust $ HM.lookup k xs
-        a `seq` return a
-
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
         xs <- getJson
@@ -1510,7 +1503,7 @@ raceChallengeWith p = do
                                         t:_ -> do
                                         save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = p, Chg.type = (fromJust $ ChgT.id t) })
         writeResult i
--}
+
 raceChallenge :: Application ()
 raceChallenge = raceChallengeWith 2 
 
