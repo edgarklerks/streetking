@@ -1482,7 +1482,7 @@ raceChallengeWith p = do
         xs <- getJson >>= scheck ["track_id", "type"];
         tid <- getJsonVal "track_id" :: Application Integer
         tp <- getJsonVal "type" :: Application String
-        writeResult tp
+        writeResult (1 :: Integer) 
 {-        i <- runDb $ do
             xs <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case xs of
