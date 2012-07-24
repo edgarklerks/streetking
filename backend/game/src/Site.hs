@@ -1480,9 +1480,10 @@ raceChallengeWith p = do
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         uid <- getUserId
         xs <- getJson >>= scheck ["track_id", "type"];
-        tid <- getJsonVal "track_id"
-        tp <- getJsonVal "type"
-        i <- runDb $ do
+        tid <- getJsonVal "track_id" :: Application Integer
+        tp <- getJsonVal "type" :: Application String
+        writeResult tp
+{-        i <- runDb $ do
             xs <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case xs of
                 [] -> rollback "account not found"
@@ -1502,7 +1503,7 @@ raceChallengeWith p = do
                                         t:_ -> do
                                         save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = p, Chg.type = (fromJust $ ChgT.id t) })
         writeResult i
-
+-}
 raceChallenge :: Application ()
 raceChallenge = raceChallengeWith 2 
 
