@@ -111,7 +111,7 @@ typedMapping k v = Mapping [(k, v)]
 convFromSql :: SqlValue -> InRule  
 convFromSql (SqlString s) = toInRule s
 convFromSql (SqlByteString  s) = case (S.decode <=< decode) s of 
-                                    Left _ -> toInRule s
+                                    Left _ -> InByteString s
                                     Right a -> a
 convFromSql (SqlWord32  s) = toInRule s
 convFromSql (SqlWord64   s) = toInRule s
