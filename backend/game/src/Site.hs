@@ -1478,10 +1478,13 @@ getJsonVal :: (FromInRule a, Convertible SqlValue a) => String -> Application a
 getJsonVal k = do
         xs <- getJson >>= scheck [k] 
         liftIO (print xs)
-        return $ fromSql $ fromJust $ HM.lookup k xs
+        let a = fromSql $ fromJust $ HM.lookup k xs
+        a `seq` return a
 
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
+        xs <- getJson 
+        liftIO (print xs)
         -- TODO: check track level with account level
         -- check user location??
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
