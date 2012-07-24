@@ -11,6 +11,7 @@ module Application
   , applicationInitializer
   , getUniqueKey
   , runDb 
+  , runCompose
   , addRole 
   , ApplicationException(..)
   , getJson 
@@ -70,6 +71,7 @@ import           Data.Monoid
 import           Debug.Trace
 import           Model.General (Mapable(..), Default(..), Database(..))
 import           Data.SortOrder 
+import           Data.ComposeModel (runComposeMonad, ComposeMonad) 
 ------------------------------------------------------------------------------
 -- | 'Application' is our application's monad. It uses 'SnapExtend' from
 -- 'Snap.Extension' to provide us with an extended 'MonadSnap' making use of
@@ -224,6 +226,12 @@ runDb :: SqlTransaction Connection a -> Application a
 runDb xs =  withConnection $ \c -> do 
     frp <- runSqlTransaction xs internalError c
     frp `seq`return frp
+
+runCompose :: ComposeMonad Connection () -> Application (S.HashMap String InRule)
+runCompose m = withConnection $ \c -> do 
+                frp <- runComposeMonad m internalError c
+                frp `seq` return frp 
+
 
 withConnection :: (DB.Connection -> Application a) -> Application a
 withConnection f = CIO.bracket getDatabase returnDatabase (f . DCP.unwrapContext)
