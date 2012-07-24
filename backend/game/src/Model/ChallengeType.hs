@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
-module Model.Challenge where
+module Model.ChallengeType where
 
 
 import           Data.SqlTransaction
@@ -21,11 +21,8 @@ import Data.Maybe
 import Application
 
 
-$(genAll "Challenge" "challenge" [
+$(genAll "ChallengeType" "challenge_type" [
                     ("id", ''Id),
-                    ("account_id", ''Integer),
-                    ("track_id", ''Integer),
-                    ("participants", ''Integer),
-                    ("type", ''Integer)
+                    ("name", ''String)
    ])
 
