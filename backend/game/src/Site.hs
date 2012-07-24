@@ -1476,7 +1476,7 @@ testWrite = do
 
 getJsonVal :: (FromInRule a, Convertible SqlValue a) => String -> Application a 
 getJsonVal k = do
-        xs <- getJson
+        xs <- getJson >>= scheck [k] 
         return $ fromSql $ fromJust $ HM.lookup k xs
 
 raceChallengeWith :: Integer -> Application ()
@@ -1485,7 +1485,6 @@ raceChallengeWith p = do
         -- check user location??
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         uid <- getUserId
-        xs <- getJson >>= scheck ["track_id", "type"];
         tid <- getJsonVal "track_id" :: Application Integer
         tp <- getJsonVal "type" :: Application String
         liftIO (print tp)
