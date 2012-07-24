@@ -25,7 +25,9 @@ $(genAll "AccountProfileMin" "account_profile" [
                     ("picture_small", ''String),
                     ("picture_medium", ''String),
                     ("picture_large", ''String),
-                    ("level", ''Integer)
+                    ("level", ''Integer),
+                    ("city_name", ''String),
+                    ("continent_name", ''String)
         ])
 
 {--
