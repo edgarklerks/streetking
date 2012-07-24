@@ -175,8 +175,9 @@ userLogin = do
      
 userData :: Application ()
 userData = do 
-    x <- getOParam "user_id"
-    n <- runDb (load $ convert x) :: Application (Maybe AP.AccountProfile)
+    x <- getJson >>= scheck ["id"]
+    let m = updateHashMap x (def :: AP.AccountProfile)
+    n <- runDb (load $ fromJust $ AP.id x) :: Application (Maybe AP.AccountProfile)
     case n of 
         Nothing -> internalError "No such user"
         Just x -> writeMapable x
