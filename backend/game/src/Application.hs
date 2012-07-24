@@ -227,7 +227,7 @@ runDb xs =  withConnection $ \c -> do
     frp <- runSqlTransaction xs internalError c
     frp `seq`return frp
 
-runCompose :: ComposeMonad Connection () -> Application (S.HashMap String InRule)
+--runCompose :: ComposeMonad Connection () -> Application (S.HashMap String InRule)
 runCompose m = withConnection $ \c -> do 
                 frp <- runComposeMonad m internalError c
                 frp `seq` return frp 
