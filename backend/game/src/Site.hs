@@ -73,6 +73,7 @@ import qualified Model.PersonnelInstanceDetails as PLID
 import qualified Model.Challenge as Chg
 import qualified Model.ChallengeAccept as ChgA
 import qualified Model.ChallengeType as ChgT
+import qualified Model.ChallengeExtended as ChgE
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
 import qualified Model.GeneralReport as GR 
@@ -1387,11 +1388,13 @@ racePractice = do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
-                [a] -> do
+                a:_ -> do
                     t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
 
                     -- TODO: disallow racing if busy
 --                   case A.busy_until > t of -- etc. rollback "you are busy"
+--
+--                   TODO: check track level against account level
                    
                     -- fetch profile
                     [ap] <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [APM.AccountProfileMin]
@@ -1433,39 +1436,6 @@ racePractice = do
 
                                             -- return race id
                                             return rid
-
-{-
-                                                where
-
-                                                    putRace :: RaceResult -> RaceData -> SqlTransaction Connection Integer 
-                                                    putRace rs rd = do
-                                                     t <- liftIO (floor <$> getPOSIXTime :: IO Integer )
-                                                    let race = def :: R.Race
-                                                    rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = ((t + ) $ ceiling $ raceTime rs), R.type = 1, R.data = AS.encode rd })
-                                                    putSections u rid $ sectionResults rs 
-                                                    return rid
-                                                    
-                                                    putSections :: Integer -> Integer -> SectionResults -> SqlTransaction Connection ()
-                                                    putSections u r [] = return ()
-                                                    putSections u r (s:ss) = do
-                                                        putSection u r s
-                                                        putSections u r ss
-
-                                                    putSection :: Integer -> Integer -> SectionResult -> SqlTransaction Connection Integer 
-                                                    putSection u r s = do
-                                                        let rres = def :: RR.RaceResult
-                                                        save (rres { 
-                                                                RR.race_id = r,
-                                                                RR.account_id = u,
-                                                                RR.section_id = (sectionId s),
-                                                                RR.time = (sectionTime s),
-                                                                RR.path = (sectionPath s),
-                                                                RR.speed_max = (sectionSpeedMax s),
-                                                                RR.speed_avg = (sectionSpeedAvg s),
-                                                                RR.speed_out = (sectionSpeedOut s)
-                                                            })
--}
-
         -- write results
         writeResult r
 
@@ -1474,49 +1444,53 @@ testWrite = do
         uid <- getUserId
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
+
+{-
+ - Asserted record fetching tools; move to some appropriate location later
+ -}
+
 tassert :: Bool -> SqlTransaction Connection () -> SqlTransaction Connection () 
 tassert b f = unless b f 
 
+-- get one record or run f if none found
 aget :: Database Connection a => Constraints -> Orders -> SqlTransaction Connection () -> SqlTransaction Connection a
 aget cs os f = do
     ss <- search cs os 1 0
     tassert (not $ null ss) f
     return $ head ss
 
-
-agetlist :: Database Connection a => Constraints -> Orders -> SqlTransaction Connection () -> SqlTransaction Connection [a]
-agetlist cs os f = do
-    ss <- search cs os 1000 0
+-- get list of records or run f if none found
+agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection () -> SqlTransaction Connection [a]
+agetlist cs os l o f = do
+    ss <- search cs os l o 
     tassert (not $ null ss) f
     return ss
- 
+
+-- run f if any records found. note: return is necessary in order to infer search type.
 adeny :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection [a]
 adeny cs f = do
     ss <- search cs [] 1 0
     tassert (null ss) f
     return ss
 
+raceChallenge :: Application ()
+raceChallenge = raceChallengeWith 2 
+
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
-        xs <- getJson
-        -- TODO: check track level with account level
-        -- check user location??
+        xs <- getJson >>= scheck ["track_id", "type"]
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
+        -- what if challenget leaves city? disallow travel if challenge active? or do not care?
         uid <- getUserId
         let tid = fugly  "track_id" xs :: Integer
         let tp = fugly "type" xs :: String
         i <- runDb $ do
             a <- aget ["id" |== toSql uid] [] (rollback "account not found") :: SqlTransaction Connection A.Account
-            t <- aget ["track_id" |== toSql tid] [] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
---            z <- search ["account_id" |== SqlInteger uid] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
---            tassert (null z) (rollback "you're already challenging")
+            t <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] [] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _ <- adeny ["account_id" |== SqlInteger uid] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n <- aget ["name" |== SqlString tp] [] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
             save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = p, Chg.type = (fromJust $ ChgT.id n) })
         writeResult i
-
-raceChallenge :: Application ()
-raceChallenge = raceChallengeWith 2 
 
 raceChallengeAccept :: Application ()
 raceChallengeAccept = undefined
@@ -1526,7 +1500,12 @@ raceChallengeAccept = undefined
     -- if no. accepts >= participants, start race, delete challenge and accepts
 
 getRaceChallenge :: Application ()
-getRaceChallenge = undefined
+getRaceChallenge = do
+        uid <- getUserId 
+        cs <- runDb $ search [] [Order ("id",[]) False] 10000 0 :: Application [ChgE.ChallengeExtended]
+        writeMapables cs
+
+
 
 getRace :: Application ()
 getRace = do
