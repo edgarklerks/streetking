@@ -1551,7 +1551,7 @@ raceChallengeAccept = do
 getRaceChallenge :: Application ()
 getRaceChallenge = do
         uid <- getUserId 
-        cs <- runDb $ search [] [Order ("challenge_id",[]) False] 10000 0 :: Application [ChgE.ChallengeExtended]
+        cs <- runDb $ search [] [Order ("challenge_id",[]) True] 10000 0 :: Application [Chg.Challenge]
         writeMapables cs
 
 
