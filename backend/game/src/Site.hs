@@ -183,7 +183,7 @@ userData = do
     n <- runCompose $ do 
                 action "user" ((load $ fromJust $ APM.id m) :: SqlTransaction Connection (Maybe APM.AccountProfileMin))
                 action "car" $ do
-                    xs <- search ["account_id" |== toSql x .&& "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CAM.CarMinimal]
+                    xs <- search ["account_id" |== toSql (APM.id m) .&& "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CAM.CarMinimal]
                     case xs of 
                         [] -> return Nothing
                         [x] -> return (Just x)

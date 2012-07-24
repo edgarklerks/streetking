@@ -140,7 +140,7 @@ conv2Sql (InBool False) = toSql  False
 conv2Sql InNull = SqlNull
 conv2Sql (InString s) =  toSql s
 conv2Sql (InByteString s) = toSql s
-conv2Sql r = error (show r) -- SqlByteString (encode $ S.encode r)  
+conv2Sql r = SqlByteString (encode $ S.encode r)  
 
 
 convFromSqlA :: [SqlValue] -> InRule
