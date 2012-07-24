@@ -6,6 +6,7 @@ module Data.ComposeModel(
         action,
         label,
         runComposeMonad,
+        ComposeMonad,
         deep,
         abort 
     )where 
