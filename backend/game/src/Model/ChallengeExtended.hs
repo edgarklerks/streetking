@@ -22,7 +22,7 @@ import Application
 
 
 $(genAll "ChallengeExtended" "challenge_extended" [
-                    ("id", ''Id),
+                    ("challenge_id", ''Integer),
                     ("account_id", ''Integer),
                     ("track_id", ''Integer),
                     ("participants", ''Integer),
