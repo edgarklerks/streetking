@@ -71,6 +71,7 @@ import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
 import qualified Model.Challenge as Chg
 import qualified Model.ChallengeAccept as ChgA
+import qualified Model.ChallengeType as ChgT
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
 import qualified Model.GeneralReport as GR 
@@ -1466,19 +1467,34 @@ testWrite = do
         uid <- getUserId
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
-raceChallenge :: Application ()
-raceChallenge = do
+
+raceChallengeWith :: Integer -> Application ()
+raceChallengeWith p = do
+        -- TODO: check track level with account level
+        -- check user location??
+        -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         uid <- getUserId
-        xs <- getJson >>= scheck ["track_id"] -- TODO: send race type (money/car); send participants >= 2
+        xs <- getJson >>= scheck ["track_id", "type"];
         let tid = fugly "track_id" xs :: Integer
+        let tp = fugly "type" xs :: String 
         i <- runDb $ do
-            rs <- search ["account_id" |== (SqlInteger uid)] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
-            case length rs > 0 of
-                True -> rollback "you already challenged"
-                False -> do
-                    save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = 2, Chg.type = 1 })
+            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+            case length as > 0 of
+                False -> rollback "you dont exist, go away."
+                True -> do
+                    rs <- search ["account_id" |== (SqlInteger uid)] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
+                    case length rs > 0 of
+                        True -> rollback "you're already challenging"
+                        False -> do
+                            ns <- search ["name" |== toSql tp] [] 1 0 :: SqlTransaction Connection [ChgT.ChallengeType]
+                            case ns of
+                                [] -> rollback "unknown challenge type"
+                                t:ts -> do
+                                save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = p, Chg.type = (fromJust $ ChgT.id t) })
         writeResult i
 
+raceChallenge :: Application ()
+raceChallenge = raceChallengeWith 2 
 
 raceChallengeAccept :: Application ()
 raceChallengeAccept = undefined
