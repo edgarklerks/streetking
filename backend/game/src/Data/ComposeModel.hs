@@ -1,9 +1,19 @@
-{-# LANGUAGE EmptyDataDecls, RankNTypes, FlexibleInstances,FlexibleContexts, NoMonomorphismRestriction, ExistentialQuantification, MultiParamTypeClasses #-}
-module Data.ComposeModel where 
+{-# LANGUAGE RankNTypes, FlexibleInstances, FlexibleContexts,
+     NoMonomorphismRestriction, ExistentialQuantification,
+     MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
+
+module Data.ComposeModel(
+        action,
+        label,
+        runComposeMonad,
+        deep,
+        abort 
+    )where 
 
 import Data.SqlTransaction 
 import Data.Convertible 
 import qualified Data.ByteString.Char8 as B 
+import qualified Data.ByteString.Lazy.Char8 as BL 
 import qualified Database.HDBC as DB
 import qualified Data.HashMap.Strict as H
 import Data.InRules
@@ -15,6 +25,16 @@ import Control.Arrow
 import Control.Applicative
 import Control.Monad.Error 
 import Database.HDBC.PostgreSQL
+import Control.Concurrent
+import qualified Model.Account as A 
+import qualified Model.Garage as G 
+import Model.General
+import Data.Database
+import Data.Aeson 
+import Control.Monad.Cont 
+
+
+
 
 
 data ComposeMap = ComposeMap {
@@ -23,69 +43,93 @@ data ComposeMap = ComposeMap {
 data Box = forall a. ToInRule a => Box a 
 
 instance Monoid ComposeMap where 
-        mempty = ComposeMap $ H.empty 
+        mempty = ComposeMap  H.empty 
         mappend (ComposeMap m) (ComposeMap n) = ComposeMap $ m <> n
 
-newtype ComposeMonad c a = CM {
-                unCM  :: ReaderT c (WriterT ComposeMap (SqlTransaction c)) a    
-            }
 
-instance MonadIO (ComposeMonad c) where 
-        liftIO m = CM $ liftIO m 
 
-instance Functor (ComposeMonad c) where 
-        fmap f (CM m) = CM (fmap f m)
+newtype ComposeMonad r c a = CM {
+                unCM  :: ContT r (ReaderT c (WriterT ComposeMap (SqlTransaction c))) a    
+            } deriving (Functor, Applicative, Monad, MonadReader c, MonadIO, MonadCont) 
 
-instance Monad (ComposeMonad c) where 
-        return a = CM $ return a
-        (>>=) (CM m) f =  CM $ m >>= \a -> (unCM . f) a
 
-instance MonadWriter ComposeMap (ComposeMonad c) where 
-    pass (CM m) =  CM (pass m)
-    listen (CM m) = CM (listen m)
-    tell x = CM (tell x)
+instance MonadError String (ComposeMonad r c) where 
+            throwError c = CM $ lift (throwError c)
+            catchError m f = CM $ ContT $ \r -> do 
+                      x <- catchError (Right <$> runContT (unCM m) r) (return . Left)
+                      case x of 
+                        Left s -> runContT (unCM (f s)) r 
+                        Right a -> return a
 
-instance MonadReader c (ComposeMonad c) where 
-        ask = CM $ ask 
-        local f (CM m) = CM $ local f m 
+
+instance MonadWriter ComposeMap (ComposeMonad r c) where 
+                tell w = CM $ lift (tell w) 
+                listen _ = throwError "ComposeMonad doesn't support listen"
+                pass _ = throwError "ComposeMonad doesn't support pass"
+
+instance Alternative (ComposeMonad r c) where 
+                empty = throwError "empty alternative"
+                (<|>) m n = catchError m (const n)
+
+instance MonadPlus (ComposeMonad r c) where 
+                mzero = empty 
+                mplus = (<|>)
+
+instance Monoid (ComposeMonad r c ()) where 
+                mempty = empty 
+                mappend a b = CM $ ContT $ \r -> do 
+                                c <- ask 
+                                a <-  lift $ lift $ (execWriterT (runReaderT (runContT  (unCM a) r) c))
+                                b <-  lift $ lift $ (execWriterT (runReaderT (runContT  (unCM b) r) c))
+                                lift $ tell (a <> b)
+                                r ()
+
+                
+unsafeRunCompose c (CM m) = runSqlTransaction (fmap Right . execWriterT $ runReaderT (runContT m (return))  c ) (return . Left) c 
+
+
 
 instance ToInRule Box where 
             toInRule (Box b) = toInRule b
 instance ToInRule ComposeMap where 
-            toInRule (ComposeMap xs) = toInRule $ fmap toInRule xs
+            toInRule = toInRule . fmap toInRule . unComposeMap 
 
-instance MonadError String (ComposeMonad c) where 
-            throwError e = CM $ throwError e
-            catchError (CM m) f = CM $  catchError m (unCM . f) 
-
-runComposeMonad (CM m) f c = do -- (ComposeMap xs)
-                                ts <- runSqlTransaction (Right <$> (execWriterT (runReaderT m c ))) (\e -> return $ Left e) c 
+runComposeMonad :: (Applicative m, MonadIO m, DB.IConnection c) => ComposeMonad a c a -> (String -> m (H.HashMap String InRule)) -> c -> m (H.HashMap String InRule)
+runComposeMonad m f c = do -- (ComposeMap xs)
+                                ts <- unsafeRunCompose c m 
                                 case ts of 
                                     Left s -> f s  
                                     Right (ComposeMap xs) -> return $ (fmap toInRule xs) 
 
 
 
-
-deep :: DB.IConnection c => String -> ComposeMonad c () -> ComposeMonad c ()
-deep s (CM m) = do 
+deep :: DB.IConnection c => String -> ComposeMonad a c a -> ComposeMonad r c ()
+deep s m = do 
             c <- ask
-            a <- liftIO $ runSqlTransaction (Right <$> (execWriterT (runReaderT m c))) (\e -> return $ Left e) c
+            a <- liftIO $ unsafeRunCompose c m  
             case a of 
                 Right a -> label s a 
                 Left s -> throwError s
-             
 
-liftDb :: SqlTransaction c a -> ComposeMonad c a 
-liftDb m = CM (lift.lift $ m)
+jumpDeep = abort () 
 
-action :: (ToInRule a) => String -> SqlTransaction c a -> ComposeMonad c ()
-action x s = do 
-                 a <- liftDb s  
-                 label x a 
+liftDb :: SqlTransaction  c a -> ComposeMonad r c a 
+liftDb = CM . lift . lift  . lift 
 
-label :: (ToInRule a) => String -> a -> ComposeMonad c ()
-label s x =  tell $ ComposeMap $ H.fromList [(s,Box x)]
+action :: (ToInRule a) => String -> SqlTransaction c a -> ComposeMonad r c ()
+action x s = label x =<< liftDb s  
+
+label :: (ToInRule a) => String -> a -> ComposeMonad r c ()
+label s x =  tell . ComposeMap . H.fromList $ [(s,Box x)]
 
 db :: IO Connection 
 db = connectPostgreSQL "user=deosx dbname=streetking_dev password=#*rl& host=db.graffity.me"
+
+
+abort m = CM $ ContT $ \abort -> return m 
+
+
+runTest m = do 
+            c <- db 
+            runComposeMonad m error c
+
