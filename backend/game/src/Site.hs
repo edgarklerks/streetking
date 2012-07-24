@@ -574,7 +574,7 @@ carActivate = do
     writeResult (s :: String)
         where prc uid xs = runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                r <- DBF.garage_set_active_car (fromJust $ G.id g) $ fugly "id" xs
+                r <- DBF.garage_set_active_car (fromJust $ G.id g) $ extract "id" xs
                 case r of
                     True -> return "You set your active car"
                     False -> return "Could not set active car" 
@@ -588,7 +588,7 @@ carDeactivate = do
     writeResult (s :: String)
         where prc uid xs =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                r <- DBF.garage_unset_active_car (fromJust $ G.id g) $ fugly "id" xs
+                r <- DBF.garage_unset_active_car (fromJust $ G.id g) $ extract "id" xs
                 case r of
                     True -> return "You deactivated the car"
                     False -> return "Could not deactivate the car" 
@@ -602,7 +602,7 @@ garageCarReady = do
     writeResult s
         where prc uid xs = runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                r <- DBF.garage_car_ready (fromJust $ G.id g) $ fugly "id" xs
+                r <- DBF.garage_car_ready (fromJust $ G.id g) $ extract "id" xs
                 return r
 
 garageActiveCarReady :: Application ()
@@ -1002,7 +1002,7 @@ partTasks = do
     xs <- getJson >>= scheck ["id"]
     let ts = runDb $ do
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                ps <- search ["account_id" |== (toSql $ uid), "part_instance_id" |== fugly "id" xs] [] 1 0 :: SqlTransaction Connection [GPT.GaragePart]
+                ps <- search ["account_id" |== (toSql $ uid), "part_instance_id" |== extract "id" xs] [] 1 0 :: SqlTransaction Connection [GPT.GaragePart]
                 case ps of 
                         [] -> rollback "Cannae glean yer partie"
                         [part] -> do  
@@ -1034,7 +1034,7 @@ trainPersonnel = do
                                 })
 
                             -- train personnel
-                            r <- DBF.personnel_train (fromJust $ PLI.id person) (fugly "type" xs) (fugly "level" xs)
+                            r <- DBF.personnel_train (fromJust $ PLI.id person) (extract "type" xs) (extract "level" xs)
                             pm <- fromJust <$> load (fromJust $ PLI.id person) :: SqlTransaction Connection (PLI.PersonnelInstance)
 
                             reportPersonnel uid (def { 
@@ -1042,21 +1042,21 @@ trainPersonnel = do
                                              PR.personnel_instance_id = PLI.id person,
                                              PR.result = show $ frm xs pm person,
                                              PR.cost = Just $ abs(cost xs person),
-                                             PR.data = fugly "type" xs 
+                                             PR.data = extract "type" xs 
                                         })
                             return r
                                 where
 
-                                    frm xs p1 p2 = case fugly "type" xs of 
+                                    frm xs p1 p2 = case extract "type" xs of 
                                                     ("repair" :: String) -> abs (PLI.skill_repair p1 - PLI.skill_repair p2)
                                                     "engineering" -> abs ( PLI.skill_engineering p1 - PLI.skill_engineering p2 )
                                                     otherwise -> error "no type defined"
                                     cost xs p = floor $ toRational (cbas xs p) * (cmul xs)
-                                    cbas xs p = case fugly "type" xs of 
+                                    cbas xs p = case extract "type" xs of 
                                                     ("repair" :: String) -> PLI.training_cost_repair p
                                                     "engineering" -> PLI.training_cost_engineering p
                                                     otherwise -> error "no type defined"
-                                    cmul xs = case fugly "level" xs of 
+                                    cmul xs = case extract "level" xs of 
                                                     ("high" :: String) -> 2
                                                     "medium" -> 1.5
                                                     "low" -> 1
@@ -1150,7 +1150,7 @@ taskPersonnel = do
                                     GRP.task = fromSql $ fromJust $ HM.lookup "task" xs,
                                     GRP.report_descriptor = "personnel_task"
                                     })
-                            r <- DBF.personnel_start_task (fugly "personnel_instance_id" xs) (fugly "task" xs) (fugly "subject_id" xs)
+                            r <- DBF.personnel_start_task (extract "personnel_instance_id" xs) (extract "task" xs) (extract "subject_id" xs)
                             return r
 
 
@@ -1166,12 +1166,12 @@ cancelTaskPersonnel = do
                case cm of 
                         [] -> rollback "That is not your mechanic, friend"
                         [_] -> do
-                            r <- DBF.personnel_cancel_task $ fugly "personnel_instance_id" xs
+                            r <- DBF.personnel_cancel_task $ extract "personnel_instance_id" xs
                             return r
 
 
--- fugly is fugly
-fugly k xs = fromSql . fromJust $ HM.lookup k xs
+-- extract is extract
+extract k xs = fromSql . fromJust $ HM.lookup k xs
 
 
 {-- Reporting functions --}
@@ -1238,7 +1238,7 @@ cityTravel = do
                 case a of 
                         Nothing -> rollback "oh noes diz can no happen"
                         Just a -> do 
-                                cs <- search ["city_id" |== (toSql $ (fugly "id" xs :: Integer))] [] 1 0 :: SqlTransaction Connection [TCY.TrackCity]
+                                cs <- search ["city_id" |== (toSql $ (extract "id" xs :: Integer))] [] 1 0 :: SqlTransaction Connection [TCY.TrackCity]
                                 case cs of
                                         [] -> rollback "Cannot find city, is it lost?"
                                         [city] -> do
@@ -1382,16 +1382,15 @@ racePractice = do
         uid <- getUserId
         -- get track id
         xs <- getJson >>= scheck ["track_id"]
-        let tid = fugly "track_id" xs :: Integer
+        let tid = extract "track_id" xs :: Integer
         -- get account
         r <- runDb $ do
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
                 a:_ -> do
-                    t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
 
-                    -- TODO: disallow racing if busy
+                    -- TODO: disallow racing if busy -- use time_left instead of < t
 --                   case A.busy_until > t of -- etc. rollback "you are busy"
 --
 --                   TODO: check track level against account level
@@ -1427,6 +1426,7 @@ racePractice = do
                                             let rs = raceResult2FE $ runRace ss d c e
                                             
                                             -- store data
+                                            t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
                                             let te = (t + ) $ ceiling $ raceTime rs
                                             let race = def :: R.Race
                                             rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc rs] })
@@ -1449,28 +1449,25 @@ testWrite = do
  - Asserted record fetching tools; move to some appropriate location later
  -}
 
-tassert :: Bool -> SqlTransaction Connection () -> SqlTransaction Connection () 
-tassert b f = unless b f 
-
 -- get one record or run f if none found
 aget :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection a
 aget cs f = do
     ss <- search cs [] 1 0
-    tassert (not $ null ss) f
+    unless (not $ null ss) f
     return $ head ss
 
 -- get list of records or run f if none found
 agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection () -> SqlTransaction Connection [a]
 agetlist cs os l o f = do
     ss <- search cs os l o 
-    tassert (not $ null ss) f
+    unless (not $ null ss) f
     return ss
 
 -- run f if any records found. note: return is necessary in order to infer search type.
 adeny :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection [a]
 adeny cs f = do
     ss <- search cs [] 1 0
-    tassert (null ss) f
+    unless (null ss) f
     return ss
 
 raceChallenge :: Application ()
@@ -1482,11 +1479,11 @@ raceChallengeWith p = do
         xs <- getJson >>= scheck ["track_id", "type"]
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         -- what if challenger leaves city? disallow travel if challenge active? or do not care?
-        let tid = fugly  "track_id" xs :: Integer
-        let tp = fugly "type" xs :: String
+        let tid = extract  "track_id" xs :: Integer
+        let tp = extract "type" xs :: String
         i <- runDb $ do
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-            ap <- aget ["id" |== toSql uid] (rollback "account profile not found") :: SqlTransaction Connection AP.AccountProfile
+--            ap <- aget ["id" |== toSql uid] (rollback "account profile not found") :: SqlTransaction Connection AP.AccountProfile
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
             t <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _ <- adeny ["account_id" |== SqlInteger uid] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
@@ -1496,58 +1493,59 @@ raceChallengeWith p = do
                     Chg.account_id = uid,
                     Chg.participants = p,
                     Chg.type = (fromJust $ ChgT.id n),
-                    Chg.account = ap,
+                    Chg.account = a,
                     Chg.car = c
                 }
         writeResult i
         
 raceChallengeAccept :: Application ()
-raceChallengeAccept = undefined
-
-{-
-raceChallengeAccept :: Application ()
 raceChallengeAccept = do
         uid <- getUserId :: Application Integer
         xs <- getJson >>= scheck ["challenge_id"]
-        let cid = fugly "challenge_id" xs :: Integer 
+        let cid = extract "challenge_id" xs :: Integer 
         res <- runDb $ do
-            a <- aget ["id" |== toSql uid] [] (rollback "account not found") :: SqlTransaction Connection A.Account
-            c <- aget ["challenge_id" |== toSql cid, "account_id" |<> toSql uid ] [] (rollback "challenge not found") :: SqlTransaction Connection ChgE.ChallengeExtended
-            t <- aget ["track_id" |== (SqlInteger $ ChgE.track_id c), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] [] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
+        
+            a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
+            c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid ] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
+            tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
+            
             -- TODO: check user busy
---            _ <- adeny ["account_id" |== SqlInteger uid] (rollback "you already accepted a challenge") :: SqlTransaction Connection [ChgA.ChallengeAccept]
---            save $ (def :: ChgA.ChallengeAccept) { ChgA.account_id = (fromJust $ A.id a), ChgA.challenge_id = cid }
            
-            ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id t) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
+            -- get track section data
+            ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
+            
+            let opa = Chg.account chg
+            let opc = Chg.car chg
 
-            -- make Driver
-            let d =undefined 
+            ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
+            oma <- aget ["id" |== (SqlInteger $ fromJust $ A.id opa)] (rollback "opponent account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
 
-            -- make Car
-            let c = undefined 
-
-            -- make Track
-            let tr = trackDetailsTrack ts
-
-            -- get environment from track data
-            let e = defaultEnvironment
+            
+            let env = defaultEnvironment
+            let trk = trackDetailsTrack ts
 
             -- run race
-            let rs = undefined -- raceResult2FE $ runRace ss d c e
-                                            
+            let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
+            let ors = raceResult2FE $ runRace trk (accountDriver opa) (carInGarageCar opc) env
+            
+            let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
+
             -- store data
-            let te = (t + ) $ ceiling $ raceTime rs
+            t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+            let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
             let race = def :: R.Race
-            rid <-  undefined -- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData a c rs] })
+            rid <-  save (race { R.track_id = (TT.track_id tr), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData oma opc ors] })
 
             -- set account busy
+            -- TODO: also set / modify challenger account busy
             save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
 
             -- return race id
             return rid
             
         writeResult res
--}
+
 getRaceChallenge :: Application ()
 getRaceChallenge = do
         uid <- getUserId 
