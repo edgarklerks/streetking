@@ -44,6 +44,7 @@ import qualified Model.Manufacturer as M
 import qualified Model.Car as Car 
 import qualified Model.CarInstance as CarInstance 
 import qualified Model.CarInGarage as CIG 
+import qualified Model.CarMinimal as CAM 
 import qualified Model.Car3dModel as C3D
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
@@ -114,6 +115,7 @@ import           Data.Section
 import           Data.Track
 import           Data.Driver
 import           Data.Car
+import           Data.ComposeModel
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -177,11 +179,15 @@ userLogin = do
 userData :: Application ()
 userData = do 
     x <- getJson >>= scheck ["id"]
-    let m = updateHashMap x (def :: AP.AccountProfile)
-    n <- runDb (load $ fromJust $ AP.id m) :: Application (Maybe AP.AccountProfile)
-    case n of 
-        Nothing -> internalError "No such user"
-        Just x -> writeMapable x
+    let m = updateHashMap x (def :: APM.AccountProfileMin)
+    n <- runCompose $ do 
+                action "user" ((load $ fromJust $ APM.id m) :: SqlTransaction Connection (Maybe APM.AccountProfileMin))
+                action "car" $ do
+                    xs <- search ["account_id" |== toSql x .&& "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CAM.CarMinimal]
+                    case xs of 
+                        [] -> return Nothing
+                        [x] -> return (Just x)
+    writeResult n 
 
 userMe :: Application ()
 userMe = do 
