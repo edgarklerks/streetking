@@ -111,7 +111,7 @@ typedMapping k v = Mapping [(k, v)]
 convFromSql :: SqlValue -> InRule  
 convFromSql (SqlString s) = toInRule s
 convFromSql (SqlByteString  s) = case (S.decode <=< decode) s of 
-                                    Left _ -> toInRule s
+                                    Left _ -> InByteString s
                                     Right a -> a
 convFromSql (SqlWord32  s) = toInRule s
 convFromSql (SqlWord64   s) = toInRule s
@@ -129,6 +129,19 @@ convFromSql (SqlUTCTime  s) = toInRule s
 convFromSql SqlNull = InNull
 
 
+conv2Sql ::  InRule -> SqlValue
+conv2Sql (InNumber r) 
+    | denominator r == 1 = toSql (numerator r)
+    | otherwise          = toSql (fromRational r :: Double)
+conv2Sql (InDouble dd) =  toSql dd
+conv2Sql (InInteger dd) =  toSql  dd
+conv2Sql (InBool True) =  toSql  True
+conv2Sql (InBool False) = toSql  False
+conv2Sql InNull = SqlNull
+conv2Sql (InString s) =  toSql s
+conv2Sql (InByteString s) = toSql s
+conv2Sql r = SqlByteString (encode $ S.encode r)  
+
 
 convFromSqlA :: [SqlValue] -> InRule
 convFromSqlA xs = InArray (fmap convFromSql xs)
@@ -142,19 +155,6 @@ convFromSqlAA xs = InArray (fmap convFromSqlA xs)
 convSql ::  InRule -> SqlValue
 convSql = conv2Sql
  
-
-conv2Sql ::  InRule -> SqlValue
-conv2Sql (InNumber r) 
-    | denominator r == 1 = toSql (numerator r)
-    | otherwise          = toSql (fromRational r :: Double)
-conv2Sql (InDouble dd) =  toSql dd
-conv2Sql (InInteger dd) =  toSql  dd
-conv2Sql (InBool True) =  toSql  True
-conv2Sql (InBool False) = toSql  False
-conv2Sql InNull = SqlNull
-conv2Sql (InString s) =  toSql s
-conv2Sql (InByteString s) = toSql s
-conv2Sql r = SqlByteString (encode $ S.encode r)  
 
 
 conv2SqlArray :: InRule -> [SqlValue]
