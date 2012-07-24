@@ -1474,6 +1474,14 @@ testWrite = do
         uid <- getUserId
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
+tassert :: Bool -> SqlTransaction Connection () -> SqlTransaction Connection ()
+tassert b f = do
+    case b of
+        False -> f
+        True -> return ()
+        
+    
+
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
         xs <- getJson
@@ -1484,21 +1492,22 @@ raceChallengeWith p = do
         let tid = fugly  "track_id" xs :: Integer
         let tp = fugly "type" xs :: String
         i <- runDb $ do
-            xs <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
-            case xs of
+            ss <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
+            tassert False (rollback "account not found")
+            case ss of
                 [] -> rollback "account not found"
                 a:_ -> do
 --            a <- aget "account not found" ["id" !== toSql uid] [] :: SqlTransaction Connection [Account]
-                    xs <- search ["track_id" |== toSql tid] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster]
-                    case xs of
-                        [] -> rollback "you dont exist, go away."
-                        a:_ -> do
-                            xs <- search ["account_id" |== SqlInteger uid] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
-                            case xs of
-                                [] -> rollback "you're already challenging"
-                                c:_ -> do
-                                    ns <- search ["name" |== SqlString tp] [] 1 0 :: SqlTransaction Connection [ChgT.ChallengeType]
-                                    case ns of
+                    ss <- search ["track_id" |== toSql tid] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster]
+                    case ss of
+                        [] -> rollback "track not found"
+                        t:_ -> do
+                            ss <- search ["account_id" |== SqlInteger uid] [] 1 0 :: SqlTransaction Connection [Chg.Challenge]
+                            case ss of
+                                _:_ -> rollback "you're already challenging"
+                                otherwise -> do
+                                    ss <- search ["name" |== SqlString tp] [] 1 0 :: SqlTransaction Connection [ChgT.ChallengeType]
+                                    case ss of
                                         [] -> rollback "unknown challenge type"
                                         t:_ -> do
                                         save ((def :: Chg.Challenge) { Chg.track_id = tid, Chg.account_id = uid, Chg.participants = p, Chg.type = (fromJust $ ChgT.id t) })
