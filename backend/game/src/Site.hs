@@ -1521,7 +1521,9 @@ raceChallengeAccept = do
             
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             oma <- aget ["id" |== (toSql $ Chg.account_id chg)] (rollback "opponent account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-
+            
+            return $ toInRule $ HM.fromList $ [("a" :: String, toInRule a), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
+{-
             let env = defaultEnvironment
             let trk = trackDetailsTrack ts
 
@@ -1534,8 +1536,7 @@ raceChallengeAccept = do
             -- store data
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
             let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
-            let race = def :: R.Race
-            rid <-  save (race { R.track_id = (TT.track_id tr), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData oma (Chg.car chg) ors] })
+            rid <- save $ (def :: R.Race) { R.track_id = (TT.track_id tr), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData oma (Chg.car chg) ors] }
 
             -- set account busy
             -- TODO: also set / modify challenger account busy
@@ -1543,11 +1544,16 @@ raceChallengeAccept = do
 
             -- return race id
             return rid
-            
+  -}          
         writeResult res
+
+-- get own race challenge
+-- get race challenge by id
+-- get race challenges by level, city_id, etc.
 
 getRaceChallenge :: Application ()
 getRaceChallenge = do
+        -- min account data in challenge
         uid <- getUserId 
         cs <- runDb $ search [] [Order ("challenge_id",[]) False] 10000 0 :: Application [ChgE.ChallengeExtended] -- TODO: some account stuff in there
         writeMapables cs
