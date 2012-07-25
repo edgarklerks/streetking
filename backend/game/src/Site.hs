@@ -1500,35 +1500,6 @@ raceChallengeWith p = do
                 }
         writeResult i
 
-foo = runDb $ do
-
-            let uid = 43 :: Integer
-
-            chg <- aget ["id" |== SqlInteger 21 ] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
-
-            -- TODO: check user busy
-
-            a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-            c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
-           
-            -- get track section data
-            ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
-            
-            ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            oma <- aget ["id" |== (toSql $ Chg.account_id chg)] (rollback "opponent account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            
-            let env = defaultEnvironment
-            let trk = trackDetailsTrack ts
-
-            -- run race
-            let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
-            liftIO $ print $ show chg
---            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a", toInRule a), ("rres", toInRule yrs), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
-            return ()
-
- 
-
 raceChallengeAccept :: Application ()
 raceChallengeAccept = do
 
@@ -1558,10 +1529,6 @@ raceChallengeAccept = do
 
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
-            liftIO $ print $ show chg
-            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a", toInRule a), ("rres", toInRule yrs), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
-            {-
-
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
            
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
@@ -1574,6 +1541,8 @@ raceChallengeAccept = do
             -- set account busy
             -- TODO: also set / modify challenger account busy
             save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
+            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a", toInRule a), ("rres", toInRule yrs), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
+            {-
 
             -- return race id
             return rid

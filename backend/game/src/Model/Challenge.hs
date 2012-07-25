@@ -8,6 +8,7 @@ import           Data.Convertible
 import           Model.General
 import           Data.Database 
 import           Control.Monad
+import           Data.Conversion 
 
 import           Control.Applicative
 import qualified Data.Map as M
