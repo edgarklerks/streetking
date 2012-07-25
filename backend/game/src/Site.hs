@@ -1528,7 +1528,7 @@ raceChallengeAccept = do
 
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
-            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("chg", toInRule chg), ("a", toInRule a), ("rres", toInRule yrs), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
+            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a" :: String, toInRule a), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
             {-
 
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
