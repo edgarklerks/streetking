@@ -1534,7 +1534,7 @@ raceChallengeAccept = do
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
 
             -- delete challenge
-            save $ chg { Chg.deleted = True } 
+--            save $ chg { Chg.deleted = True } 
 
             -- time 
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
