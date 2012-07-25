@@ -1484,6 +1484,7 @@ raceChallengeWith p = do
         i <- runDb $ do
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
 --            ap <- aget ["id" |== toSql uid] (rollback "account profile not found") :: SqlTransaction Connection AP.AccountProfile
+            apm <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
             t <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _ <- adeny ["account_id" |== SqlInteger uid] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
@@ -1494,6 +1495,7 @@ raceChallengeWith p = do
                     Chg.participants = p,
                     Chg.type = (fromJust $ ChgT.id n),
                     Chg.account = a,
+                    Chg.account_min = apm,
                     Chg.car = c
                 }
         writeResult i
