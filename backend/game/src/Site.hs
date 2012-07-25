@@ -1495,7 +1495,8 @@ raceChallengeWith p = do
                     Chg.type = (fromJust $ ChgT.id n),
                     Chg.account = a,
                     Chg.account_min = apm,
-                    Chg.car = c
+                    Chg.car = c,
+                    Chg.deleted = False
                 }
         writeResult i
 
@@ -1509,10 +1510,12 @@ raceChallengeAccept = do
 
         res <- runDb $ do
         
-            chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid ] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
+            -- retrieve challenge
+            chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
 
             -- TODO: check user busy
 
+            -- fetch needed data
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             oa <- aget ["id" |==(toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
@@ -1524,9 +1527,6 @@ raceChallengeAccept = do
             let env = defaultEnvironment
             let trk = trackDetailsTrack ts
 
-            -- TODO: store not account and car, but Driver and Car in database
-            -- then only add account_min => privacy safe
-
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
@@ -1534,11 +1534,13 @@ raceChallengeAccept = do
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
 
             -- delete challenge
-            -- TODO
+            save $ chg { Chg.deleted = True } 
 
-            -- store data
+            -- time 
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
             let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
+
+            -- store race
             rid <- save $ (def :: R.Race) { R.track_id = TT.track_id tr, R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData (Chg.account_min chg) (Chg.car chg) ors] }
 
             -- set accounts busy
