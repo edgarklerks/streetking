@@ -1522,15 +1522,17 @@ raceChallengeAccept = do
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             oma <- aget ["id" |== (toSql $ Chg.account_id chg)] (rollback "opponent account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             
-            return $ toInRule $ HM.fromList $ [("a" :: String, toInRule a), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
-{-
+
             let env = defaultEnvironment
             let trk = trackDetailsTrack ts
+
+            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a" :: String, toInRule a), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
+            {-
 
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
-            
+           
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
 
             -- store data
