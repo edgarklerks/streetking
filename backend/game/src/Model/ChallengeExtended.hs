@@ -27,6 +27,7 @@ $(genAll "ChallengeExtended" "challenge_extended" [
                     ("track_id", ''Integer),
                     ("participants", ''Integer),
                     ("type", ''Integer),
-                    ("accepts", ''Integer)
+                    ("accepts", ''Integer),
+                    ("deleted", ''Bool)
    ])
 
