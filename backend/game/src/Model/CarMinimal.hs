@@ -37,5 +37,6 @@ $(genAll "CarMinimal" "car_in_garage"
         ("nos", ''Integer),
         ("name", ''String),
         ("level", ''Integer),
-        ("year", ''Integer)
+        ("year", ''Integer),
+        ("car_id", ''Integer)
     ])

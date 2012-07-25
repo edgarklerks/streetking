@@ -114,6 +114,10 @@ deep s m = do
 
 jumpDeep = abort () 
 
+shift m = CM $ do 
+    ContT $ \r -> do 
+        runContT (m $ \u -> runContT (return u) r) return  
+
 liftDb :: SqlTransaction  c a -> ComposeMonad r c a 
 liftDb = CM . lift . lift  . lift 
 
