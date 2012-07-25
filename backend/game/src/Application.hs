@@ -141,7 +141,8 @@ data ApplicationState = ApplicationState
       ,  ch :: CryptHandle 
     }
 
-type SqlMap = S.HashMap String SqlValue 
+type SqlMap = S.HashMap String SqlValue
+
 getJson :: Application  SqlMap 
 getJson = do 
     t <- parse json <$> getRequestBody 
