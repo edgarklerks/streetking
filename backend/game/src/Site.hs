@@ -1483,7 +1483,6 @@ raceChallengeWith p = do
         let tp = extract "type" xs :: String
         i <- runDb $ do
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
---            ap <- aget ["id" |== toSql uid] (rollback "account profile not found") :: SqlTransaction Connection AP.AccountProfile
             apm <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
             t <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
@@ -1515,17 +1514,18 @@ raceChallengeAccept = do
             -- TODO: check user busy
 
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-            c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
-           
-            -- get track section data
-            ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
-            
+            oa <- aget ["id" |==(toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            oma <- aget ["id" |== (toSql $ Chg.account_id chg)] (rollback "opponent account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            
+            c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+           
+            tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
+            ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
+
             let env = defaultEnvironment
             let trk = trackDetailsTrack ts
+
+            -- TODO: store not account and car, but Driver and Car in database
+            -- then only add account_min => privacy safe
 
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
@@ -1533,17 +1533,18 @@ raceChallengeAccept = do
            
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
 
+            -- delete challenge
+            -- TODO
+
             -- store data
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
             let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
-            rid <- save $ (def :: R.Race) { R.track_id = (TT.track_id tr), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData oma (Chg.car chg) ors] }
+            rid <- save $ (def :: R.Race) { R.track_id = TT.track_id tr, R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData (Chg.account_min chg) (Chg.car chg) ors] }
 
-            -- set account busy
-            -- TODO: also set / modify challenger account busy
+            -- set accounts busy
+            save (oa { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
             save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
             
---            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a", toInRule a), ("rres", toInRule yrs), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
-
             -- return race id
             return rid
 
