@@ -1541,12 +1541,12 @@ raceChallengeAccept = do
             -- set account busy
             -- TODO: also set / modify challenger account busy
             save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
-            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a", toInRule a), ("rres", toInRule yrs), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
-            {-
+            
+--            return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a", toInRule a), ("rres", toInRule yrs), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
 
             -- return race id
             return rid
-  -}          
+
         writeResult res
 
 -- get own race challenge
