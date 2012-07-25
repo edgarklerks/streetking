@@ -1,6 +1,6 @@
 <div class="travel-cities-point-box" style="[:city_data]">
 	[:when (me.level > (city_level - 1) & me.city_id != city_id)]{
-		<a href="#Track/list/?city=[:city_id]" alt="" title="" module="TRACK_LIST_BY_CITIES">
+		<a href="#Track/list/?city=[:city_id]&con=[:continent_name]&cin=[:city_name]&cit=[:city_tracks]" alt="" title="" module="TRACK_LIST_BY_CITIES">
 			<div class="travel-cities-point" city="[:city_name]" link="#City/travel/?id=[:city_id]">
 				<div class="travel-cities-point-inner"></div>
 			</div>

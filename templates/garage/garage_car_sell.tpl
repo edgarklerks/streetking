@@ -1,4 +1,4 @@
-<div class="sale-box" title="The sale">
+<div class="sale-box" mtitle="The sale">
 	<div class="error">&nbsp;</div>
 	<div class="sale-box-scrap">
 		<div class="sale-box-text-container">Put to the scrap: <b>$SK [:0.total_price]</b><a href="#Car/trash?id=[:0.id]" module="GARAGE_CAR_SCRAP" class="button">scrap</a></div>

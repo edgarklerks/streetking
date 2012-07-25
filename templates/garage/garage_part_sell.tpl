@@ -1,4 +1,4 @@
-<div class="sale-box" title="The sale">
+<div class="sale-box" mtitle="The sale">
 	<div class="error">&nbsp;</div>
 	<div class="sale-box-scrap">
 		<div class="sale-box-text-container">Put to the scrap: <b>$SK [:0.trash_price]</b><a href="#?part_instance_id=[:requestParams.part_instance_id]" module="GARAGE_PART_SCRAP" class="button">scrap</a></div>

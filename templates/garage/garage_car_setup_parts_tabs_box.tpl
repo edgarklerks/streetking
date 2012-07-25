@@ -1,5 +1,5 @@
 <div id="setup-parts-tabs">
-	<div id="setup-parts-tabs-container"></div>
-	<div id="garage_car_setup_parts_tab_content" class="tabs-content ui-widget-content"></div>
+	<div id="garage-car-setup-parts-tab-content" class="garage-car-setup-parts-tabs-container"></div>
 	<div class="clearfix"></div>
+	<div id="setup-parts-tabs-container"></div>
 </div>

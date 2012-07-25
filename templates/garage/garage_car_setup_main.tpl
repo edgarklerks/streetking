@@ -1,4 +1,4 @@
-<div id="setup-car-box" car_id="[:0.id]" title="Set up your car">
+<div car_id="[:0.id]" mtitle="Set up your [:0.manufacturer_name] [:0.name] [:0.year] at level [:0.level]">
 	<div class="setup-car-box">
 		<div id="player-streetKING" class="setup-car-player-box">
 			<div class="missing">
@@ -6,22 +6,17 @@
 			</div>
 		</div>
 		<div class="setup-car-info-box">
-			<div class="setup-car-info-data-box">
-				<div class="setup-car-info-data-box-left">
-					<div class="setup-car-info-data-logo-box ui-corner-all">
-						<div class="setup-car-info-data-logo-box-image ui-corner-all" style="background-image:url(images/manufacturers/[:0.manufacturer_name]_logo.png);"></div>
-						<div class="setup-car-info-data-box-overlay ui-corner-all"></div>
-					</div>
-				</div>
-				<div class="setup-car-info-data-box-right">
-					<div>Manufacturer:&nbsp;<b>[:0.manufacturer_name]</b></div>
-					<div>Model:&nbsp;<b>[:0.name]</b></div>
-					<div>Year:&nbsp;<b>[:0.year]</b></div>
+			<div class="setup-car-info-data-box backgound-darkgray">
+				<div class="setup-car-info-data-logo-box backgound-blue"><div class="setup-car-info-data-logo" style="background-image:url(images/manufacturers/[:0.manufacturer_name]_logo.png);">&nbsp;</div></div>
+				<div class="setup-car-info-data-text">
+					<div>Manufacturer:&nbsp;<span>[:0.manufacturer_name]</span></div>
+					<div>Model:&nbsp;<span>[:0.name]</span></div>
+					<div>Year:&nbsp;<span>[:0.year]</span></div>
 				</div>
 				<div class="clearfix"></div>
 			</div>
 			<div id="setup-car-parts-info-box" class="setup-car-parts-info-box"></div>
-			<div id="setup-car-part-info-box" class="setup-car-part-info-box"></div>
+			<div id="setup-car-part-info-box" class="setup-car-part-info-box backgound-darkgray"></div>
 		</div>
 		<div class="clearfix"></div>
 	</div>

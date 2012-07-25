@@ -1,57 +1,54 @@
-<div class="car-showroom-element-box" car_id="[:id]" image="[:when (manufacturer_name == "BMW")]{car_1.jpg}[:when (manufacturer_name != "BMW")]{car_2.jpg}">
+<div class="car-showroom-element-box" car_id="[:id]">
 	<div class="car-showroom-element-info-box">
 		<div class="car-showroom-element-info-container">
 			<div class="car-showroom-manufacture-box">
-				<div class="car-showroom-manufacture-logo-box ui-corner-all">
-					<div class="car-showroom-manufacture-logo-box-image normal ui-corner-all" style="background-image:url(images/manufacturers/[:manufacturer_name]_logo.png);"></div>
-					<div class="car-showroom-manufacture-box-overlay ui-corner-all"></div>
-				</div>
+				<div class="car-showroom-manufacture-logo-box normal" style="background-image:url(images/manufacturers/[:manufacturer_name]_logo.png);"></div>
 				<div class="car-showroom-manufacture-name-box">
 					<div class="car-showroom-manufacture-name">[:manufacturer_name]</div>
 					<div class="car-showroom-model-name">[:name]</div>
 				</div>
 			</div>
 			<div class="car-showroom-element-data-info-box">
-				<div class="big-element-info-data-box">
-					<div class="big-element-info-data-name">Top speed <span>[:top_speed]</span> <b>km/h</b></div>
-					<div class="progress-bar-box-small ui-corner-all-2px">
-						<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((top_speed/100)*100)]%"></div>
+				<div class="car-showroom-element-info-data-box">
+					<div class="car-showroom-element-info-data-name">Top speed <span>[:top_speed]</span> <b>km/h</b></div>
+					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
+						<div class="car-showroom-element-progress-bar ui-corner-all-1px" style="width:[:eval ((top_speed/100)*100)]%"></div>
 					</div>
 				</div>
-				<div class="big-element-info-data-box">
-					<div class="big-element-info-data-name">Acceleration <span>[:acceleration]</span> <b>s</b></div>
-					<div class="progress-bar-box-small ui-corner-all-2px">
-						<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((acceleration/100)*100)]%"></div>
+				<div class="car-showroom-element-info-data-box">
+					<div class="car-showroom-element-info-data-name">Acceleration <span>[:acceleration]</span> <b>s</b></div>
+					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
+						<div class="car-showroom-element-progress-bar ui-corner-all-1px" style="width:[:eval ((acceleration/100)*100)]%"></div>
 					</div>
 				</div>
-				<div class="big-element-info-data-box">
-					<div class="big-element-info-data-name">Braking <span>[:braking]</span></div>
-					<div class="progress-bar-box-small ui-corner-all-2px">
-						<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((braking/100)*100)]%"></div>
+				<div class="car-showroom-element-info-data-box">
+					<div class="car-showroom-element-info-data-name">Braking <span>[:braking]</span></div>
+					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
+						<div class="car-showroom-element-progress-bar ui-corner-all-1px" style="width:[:eval ((braking/100)*100)]%"></div>
 					</div>
 				</div>
-				<div class="big-element-info-data-box">
-					<div class="big-element-info-data-name">Handling <span>[:handling]</span></div>
-					<div class="progress-bar-box-small ui-corner-all-2px">
-						<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((handling/100)*100)]%"></div>
+				<div class="car-showroom-element-info-data-box">
+					<div class="car-showroom-element-info-data-name">Handling <span>[:handling]</span></div>
+					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
+						<div class="car-showroom-element-progress-bar ui-corner-all-1px" style="width:[:eval ((handling/100)*100)]%"></div>
 					</div>
 				</div>
-				<div class="big-element-info-data-box">
-					<div class="big-element-info-data-name">Weight <span>[:weight]</span> <b>kg</b></div>
-					<div class="progress-bar-box-small ui-corner-all-2px">
-						<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((weight/100)*100)]%"></div>
+				<div class="car-showroom-element-info-data-box">
+					<div class="car-showroom-element-info-data-name">Weight <span>[:weight]</span> <b>kg</b></div>
+					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
+						<div class="car-showroom-element-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/100)*100)]%"></div>
 					</div>
 				</div>
-				<div class="big-element-info-data-box">
-					<div class="big-element-info-data-name">Improve <span>[:improvement]</span> <b>%</b></div>
-					<div class="progress-bar-box-small ui-corner-all-2px">
-						<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval floor(improvement/1000)]%"></div>
+				<div class="car-showroom-element-info-data-box">
+					<div class="car-showroom-element-info-data-name">Improve <span>[:improvement]</span> <b>%</b></div>
+					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
+						<div class="car-showroom-element-progress-bar ui-corner-all-1px" style="width:[:eval floor(improvement/1000)]%"></div>
 					</div>
 				</div>
-				<div class="big-element-info-data-box">
-					<div class="big-element-info-data-name">Used <span>[:eval floor(wear/1000)]</span> <b>%</b></div>
-					<div class="progress-bar-box-small ui-corner-all-2px">
-						<div class="progress-bar-small progress-bar-small-used ui-corner-all-2px" style="width:[:eval floor(wear/1000)]%"></div>
+				<div class="car-showroom-element-info-data-box">
+					<div class="car-showroom-element-info-data-name">Used <span>[:eval floor(wear/1000)]</span> <b>%</b></div>
+					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
+						<div class="car-showroom-element-progress-bar car-showroom-element-progress-bar-used ui-corner-all-1px" style="width:[:eval floor(wear/1000)]%"></div>
 					</div>
 				</div>
 			</div>
