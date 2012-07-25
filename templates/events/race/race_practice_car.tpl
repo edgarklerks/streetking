@@ -1,6 +1,4 @@
-[:when (race.data.1)]{
-}
-[:when (!race.data.1)]{
+[:race.data.length]
 	<div class="car-element-container backgound-darkgray">
 		<div class="car-element-image-container car-element-image-container-image" style="background-image:url(test_store/car_[:race.data.0.rd_car.id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
 		<div class="car-element-data-container">
@@ -50,7 +48,6 @@
 		<div class="clearfix"></div>
 	</div>
 	<div class="clearfix"></div>
-}
 
 <!--
 	<div class="vertical-element-container ui-corner-all">
