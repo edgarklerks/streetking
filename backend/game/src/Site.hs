@@ -1529,7 +1529,7 @@ raceChallengeAccept = do
 
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
---            liftIO $ print $ show chg
+            liftIO $ print $ show chg
             return $ toInRule $ HM.fromList $ [("td" :: String, toInRule ts), ("a", toInRule a), ("rres", toInRule yrs), ("c", toInRule c), ("tr", toInRule tr), ("ma", toInRule ma), ("oma", toInRule oma)]
             {-
 
