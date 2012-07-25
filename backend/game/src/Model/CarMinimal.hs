@@ -21,6 +21,7 @@ import Data.InRules
 
 $(genAll "CarMinimal" "car_in_garage"
     [
+        ("id", ''Id),
         ("manufacturer_name", ''String),
         ("manufacturer_picture", ''String),
         ("weight", ''Integer),
@@ -37,6 +38,5 @@ $(genAll "CarMinimal" "car_in_garage"
         ("nos", ''Integer),
         ("name", ''String),
         ("level", ''Integer),
-        ("year", ''Integer),
-        ("car_id", ''Integer)
+        ("year", ''Integer)
     ])
