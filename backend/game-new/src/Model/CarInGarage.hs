@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 module Model.CarInGarage where 
 
 import           Data.SqlTransaction
@@ -12,6 +12,12 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Aeson as AS
+import Data.InRules
+
 
 $(genAll "CarInGarage" "car_in_garage"
     [
@@ -43,3 +49,17 @@ $(genAll "CarInGarage" "car_in_garage"
         ("year", ''Integer),
         ("car_color", ''String)
     ])
+{-
+instance AS.ToJSON CarInGarage where
+        toJSON c = AS.toJSON $ HM.fromList $ [ 
+                        ("car_instance_id" :: LB.ByteString, AS.toJSON $  id c),
+                        ("name", AS.toJSON $  name c)
+                    ]
+
+instance AS.FromJSON CarInGarage where
+        parseJSON (AS.Object v) = do
+            i <- v AS..: "car_instance_id"
+            n <- v AS..: "name"
+            return $ (def :: CarInGarage) { id = i, name = n }
+
+-}

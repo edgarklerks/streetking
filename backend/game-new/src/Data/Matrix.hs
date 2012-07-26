@@ -346,7 +346,7 @@ mk2n xs = mkVector 2 (length xs) $ do
                         [a,b]
 
 mkn2 :: [(a,a)] -> Vector a 
-mkn2 xs = mkVector (length xs) 2 $do 
+mkn2 xs = mkVector (length xs) 2 $ do 
                 (a,b) <- xs 
                 [a,b]
 

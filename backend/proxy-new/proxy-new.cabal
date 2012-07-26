@@ -1,4 +1,4 @@
-Name:                game-new
+Name:                proxy-new
 Version:             0.1
 Synopsis:            Project Synopsis Here
 Description:         Project Description Here
@@ -14,10 +14,10 @@ Flag development
   Description: Whether to build the server in development (interpreted) mode
   Default: False
 
-Executable game-new
+Executable proxy-new
   hs-source-dirs: src
   main-is: Main.hs
-  Extensions: DoAndIfThenElse, ViewPatterns, ScopedTypeVariables, EmptyDataDecls
+  Extensions: DoAndIfThenElse, EmptyDataDecls
 
   Build-depends:
     base >= 4 && < 5,
@@ -34,44 +34,38 @@ Executable game-new
     text >= 0.11 && < 0.12,
     time >= 1.1 && < 1.5,
     xmlhtml >= 0.1,
+    vector,
+    primitive,
+    mwc-random,
     cereal,
-    dataenc,
     directory,
     stm,
     unordered-containers,
+    binary,
     CC-delcont,
     zeromq3-haskell,
     parsec,
     containers,
-    vector,
-    primitive,
-    mwc-random,
+    cryptohash,
+    random,
+    entropy,
     HDBC,
     HDBC-postgresql,
     convertible,
     hashable,
-    random,
     semigroups,
     pointed,
     regex-base,
     regex-tdfa,
     comonad,
     array,
+    blaze-builder,
+    enumerator,
+    http-enumerator,
     data-default,
     template-haskell,
     haskell-src,
-    aeson,
-    binary,
-    QuickCheck,
-    attoparsec,
-    data-object,
-    MonadRandom,
-    hslua,
-    filepath,
-    cryptohash,
-    entropy,
-    smallcheck,
-    base64-bytestring 
+    aeson
 
   if flag(development)
     build-depends:
