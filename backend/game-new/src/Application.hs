@@ -38,6 +38,7 @@ import Data.Role as R
 import qualified Data.Binary as BI 
 import Proto 
 import Data.MemState 
+import Data.ComposeModel  
 
 
 data ApplicationException = UserErrorE B.ByteString 
@@ -76,10 +77,6 @@ instance HasSqlTransaction App where
 instance HasRandom App where 
     randomLens = subSnaplet rnd 
 
-internalError :: String -> Application a 
-internalError x = modifyResponse (setResponseCode 500) *> (CIO.throw $ UserErrorE (B.pack x))
-
-
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
 
@@ -95,6 +92,10 @@ writeError x = writeAeson $ S.fromList [("error" :: String, x)]
 
 writeResult :: ToInRule a => a -> Application ()
 writeResult x = writeAeson $ S.fromList [("result" :: String, x)]
+
+writeResult' :: ToJSON a => a -> Application ()
+writeResult' x = writeAeson' $ S.fromList [("result" :: String, x)]
+
 
 writeMapable :: Mapable a => a -> Application ()
 writeMapable = writeResult . toHashMap 
@@ -171,5 +172,14 @@ writeAeson' = writeLBS . Data.Aeson.encode
 
 
 
+
+internalError :: String -> Application a 
+internalError x = modifyResponse (setResponseCode 500) *> (CIO.throw $ UserErrorE (B.pack x))
+
+
+
+runCompose m = with db $ withConnection $ \c -> do 
+                frp <- runComposeMonad m error c
+                frp `seq` return frp 
 
 
