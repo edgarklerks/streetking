@@ -18,6 +18,7 @@ import qualified Data.Aeson as AS
 import Data.InRules
 
 import qualified Model.AccountProfileMin as APM
+import qualified Model.CarMinimal as CMI
 
 import Data.Maybe
 import Application
@@ -39,6 +40,7 @@ $(genAll "ChallengeExtended" "challenge_extended" [
                     ("continent_id", ''Integer),
                     ("continent_name", ''String),
                     ("profile", ''APM.AccountProfileMin),
+                    ("car", ''CMI.CarMinimal),
                     ("deleted", ''Bool)
    ])
 
