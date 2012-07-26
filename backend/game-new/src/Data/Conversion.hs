@@ -21,6 +21,7 @@ import qualified Data.Vector as V
 import Test.QuickCheck
 import Data.Convertible
 import Control.Monad.State
+import qualified Data.Serialize as S
 
 -- 
 import qualified Data.ByteString.Char8 as B
@@ -32,6 +33,8 @@ import Data.Time.Calendar
 import Data.Time.Clock 
 import Data.Time.LocalTime
 import Data.Fixed
+--import Codec.Compression.GZip
+import Data.ByteString.Base64
 
 
 
@@ -107,7 +110,9 @@ typedMapping k v = Mapping [(k, v)]
 
 convFromSql :: SqlValue -> InRule  
 convFromSql (SqlString s) = toInRule s
-convFromSql (SqlByteString  s) = toInRule s
+convFromSql (SqlByteString  s) = case (S.decode <=< decode) s of 
+                                    Left _ -> InByteString s
+                                    Right a -> a
 convFromSql (SqlWord32  s) = toInRule s
 convFromSql (SqlWord64   s) = toInRule s
 convFromSql (SqlInt32  s) = toInRule s
@@ -124,6 +129,19 @@ convFromSql (SqlUTCTime  s) = toInRule s
 convFromSql SqlNull = InNull
 
 
+conv2Sql ::  InRule -> SqlValue
+conv2Sql (InNumber r) 
+    | denominator r == 1 = toSql (numerator r)
+    | otherwise          = toSql (fromRational r :: Double)
+conv2Sql (InDouble dd) =  toSql dd
+conv2Sql (InInteger dd) =  toSql  dd
+conv2Sql (InBool True) =  toSql  True
+conv2Sql (InBool False) = toSql  False
+conv2Sql InNull = SqlNull
+conv2Sql (InString s) =  toSql s
+conv2Sql (InByteString s) = toSql s
+conv2Sql r = SqlByteString (encode $ S.encode r)  
+
 
 convFromSqlA :: [SqlValue] -> InRule
 convFromSqlA xs = InArray (fmap convFromSql xs)
@@ -137,20 +155,6 @@ convFromSqlAA xs = InArray (fmap convFromSqlA xs)
 convSql ::  InRule -> SqlValue
 convSql = conv2Sql
  
-
-conv2Sql ::  InRule -> SqlValue
-conv2Sql (InNumber r) 
-    | denominator r == 1 = toSql (numerator r)
-    | otherwise          = toSql (fromRational r :: Double)
-conv2Sql (InDouble dd) =  toSql dd
-conv2Sql (InInteger dd) =  toSql  dd
-conv2Sql (InBool True) =  toSql  True
-conv2Sql (InBool False) = toSql  False
-conv2Sql InNull = SqlNull
-conv2Sql (InString s) =  toSql s
-conv2Sql (InObject s) =  toSql (fromInRule (InObject s)::LocalTime) 
-conv2Sql (InByteString s) = toSql s
-conv2Sql (InArray xs) = toSql $ InString $ show (fmap conv2Sql xs)
 
 
 conv2SqlArray :: InRule -> [SqlValue]
@@ -290,9 +294,10 @@ prop_isomorph_value_inrule = property prop_isomorph_value_inrule'
 
 smallArgs = Args {
         replay = Nothing,
-        maxSuccess = 10000,
-        maxSize = 30,
-        chatty = True
+        maxSuccess = 100000,
+        maxSize = 40,
+        chatty = True,
+        maxDiscardRatio = 10 
     }
 
 instance Arbitrary IsomorphT where 
@@ -307,6 +312,9 @@ instance Arbitrary IsomorphT where
         fmap IsomorphT $ frequency ps
 
 
+prop_test_complex_sql = property prop_complex_sql 
+    where prop_complex_sql :: IsomorphT -> Bool 
+          prop_complex_sql (IsomorphT u) = u == fromSql (toSql u)
     
 instance Arbitrary InDouble where 
     arbitrary = do  
@@ -346,7 +354,8 @@ cArgs = Args {
         replay = Nothing,
         maxSuccess = 10000,
         maxSize = 10000,
-        chatty = True
+        chatty = True,
+        maxDiscardRatio = 10 
     }
 prop_find_all = property prop_find_all'
 
