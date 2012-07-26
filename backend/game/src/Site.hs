@@ -1564,6 +1564,7 @@ searchRaceChallenge = do
                 +&& "continent_id" +== "continent_id"
                 +&& "track_level" +>= "min_level"
                 +&& "track_level" +<= "max_level"
+                +&& "account_id" +<> "not_account_id"
                 +&& "account_id" +== "account_id"
                 +&& "type" +== "type"
             )
