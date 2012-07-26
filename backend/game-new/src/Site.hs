@@ -148,12 +148,6 @@ loadConfig x = do
         case p of 
             [] -> internalError $ "No such config key: " ++ x
             [x] -> return (CFG.value x)
-{--
-runCompose m = withConnection $ \c -> do 
-                frp <- runComposeMonad m internalError c
-                frp `seq` return frp 
---}
-
 
 index :: Application ()
 index = ifTop $ writeBS "go rape yourself" 
@@ -169,7 +163,7 @@ userRegister = do
            x <- getJson >>= scheck ["email", "password", "nickname"] 
            scfilter x [("email", email), ("password", minl 6), ("nickname", minl 3 `andcf` maxl 16)]
            let m = updateHashMap x (def :: A.Account)
-           let c = m { A.password = (tiger32 $ C.pack (A.password m) `mappend` salt) }
+           let c = m { A.password = tiger32 $ C.pack (A.password m) `mappend` salt }
            let g = def :: G.Garage  
 
             -- save all  
@@ -1554,7 +1548,7 @@ raceChallengeAccept = do
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
 
             -- delete challenge
-            save $ chg { Chg.deleted = True } 
+--            save $ chg { Chg.deleted = True } 
 
             -- time 
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
