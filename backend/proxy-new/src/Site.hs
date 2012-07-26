@@ -110,12 +110,9 @@ getDeveloperId  = foldr step []
 
 
 transparent = do
-        withRequest $ \req -> liftIO (print req) *> checkPerm req *> do 
+        withRequest $ \req ->  checkPerm req *> do 
                                                   ns <- with roles $ getRoles "user_token"
                                                   ps <- with roles $ getRoles "application_token"
-                                                  liftIO $ print ns 
-                                                  liftIO $ print ps 
-
                                                   with proxy (runProxy $ (getUserId ns) ++ (getDeveloperId ps))
 
 ($>) a f = f a
