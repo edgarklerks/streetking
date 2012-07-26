@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms #-}
+{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings #-}
 
 module Data.Racing where
 
@@ -15,7 +15,20 @@ import Data.InRules
 import Data.Conversion
 import Database.HDBC
 import qualified Data.HashMap.Strict as H
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.Aeson as AS
 import Debug.Trace
+import System.Random
+import Control.Monad.State 
+import Control.Monad.Random 
+import Control.Monad.Writer 
+import Control.Monad
+import Control.Applicative
+import Data.InRules
+
+import qualified Model.AccountProfileMin as APM
+import qualified Model.CarInGarage as CIG
+import qualified Model.TrackDetails as TD
 
 type Path = Double
 type Speed = Double
@@ -65,8 +78,6 @@ $(genMapableRecord "SectionResult"
         ])
 
 type SectionResults = [SectionResult]
-instance FromInRule SectionResult 
-instance ToInRule SectionResult
 
 $(genMapableRecord "RaceResult"
     [
@@ -78,26 +89,20 @@ $(genMapableRecord "RaceResult"
             ("sectionResults", ''SectionResults)
         ])
 
+$(genMapableRecord "RaceData"
+    [
+            ("rd_user", ''APM.AccountProfileMin),
+            ("rd_car", ''CIG.CarInGarage),
+            ("rd_result", ''RaceResult)
+       ])
+
+type RaceDatas = [RaceData]
+
 raceResult2FE :: RaceResult -> RaceResult
 raceResult2FE (RaceResult i t vm va vf ss) = RaceResult i t (ms2kmh vm) (ms2kmh va) (ms2kmh vf) (map sectionResult2FE ss)
 
 sectionResult2FE :: SectionResult -> SectionResult
 sectionResult2FE (SectionResult i p vm va vo t)  = SectionResult i p (ms2kmh vm) (ms2kmh va) (ms2kmh vo) t
-
--- RaceResult to writable HashMap list
-mapRaceResult :: RaceResult -> [H.HashMap String SqlValue]
-mapRaceResult = (map mapSectionResult) . sectionResults
-
--- SectionResult to writable HashMap;
-mapSectionResult :: SectionResult -> H.HashMap String SqlValue
-mapSectionResult s = H.fromList $ [
-        ("time", toSql $ sectionTime s),
-        ("path", toSql $ sectionPath s),
-        ("section_id", toSql $ sectionId s),
-        ("speed_max", toSql $ sectionSpeedMax s),
-        ("speed_avg", toSql $ sectionSpeedAvg s),
-        ("speed_out", toSql $ sectionSpeedOut s)
-   ]
 
 -- 500m straight
 testSection1 = Section 0 Nothing 500
@@ -109,7 +114,7 @@ testSection2 = Section 0 (Just 15) 25
 testSection3 = Section 0 (Just 100) 300
 
 -- race tracks
-track0 = [Section 0 Nothing 10000]
+track0 = Track 0  [Section 0 Nothing 10000]
 
 track1 = Track 0 [
         Section 0 Nothing 2000,
@@ -133,7 +138,7 @@ track4 = Track 0 [Section 0 Nothing 700]
 -- run a path using driver skills. path is a double 0 - 1 indicating the quality of the traveled path.
 -- from this and the section properties, the effective radius and path length are calculated.
 path :: Driver -> Path
-path d = skillIntelligence d -- TODO: randomize
+path d =  skillIntelligence d 
 
 -- "correct" a section, i.e. take into account the path and modify the angle, arclength and radius accordingly
 pathSection :: Section -> Path -> Section
@@ -189,6 +194,33 @@ topSpeed s d c e = case (radius s) of
     Nothing -> lightSpeed
     Just r -> corneringSpeed c e r -- TODO: account for driver handling skill
 
+data RaceConfig = RC {
+        track :: Track,
+        driver :: Driver,
+        car :: Car,
+        env :: Environment
+    }
+
+-- randT
+-- State 
+-- IO 
+-- a
+
+{----
+
+newtype RaceMonad a = RM {
+        unRM :: RandT StdGen (State RaceConfig) a 
+    } deriving (Monad, Functor, Applicative, MonadState RaceConfig, MonadRandom) 
+runRaceMonad :: RaceMonad a -> StdGen -> RaceConfig -> a 
+runRaceMonad m g c = evalState (evalRandT (unRM m) g) c
+
+raceM :: RaceMonad [a] 
+raceM = do 
+    p <- gets driver 
+    (r :: Double) <- getRandomR (0, 1)
+    return []
+--}
+  
 -- for a driver, car and environment, given a list of sections, make a list of section results
 runRace :: Track -> Driver -> Car -> Environment -> RaceResult
 runRace (Track i ss) d c e = res $ runRace' ss' d c e
@@ -352,8 +384,13 @@ nitrous c e = nos c
  - Randomization
  -}
 
--- take a double x 0-1
--- produce a random double y 0-1
--- use a skewed normal distribution centered on x
-foo :: Double -> Double
-foo = undefined
+-- generate a random number in range [0,1] biased towards m
+-- TODO: include bias level d (now fixed on power 2)
+drand :: Double -> IO Double 
+drand m = do
+        n <- randomIO 
+        case n > m of
+            False -> return $ sqrt $ n * m
+            True -> return $ (1 -) $ sqrt $ (m-1) *  (n-1)
+
+

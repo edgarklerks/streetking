@@ -24,6 +24,8 @@ import Database.HDBC (SqlValue (SqlString))
 import qualified Data.InRules as R
 import System.Random 
 
+import qualified Data.Digest.TigerHash as H
+import qualified Data.Digest.TigerHash.ByteString as H
 
 import qualified Data.ByteString as C 
 import qualified Data.HashMap.Strict as Map
