@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 module Model.Car3dModel where 
 
 import           Data.SqlTransaction
@@ -7,6 +7,8 @@ import           Data.Convertible
 import           Model.General
 import           Data.Database 
 import           Control.Monad
+import qualified Data.Aeson as AS
+import Data.InRules
 
 import           Control.Applicative
 import qualified Data.Map as M
