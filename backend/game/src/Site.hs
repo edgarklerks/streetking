@@ -44,7 +44,7 @@ import qualified Model.Manufacturer as M
 import qualified Model.Car as Car 
 import qualified Model.CarInstance as CarInstance 
 import qualified Model.CarInGarage as CIG 
-import qualified Model.CarMinimal as CAM 
+import qualified Model.CarMinimal as CMI 
 import qualified Model.Car3dModel as C3D
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
@@ -184,7 +184,7 @@ userData = do
     n <- runCompose $ do 
                 action "user" ((load $ fromJust $ APM.id m) :: SqlTransaction Connection (Maybe APM.AccountProfileMin))
                 action "car" $ do
-                    xs <- search ["account_id" |== toSql (APM.id m) .&& "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CAM.CarMinimal]
+                    xs <- search ["account_id" |== toSql (APM.id m) .&& "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CMI.CarMinimal]
                     case xs of 
                         [] -> return Nothing
                         [x] -> return (Just x)
@@ -1485,6 +1485,7 @@ raceChallengeWith p = do
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             apm <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            cmi <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CMI.CarMinimal
             t <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _ <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
@@ -1496,6 +1497,7 @@ raceChallengeWith p = do
                     Chg.account = a,
                     Chg.account_min = apm,
                     Chg.car = c,
+                    Chg.car_min = cmi,
                     Chg.deleted = False
                 }
         writeResult i
@@ -1544,7 +1546,7 @@ raceChallengeAccept = do
             rid <- save $ (def :: R.Race) { R.track_id = TT.track_id tr, R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData (Chg.account_min chg) (Chg.car chg) ors] }
             
             -- set accounts busy
-            save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ((t+) $ ceiling $ raceTime yrs) })
+            save (a  { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ((t+) $ ceiling $ raceTime yrs) })
             save (oa { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ((t+) $ ceiling $ raceTime ors) })
             
             -- return race id
@@ -1552,14 +1554,16 @@ raceChallengeAccept = do
 
         writeResult res
 
--- get own race challenge
--- get race challenge by id
--- get race challenges by level, city_id, etc.
-
-getRaceChallenge :: Application ()
-getRaceChallenge = do
-        uid <- getUserId 
-        ((l,o), xs) <- getPagesWithDTD ("deleted" +==| (SqlBool False) +&& "challenge_id" +== "challenge_id" +&& "track_level" +>= "min_level" +&& "track_level" +<= "max_level")
+searchRaceChallenge :: Application ()
+searchRaceChallenge = do
+        ((l,o), xs) <- getPagesWithDTD (
+                    "deleted" +==| (SqlBool False)
+                +&& "challenge_id" +== "challenge_id"
+                +&& "track_level" +>= "min_level"
+                +&& "track_level" +<= "max_level"
+                +&& "account_id" +== "account_id"
+                +&& "type" +== "type"
+            )
         cs <- runDb $ search xs [] 10000 0 :: Application [ChgE.ChallengeExtended] 
         writeMapables cs
 
@@ -1654,7 +1658,7 @@ site = CIO.catch (CIO.catch (route [
                 ("/Test/write", testWrite),
                 ("/Race/challenge", raceChallenge),
                 ("/Race/challengeAccept", raceChallengeAccept),
-                ("/Race/challengeGet", getRaceChallenge),
+                ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
                 ("/Race/get", getRace)
              ]

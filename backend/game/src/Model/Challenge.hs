@@ -23,6 +23,7 @@ import Application
 import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
+import qualified Model.CarMinimal as CMI
 
 $(genAll "Challenge" "challenge" [
                     ("id", ''Id),
@@ -33,6 +34,7 @@ $(genAll "Challenge" "challenge" [
                     ("account", ''A.Account),
                     ("account_min", ''APM.AccountProfileMin),
                     ("car", ''CIG.CarInGarage),
+                    ("car_min", ''CMI.CarMinimal),
                     ("deleted", ''Bool)
                    
    ])
