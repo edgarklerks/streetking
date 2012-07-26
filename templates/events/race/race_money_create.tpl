@@ -4,9 +4,16 @@
 		<input type="hidden" name="type" id="type" value="money" />
 		<div class="error">&nbsp;</div>
 		<div id="declare-your-own-race-car-box" class="declare-your-own-race-car-box backgound-darkgray"></div>
-		<div class="declare-your-own-race-tracks-box inner-scroll-box">
-			<div id="declare-your-own-race-tracks-box"></div>
+		
+		<div id="declare-your-own-race-car-track-container" class="declare-your-own-race-car-track-container backgound-darkgray">
+			<div id="declare-your-own-race-car-tracks-content" class="declare-your-own-race-car-tracks-content">
+				<ul id="declare-your-own-race-car-tracks-content-elements"></ul>
+			</div>
+			<div class="controls">
+				<a href="#" class="prev-slide slide-button">&nbsp;</a><a href="#" class="next-slide slide-button">&nbsp;</a>
+			</div>
 		</div>
+
 		<div class="clearfix"></div>
 		<div class="declare-your-own-race-money-box">
 			<fieldset class="declare-your-own-race-money">
