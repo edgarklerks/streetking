@@ -1559,6 +1559,9 @@ searchRaceChallenge = do
         ((l,o), xs) <- getPagesWithDTD (
                     "deleted" +==| (SqlBool False)
                 +&& "challenge_id" +== "challenge_id"
+                +&& "track_id" +>= "track_id"
+                +&& "city_id" +>= "city_id"
+                +&& "continent_id" +>= "continent_id"
                 +&& "track_level" +>= "min_level"
                 +&& "track_level" +<= "max_level"
                 +&& "account_id" +== "account_id"
