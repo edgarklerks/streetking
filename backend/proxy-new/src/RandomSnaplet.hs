@@ -136,7 +136,7 @@ map64 :: Word8 -> Word8
 map64 p | p >= 0 && p <= 25  = fromIntegral (65 + p)
 map64 p | p > 25 && p <= 51 = fromIntegral (97 + (p - 26)) 
 map64 p | p > 51 && p <= 61 = fromIntegral $ 48 + (p - 52) 
-map64 62 = $([|fromIntegral . ord $ '/'|])
+map64 62 = $([|fromIntegral . ord $ '.'|])
 map64 63 = $([|fromIntegral . ord $ '='|]) 
 map64 n = map64 (n `mod` 64)
 
