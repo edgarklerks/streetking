@@ -1530,22 +1530,22 @@ raceChallengeAccept = do
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
-           
+            
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
-
+            
             -- delete challenge
 --            save $ chg { Chg.deleted = True } 
-
+            
             -- time 
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
             let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
-
+            
             -- store race
             rid <- save $ (def :: R.Race) { R.track_id = TT.track_id tr, R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData (Chg.account_min chg) (Chg.car chg) ors] }
-
+            
             -- set accounts busy
-            save (oa { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
-            save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
+            save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ((t+) $ ceiling $ raceTime yrs) })
+            save (oa { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ((t+) $ ceiling $ raceTime ors) })
             
             -- return race id
             return rid
@@ -1559,7 +1559,7 @@ raceChallengeAccept = do
 getRaceChallenge :: Application ()
 getRaceChallenge = do
         uid <- getUserId 
-        ((l,o), xs) <- getPagesWithDTD ("deleted" +==| (SqlBool False) +&& "challenge_id" +== "challenge_id" +&& "track_level" +>= "minlevel" +&& "track_level" +<= "maxlevel")
+        ((l,o), xs) <- getPagesWithDTD ("deleted" +==| (SqlBool False) +&& "challenge_id" +== "challenge_id" +&& "track_level" +>= "min_level" +&& "track_level" +<= "max_level")
         cs <- runDb $ search xs [] 10000 0 :: Application [ChgE.ChallengeExtended] 
         writeMapables cs
 
