@@ -1568,7 +1568,7 @@ searchRaceChallenge = do
                 +&& "account_id" +== "account_id"
                 +&& "type" +== "type"
             )
-        cs <- runDb $ search xs [] 10000 0 :: Application [ChgE.ChallengeExtended] 
+        cs <- runDb $ search xs [] l o :: Application [ChgE.ChallengeExtended] 
         writeMapables cs
 
 getRace :: Application ()
