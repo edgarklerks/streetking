@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 module Model.MenuModel where 
 
 import           Data.SqlTransaction
@@ -14,6 +14,10 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+
+import qualified Data.Aeson as AS
+import Data.InRules
+
 type MString = Maybe String 
 $(genAll "MenuModel" "menu" [
         ("id", ''Id),
@@ -90,6 +94,7 @@ gametree = Node Root $ reverse [
         ]
 
 market_tabstree = Node Root [
+            Node (Tab "body_kit" "PARTS" "") [],
             Node (Tab "engine" "PARTS" "") [],
             Node (Tab "suspension" "PARTS" "") [],
             Node (Tab "brake" "PARTS" "") [],
@@ -99,7 +104,7 @@ market_tabstree = Node Root [
             Node (Tab "nos" "PARTS" "") []
     ]
 garage_tabstree = Node Root [
-            Node (Tab "aerodynamic" "PARTS" "") [],
+            Node (Tab "body_kit" "PARTS" "") [],
             Node (Tab "engine" "PARTS" "") [],
             Node (Tab "suspension" "PARTS" "") [],
             Node (Tab "brake" "PARTS" "") [],
