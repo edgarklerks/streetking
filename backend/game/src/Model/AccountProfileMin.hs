@@ -30,16 +30,4 @@ $(genAll "AccountProfileMin" "account_profile" [
                     ("continent_name", ''String)
         ])
 
-{--
-load :: SqlTransaction c (Maybe a)
 
-
-bla = do 
-    x <- label "user" (load 34 :: T) [(label,a)] 
-    y <- label "car" (load 34 :: G) 
-    z <- label "shit" $ do 
-                    xs <- search .... 
-                    return (head xs)
-
-    return (x <> y)
---}

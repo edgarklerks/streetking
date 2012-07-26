@@ -1558,12 +1558,10 @@ raceChallengeAccept = do
 
 getRaceChallenge :: Application ()
 getRaceChallenge = do
-        -- min account data in challenge
         uid <- getUserId 
-        cs <- runDb $ search ["deleted" |== SqlBool False] [Order ("challenge_id",[]) False] 10000 0 :: Application [ChgE.ChallengeExtended] -- TODO: some account stuff in there
+        ((l,o), xs) <- getPagesWithDTD ("deleted" +==| (SqlBool False) +&& "challenge_id" +== "challenge_id" +&& "track_level" +>= "minlevel" +&& "track_level" +<= "maxlevel")
+        cs <- runDb $ search xs [] 10000 0 :: Application [ChgE.ChallengeExtended] 
         writeMapables cs
-
-
 
 getRace :: Application ()
 getRace = do

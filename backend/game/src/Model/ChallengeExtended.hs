@@ -17,6 +17,8 @@ import           Prelude hiding (id)
 import qualified Data.Aeson as AS
 import Data.InRules
 
+import qualified Model.AccountProfileMin as APM
+
 import Data.Maybe
 import Application
 
@@ -28,6 +30,15 @@ $(genAll "ChallengeExtended" "challenge_extended" [
                     ("participants", ''Integer),
                     ("type", ''Integer),
                     ("accepts", ''Integer),
+                    ("user_nickname", ''String),
+                    ("user_level", ''Integer),
+                    ("track_name", ''String),
+                    ("track_level", ''Integer),
+                    ("city_id", ''Integer),
+                    ("city_name", ''String),
+                    ("continent_id", ''Integer),
+                    ("continent_name", ''String),
+                    ("profile", ''APM.AccountProfileMin),
                     ("deleted", ''Bool)
    ])
 
