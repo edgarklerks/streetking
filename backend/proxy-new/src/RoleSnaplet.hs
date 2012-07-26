@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts, FlexibleInstances, NoMonomorphismRestriction, ScopedTypeVariables, TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, FlexibleInstances, MonomorphismRestriction, ScopedTypeVariables, TemplateHaskell #-}
 module RoleSnaplet ( 
     may,
     addRole,
@@ -68,10 +68,11 @@ may rs rr = do
     ct' <- getParam "user_token"
     at' <- getParam "application_token"
     xs <- gets runRS
-    let ls = cookieValue <$> catMaybes [at, ct]
-    let ls' = catMaybes [at', ct']
+    let ls = cookieValue <$> catMaybes [ct, at]
+    let ls' = catMaybes [ct', at']
     ts <- foldM (getRoles xs) [R.All] (ls ++ ls')
     b <- foldM (getPerms xs rr rs) False ts 
+    liftIO $ print b
     return b
  where getRoles xs zs x = do 
             z <- getRoles' x 
@@ -96,6 +97,8 @@ addRole s r = do
     h <- with random $  getUniqueKey 
     let ck = Cookie s h Nothing Nothing (Just "/") False False
     with dht $ insertBinary h r
+    liftIO (print r)
+    liftIO (print h)
     modifyResponse . addResponseCookie $ ck 
     modifyRequest $ \r -> r { rqCookies = ck : rqCookies r }
     writeBS $ "{\"result\":\"" `C.append` h `C.append` "\"}"
@@ -111,9 +114,11 @@ initRoleSnaplet a s = makeSnaplet "RoleSnaplet" "User/Application role manager" 
 --   b <- nestSnaplet "nodesnaplet" dht $ s 
   return (RoleSnaplet rso a s)
 
+
 getRoles' k = do 
-        x <- with dht $ lookupBinary k   
-        case x of 
+        (x :: Maybe R.Role) <- with dht $ lookupBinary k   
+        liftIO (print x)
+        case x  of 
             Nothing -> return []
             Just a -> return [a]
 

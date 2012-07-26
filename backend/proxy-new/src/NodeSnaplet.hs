@@ -19,8 +19,15 @@ import qualified Data.ByteString.Lazy as L
 import Data.MemState 
 import System.Random 
 import Proto 
+import System.ZMQ3 as Z  
+
 data DHTConfig = DHC {
-        _query :: MVar (Proto -> IO Proto)
+        _query :: MVar (),
+        _ctx :: Context,
+        _addr :: NodeAddr, 
+        _pull :: Socket Pull,
+        _req :: Socket Req,
+        _pc :: ProtoConfig 
     }
 
 class HasDHT b where 
@@ -28,10 +35,17 @@ class HasDHT b where
 
 
 sendQuery :: (MonadState DHTConfig m, MonadIO m) => Proto -> m Proto 
-sendQuery r = do 
-        p <- gets _query 
-        liftIO $ withMVar p $ \x -> do 
-            x r
+sendQuery r = do
+                 s <- gets _query 
+                 a <- gets _addr
+                 p <- gets _pull
+                 rq <- gets _req 
+                 pc <- gets _pc
+                 liftIO $ print r  
+                 liftIO $ withMVar s $ \_ -> do  
+                    res <- queryNode pc p rq a r 
+                    liftIO $ print "request done"
+                    return res 
 
 $(makeLenses [''DHTConfig])
 
@@ -39,15 +53,23 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
         xs <- liftIO $ readConfig fp  
         let (Just (StringC ctr)) = lookupConfig "DHT" xs >>= lookupVar "ctrl"
         let (Just (StringC upd)) = lookupConfig "DHT" xs >>= lookupVar "data"
-        let (Just (StringC lcl)) = lookupConfig "DHT" xs >>= lookupVar "local"
+        let (Just (StringC addr)) = lookupConfig "DHT" xs >>= lookupVar "local-addr" 
 
 
         let (Just (StringC svn)) = lookupConfig "DHT" xs >>= lookupVar "dump"
         
         s <- liftIO $ startNode ctr upd svn 
-        let cl = queryNode s lcl ctr
-        p <- liftIO $ newMVar cl 
-        return $ DHC p
+        p <- liftIO $ newMVar () 
+        
+        ctx <- liftIO $ Z.init 1  
+        pu <- liftIO $ Z.socket ctx Pull
+        liftIO $ Z.bind pu addr  
+        
+        req <- liftIO $ Z.socket ctx Req 
+        liftIO $ Z.connect req ctr 
+
+
+        return $ DHC p ctx addr pu req s
 
 
 -- addBinary :: Binary a => a -> IO ()

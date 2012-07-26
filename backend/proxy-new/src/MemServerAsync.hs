@@ -309,35 +309,31 @@ checkVersion n = do
             v <- asks version 
             when (v /= n) $ versionMismatch v n 
 
-queryNode :: ProtoConfig -> NodeAddr -> NodeAddr -> Proto -> IO Proto 
-queryNode pc n1 n2 p = do 
-            case getQuery p of 
-                Nothing -> client n1 n2 p 
+queryNode :: ProtoConfig -> Socket Pull -> Socket Req -> NodeAddr ->  Proto -> IO Proto 
+queryNode pc p r n req = do 
+            case getQuery req of 
+                Nothing -> client' p r n req  
                 Just t@(Query a) -> do 
                     s <- runQuery (memstate pc) t
                     case s of 
-                        NotFound -> client n1 n2 p 
+                        NotFound -> client' p r n req  
                         (Value v) -> return $ result (KeyVal a v)
                         (KeyVal a v) -> return $ result (KeyVal a v)
-                        (Empty) -> client n1 n2 p 
-                Just a -> forkIO (void $ client n1 n2 p) *> return (result Empty)
+                        (Empty) -> client' p r n req  
+                Just a -> forkIO (void $ client' p  r n req) *> return (result Empty)
 
 
-client :: NodeAddr -> NodeAddr -> Proto -> IO Proto
-client n1 n2 p = withContext 1 $ \c -> 
-         withSocket c Req $ \r -> 
-         withSocket c Pull $ \d -> 
-            do 
-                ds <- bind d n1 
-                connect r n2 
-                sendProto r (addRoute n1 $ p) 
-                x <- receiveProto r
+client' :: Socket Pull -> Socket Req -> NodeAddr -> Proto -> IO Proto 
+client' p r n req = do 
+                sendProto r (addRoute n $ req) 
+                x <- receiveProto r 
                 s <- newEmptyMVar 
-                l <- forkIO $ do
-                        p <- receiveProto d 
-                        s =$ p 
-                n <- waitOnResult l s
+                l <- forkIO $ do 
+                        t <- receiveProto p 
+                        s =$ t 
+                n <- waitOnResult l s 
                 return n 
+
 
 -- waitOnResult :: ThreadId -> MVar Proto -> IO Proto 
 waitOnResult l m = runCCT $ reset $ \p -> do 

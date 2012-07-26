@@ -196,9 +196,10 @@ sendAbroad r rq = do
     let r' = t rq s
     liftIO $ writeIORef (rqBody r) (SomeEnumerator enumEOF)
     resp <- getResponse
+    liftIO $ print resp
     p <- liftIO $ newChan 
     m <- gets _manager 
-    liftIO $ forkIO $ run_ $  http r' (\_ _ -> chanIterator p) m
+    liftIO $ forkIO $ run_ $  http r' (\_ _ -> chanIterator p) m 
     finishWith (setResponseBody (mapEnum toByteString fromByteString $ chanEnum p) resp) 
     return ()
     where   t :: HE.Request IO -> (forall a. Enumerator B.ByteString IO a) -> HE.Request IO
@@ -218,6 +219,7 @@ runProxy prs = do
     let  subresource = req $> rqPathInfo 
     let  params = fmap (second (Just . Prelude.head)) $ M.toList $ req $> rqParams 
     let  request = HE.def {HE.method = C.pack . show $ method, HE.path = (?proxyTransform $ resource `B.append` subresource), HE.host = host, HE.port = port, HE.queryString = params ++ prs}  
+    liftIO (print req)
     sendAbroad req request 
     return ()
 
