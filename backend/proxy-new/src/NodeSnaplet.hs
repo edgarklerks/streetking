@@ -41,10 +41,8 @@ sendQuery r = do
                  p <- gets _pull
                  rq <- gets _req 
                  pc <- gets _pc
-                 liftIO $ print r  
                  liftIO $ withMVar s $ \_ -> do  
                     res <- queryNode pc p rq a r 
-                    liftIO $ print "request done"
                     return res 
 
 $(makeLenses [''DHTConfig])
