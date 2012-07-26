@@ -292,14 +292,15 @@ topError :: (forall p. ProtoMonad p a) -> ProtoMonad p a
 topError m = catchProtoError m throwError
 
 
-startNode :: NodeAddr -> NodeAddr -> FilePath  -> IO ()
+startNode :: NodeAddr -> NodeAddr -> FilePath  -> IO ProtoConfig  
 startNode f g fp = let step = do 
                             forkProto handleRequest 
                             outgoingManager 
                             handleUpdates
                     in do 
                         c <- newProtoConfig f g fp
-                        runProtoMonad step c *> pure ()
+                        forkIO $ runProtoMonad step c *> pure ()
+                        return c
 
 
 
@@ -308,31 +309,39 @@ checkVersion n = do
             v <- asks version 
             when (v /= n) $ versionMismatch v n 
 
+queryNode :: ProtoConfig -> Socket Pull -> Socket Req -> NodeAddr ->  Proto -> IO Proto 
+queryNode pc p r n req = do 
+            case getQuery req of 
+                Nothing -> client' p r n req  
+                Just t@(Query a) -> do 
+                    s <- runQuery (memstate pc) t
+                    case s of 
+                        NotFound -> client' p r n req  
+                        (Value v) -> return $ result (KeyVal a v)
+                        (KeyVal a v) -> return $ result (KeyVal a v)
+                        (Empty) -> client' p r n req  
+                Just a -> forkIO (void $ client' p  r n req) *> return (result Empty)
 
-client :: NodeAddr -> NodeAddr -> Proto -> IO Proto 
-client n1 n2 p = withContext 1 $ \c -> 
-         withSocket c Req $ \r -> 
-         withSocket c Pull $ \d -> 
-            do 
-                ds <- bind d n1 
-                connect r n2 
-                sendProto r (addRoute n1 $ p) 
-                x <- receiveProto r
+
+client' :: Socket Pull -> Socket Req -> NodeAddr -> Proto -> IO Proto 
+client' p r n req = do 
+                sendProto r (addRoute n $ req) 
+                x <- receiveProto r 
                 s <- newEmptyMVar 
-                l <- forkIO $ do
-                        p <- receiveProto d 
-                        s =$ p 
-                n <- waitOnResult l s
+                l <- forkIO $ do 
+                        t <- receiveProto p 
+                        s =$ t 
+                n <- waitOnResult l s 
                 return n 
+
 
 -- waitOnResult :: ThreadId -> MVar Proto -> IO Proto 
 waitOnResult l m = runCCT $ reset $ \p -> do 
-                                            forM_ [1..1000] $ \x -> do 
+                                            forM_ [1..10] $ \x -> do 
                                                 a <- liftIO $ isEmptyMVar m
-                                                liftIO $ print x
                                                 if a then liftIO $ do
-                                                     when (x == 1000) $ killThread l *> print "killedThread"
-                                                     threadDelay 100
+                                                     when (x == 10) $ killThread l 
+                                                     threadDelay 10000
                                                      return (result NotFound)
                                                  else do 
                                                     shift0 p $ \k ->  liftIO $ takeMVar m 

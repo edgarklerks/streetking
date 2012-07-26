@@ -27,6 +27,7 @@ import qualified Control.Monad.CatchIO as CIO
 import qualified Data.ByteString.Char8 as B 
 import qualified Data.ByteString.Char8 as C 
 import Control.Applicative 
+import qualified Data.Aeson as A
 import Control.Monad 
 import qualified Data.Role 
 import Control.Monad.State
@@ -62,6 +63,9 @@ routes = let ?proxyTransform = id in fmap (second enroute) $ [
           ("/Application/identify", identify)
          , ("/User/logout", return ())
          , ("/test", writeBS "Hello world")
+          ,("/Role/application", roleApp)
+          , ("/Role/user", roleUser)
+ 
          , ("/", transparent)
          ]
 
@@ -83,7 +87,7 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
 
 internalError = terminateConnection . UserErrorE . C.pack  
 
-checkPerm req = (with roles $ may uri method) >>= \x -> when x (internalError "You are not allowed to access the resource")
+checkPerm req = (with roles $ may uri method) >>= \x -> unless x (internalError "You are not allowed to access the resource")
     where uri = stripSL $ B.unpack $ ?proxyTransform $ B.tail  (req $> rqContextPath) `B.append` (req $> rqPathInfo) 
           method = frm $ req $> rqMethod 
           frm :: Method -> RestRight 
@@ -106,9 +110,12 @@ getDeveloperId  = foldr step []
 
 
 transparent = do
-        withRequest $ \req -> checkPerm req *> do 
+        withRequest $ \req -> liftIO (print req) *> checkPerm req *> do 
                                                   ns <- with roles $ getRoles "user_token"
                                                   ps <- with roles $ getRoles "application_token"
+                                                  liftIO $ print ns 
+                                                  liftIO $ print ps 
+
                                                   with proxy (runProxy $ (getUserId ns) ++ (getDeveloperId ps))
 
 ($>) a f = f a
@@ -140,7 +147,7 @@ allowOrigin = do
             modifyResponse (addHeader "Content-Type" "text/plain")
             modifyResponse (\x -> 
                case getHeader "Origin" g <|> getHeader "Referer" g of 
-                    Nothing -> addHeader "Access-Control-Allow-Origin" "*" x
+                    Nothing -> addHeader "Access-Control-Allow-Origin" "http://192.168.1.99" x
                     Just n -> addHeader "Access-Control-Allow-Origin" n x
                 )
 -- Access-Control-Allow-Credentials: true  
@@ -153,5 +160,17 @@ allowMethods = modifyResponse (addHeader "Access-Control-Allow-Methods" "POST, G
 
 allowHeaders :: Application ()
 allowHeaders = modifyResponse (addHeader "Access-Control-Allow-Headers" "origin, content-type, accept, cookie");
+
+
+roleApp :: Application()
+roleApp = with roles $ (not.null) <$>  getRoles "application_token" >>= writeLBS .  ("{\"result\":" <>) . (<> "}") . A.encode 
+
+roleUser :: Application()
+roleUser = with roles $ do 
+        xs <- getRoles "user_token"
+        case xs of 
+            [] -> writeLBS "{\"result\":0}" 
+            [User (Just x)] -> writeLBS "{\"result\":1}" 
+            [User (Nothing)] -> writeLBS "{\"result\":0}" 
 
 

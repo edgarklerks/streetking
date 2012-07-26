@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 module Model.AccountProfile where 
 
 import           Data.SqlTransaction
@@ -12,6 +12,13 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Aeson as AS
+import Data.InRules
+
+
 $(genAll "AccountProfile" "account_profile" [             
                     ("id", ''Id),
                     ("firstname", ''String),
@@ -41,6 +48,9 @@ $(genAll "AccountProfile" "account_profile" [
                     ("continent_id", ''Integer),
                     ("continent_name", ''String),
 --                    ("continent_data", ''String),
-                    ("skill_unused", ''Integer)
-    ]
-    )
+                    ("skill_unused", ''Integer),
+                    ("busy_subject_id", ''Integer),
+                    ("busy_type", ''String),
+                    ("busy_timeleft", ''Integer)
+        ])
+     
