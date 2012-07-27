@@ -1170,9 +1170,10 @@ cancelTaskPersonnel = do
                             return r
 
 
--- extract is extract
 extract k xs = fromSql . fromJust $ HM.lookup k xs
 
+-- dextract :: (Ord k, Convertible SqlValue a) => a -> k -> HM.HashMap k SqlValue -> a
+dextract d k xs = maybe d fromSql $ HM.lookup k xs
 
 {-- Reporting functions --}
 {-- 
@@ -1481,6 +1482,7 @@ raceChallengeWith p = do
         -- what if challenger leaves city? disallow travel if challenge active? or do not care?
         let tid = extract  "track_id" xs :: Integer
         let tp = extract "type" xs :: String
+        let amt = dextract 0 "declare_money" xs :: Integer
         i <- runDb $ do
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             apm <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
@@ -1498,6 +1500,7 @@ raceChallengeWith p = do
                     Chg.account_min = apm,
                     Chg.car = c,
                     Chg.car_min = cmi,
+                    Chg.amount = amt,
                     Chg.deleted = False
                 }
         writeResult i
