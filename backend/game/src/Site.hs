@@ -1568,7 +1568,7 @@ searchRaceChallenge = do
                 +&& "account_id" +== "account_id"
                 +&& "type" +== "type"
             )
-        cs <- runDb $ search xs [] 10000 0 :: Application [ChgE.ChallengeExtended] 
+        cs <- runDb $ search xs [] l o :: Application [ChgE.ChallengeExtended]
         writeMapables cs
 
 getRace :: Application ()
@@ -1594,6 +1594,12 @@ userCurrentRace = do
                             td <- head <$> (search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster])
                             return (r, td, ts) 
         writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
+
+serverTime :: Application ()
+serverTime = do
+        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+        writeResult t
+
 
 -- | The main entry point handler.
 site :: Application ()
@@ -1664,7 +1670,8 @@ site = CIO.catch (CIO.catch (route [
                 ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
-                ("/Race/get", getRace)
+                ("/Race/get", getRace),
+                ("/Time/get", serverTime)
              ]
        <|> serveDirectory "resources/static") (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
