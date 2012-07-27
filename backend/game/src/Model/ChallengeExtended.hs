@@ -23,7 +23,6 @@ import qualified Model.CarMinimal as CMI
 import Data.Maybe
 import Application
 
-
 $(genAll "ChallengeExtended" "challenge_extended" [
                     ("challenge_id", ''Integer),
                     ("account_id", ''Integer),
@@ -40,6 +39,13 @@ $(genAll "ChallengeExtended" "challenge_extended" [
                     ("city_name", ''String),
                     ("continent_id", ''Integer),
                     ("continent_name", ''String),
+                    ("track_length", ''Double),
+                    ("top_time", ''Double),
+                    ("top_time_id", ''Integer),
+                    ("top_time_name", ''String),
+                    ("top_time_picture_small", ''String),
+                    ("top_time_picture_medium", ''String),
+                    ("top_time_picture_large", ''String),
                     ("profile", ''APM.AccountProfileMin),
                     ("car", ''CMI.CarMinimal),
                     ("deleted", ''Bool)
