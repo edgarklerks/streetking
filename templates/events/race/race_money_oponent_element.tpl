@@ -7,14 +7,14 @@
 			</div>
 			<div class="race-money-opponent-element-user-info">
 				<div>Race by:</div>
-				<div><a href="#User/data?id=[:top_time_id]" module="PROFILE_VIEW">[:eval RETURNINFO(top_time_name)]</a></div>
+				<div><a href="#User/data?id=[:profile.id]" module="PROFILE_VIEW">[:eval RETURNINFO(profile.nickname)]</a></div>
 			</div>
 			<div class="clearfix"></div>
 		</div>
-		<div>Manufacturer:&nbsp;<span>[:eval RETURNINFO(manufacturer_name)]</span></div>
-		<div>Model:&nbsp;<span>[:eval RETURNINFO(car_model)]</span></div>
-		<div>Year:&nbsp;<span>[:eval RETURNINFO(year)]</span></div>
-		<div>Level:&nbsp;<span>[:eval RETURNINFO(level)]</span></div>
+		<div>Manufacturer:&nbsp;<span>[:eval RETURNINFO(car.manufacturer_name)]</span></div>
+		<div>Model:&nbsp;<span>[:eval RETURNINFO(car.name)]</span></div>
+		<div>Year:&nbsp;<span>[:eval RETURNINFO(car.year)]</span></div>
+		<div>Level:&nbsp;<span>[:eval RETURNINFO(car.level)]</span></div>
 	</div>
 	<div class="race-money-opponent-element-vertical-line"></div>
 	<div class="race-money-opponent-element-track-image-container backgound-blue">
