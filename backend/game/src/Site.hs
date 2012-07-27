@@ -1175,6 +1175,10 @@ extract k xs = fromSql . fromJust $ HM.lookup k xs
 -- dextract :: (Ord k, Convertible SqlValue a) => a -> k -> HM.HashMap k SqlValue -> a
 dextract d k xs = maybe d fromSql $ HM.lookup k xs
 
+rextract s k xs = case HM.lookup k xs of
+        Nothing -> error s
+        Just a -> fromSql a
+
 {-- Reporting functions --}
 {-- 
  - @IN Integer
@@ -1478,6 +1482,7 @@ raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
         uid <- getUserId
         xs <- getJson >>= scheck ["track_id", "type"]
+        liftIO $ print xs
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         -- what if challenger leaves city? disallow travel if challenge active? or do not care?
         let tid = extract  "track_id" xs :: Integer
