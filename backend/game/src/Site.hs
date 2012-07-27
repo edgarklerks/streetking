@@ -1173,11 +1173,11 @@ cancelTaskPersonnel = do
 extract k xs = fromSql . fromJust $ HM.lookup k xs
 
 -- dextract :: (Ord k, Convertible SqlValue a) => a -> k -> HM.HashMap k SqlValue -> a
-dextract d k xs = maybe d fromSql $ HM.lookup k xs
+dextract d k xs = return $ maybe d fromSql $ HM.lookup k xs
 
-rextract s k xs = case HM.lookup k xs of
-        Nothing -> error s
-        Just a -> fromSql a
+rextract k xs = case HM.lookup k xs of
+        Nothing -> error $ k ++ " is a required field"
+        Just a -> return $ fromSql a
 
 {-- Reporting functions --}
 {-- 
@@ -1481,13 +1481,13 @@ raceChallenge = raceChallengeWith 2
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
         uid <- getUserId
-        xs <- getJson >>= scheck ["track_id", "type"]
+        xs <- getJson -- >>= scheck ["track_id", "type"]
         liftIO $ print xs
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         -- what if challenger leaves city? disallow travel if challenge active? or do not care?
-        let tid = extract  "track_id" xs :: Integer
-        let tp = extract "type" xs :: String
-        let amt = dextract 0 "declare_money" xs :: Integer
+        tid :: Integer <- rextract "track_id" xs
+        tp :: String <- rextract "type" xs
+        amt :: Integer <- dextract 0 "declare_money" xs 
         i <- runDb $ do
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             apm <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
