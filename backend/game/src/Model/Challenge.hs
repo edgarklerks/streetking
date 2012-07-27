@@ -35,7 +35,7 @@ $(genAll "Challenge" "challenge" [
                     ("account_min", ''APM.AccountProfileMin),
                     ("car", ''CIG.CarInGarage),
                     ("car_min", ''CMI.CarMinimal),
-                    ("deleted", ''Bool)
-                   
+                    ("deleted", ''Bool),
+                    ("amount", ''Integer)
    ])
 
