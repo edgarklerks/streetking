@@ -46,6 +46,7 @@ $(genAll "ChallengeExtended" "challenge_extended" [
                     ("top_time_picture_small", ''String),
                     ("top_time_picture_medium", ''String),
                     ("top_time_picture_large", ''String),
+                    ("amount", ''Integer),
                     ("profile", ''APM.AccountProfileMin),
                     ("car", ''CMI.CarMinimal),
                     ("deleted", ''Bool)
