@@ -1540,9 +1540,14 @@ raceChallengeAccept = do
             -- run race
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
-            
+
+            -- decide on winner
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
-            
+
+            -- submit times for highscore
+            DBF.submit_for_top_time (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
+            DBF.submit_for_top_time (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
+
             -- delete challenge
 --            save $ chg { Chg.deleted = True } 
             
