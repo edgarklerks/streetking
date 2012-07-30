@@ -1545,8 +1545,8 @@ raceChallengeAccept = do
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
 
             -- submit times for highscore
-            DBF.submit_for_top_time (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
-            DBF.submit_for_top_time (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
+--            DBF.submit_for_top_time (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
+--            DBF.submit_for_top_time (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
 
             -- delete challenge
 --            save $ chg { Chg.deleted = True } 
