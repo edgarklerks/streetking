@@ -1386,6 +1386,8 @@ carSetOptions = do
 unixtime :: IO Integer
 unixtime = floor <$> getPOSIXTime
 
+
+-- time based actions for user account: update before any activity involving the account
 userActions :: Integer -> SqlTransaction Connection ()
 userActions uid = do
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
@@ -1505,6 +1507,7 @@ raceChallengeWith p = do
         tp :: String <- rextract "type" xs
         amt :: Integer <- dextract 0 "declare_money" xs 
         i <- runDb $ do
+            userActions uid
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             apm <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
@@ -1535,14 +1538,16 @@ raceChallengeAccept = do
         let cid = extract "challenge_id" xs :: Integer 
 
         res <- runDb $ do
-        
+
             -- retrieve challenge
             chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
 
             -- TODO: check user busy
 
             -- fetch needed data
+            userActions uid
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
+            userActions $ fromJust $ A.id $ Chg.account chg 
             oa <- aget ["id" |==(toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
