@@ -884,7 +884,7 @@ userAddSkill = do
             if p > A.skill_unused u 
                 then rollback "Not enough skill points"
                 else do 
-                   let u' = u {
+                   save $ u {
                             A.skill_control = A.skill_control u + A.skill_control d,
                             A.skill_braking = A.skill_braking u + A.skill_braking d,
                             A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
@@ -892,9 +892,10 @@ userAddSkill = do
                             A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
                             A.skill_unused = A.skill_unused u - abs p
                         }
-                   save u'
-                   return u' 
-        writeMapable u'
+--                   save u'
+--                   return True 
+--        writeMapable u'
+        writeResult u'
 
 
 
@@ -1388,6 +1389,7 @@ unixtime = floor <$> getPOSIXTime
 
 
 -- time based actions for user account: update before any activity involving the account
+-- TODO: all other time based actions, such as energy regeneration
 userActions :: Integer -> SqlTransaction Connection ()
 userActions uid = do
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
@@ -1395,6 +1397,10 @@ userActions uid = do
         when ((A.busy_until a) <= t) $ do
             save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
             return ()
+
+-- TODO: personnel actions here (improve, repair)
+
+-- TODO: car actions (on select)
 
 racePractice :: Application ()
 racePractice = do
