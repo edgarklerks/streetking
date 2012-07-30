@@ -182,6 +182,7 @@ userData :: Application ()
 userData = do 
     x <- getJson >>= scheck ["id"]
     let m = updateHashMap x (def :: APM.AccountProfileMin)
+    runDb $ userActions $ fromJust $ APM.id m
     n <- runCompose $ do 
                 action "user" ((load $ fromJust $ APM.id m) :: SqlTransaction Connection (Maybe APM.AccountProfileMin))
                 action "car" $ do
@@ -193,8 +194,9 @@ userData = do
 
 userMe :: Application ()
 userMe = do 
-    x <- getUserId 
+    x <- getUserId
     n <- runDb $ do 
+            userActions x
             DBF.account_update_energy x 
             p <- (load x) :: SqlTransaction Connection (Maybe AP.AccountProfile)
             return p
@@ -1381,7 +1383,16 @@ carSetOptions = do
                                 
         writeResult (1 :: Integer)
 
+unixtime :: IO Integer
+unixtime = floor <$> getPOSIXTime
 
+userActions :: Integer -> SqlTransaction Connection ()
+userActions uid = do
+        a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
+        t <- liftIO $ unixtime
+        when ((A.busy_until a) <= t) $ do
+            save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
+            return ()
 
 racePractice :: Application ()
 racePractice = do
@@ -1391,6 +1402,7 @@ racePractice = do
         let tid = extract "track_id" xs :: Integer
         -- get account
         r <- runDb $ do
+            userActions uid
             as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
             case as of
                 [] -> rollback "you dont exist, go away."
