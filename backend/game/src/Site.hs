@@ -1437,6 +1437,9 @@ racePractice = do
                                             let race = def :: R.Race
                                             rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc rs] })
 
+                                            -- update track time
+                                            save $ (def :: TTM.TrackTime) { TTM.account_id = uid, TTM.track_id = tid, TTM.time = (raceTime rs)  }
+
                                             -- set account busy
                                             save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = te })
 
