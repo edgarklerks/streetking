@@ -40,6 +40,7 @@ import qualified Model.TrackDetails as TD
 import qualified Model.TrackMaster as TT
 import qualified Model.TrackCity as TCY
 import qualified Model.TrackContinent as TCN
+import qualified Model.TrackTime as TTM
 import qualified Model.Manufacturer as M 
 import qualified Model.Car as Car 
 import qualified Model.CarInstance as CarInstance 
@@ -1544,9 +1545,9 @@ raceChallengeAccept = do
             -- decide on winner
             let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
 
-            -- submit times for highscore
---            DBF.submit_for_top_time (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
---            DBF.submit_for_top_time (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
+            -- update race times -- TODO: delayed update so that top times appear after race finishes
+            save $ (def :: TTM.TrackTime) { TTM.account_id = (fromJust $ A.id a), TTM.track_id = (Chg.track_id chg), TTM.time = (raceTime yrs)  }
+            save $ (def :: TTM.TrackTime) { TTM.account_id = (fromJust $ A.id oa), TTM.track_id = (Chg.track_id chg), TTM.time = (raceTime ors)  }
 
             -- delete challenge
 --            save $ chg { Chg.deleted = True } 
