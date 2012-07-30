@@ -1391,8 +1391,10 @@ userActions :: Integer -> SqlTransaction Connection ()
 userActions uid = do
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
         t <- liftIO $ unixtime
-        when (False && ((A.busy_until a) <= t)) $ do
-            save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
+        when ((A.busy_until a) <= t) $ do
+--            save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
+            -- do not overwrite record as it may have changed; use update
+            update "account" ["id" |== (toSql $ uid)] [] [("busy_subject", SqlInteger 0), ("busy_subject_id", SqlInteger 0), ("busy_type", SqlInteger 1)]
             return ()
 
 -- TODO: personnel actions here (improve, repair)
