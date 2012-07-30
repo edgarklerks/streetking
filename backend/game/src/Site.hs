@@ -878,13 +878,14 @@ userAddSkill = do
         uid <- getUserId 
         xs <- getJson
         u' <- runDb $ do 
+            userActions uid
             u <- fromJust <$> load uid 
             let d = updateHashMap xs (def :: A.Account)
             let p = A.skill_acceleration d + A.skill_braking d + A.skill_control d + A.skill_reactions d + A.skill_intelligence d  
             if p > A.skill_unused u 
                 then rollback "Not enough skill points"
                 else do 
-                   save $ u {
+                   let u' = u {
                             A.skill_control = A.skill_control u + A.skill_control d,
                             A.skill_braking = A.skill_braking u + A.skill_braking d,
                             A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
@@ -892,13 +893,9 @@ userAddSkill = do
                             A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
                             A.skill_unused = A.skill_unused u - abs p
                         }
---                   save u'
---                   return True 
---        writeMapable u'
-        writeResult u'
-
-
-
+                   save u'
+                   return u' 
+        writeMapable u'
 
 removePart :: Application ()
 removePart = do 
