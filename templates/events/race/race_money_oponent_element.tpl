@@ -3,7 +3,7 @@
 	<div class="race-money-opponent-element-user-info-container">
 		<div class="race-money-opponent-element-user-container">
 			<div class="race-money-opponent-element-user-image-container backgound-blue">
-				<div class="race-money-opponent-element-user-image" style="background-image:url([:eval RETURNUSERIMAGE(user_photo)])">&nbsp;</div>
+				<div class="race-money-opponent-element-user-image" style="background-image:url([:eval RETURNUSERIMAGE(profile.picture_small)])">&nbsp;</div>
 			</div>
 			<div class="race-money-opponent-element-user-info">
 				<div>Race by:</div>

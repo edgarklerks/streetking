@@ -1,7 +1,7 @@
 [:when (race.data.length == 2)]{
 	<div class="car-element-container backgound-darkgray">
 		<div class="car-element-image-container car-element-image-container-image" style="background-image:url(test_store/car_[:race.data.0.rd_car.id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
-		<div class="car-element-vertical-line">&nbsp;VS</div>
+		<div class="car-element-vertical-line">&nbsp;</div>
 		<div class="car-element-image-container car-element-image-container-image" style="background-image:url(test_store/car_[:race.data.1.rd_car.id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
 	</div>
 	<div class="clearfix"></div>
