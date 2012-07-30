@@ -1,5 +1,5 @@
 <div class="race-money-opponent-element-container backgound-darkgray">
-	<div class="race-money-opponent-element-car-image-container race-money-opponent-element-car-image" style="background-image:url(test_store/car_[:car_instance_id].jpg?t=1343309601111)">&nbsp;</div>
+	<div class="race-money-opponent-element-car-image-container race-money-opponent-element-car-image" style="background-image:url(test_store/car_[:car.id].jpg)">&nbsp;</div>
 	<div class="race-money-opponent-element-user-info-container">
 		<div class="race-money-opponent-element-user-container">
 			<div class="race-money-opponent-element-user-image-container backgound-blue">
@@ -8,6 +8,7 @@
 			<div class="race-money-opponent-element-user-info">
 				<div>Race by:</div>
 				<div><a href="#User/data?id=[:profile.id]" module="PROFILE_VIEW">[:eval RETURNINFO(profile.nickname)]</a></div>
+				<div>Level: [:eval RETURNINFO(profile.level)]</div>
 			</div>
 			<div class="clearfix"></div>
 		</div>
