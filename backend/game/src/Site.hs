@@ -154,7 +154,7 @@ userRegister = do
 
             -- save all  
            i <- runDb  $ do 
-                uid <- save c 
+                uid <- save (c {A.busy_type = 1 }) 
                 g <- save (g { G.account_id = uid })
                 return uid
            writeResult i
