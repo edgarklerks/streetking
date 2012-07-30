@@ -885,7 +885,8 @@ userAddSkill = do
             if p > A.skill_unused u 
                 then rollback "Not enough skill points"
                 else do 
-                   let u' = u {
+{-
+                        let u' = u {
                             A.skill_control = A.skill_control u + A.skill_control d,
                             A.skill_braking = A.skill_braking u + A.skill_braking d,
                             A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
@@ -894,7 +895,17 @@ userAddSkill = do
                             A.skill_unused = A.skill_unused u - abs p
                         }
                    save u'
-                   return u' 
+-}
+                        save $ u {
+                                A.skill_control = A.skill_control u + A.skill_control d,
+                                A.skill_braking = A.skill_braking u + A.skill_braking d,
+                                A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
+                                A.skill_intelligence = A.skill_intelligence u + A.skill_intelligence d,
+                                A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
+                                A.skill_unused = A.skill_unused u - abs p
+                             }
+                        temp <- fromJust <$> load uid :: SqlTransaction Connection A.Account 
+                        return temp
         writeMapable u'
 
 removePart :: Application ()
