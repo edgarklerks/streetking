@@ -885,7 +885,6 @@ userAddSkill = do
             if p > A.skill_unused u 
                 then rollback "Not enough skill points"
                 else do 
-{-
                         let u' = u {
                             A.skill_control = A.skill_control u + A.skill_control d,
                             A.skill_braking = A.skill_braking u + A.skill_braking d,
@@ -894,18 +893,8 @@ userAddSkill = do
                             A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
                             A.skill_unused = A.skill_unused u - abs p
                         }
-                   save u'
--}
-                        save $ u {
-                                A.skill_control = A.skill_control u + A.skill_control d,
-                                A.skill_braking = A.skill_braking u + A.skill_braking d,
-                                A.skill_acceleration = A.skill_acceleration u + A.skill_acceleration d,
-                                A.skill_intelligence = A.skill_intelligence u + A.skill_intelligence d,
-                                A.skill_reactions = A.skill_reactions u + A.skill_reactions d,
-                                A.skill_unused = A.skill_unused u - abs p
-                             }
-                        temp <- fromJust <$> load uid :: SqlTransaction Connection A.Account 
-                        return temp
+                        save u'
+                        return u'
         writeMapable u'
 
 removePart :: Application ()
@@ -1402,7 +1391,7 @@ userActions :: Integer -> SqlTransaction Connection ()
 userActions uid = do
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
         t <- liftIO $ unixtime
-        when ((A.busy_until a) <= t) $ do
+        when (False && ((A.busy_until a) <= t)) $ do
             save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
             return ()
 
