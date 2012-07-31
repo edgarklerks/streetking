@@ -210,7 +210,8 @@ data RaceConfig = RC {
 
 newtype RaceMonad a = RM {
         unRM :: RandT StdGen (State RaceConfig) a 
-    } deriving (Monad, Functor, Applicative, MonadState RaceConfig, MonadRandom) 
+    } deriving (Monad, Functor, Applicative, MonadState RaceConfig, MonadRandom)
+
 runRaceMonad :: RaceMonad a -> StdGen -> RaceConfig -> a 
 runRaceMonad m g c = evalState (evalRandT (unRM m) g) c
 
@@ -220,7 +221,7 @@ raceM = do
     (r :: Double) <- getRandomR (0, 1)
     return []
 --}
-  
+ 
 -- for a driver, car and environment, given a list of sections, make a list of section results
 runRace :: Track -> Driver -> Car -> Environment -> RaceResult
 runRace (Track i ss) d c e = res $ runRace' ss' d c e
@@ -257,7 +258,7 @@ runSection s@(Section i _ _) p vin vnext d c e = proc $ IState 0 0 vin vin False
     where
         s' = pathSection s p
         l = arclength s'
-        vlim = topSpeed s d c e
+        vlim = topSpeed s' d c e
         proc :: IState -> SectionResult
         proc ist@(IState t x vm v b n) = case (x >= l) of
             True -> SectionResult i p (max v vm) (l/t) v t
