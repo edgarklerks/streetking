@@ -29,6 +29,7 @@ $(genAll "TrackMaster" "track_master"
         ("continent_name", ''String),
         ("continent_data", ''String),
         ("length", ''Double),
+        ("top_time_exists", ''Bool),
         ("top_time", ''Double),
         ("top_time_id", ''Integer),
         ("top_time_name", ''String),
