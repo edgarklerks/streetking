@@ -1395,7 +1395,7 @@ userActions uid = do
         let u = A.busy_until a
         when (u > 0 && u <= t) $ do
 --            save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
-            -- do not overwrite record as it may have changed; use update
+            -- do not overwrite record as it may have changed; use update instead
             update "account" ["id" |== (toSql $ uid)] [] [("busy_until", SqlInteger 0), ("busy_subject_id", SqlInteger 0), ("busy_type", SqlInteger 1)]
             return ()
 
@@ -1453,7 +1453,7 @@ racePractice = do
                                             let rs = raceResult2FE $ runRace ss d c e
                                             
                                             -- store data
-                                            t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+                                            t <- liftIO unixtime 
                                             let te = (t + ) $ ceiling $ raceTime rs
                                             let race = def :: R.Race
                                             rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc rs] })
@@ -1507,7 +1507,6 @@ raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
         uid <- getUserId
         xs <- getJson -- >>= scheck ["track_id", "type"]
-        liftIO $ print xs
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         -- what if challenger leaves city? disallow travel if challenge active? or do not care?
         tid :: Integer <- rextract "track_id" xs
