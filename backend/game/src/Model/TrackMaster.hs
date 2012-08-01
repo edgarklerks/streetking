@@ -32,6 +32,7 @@ $(genAll "TrackMaster" "track_master"
         ("top_time_exists", ''Bool),
         ("top_time", ''Double),
         ("top_time_id", ''Integer),
+        ("top_time_account_id", ''Integer),
         ("top_time_name", ''String),
         ("top_time_picture_small", ''String),
         ("top_time_picture_medium", ''String),

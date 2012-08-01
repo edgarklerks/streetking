@@ -10,6 +10,7 @@ import           Control.Monad
 import qualified Data.Aeson as AS
 import Data.InRules
 
+import qualified Data.HashMap.Strict as HM
 import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
@@ -32,29 +33,6 @@ import           Prelude hiding (id)
 --   -> car instance (ie. from other player)
 --   -> car model (ie. new car instance)
 
-{-
-data TaskAction = TATopTime {
-        ta_toptime_account_id :: Integer,
-        ta_toptime_track_id :: Integer,
-        ta_toptime_time :: Double
-    } | TAModifyMoney {
-        ta_money_account_id  :: Integer,
-        ta_money_amount :: Integer
-    } | TAModifyExperience {
-        ta_experience_account_id :: Integer,
-        ta_experience_amount :: Integer
-    } | TAGivePart | TATransferCar 
-            deriving (Show, Eq)
-
-type TaskActions = [TaskAction]
--}
-
-$(genMapableRecord "ActionTopTime" [
-        ("a_toptime_account_id", ''Integer),
-        ("a_toptime_track_id", ''Integer),
-        ("a_toptime_time", ''Double)
-    ])
-
 $(genMapableRecord "ActionModifyMoney" [
         ("a_money_account_id", ''Integer),
         ("a_money_amount", ''Integer)
@@ -65,22 +43,28 @@ $(genMapableRecord "ActionModifyExperience" [
         ("a_exp_amount", ''Integer)
     ])
 
-{-
-$(genMapableRecord "ActionModifyExperience" [
+$(genMapableRecord "ActionTransferMoney" [
+        ("a_tmon_target_account_id", ''Integer),
+        ("a_tmon_source_account_id", ''Integer),
+        ("a_tmon_amount", ''Integer)
     ])
--}
 
-data WrappedAction =
-      WrapTT ActionTopTime
-    | WrapMM ActionModifyMoney
-    | WrapME ActionModifyExperience
-        deriving (Eq, Show)
- 
-type WrappedActions = [WrappedAction]
+$(genMapableRecord "ActionTransferCar" [
+        ("a_tcar_target_account_id", ''Integer),
+        ("a_tcar_source_account_id", ''Integer), -- not strictly necessary
+        ("a_tcar_instance_id", ''Integer)
+    ])
+
+$(genMapableRecord "ActionGivePart" [
+        ("a_part_account_id", ''Integer),
+        ("a_part_model_id", ''Integer)
+    ])
+
+
 
 $(genAll "Task" "task" [             
                     ("id", ''Id),
-                    ("type_id", ''Integer),
+                    ("type", ''String),
                     ("subject_id", ''Integer),
                     ("time", ''Integer),
                     ("data", ''String),
