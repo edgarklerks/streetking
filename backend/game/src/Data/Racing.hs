@@ -123,13 +123,11 @@ track1 = Track 0 [
     ]
 
 track2 = Track 0 [
-        Section 0 Nothing 2000,
-        Section 0 (Just 100) 200,
-        Section 0 (Just 20) 30,
-        Section 0 (Just 100) 150,
-        Section 0 (Just 20) 30,
-        Section 0 (Just 100) 200,
-        Section 0 Nothing 3000
+        Section 0 Nothing 500,
+        Section 0 (Just 50) 75,
+        Section 0 Nothing 100,
+        Section 0 (Just 20) 60,
+        Section 0 Nothing 1000
     ]
 
 track3 = Track 0 [Section 0 (Just 100) 700]

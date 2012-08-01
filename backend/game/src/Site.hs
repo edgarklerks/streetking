@@ -75,6 +75,7 @@ import qualified Model.Challenge as Chg
 import qualified Model.ChallengeAccept as ChgA
 import qualified Model.ChallengeType as ChgT
 import qualified Model.ChallengeExtended as ChgE
+import qualified Model.Task as ST
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
 import qualified Model.GeneralReport as GR 
