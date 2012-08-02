@@ -9,6 +9,8 @@ import           Data.Database
 import           Control.Monad
 import qualified Data.Aeson as AS
 import Data.InRules
+import qualified Data.ByteString.Char8 as C
+import qualified Data.ByteString.Lazy as B
 
 import qualified Data.HashMap.Strict as HM
 import           Control.Applicative
@@ -16,22 +18,6 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-
-
--- task types: account, car, track, ...
--- taskdata format stores actions and variables necessary for task
--- task fires when data is retrieved that can be affected by this type of task --> type should be array, or many-to-many?
--- * set top time (track)
--- * reward user after mission / race (account)
--- * ...
-
--- user reward
--- * money
--- * experience
--- * item
---   -> part
---   -> car instance (ie. from other player)
---   -> car model (ie. new car instance)
 
 $(genMapableRecord "ActionModifyMoney" [
         ("a_money_account_id", ''Integer),
@@ -60,14 +46,21 @@ $(genMapableRecord "ActionGivePart" [
         ("a_part_model_id", ''Integer)
     ])
 
+$(genMapableRecord "ActionSetTopTime" [
+        ("a_toptime_account_id", ''Integer),
+        ("a_toptime_track_id", ''Integer),
+        ("a_toptime_time", ''Double)
+    ])
 
+
+
+instance Default C.ByteString where def = C.empty
 
 $(genAll "Task" "task" [             
                     ("id", ''Id),
                     ("type", ''String),
-                    ("subject_id", ''Integer),
                     ("time", ''Integer),
-                    ("data", ''String),
+                    ("data", ''C.ByteString),
                     ("deleted", ''Bool)
    ])
 

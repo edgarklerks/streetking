@@ -21,6 +21,7 @@ import           Data.DatabaseTemplate
 import           Database.HDBC (toSql, fromSql)
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as LB
+import qualified Data.ByteString.Lazy.Char8 as LBC
 import qualified Data.Text.Encoding as T
 import qualified Data.Text as T 
 import           Snap.Util.FileServe
@@ -75,7 +76,8 @@ import qualified Model.Challenge as Chg
 import qualified Model.ChallengeAccept as ChgA
 import qualified Model.ChallengeType as ChgT
 import qualified Model.ChallengeExtended as ChgE
-import qualified Model.Task as ST
+import qualified Model.Task as TK
+import qualified Model.TaskSubject as TKS
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
 import qualified Model.GeneralReport as GR 
@@ -1386,12 +1388,16 @@ unixtime :: IO Integer
 unixtime = floor <$> getPOSIXTime
 
 
+{-
+ - Actions: transactions to be taken before selecting data
+ -}
+
 -- time based actions for user account: update before any activity involving the account
 -- TODO: all other time based actions, such as energy regeneration
 userActions :: Integer -> SqlTransaction Connection ()
 userActions uid = do
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-        t <- liftIO $ unixtime
+        t <- liftIO unixtime
         let u = A.busy_until a
         when (u > 0 && u <= t) $ do
 --            save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
@@ -1399,9 +1405,101 @@ userActions uid = do
             update "account" ["id" |== (toSql $ uid)] [] [("busy_until", SqlInteger 0), ("busy_subject_id", SqlInteger 0), ("busy_type", SqlInteger 1)]
             return ()
 
--- TODO: personnel actions here (improve, repair)
+-- TODO: personnel actions here (improve, repair) ?
 
--- TODO: car actions (on select)
+-- TODO: car actions (on select) ?
+
+
+{-
+ - Tasks: pre-set low-cost actions to be fired if specified subject is called for after a specified time
+ -}
+
+-- TODO: InRule support for lazy bytestrings
+setTask :: Integer -> String -> C.ByteString -> SqlTransaction Connection Integer 
+setTask t tpe d = do
+        save $ (def :: TK.Task) { TK.type = tpe, TK.time = t, TK.data = d, TK.deleted = False  }
+
+setTaskSubject :: String -> Integer -> Integer -> SqlTransaction Connection Integer 
+setTaskSubject tpe sid tid = do
+        save $ (def :: TKS.TaskSubject) { TKS.task_id = tid, TKS.type = tpe, TKS.subject_id = sid, TKS.deleted = False }
+
+unsetTask :: TK.Task -> SqlTransaction Connection ()
+unsetTask x = do
+--        x <- aget ["id" |== toSql tid] (rollback "unset: task not found") :: SqlTransaction Connection TK.Task
+        save $ x { TK.deleted = True }
+        ys <- search  ["task_id" |== (toSql $ TK.id x)] [] 10000 0 :: SqlTransaction Connection [TKS.TaskSubject]
+        forM ys $ \y -> do
+                save $ y { TKS.deleted = True } 
+        return ()
+
+-- TODO: cleanup: physically delete tasks and task_subjects that are more than x old and are indicated as deleted
+cleanupTasks :: SqlTransaction Connection ()
+cleanupTasks = undefined
+
+setTaskSetTopTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection Integer
+setTaskSetTopTime t trk uid tme = do
+        tid <- setTask t "set_top_time" $ C.pack $ LBC.unpack $ AS.encode $ (def :: TK.ActionSetTopTime) { TK.a_toptime_track_id = trk, TK.a_toptime_account_id = uid, TK.a_toptime_time = tme }
+        setTaskSubject "track" trk tid
+        setTaskSubject "user" uid tid
+        return tid
+
+setTaskModifyMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+setTaskModifyMoney t uid amt = do
+        tid <- setTask t "modify_money" $ C.pack $ LBC.unpack $ AS.encode $ (def :: TK.ActionModifyMoney) { TK.a_money_account_id = uid, TK.a_money_amount = amt }
+        setTaskSubject "user" uid tid
+        return tid
+        
+
+-- TODO: concurrent access.
+-- 0. generate unique id
+-- 1. update selection of tasks: set unique id in selection field
+-- 2. select tasks with unique id
+-- 3. proceed as normal
+
+runTasks :: SqlTransaction Connection ()
+runTasks = do
+        t <- liftIO unixtime
+        transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger (t + 4*60*60), "deleted" |== SqlBool True]
+        ss <- search  ["time" |<= SqlInteger t, "deleted" |== SqlBool False] [] 10000 0 :: SqlTransaction Connection [TK.Task]
+        forM ss runTask
+        return ()    
+        
+runTask :: TK.Task -> SqlTransaction Connection ()
+runTask s = do
+
+        -- set task deleted
+        unsetTask s 
+        
+        case TK.type s of
+                "modify_money" -> doTaskModifyMoney s
+                "modify_experience" -> doTaskModifyExperience s
+                "transfer_money" -> doTaskTransferMoney s
+                "transfer_car" -> doTaskTransferCar s
+                "give_part" -> doTaskGivePart s
+                "set_top_time" -> doTaskSetTopTime s
+                _ -> rollback "unknown task type"
+
+doTaskSetTopTime :: TK.Task -> SqlTransaction Connection ()
+doTaskSetTopTime s = do
+        let d :: TK.ActionSetTopTime = fromJust $ AS.decode $ LBC.pack $ C.unpack $ TK.data s
+        save $ (def :: TTM.TrackTime) { TTM.account_id = TK.a_toptime_account_id d, TTM.track_id = TK.a_toptime_track_id d, TTM.time = TK.a_toptime_time d  }
+        return ()
+
+doTaskModifyMoney :: TK.Task -> SqlTransaction Connection ()
+doTaskModifyMoney = undefined
+
+doTaskModifyExperience :: TK.Task -> SqlTransaction Connection ()
+doTaskModifyExperience = undefined
+
+doTaskTransferMoney :: TK.Task -> SqlTransaction Connection ()
+doTaskTransferMoney = undefined 
+
+doTaskTransferCar :: TK.Task -> SqlTransaction Connection ()
+doTaskTransferCar = undefined 
+
+doTaskGivePart :: TK.Task -> SqlTransaction Connection ()
+doTaskGivePart = undefined 
+
 
 racePractice :: Application ()
 racePractice = do
