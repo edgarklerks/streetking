@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
-module Model.Task where 
+module Model.TaskExtended where 
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -12,22 +12,21 @@ import Data.InRules
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as B
 
+
 import qualified Data.HashMap.Strict as HM
 import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-
-
-
 instance Default C.ByteString where def = C.empty
 
-$(genAll "Task" "task" [             
+$(genAll "TaskExtended" "task_extended" [
                     ("id", ''Id),
                     ("type", ''String),
                     ("time", ''Integer),
                     ("data", ''C.ByteString),
-                    ("deleted", ''Bool)
-   ])
+                    ("subject_type", ''String),
+                    ("subject_id", ''Integer)
+       ])
 
