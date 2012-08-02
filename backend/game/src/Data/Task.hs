@@ -20,7 +20,7 @@ import           Model.General
 
 import qualified Model.TrackTime as TTM
 import qualified Model.Task as TK
-import qualified Model.TaskSubject as TKS
+import qualified Model.TaskTrigger as TKT
 import qualified Model.TaskExtended as TKE
 
 {-
@@ -77,9 +77,9 @@ setTask :: Integer -> String -> C.ByteString -> SqlTransaction Connection Intege
 setTask t tpe d = do
         save $ (def :: TK.Task) { TK.type = tpe, TK.time = t, TK.data = d, TK.deleted = False  }
 
-setTaskSubject :: String -> Integer -> Integer -> SqlTransaction Connection Integer 
-setTaskSubject tpe sid tid = do
-        save $ (def :: TKS.TaskSubject) { TKS.task_id = tid, TKS.type = tpe, TKS.subject_id = sid }
+setTaskTrigger :: String -> Integer -> Integer -> SqlTransaction Connection Integer 
+setTaskTrigger tpe sid tid = do
+        save $ (def :: TKT.TaskTrigger) { TKT.task_id = tid, TKT.type = tpe, TKT.subject_id = sid }
 
 unsetTask :: Integer -> SqlTransaction Connection ()
 unsetTask tid = do
@@ -153,13 +153,13 @@ failTask e = return ()
 setTrackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection Integer
 setTrackTime t trk uid tme = do
         tid <- setTask t "track_time" $ C.pack $ LBC.unpack $ AS.encode $ (def :: DataTrackTime) { dtt_track_id = trk, dtt_account_id = uid, dtt_time = tme }
-        setTaskSubject "track" trk tid
-        setTaskSubject "user" uid tid
+        setTaskTrigger "track" trk tid
+        setTaskTrigger "user" uid tid
         return tid
 
 setModifyMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
 setModifyMoney t uid amt = do
         tid <- setTask t "modify_money" $ C.pack $ LBC.unpack $ AS.encode $ (def :: DataModifyMoney) { dmm_account_id = uid, dmm_amount = amt }
-        setTaskSubject "user" uid tid
+        setTaskTrigger "user" uid tid
         return tid
  
