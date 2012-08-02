@@ -21,7 +21,6 @@ $(genAll "TaskSubject" "task_subject" [
                     ("id", ''Id),
                     ("type", ''String),
                     ("task_id", ''Integer),
-                    ("subject_id", ''Integer),
-                    ("deleted", ''Bool)
+                    ("subject_id", ''Integer)
    ])
 
