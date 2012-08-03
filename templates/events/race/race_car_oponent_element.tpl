@@ -25,7 +25,14 @@
 		<div>Track level:&nbsp;<span>[:eval RETURNINFO(track_level)]</span></div>
 		<div>Track length:&nbsp;<span>[:eval RETURNINFO((length/1000))]</span> km.</div>
 		<div>Track record:&nbsp;<span>[:eval SECONDSTOTIME(top_time)]</span></div>
-		<div>Record owner:&nbsp;<span><a href="#User/data?id=[:top_time_id]" module="PROFILE_VIEW">[:eval RETURNINFO(top_time_name)]</a></span></div>
+		<div>Record owner:&nbsp;
+			[:when (top_time_exists == true)]{
+					<span><a href="#User/data?id=[:top_time_account_id]" module="PROFILE_VIEW">[:top_time_name]</a></span>
+			}
+			[:when (top_time_exists == false)]{
+				not set
+			}
+		</div>
 		<div>Personal record:&nbsp;<span>[:eval SECONDSTOTIME(0)]</span></div>
 	</div>
 	<div class="race-car-opponent-element-race-info">

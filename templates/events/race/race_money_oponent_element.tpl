@@ -24,14 +24,21 @@
 	<div class="race-money-opponent-element-track-info-container">
 		<div>Track:&nbsp;<span>[:eval RETURNINFO(track_name)]</span></div>
 		<div>Track level:&nbsp;<span>[:eval RETURNINFO(track_level)]</span></div>
-		<div>Track length:&nbsp;<span>[:eval RETURNINFO((length/1000))]</span> km.</div>
+		<div>Track length:&nbsp;<span>[:eval RETURNINFO((track_length/1000))]</span> km.</div>
 		<div>Track record:&nbsp;<span>[:eval SECONDSTOTIME(top_time)]</span></div>
-		<div>Record owner:&nbsp;<span><a href="#User/data?id=[:top_time_id]" module="PROFILE_VIEW">[:eval RETURNINFO(top_time_name)]</a></span></div>
+		<div>Record owner:&nbsp;
+			[:when (top_time_exists == true)]{
+				<span><a href="#User/data?id=[:top_time_account_id]" module="PROFILE_VIEW">[:top_time_name]</a></span>
+			}
+			[:when (top_time_exists == false)]{
+				not set
+			}
+		</div>
 		<div>Personal record:&nbsp;<span>[:eval SECONDSTOTIME(0)]</span></div>
 	</div>
 	<div class="race-money-opponent-element-race-info">
 		<div class="race-money-opponent-element-label">race winning amount:</div>
-		<div class="race-money-opponent-element-amount">SK$ 000</div>
+		<div class="race-money-opponent-element-amount">SK$ [:amount]</div>
 		<div class="race-money-opponent-element-buttons-container">
 			<a href="#Race/challengeAccept?challenge_id=[:challenge_id]" class="button car-info-button" module="RACE_MONEY_ACCPET">race</a>
 		</div>

@@ -9,11 +9,11 @@
 			<div>Track length:&nbsp;<span>[:eval length/1000]</span> km.</div>
 			<div>Track record:&nbsp;<span>[:eval SECONDSTOTIME(top_time)]</span></div>
 			<div>Record owner:&nbsp;
-				[:when (kazkas == false)]{
-					<a href="#User/data?id=[:top_time_id]" module="PROFILE_VIEW">[:top_time_name]</a>
+				[:when (top_time_exists == true)]{
+					<a href="#User/data?id=[:top_time_account_id]" module="PROFILE_VIEW">[:top_time_name]</a>
 				}
-				[:when (kazkas == true)]{
-					not set yet
+				[:when (top_time_exists == false)]{
+					not set
 				}
 			</div>
 			<div>Personal record:&nbsp;<span>[:eval SECONDSTOTIME(0)]</span></div>
