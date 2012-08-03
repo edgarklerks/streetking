@@ -17,6 +17,7 @@ import           Model.TH
 import           Data.Time.Clock.POSIX
 import           Control.Monad.Trans
 import           Model.General 
+import           Data.Unique.Id
 
 import qualified Model.TrackTime as TTM
 import qualified Model.Task as TK
@@ -64,10 +65,6 @@ $(genMapableRecord "DataTrackTime" [
     ])
 
 type Package = C.ByteString
-
-{-
- - Tasks: pre-set low-cost actions to be fired if specified subject is called for after a specified time
- -}
 
 
 {-
@@ -125,7 +122,7 @@ unpack = AS.decode . LBC.pack . C.unpack
 task :: Integer -> String -> Package -> TK.Task
 task t tpe d = (def :: TK.Task) { TK.type = tpe, TK.time = t, TK.data = d, TK.deleted = False }
 
--- make a new task trigger with subject type and subject ID
+-- make a new task trigger with subject type, subject ID and task ID
 trigger :: String -> Integer -> Integer -> TKT.TaskTrigger 
 trigger tpe sid tid = (def :: TKT.TaskTrigger) { TKT.task_id = tid, TKT.type = tpe, TKT.subject_id = sid }
 
@@ -141,7 +138,7 @@ unset tid = do
 cleanup :: SqlTransaction Connection ()
 cleanup = do 
         t <- liftIO $ floor <$> getPOSIXTime
-        transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger (t + 24*60*60), "deleted" |== SqlBool True]
+        transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger (t - 24*60*60), "deleted" |== SqlBool True]
         return ()
 
 -- TODO: allow concurrent access: claim tasks for retrieval
@@ -182,13 +179,13 @@ process s = do
                         save $ (def :: TTM.TrackTime) { TTM.account_id = dtt_account_id d, TTM.track_id = dtt_track_id d, TTM.time = dtt_time d  }
                         return ()
 
-                foo -> fali $ "unknown task type: " ++ foo
+                e -> fali $ "unknown task type: " ++ e
 
 -- failing tasks should not break transactions
 -- TODO: store error report in db or sth
 
 -- fail a task
 fali :: String -> SqlTransaction Connection ()
-fali e = Data.SqlTransaction.rollback e -- return ()
+fali e = return ()
 
 
