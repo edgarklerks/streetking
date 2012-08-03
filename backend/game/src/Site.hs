@@ -1286,7 +1286,7 @@ trackHere = do
                 case a of 
                         Nothing -> rollback "oh noes diz can no happen"
                         Just a -> do 
-                                 Task.runAll "track"
+                                 Task.runAll Task.Track 
                                  ts <- search (["city_id" |== (toSql $ A.city a)] ++ xs) [Order ("track_level",[]) True] l o :: SqlTransaction Connection [TT.TrackMaster]
                                  ts <- search ["city_id" |== (toSql $ A.city a)] [] 1000 0 :: SqlTransaction Connection [TT.TrackMaster]
                                  return ts
@@ -1640,8 +1640,8 @@ userCurrentRace = do
                         False -> rollback "error: race not found"
                         True -> do
                             let r = head rs
-                            Task.run "user" uid
-                            Task.run "track" $ RAD.track_id r
+                            Task.run Task.User uid
+                            Task.run Task.Track $ RAD.track_id r
                             ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
                             td <- head <$> (search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster])
                             return (r, td, ts) 

@@ -22,10 +22,10 @@ import           Prelude hiding (id)
 instance Default C.ByteString where def = C.empty
 
 $(genAll "TaskExtended" "task_extended" [
-                    ("id", ''Id),
+                    ("task_id", ''Integer),
                     ("time", ''Integer),
                     ("data", ''C.ByteString),
-                    ("subject_type", ''String),
-                    ("subject_id", ''Integer)
+                    ("type", ''Integer),
+                    ("target_id", ''Integer)
        ])
 
