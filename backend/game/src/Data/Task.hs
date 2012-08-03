@@ -153,7 +153,7 @@ claim :: Constraints -> SqlTransaction Connection [TKE.TaskExtended]
 claim xs = do
         cleanup
         i <- liftIO $ fmap (hashedId . idFromSupply) $ initIdSupply 't'
-        liftIO $ print $ show i
+        liftIO $ print $ i
         t <- liftIO $ floor <$> getPOSIXTime
         search (("time" |<= SqlInteger t) : xs) [] 10000 0 
 
