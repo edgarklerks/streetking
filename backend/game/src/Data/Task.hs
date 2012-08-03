@@ -21,10 +21,17 @@ import           Control.Monad.Trans
 import           Model.General 
 import           Data.HashMap.Strict as HM
 
-import qualified Model.TrackTime as TTM
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
 import qualified Model.TaskExtended as TKE
+
+import qualified Model.TrackTime as TTM
+import qualified Model.Account as A
+
+
+{-
+ - Types
+ -}
 
 data Action =
       TrackTime
@@ -35,28 +42,32 @@ data Action =
     | GivePart
         deriving (Eq, Enum)
 
+data Trigger =
+      Car
+    | User
+    | Track
+        deriving (Eq, Enum)
+
+
 {-
  - Set tasks 
  -}
 
 trackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection Integer
-trackTime t track uid res  = do
-        tid <- task t $ set "action" TrackTime $ 
-                        set "track_id" track $
-                        set "account_id" uid $
-                        set "time" res $ 
-                        new
-        trigger "track" track tid
-        trigger "user" uid tid
+trackTime t trk uid tme  = do
+        tid <- task TrackTime t $ set "track_id" trk $
+                                  set "account_id" uid $
+                                  set "time" tme $ new
+        trigger Track trk tid
+        trigger User uid tid
         return tid
 
-{-
 modifyMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
-modifyMoney t uid amt = do
-        tid <- save $ task t "modify_money" $ pack $ (def :: DataModifyMoney) { dmm_account_id = uid, dmm_amount = amt }
-        save $ trigger "user" uid tid
+modifyMoney t uid amt  = do
+        tid <- task ModifyMoney t $ set "account_id" uid $
+                                    set "amount" amt $ new
+        trigger User uid tid
         return tid
--}
 
 
 {-
@@ -69,7 +80,13 @@ process d = do
 
          case get "action" d :: Maybe Action of
 
-                Just ModifyMoney -> undefined
+                Just ModifyMoney -> do
+                        ma <- load $ get' "account_id" d :: SqlTransaction Connection (Maybe A.Account)
+                        case ma of
+                            Nothing -> fali "process: modify money: user not found"
+                            Just a -> do
+                                save $ a { A.money = (A.money a) + (get' "amount" d) }
+                                return ()
 
                 Just ModifyExperience ->undefined 
 
@@ -80,7 +97,11 @@ process d = do
                 Just GivePart -> undefined 
 
                 Just TrackTime -> do
-                        save $ (def :: TTM.TrackTime) { TTM.account_id = get' "account_id" d, TTM.track_id = get' "track_id" d, TTM.time = get' "time" d  }
+                        save $ (def :: TTM.TrackTime) {
+                                TTM.account_id = get' "account_id" d,
+                                TTM.track_id = get' "track_id" d,
+                                TTM.time = get' "time" d
+                            }
                         return ()
 
                 Just e -> fali $ "process: unknown action: " ++ (show $ fromEnum e)
@@ -92,12 +113,12 @@ process d = do
  -}
 
 -- fire all task triggers of a trigger type 
-runAll :: String -> SqlTransaction Connection ()
-runAll tp = runWith ["subject_type" |== toSql tp]
+runAll :: Trigger -> SqlTransaction Connection ()
+runAll tp = runWith ["subject_type" |== (toSql $ toInteger $ fromEnum tp)]
 
 -- fire task trigger by trigger type and subject ID
-run :: String -> Integer -> SqlTransaction Connection ()
-run tp sid = runWith ["subject_type" |== toSql tp, "subject_id" |== toSql sid]
+run :: Trigger -> Integer -> SqlTransaction Connection ()
+run tp sid = runWith ["subject_type" |== (toSql $ toInteger $ fromEnum tp), "subject_id" |== toSql sid]
 
 -- fire tasks by a selection of triggers
 runWith :: Constraints -> SqlTransaction Connection ()
@@ -106,17 +127,18 @@ runWith cs = do
         forM ss process
         return ()    
 
+
 {-
  - Database interaction 
  -}
 
 -- make a new task with time and data
-task :: Integer -> Data -> SqlTransaction Connection Integer 
-task t a = save $ (def :: TK.Task) { TK.time = t, TK.data = pack a, TK.deleted = False }
+task :: Action -> Integer -> Data -> SqlTransaction Connection Integer 
+task a t d = save $ (def :: TK.Task) { TK.time = t, TK.data = (pack $ set "action" a d), TK.deleted = False }
 
 -- make a new task trigger with subject type, subject ID and task ID
-trigger :: String -> Integer -> Integer -> SqlTransaction Connection Integer 
-trigger tpe sid tid = save $ (def :: TKT.TaskTrigger) { TKT.task_id = tid, TKT.type = tpe, TKT.subject_id = sid }
+trigger :: Trigger -> Integer -> Integer -> SqlTransaction Connection Integer 
+trigger tpe sid tid = save $ (def :: TKT.TaskTrigger) { TKT.task_id = tid, TKT.type = (toInteger $ fromEnum tpe), TKT.target_id = sid }
 
 -- TODO: ensure concurrent processes do not claim the same tasks
 -- -> 1. mark: update records with unique key
@@ -138,7 +160,7 @@ claim cs = do
 
         -- mark tasks deleted and get data
         forM ss $ \s -> do
-            update "task" ["id" |== (toSql $ TKE.id s)] [] [("deleted", SqlBool True)]
+            update "task" ["id" |== (toSql $ TKE.task_id s)] [] [("deleted", SqlBool True)]
             case unpack $ TKE.data s of
 --                Nothing -> fali "claim: cannot decode task data" -- TODO: fix type mismatch
                 Just d -> return d

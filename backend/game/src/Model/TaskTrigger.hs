@@ -20,7 +20,7 @@ import           Prelude hiding (id)
 $(genAll "TaskTrigger" "task_trigger" [
                     ("id", ''Id),
                     ("task_id", ''Integer),
-                    ("type", ''String),
-                    ("subject_id", ''Integer)
+                    ("type", ''Integer),
+                    ("target_id", ''Integer)
    ])
 
