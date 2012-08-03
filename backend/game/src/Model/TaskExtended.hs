@@ -23,7 +23,6 @@ instance Default C.ByteString where def = C.empty
 
 $(genAll "TaskExtended" "task_extended" [
                     ("id", ''Id),
-                    ("type", ''String),
                     ("time", ''Integer),
                     ("data", ''C.ByteString),
                     ("subject_type", ''String),

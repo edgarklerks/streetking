@@ -25,7 +25,6 @@ instance Default C.ByteString where def = C.empty
 
 $(genAll "Task" "task" [             
                     ("id", ''Id),
-                    ("type", ''String),
                     ("time", ''Integer),
                     ("data", ''C.ByteString),
                     ("deleted", ''Bool)
