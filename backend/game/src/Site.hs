@@ -1286,7 +1286,7 @@ trackHere = do
                 case a of 
                         Nothing -> rollback "oh noes diz can no happen"
                         Just a -> do 
-                                 Task.runTasksAll "track"
+                                 Task.runAll "track"
                                  ts <- search (["city_id" |== (toSql $ A.city a)] ++ xs) [Order ("track_level",[]) True] l o :: SqlTransaction Connection [TT.TrackMaster]
                                  ts <- search ["city_id" |== (toSql $ A.city a)] [] 1000 0 :: SqlTransaction Connection [TT.TrackMaster]
                                  return ts
@@ -1589,8 +1589,8 @@ raceChallengeAccept = do
 --            save $ (def :: TTM.TrackTime) { TTM.account_id = (fromJust $ A.id oa), TTM.track_id = (Chg.track_id chg), TTM.time = (raceTime ors)  }
 
             -- task update race times on user finish
-            Task.setTrackTime (t + (ceiling $ raceTime yrs)) (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
-            Task.setTrackTime (t + (ceiling $ raceTime ors)) (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
+            Task.trackTime (t + (ceiling $ raceTime yrs)) (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
+            Task.trackTime (t + (ceiling $ raceTime ors)) (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
             
             -- store race
             rid <- save $ (def :: R.Race) { R.track_id = TT.track_id tr, R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData (Chg.account_min chg) (Chg.car chg) ors] }
@@ -1640,8 +1640,8 @@ userCurrentRace = do
                         False -> rollback "error: race not found"
                         True -> do
                             let r = head rs
-                            Task.runTasks "user" uid
-                            Task.runTasks "track" $ RAD.track_id r
+                            Task.run "user" uid
+                            Task.run "track" $ RAD.track_id r
                             ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
                             td <- head <$> (search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster])
                             return (r, td, ts) 
