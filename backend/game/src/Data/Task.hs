@@ -114,11 +114,11 @@ process d = do
 
 -- fire all task triggers of a trigger type 
 runAll :: Trigger -> SqlTransaction Connection ()
-runAll tp = runWith ["subject_type" |== (toSql $ toInteger $ fromEnum tp)]
+runAll tp = runWith ["type" |== (toSql $ toInteger $ fromEnum tp)]
 
 -- fire task trigger by trigger type and subject ID
 run :: Trigger -> Integer -> SqlTransaction Connection ()
-run tp sid = runWith ["subject_type" |== (toSql $ toInteger $ fromEnum tp), "subject_id" |== toSql sid]
+run tp sid = runWith ["type" |== (toSql $ toInteger $ fromEnum tp), "target_id" |== toSql sid]
 
 -- fire tasks by a selection of triggers
 runWith :: Constraints -> SqlTransaction Connection ()
