@@ -120,7 +120,7 @@ unpack = AS.decode . LBC.pack . C.unpack
 
 -- make a new task with time and data
 task :: Integer -> String -> Package -> TK.Task
-task t tpe d = (def :: TK.Task) { TK.type = tpe, TK.time = t, TK.data = d, TK.deleted = False }
+task t tpe d = (def :: TK.Task) { TK.type = tpe, TK.time = t, TK.data = d, TK.deleted = False, TK.claim = 0 }
 
 -- make a new task trigger with subject type, subject ID and task ID
 trigger :: String -> Integer -> Integer -> TKT.TaskTrigger 
@@ -152,10 +152,10 @@ cleanup = do
 claim :: Constraints -> SqlTransaction Connection [TKE.TaskExtended]
 claim xs = do
         cleanup
-        i <- liftIO $ fmap (hashedId . idFromSupply) $ initIdSupply 't'
-        liftIO $ print $ i
+        i <- liftIO $ fmap (hashedId . idFromSupply) $ initIdSupply 't' -- TODO: init not here, probably doesn't work 
         t <- liftIO $ floor <$> getPOSIXTime
-        search (("time" |<= SqlInteger t) : xs) [] 10000 0 
+        update "task" (("time" |<= SqlInteger t) : xs) [] [("claim", toSql i)]
+        search ["claim" |== toSql i] [] 10000 0 
 
 -- process a task
 process :: TKE.TaskExtended -> SqlTransaction Connection ()

@@ -28,6 +28,7 @@ $(genAll "Task" "task" [
                     ("type", ''String),
                     ("time", ''Integer),
                     ("data", ''C.ByteString),
-                    ("deleted", ''Bool)
+                    ("deleted", ''Bool),
+                    ("claim", ''Integer)
    ])
 
