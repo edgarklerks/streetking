@@ -4,6 +4,7 @@ module Data.Task where
 
 import           Control.Applicative
 import           Control.Monad
+import           Data.List
 import           Data.Maybe
 import           Data.SqlTransaction
 import           Data.Database
@@ -233,10 +234,10 @@ claim cs = do
         -- cleanup deleted tasks (triggers are deleted cascading)
         transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger (t - 24*60*60), "deleted" |== SqlBool True]
 
-        -- fetch tasks
-        ss :: [TKE.TaskExtended] <- search (("time" |<= SqlInteger t) : cs) [] 10000 0
+        -- fetch tasks and remove duplicates caused by multiple triggers on the same task
+        ss :: [TKE.TaskExtended] <- fmap (nubWith TKE.task_id) $ search (("time" |<= SqlInteger t) : cs) [] 10000 0
 
-        -- mark tasks deleted and get data
+        -- read tasks and return 
         forM ss $ \s -> do
             case unpack $ TKE.data s of
                 Nothing -> fali "claim: could not decode task data" >> return (0, new)  -- TODO: fix type mismatch
@@ -321,3 +322,9 @@ getd :: forall a. AS.FromJSON a => a -> Key -> Data -> a
 getd f k d = maybe f fromJust $ get k d
 
 
+{-
+ - Utility
+ -}
+
+nubWith :: forall a b. Eq b => (a -> b) -> [a] -> [a]
+nubWith f = nubBy (\x y -> (f x) == (f y))
