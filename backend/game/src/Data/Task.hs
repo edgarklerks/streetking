@@ -235,7 +235,7 @@ claim cs = do
         transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger (t - 24*60*60), "deleted" |== SqlBool True]
 
         -- fetch tasks and remove duplicates caused by multiple triggers on the same task
-        ss :: [TKE.TaskExtended] <- fmap (nubWith TKE.task_id) $ search (("time" |<= SqlInteger t) : cs) [] 10000 0
+        ss :: [TKE.TaskExtended] <- nubWith TKE.task_id <$> search (("time" |<= SqlInteger t) : cs) [] 10000 0
 
         -- read tasks and return 
         forM ss $ \s -> do
