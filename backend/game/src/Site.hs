@@ -184,7 +184,11 @@ userData :: Application ()
 userData = do 
     x <- getJson >>= scheck ["id"]
     let m = updateHashMap x (def :: APM.AccountProfileMin)
-    runDb $ userActions $ fromJust $ APM.id m
+
+    runDb $ do
+                userActions $ fromJust $ APM.id m
+                Task.run Task.User $ fromJust $ APM.id m
+ 
     n <- runCompose $ do 
                 action "user" ((load $ fromJust $ APM.id m) :: SqlTransaction Connection (Maybe APM.AccountProfileMin))
                 action "car" $ do
@@ -199,6 +203,7 @@ userMe = do
     x <- getUserId
     n <- runDb $ do 
             userActions x
+            Task.run Task.User x
             DBF.account_update_energy x 
             p <- (load x) :: SqlTransaction Connection (Maybe AP.AccountProfile)
             return p
@@ -1394,6 +1399,7 @@ unixtime = floor <$> getPOSIXTime
 
 -- time based actions for user account: update before any activity involving the account
 -- TODO: all other time based actions, such as energy regeneration
+-- TODO: integrate with Data.Task
 userActions :: Integer -> SqlTransaction Connection ()
 userActions uid = do
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
