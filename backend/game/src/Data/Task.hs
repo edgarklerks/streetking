@@ -62,7 +62,7 @@ data Trigger =
  - Set tasks (export) 
  -}
 
-trackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection Integer
+trackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection () 
 trackTime t trk uid tme  = do
 
         -- create the task: set action type, timestamp, and additional data fields (mixed types allowed)
@@ -73,47 +73,47 @@ trackTime t trk uid tme  = do
         trigger Track trk tid
         trigger User uid tid
 
-        -- return task id for great justice
-        return tid
+        -- return unit for great justice
+        return () 
 
-giveMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+giveMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
 giveMoney t uid amt  = do
         tid <- task GiveMoney t $ ("account_id", uid) .> ("amount", amt) .> new
         trigger User uid tid
-        return tid
+        return () 
 
-giveRespect :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+giveRespect :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
 giveRespect t uid amt  = do
         tid <- task GiveRespect t $ ("account_id", uid) .> ("amount", amt) .> new
         trigger User uid tid
-        return tid
+        return ()
 
-giveCar :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+giveCar :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
 giveCar t uid cid  = do
         tid <- task GiveCar t $ ("account_id", uid) .> ("car_model_id", cid) .> new
         trigger User uid tid
-        return tid
+        return ()
 
-givePart :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+givePart :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
 givePart t uid pid  = do
         tid <- task GivePart t $ ("account_id", uid) .> ("part_model_id", pid) .> new
         trigger User uid tid
-        return tid
+        return ()
 
-transferMoney :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+transferMoney :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection ()
 transferMoney t suid tuid amt  = do
         tid <- task TransferMoney t $ ("source_account_id", suid) .> ("target_account_id", tuid) .> ("amount", amt) .> new
         trigger User suid tid
         trigger User tuid tid
-        return tid
+        return ()
 
-transferCar :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+transferCar :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection ()
 transferCar t suid tuid cid  = do
         tid <- task TransferCar t $ ("source_account_id", suid) .> ("target_account_id", tuid) .> ("car_instance_id", cid) .> new
         trigger User suid tid
         trigger User tuid tid
         trigger Car cid tid
-        return tid
+        return ()
 
 {-
  - Process tasks
@@ -254,7 +254,7 @@ release n = do
 
 
 
--- failing tasks should never break transactions, as the triggers are injected into other, potentially critical operations
+-- failing tasks should never break transactions, as the triggers can be injected into other, potentially critical operations
 -- TODO: store error report in database (this should be a separate module)
 
 -- fail a task
