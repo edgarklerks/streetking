@@ -1599,13 +1599,13 @@ raceChallengeAccept = do
             -- task update race times on user finish
             Task.trackTime (t + (ceiling $ raceTime yrs)) (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
             Task.trackTime (t + (ceiling $ raceTime ors)) (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
-
+{-
             -- task transfer challenge object
             case ChgE.type chge of
                 "money" -> Task.transferMoney te (fromJust $ A.id loser) (fromJust $ A.id winner) (Chg.amount chg)
                 "car" -> Task.transferCar te (fromJust $ A.id loser) (fromJust $ A.id winner) (fromJust $ CIG.id lcar)
                 _ -> rollback $ "challenge type not recognized: " ++ (ChgE.type chge)
-            
+  -}          
             -- TODO: other race rewards (give money, respect, part)
 
             -- return race id
