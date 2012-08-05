@@ -14,7 +14,7 @@ import qualified Data.ByteString.Lazy.Char8 as LBC
 import           Data.Default
 import qualified Data.Aeson as AS
 import           Data.Attoparsec.Number
-import           Data.InRules
+import qualified Data.InRules as IR
 import           Model.TH
 import           Data.Time.Clock.POSIX
 import           Control.Monad.Trans
@@ -27,6 +27,8 @@ import qualified Model.TaskExtended as TKE
 
 import qualified Model.TrackTime as TTM
 import qualified Model.Account as A
+import qualified Model.Garage as G
+import qualified Model.CarInstance as CI
 
 
 {-
@@ -35,17 +37,19 @@ import qualified Model.Account as A
 
 data Action =
       TrackTime
-    | ModifyMoney
-    | ModifyExperience
+    | GiveRespect
+    | GiveMoney
+    | GiveCar
+    | GivePart
     | TransferMoney
     | TransferCar
-    | GivePart
-        deriving (Eq, Enum)
+       deriving (Eq, Enum)
 
 data Trigger =
-      Car
+      Track
     | User
-    | Track
+    | Car
+    | Part 
         deriving (Eq, Enum)
 
 
@@ -55,20 +59,56 @@ data Trigger =
 
 trackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection Integer
 trackTime t trk uid tme  = do
-        tid <- task TrackTime t $ set "track_id" trk $
-                                  set "account_id" uid $
-                                  set "time" tme $ new
+
+        -- create the task: set action type, timestamp, and additional data fields (mixed types allowed)
+        tid <- task TrackTime t $ ("track_id", trk) .> ("account_id", uid) .> ("time", tme) .> new
+
+        -- create triggers for task execution: set trigger type, subject id, and task id
+        -- a task can have more than one trigger, but will fire only once
         trigger Track trk tid
         trigger User uid tid
+
+        -- return task id for great justice
         return tid
 
-modifyMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
-modifyMoney t uid amt  = do
-        tid <- task ModifyMoney t $ set "account_id" uid $
-                                    set "amount" amt $ new
+giveMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+giveMoney t uid amt  = do
+        tid <- task GiveMoney t $ ("account_id", uid) .> ("amount", amt) .> new
         trigger User uid tid
         return tid
 
+giveRespect :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+giveRespect t uid amt  = do
+        tid <- task GiveRespect t $ ("account_id", uid) .> ("amount", amt) .> new
+        trigger User uid tid
+        return tid
+
+giveCar :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+giveCar t uid cid  = do
+        tid <- task GiveCar t $ ("account_id", uid) .> ("car_model_id", cid) .> new
+        trigger User uid tid
+        return tid
+
+givePart :: Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+givePart t uid pid  = do
+        tid <- task GivePart t $ ("account_id", uid) .> ("part_model_id", pid) .> new
+        trigger User uid tid
+        return tid
+
+transferMoney :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+transferMoney t suid tuid amt  = do
+        tid <- task TransferMoney t $ ("source_account_id", suid) .> ("target_account_id", tuid) .> ("amount", amt) .> new
+        trigger User suid tid
+        trigger User tuid tid
+        return tid
+
+transferCar :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection Integer
+transferCar t suid tuid cid  = do
+        tid <- task TransferCar t $ ("source_account_id", suid) .> ("target_account_id", tuid) .> ("car_instance_id", cid) .> new
+        trigger User suid tid
+        trigger User tuid tid
+        trigger Car cid tid
+        return tid
 
 {-
  - Process tasks
@@ -78,31 +118,63 @@ modifyMoney t uid amt  = do
 process :: Data -> SqlTransaction Connection ()
 process d = do
 
-         case get "action" d :: Maybe Action of
-
-                Just ModifyMoney -> do
-                        ma <- load $ get' "account_id" d :: SqlTransaction Connection (Maybe A.Account)
-                        case ma of
-                            Nothing -> fali "process: modify money: user not found"
-                            Just a -> do
-                                save $ a { A.money = (A.money a) + (get' "amount" d) }
-                                return ()
-
-                Just ModifyExperience ->undefined 
-
-                Just TransferMoney -> undefined 
-
-                Just TransferCar -> undefined 
-
-                Just GivePart -> undefined 
+         case "action" .< d :: Maybe Action of
 
                 Just TrackTime -> do
                         save $ (def :: TTM.TrackTime) {
-                                TTM.account_id = get' "account_id" d,
-                                TTM.track_id = get' "track_id" d,
-                                TTM.time = get' "time" d
+                                TTM.account_id = "account_id" .<< d,
+                                TTM.track_id = "track_id" .<< d,
+                                TTM.time = "time" .<< d
                             }
                         return ()
+
+                Just GiveMoney -> do
+                        ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
+                        case ma of
+                            Nothing -> fali "process: give money: user not found"
+                            Just a -> do
+                                save $ a { A.money = (A.money a) + ("amount" .<< d) }
+                                return ()
+
+                Just GiveRespect ->do
+                        ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
+                        case ma of
+                            Nothing -> fali "process: give respect: user not found"
+                            Just a -> do
+                                save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
+                                return ()
+
+                Just GivePart -> undefined 
+
+                Just GiveCar -> undefined 
+
+                Just TransferMoney -> do
+                        msa <- load $ "source_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
+                        mta <- load $ "target_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
+                        case (msa, mta) of
+                            (Just sa, Just ta) -> do
+                                save $ sa { A.money = (A.money sa) - ("amount" .<< d) }
+                                save $ ta { A.money = (A.money ta) + ("amount" .<< d) }
+                                return ()
+                            _ -> fali "process: transfer money: unable to retrieve required records"
+
+                Just TransferCar -> do 
+                        msa <- load $ "source_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
+                        mta <- load $ "target_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
+                        mci <- load $ "car_instance_id" .<< d :: SqlTransaction Connection (Maybe CI.CarInstance)
+                        case (msa, mta, mci) of
+                            (Just sa, Just ta, Just ci) -> do
+--                                Just sg <- load (fromJust $ A.id sa) :: SqlTransaction Connection (Maybe G.Garage)
+                                Just tg <- load (fromJust $ A.id ta) :: SqlTransaction Connection (Maybe G.Garage)
+                                save $ ci { CI.garage_id = G.id tg }
+                                return ()
+--                                case (CI.garage_id ci) == (fromJust $ G.id sg :: Integer) of
+--                                    False -> fali "process: transfer car: car not in source garage"
+--                                    True -> do
+--                                        save $ ci { CI.garage_id = tg }
+--                                        return ()
+                            _ -> fali "process: transfer car: unable to retrieve required records"
+
 
                 Just e -> fali $ "process: unknown action: " ++ (show $ fromEnum e)
                 Nothing -> fali "process: no action"
@@ -134,7 +206,7 @@ runWith cs = do
 
 -- make a new task with time and data
 task :: Action -> Integer -> Data -> SqlTransaction Connection Integer 
-task a t d = save $ (def :: TK.Task) { TK.time = t, TK.data = (pack $ set "action" a d), TK.deleted = False }
+task a t d = save $ (def :: TK.Task) { TK.time = t, TK.data = (pack $ set ("action", a) d), TK.deleted = False }
 
 -- make a new task trigger with subject type, subject ID and task ID
 trigger :: Trigger -> Integer -> Integer -> SqlTransaction Connection Integer 
@@ -162,10 +234,10 @@ claim cs = do
         forM ss $ \s -> do
             update "task" ["id" |== (toSql $ TKE.task_id s)] [] [("deleted", SqlBool True)]
             case unpack $ TKE.data s of
---                Nothing -> fali "claim: cannot decode task data" -- TODO: fix type mismatch
+                Nothing -> fali "claim: could not decode task data" >> return new  -- TODO: fix type mismatch
                 Just d -> return d
 
--- failing tasks should not break transactions
+-- failing tasks should never break transactions, as the triggers are injected into other, potentially critical operations
 -- TODO: store error report in db or sth
 
 -- fail a task
@@ -201,8 +273,12 @@ new :: Data
 new = HM.empty 
 
 -- set data field
-set :: forall a. AS.ToJSON a => Key -> a -> Data -> Data
-set k v d = HM.insert k (AS.toJSON v) d
+set :: forall a. AS.ToJSON a => (Key, a) -> Data -> Data
+set (k, v) d = HM.insert k (AS.toJSON v) d
+
+(.>) :: forall a. AS.ToJSON a => (Key, a) -> Data -> Data
+(.>) = set
+infixr 4 .>
 
 -- get data field of specified type
 get :: forall a. AS.FromJSON a => Key -> Data -> Maybe a
@@ -210,9 +286,17 @@ get k d = case fmap AS.fromJSON $ HM.lookup k d of
         Just (AS.Success v) -> Just v
         _ -> Nothing
 
+(.<) :: forall a. AS.FromJSON a => Key -> Data -> Maybe a
+(.<) = get
+infixr 4 .<
+
 -- force get data field
 get' :: forall a. AS.FromJSON a => Key -> Data -> a
 get' k d = fromJust $ get k d
+
+(.<<) :: forall a. AS.FromJSON a => Key -> Data -> a
+(.<<) = get'
+infixr 4 .<<
 
 -- get data field with default
 getd :: forall a. AS.FromJSON a => a -> Key -> Data -> a 
