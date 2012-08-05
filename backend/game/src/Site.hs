@@ -1564,7 +1564,7 @@ raceChallengeAccept = do
             oa <- aget ["id" |== (toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            oc <- aget ["id" |== (toSql $ CIG.id $ Chg.car chg)] (rollback "opponent challenge car not found") :: SqlTransaction Connection CIG.CarInGarage
+--            oc <- aget ["id" |== (toSql $ CIG.id $ Chg.car chg)] (rollback "opponent challenge car not found") :: SqlTransaction Connection CIG.CarInGarage
            
             tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
@@ -1577,9 +1577,9 @@ raceChallengeAccept = do
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
 
             -- decide on winner
-            let (winner, wcar, loser, lcar) = case (raceTime yrs) < (raceTime ors) of
-                    True -> (a, c, oa, oc)
-                    False -> (oa, oc, a, c)
+ --           let (winner, wcar, loser, lcar) = case (raceTime yrs) < (raceTime ors) of
+--                    True -> (a, c, oa, oc)
+--                    False -> (oa, oc, a, c)
 
             -- time 
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
