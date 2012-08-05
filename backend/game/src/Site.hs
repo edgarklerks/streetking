@@ -1553,6 +1553,7 @@ raceChallengeAccept = do
 
             -- retrieve challenge
             chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
+            chge <- aget ["challenge_id" |== toSql chg] (rollback "challenge_ext not found") :: SqlTransaction Connection ChgE.ChallengeExtended
 
             -- TODO: check user busy
 
@@ -1560,9 +1561,10 @@ raceChallengeAccept = do
             userActions uid
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             userActions $ fromJust $ A.id $ Chg.account chg 
-            oa <- aget ["id" |==(toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
+            oa <- aget ["id" |== (toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            oc <- aget ["id" |== (toSql $ CIG.id $ Chg.car chg)] (rollback "opponent challenge car not found") :: SqlTransaction Connection CIG.CarInGarage
            
             tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
@@ -1575,30 +1577,37 @@ raceChallengeAccept = do
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
 
             -- decide on winner
-            let win = (raceTime yrs) < (raceTime ors) -- draw in favour of challenger
+            let (winner, wcar, loser, lcar) = case (raceTime yrs) < (raceTime ors) of
+                    True -> (a, c, oa, oc)
+                    False -> (oa, oc, a, c)
 
             -- time 
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
             let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
+--            let tm = (t + ) $ ceiling $ min (raceTime yrs) (raceTime ors)
 
             -- delete challenge
 --            save $ chg { Chg.deleted = True }
-            
-            -- update race times 
---            save $ (def :: TTM.TrackTime) { TTM.account_id = (fromJust $ A.id a), TTM.track_id = (Chg.track_id chg), TTM.time = (raceTime yrs)  }
---            save $ (def :: TTM.TrackTime) { TTM.account_id = (fromJust $ A.id oa), TTM.track_id = (Chg.track_id chg), TTM.time = (raceTime ors)  }
-
-            -- task update race times on user finish
-            Task.trackTime (t + (ceiling $ raceTime yrs)) (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
-            Task.trackTime (t + (ceiling $ raceTime ors)) (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
-            
+           
             -- store race
             rid <- save $ (def :: R.Race) { R.track_id = TT.track_id tr, R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData (Chg.account_min chg) (Chg.car chg) ors] }
             
             -- set accounts busy
             save (a  { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ((t+) $ ceiling $ raceTime yrs) })
             save (oa { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ((t+) $ ceiling $ raceTime ors) })
+
+            -- task update race times on user finish
+            Task.trackTime (t + (ceiling $ raceTime yrs)) (Chg.track_id chg) (fromJust $ A.id a) (raceTime yrs)
+            Task.trackTime (t + (ceiling $ raceTime ors)) (Chg.track_id chg) (fromJust $ A.id oa) (raceTime ors)
+
+            -- task transfer challenge object
+            case ChgE.type chge of
+                "money" -> Task.transferMoney te (fromJust $ A.id loser) (fromJust $ A.id winner) (Chg.amount chg)
+                "car" -> Task.transferCar te (fromJust $ A.id loser) (fromJust $ A.id winner) (fromJust $ CIG.id lcar)
+                _ -> rollback $ "challenge type not recognized: " ++ (ChgE.type chge)
             
+            -- TODO: other race rewards (give money, respect, part)
+
             -- return race id
             return rid
 

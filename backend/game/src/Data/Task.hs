@@ -14,8 +14,6 @@ import qualified Data.ByteString.Lazy.Char8 as LBC
 import           Data.Default
 import qualified Data.Aeson as AS
 import           Data.Attoparsec.Number
-import qualified Data.InRules as IR
-import           Model.TH
 import           Data.Time.Clock.POSIX
 import           Control.Monad.Trans
 import           Model.General 
@@ -24,12 +22,18 @@ import           Data.HashMap.Strict as HM
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
 import qualified Model.TaskExtended as TKE
-
 import qualified Model.TrackTime as TTM
 import qualified Model.Account as A
 import qualified Model.Garage as G
 import qualified Model.CarInstance as CI
 
+-- TODO: static tasks
+-- -> have start time, updated time, end time; field "static" boolean
+-- -> when fired, set updated time; only delete if past end time
+-- -> non-static tasks equivalent to static tasks with end_time < start_time
+-- static tasks can be used for:
+-- -> personnel activity updates (repair, improvement, ...)
+-- -> user energy recovery 
 
 {-
  - Types
@@ -54,7 +58,7 @@ data Trigger =
 
 
 {-
- - Set tasks 
+ - Set tasks (export) 
  -}
 
 trackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection Integer
@@ -181,7 +185,7 @@ process d = do
 
 
 {-
- - Fire tasks 
+ - Trigger tasks (export)
  -}
 
 -- fire all task triggers of a trigger type 
@@ -196,12 +200,14 @@ run tp sid = runWith ["type" |== (toSql $ toInteger $ fromEnum tp), "target_id" 
 runWith :: Constraints -> SqlTransaction Connection ()
 runWith cs = do 
         ss <- claim cs
-        forM ss process
+        forM ss $ \(n, s) -> do
+            process s
+            release n
         return ()    
 
 
 {-
- - Database interaction 
+ - Internal: Task database
  -}
 
 -- make a new task with time and data
@@ -218,7 +224,7 @@ trigger tpe sid tid = save $ (def :: TKT.TaskTrigger) { TKT.task_id = tid, TKT.t
 -- Note: select on TKE.TaskExtended, but update on TK.Task. may require explicit sql.
 
 -- claim current tasks by selection constraints, and fetch them
-claim :: Constraints -> SqlTransaction Connection [Data]
+claim :: Constraints -> SqlTransaction Connection [(Integer, Data)]
 claim cs = do
 
         -- get time
@@ -232,13 +238,23 @@ claim cs = do
 
         -- mark tasks deleted and get data
         forM ss $ \s -> do
-            update "task" ["id" |== (toSql $ TKE.task_id s)] [] [("deleted", SqlBool True)]
             case unpack $ TKE.data s of
-                Nothing -> fali "claim: could not decode task data" >> return new  -- TODO: fix type mismatch
-                Just d -> return d
+                Nothing -> fali "claim: could not decode task data" >> return (0, new)  -- TODO: fix type mismatch
+                Just d -> return (TKE.task_id s, d)
+
+release :: Integer -> SqlTransaction Connection () 
+release n = do
+        -- TODO: unset mark
+        
+        -- delete task if appropriate (TODO: static tasks)
+        update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)]
+        return ()
+
+
+
 
 -- failing tasks should never break transactions, as the triggers are injected into other, potentially critical operations
--- TODO: store error report in db or sth
+-- TODO: store error report in database (this should be a separate module)
 
 -- fail a task
 fali :: String -> SqlTransaction Connection () 
@@ -246,7 +262,7 @@ fali e = return ()
 
 
 {-
- - Data
+ - Internal: Data
  -}
 
 type Key = LB.ByteString
@@ -254,7 +270,9 @@ type Data = HM.HashMap Key AS.Value
 type Pack = C.ByteString -- TODO: InRule support for ByteString.Lazy to allow Pack to be of this type
 
 instance AS.ToJSON Action where toJSON a = AS.toJSON $ fromEnum a
-instance AS.FromJSON Action where parseJSON (AS.Number (I n)) = return $ toEnum $ fromInteger n
+instance AS.FromJSON Action where 
+    parseJSON (AS.Number (I n)) = return $ toEnum $ fromInteger n
+    parseJSON _ = fail "parseJSON: improper type for Action"
 
 -- pack data
 pack :: forall a. AS.ToJSON a => a -> Pack 
