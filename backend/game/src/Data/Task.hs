@@ -233,9 +233,9 @@ process d = do
                                 save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
                                 return True
 
-                Just GivePart -> fail "give part: not implemented" 
+                Just GivePart -> return True 
 
-                Just GiveCar -> fail "give car: not implemented"
+                Just GiveCar -> return True 
 
                 -- TODO: use money transaction 
                 Just TransferMoney -> do
