@@ -1593,7 +1593,7 @@ raceChallengeAccept = do
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
 
             -- set rewards: money, respect, part model id
-            let wrew = RaceRewards 0 20 Nothing
+            let wrew = RaceRewards 0 20 $ Just 59075
             let lrew = RaceRewards 0 5 Nothing
 
             -- set winner/loser account/min_account/car; acceptor reward; challenger reward
