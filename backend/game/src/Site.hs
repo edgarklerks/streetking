@@ -1564,9 +1564,14 @@ raceChallengeAccept = do
             -- TODO: check user busy
 
             -- fetch needed data
+
+            -- TODO: get / search functions for track, user, car with task triggering
             userActions uid
+            userActions $ fromJust $ A.id $ Chg.account chg
+            Task.run Task.User uid
+            Task.run Task.User $ fromJust $ A.id $ Chg.account chg
+
             a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-            userActions $ fromJust $ A.id $ Chg.account chg 
             oa <- aget ["id" |== (toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
@@ -1592,10 +1597,16 @@ raceChallengeAccept = do
             let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
 --            let tm = (t + ) $ ceiling $ min (raceTime yrs) (raceTime ors)
 
+            -- TODO: determine respect / money gained
+
             -- delete challenge
 --            save $ chg { Chg.deleted = True }
            
             -- store race
+            -- TODO: store race rewards
+            -- -> challenge money
+            -- -> challenge car
+            -- -> respect / money gained
             rid <- save $ (def :: R.Race) { R.track_id = TT.track_id tr, R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData (Chg.account_min chg) (Chg.car chg) ors] }
             
             -- set accounts busy
@@ -1612,7 +1623,7 @@ raceChallengeAccept = do
                 "car" -> Task.transferCar te (fromJust $ A.id loser) (fromJust $ A.id winner) (fromJust $ CIG.id lcar)
                 _ -> rollback $ "challenge type not recognized: " ++ (ChgE.type chge)
       
-            -- TODO: other race rewards (give money, respect, part)
+            -- TODO: give other race rewards (give money, respect, part)
 
             -- return race id
             return rid
