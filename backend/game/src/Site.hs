@@ -1463,12 +1463,14 @@ racePractice = do
 
                                             -- run race
                                             let rs = raceResult2FE $ runRace ss d c e
-                                            
+
+                                            let rew = RaceRewards 0 5 Nothing
+
                                             -- store data
                                             t <- liftIO unixtime 
                                             let te = (t + ) $ ceiling $ raceTime rs
                                             let race = def :: R.Race
-                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc rs] })
+                                            rid <- save (race { R.track_id = (trackId rs), R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ap gc rs rew] })
 
                                             -- update track time
                                             save $ (def :: TTM.TrackTime) { TTM.account_id = uid, TTM.track_id = tid, TTM.time = (raceTime rs)  }
@@ -1575,11 +1577,14 @@ raceChallengeAccept = do
             oa <- aget ["id" |== (toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
             ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            oc <- aget ["id" |== (toSql $ CIG.id $ Chg.car chg)] (rollback "opponent challenge car not found") :: SqlTransaction Connection CIG.CarInGarage
+--            oc <- aget ["id" |== (toSql $ CIG.id $ Chg.car chg)] (rollback "opponent challenge car not found") :: SqlTransaction Connection CIG.CarInGarage
            
             tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
 
+            -- delete challenge
+--            save $ chg { Chg.deleted = True }
+            
             let env = defaultEnvironment
             let trk = trackDetailsTrack ts
 
@@ -1587,27 +1592,27 @@ raceChallengeAccept = do
             let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
 
-            -- decide on winner
-            let (winner, wcar, loser, lcar) = case (raceTime yrs) < (raceTime ors) of
-                    True -> (a, c, oa, oc)
-                    False -> (oa, oc, a, c)
+            -- set rewards: money, respect, part model id
+            let wrew = RaceRewards 0 20 Nothing
+            let lrew = RaceRewards 0 5 Nothing
+
+            -- set winner/loser account/min_account/car; acceptor reward; challenger reward
+            let (wacc, wmac, wcar, lacc, lmac, lcar, yrew, orew) = case (raceTime yrs) < (raceTime ors) of
+                    True -> (a, ma, c, oa, (Chg.account_min chg), (Chg.car chg), wrew, lrew)
+                    False -> (oa, (Chg.account_min chg), (Chg.car chg), a, ma, c, lrew, wrew)
 
             -- time 
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
             let te = (t + ) $ ceiling $ max (raceTime yrs) (raceTime ors)
---            let tm = (t + ) $ ceiling $ min (raceTime yrs) (raceTime ors)
-
-            -- TODO: determine respect / money gained
-
-            -- delete challenge
---            save $ chg { Chg.deleted = True }
-           
-            -- store race
-            -- TODO: store race rewards
-            -- -> challenge money
-            -- -> challenge car
-            -- -> respect / money gained
-            rid <- save $ (def :: R.Race) { R.track_id = TT.track_id tr, R.start_time = t, R.end_time = te, R.type = 1, R.data = [RaceData ma c yrs, RaceData (Chg.account_min chg) (Chg.car chg) ors] }
+         
+            -- save race data
+            rid <- save $ (def :: R.Race) {
+                        R.track_id = TT.track_id tr,
+                        R.start_time = t,
+                        R.end_time = te,
+                        R.type = 1,
+                        R.data = [RaceData ma c yrs yrew, RaceData (Chg.account_min chg) (Chg.car chg) ors orew]
+                    }
             
             -- set accounts busy
             save (a  { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ((t+) $ ceiling $ raceTime yrs) })
@@ -1619,8 +1624,8 @@ raceChallengeAccept = do
 
             -- task transfer challenge object
             case ChgE.type chge of
-                "money" -> Task.transferMoney te (fromJust $ A.id loser) (fromJust $ A.id winner) (Chg.amount chg)
-                "car" -> Task.transferCar te (fromJust $ A.id loser) (fromJust $ A.id winner) (fromJust $ CIG.id lcar)
+                "money" -> Task.transferMoney te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (Chg.amount chg)
+                "car" -> Task.transferCar te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (fromJust $ CIG.id lcar)
                 _ -> rollback $ "challenge type not recognized: " ++ (ChgE.type chge)
       
             -- TODO: give other race rewards (give money, respect, part)
@@ -1663,7 +1668,7 @@ userCurrentRace = do
                 True -> do
                     rs <- search ["race_id" |== (toSql $ A.busy_subject_id (head as))] [] 1 0 :: SqlTransaction Connection [RAD.RaceDetails]
                     case length rs > 0 of
-                        False -> rollback "error: race not found"
+                        False -> rollback "race not found"
                         True -> do
                             let r = head rs
                             Task.run Task.User uid

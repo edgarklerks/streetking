@@ -89,11 +89,21 @@ $(genMapableRecord "RaceResult"
             ("sectionResults", ''SectionResults)
         ])
 
+type MInteger = Maybe Integer
+
+$(genMapableRecord "RaceRewards"
+    [
+            ("money", ''Integer),
+            ("respect", ''Integer),
+            ("part", ''MInteger)
+       ])
+
 $(genMapableRecord "RaceData"
     [
             ("rd_user", ''APM.AccountProfileMin),
             ("rd_car", ''CIG.CarInGarage),
-            ("rd_result", ''RaceResult)
+            ("rd_result", ''RaceResult),
+            ("rd_rewards", ''RaceRewards)
        ])
 
 type RaceDatas = [RaceData]
