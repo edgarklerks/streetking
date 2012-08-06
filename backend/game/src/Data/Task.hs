@@ -321,10 +321,6 @@ infixr 4 .<
 getd :: forall a. AS.FromJSON a => a -> Key -> Data -> a 
 getd f k d = maybe f fromJust $ get k d
 
-(.<>) :: forall a. AS.FromJSON a => a -> Key -> Data -> a
-(.<>) = getd
-infixr 4 .<>
-
 -- force get data field
 getf :: forall a. AS.FromJSON a => Key -> Data -> a
 getf k d = getd (error $ "Data: force get: field not found") k d
