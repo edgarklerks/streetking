@@ -20,8 +20,6 @@
 
 use strict;
 use warnings;
-
-
 use Net::SSH::Perl;
 
 my $host = 'r2.graffity.me';
@@ -31,9 +29,4 @@ my $cmd = "cd /usr/home/admin/streetking/templates; tar -cvzf /usr/home/admin/te
 
 my $ssh = Net::SSH::Perl->new($host, port => 27010);
 $ssh->login($user, $pass);
-
 my ($out, $err, $exit) = $ssh->cmd($cmd);
-
-
-
-
