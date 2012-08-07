@@ -5,6 +5,7 @@ module Model.ChallengeExtended where
 import           Data.SqlTransaction
 import           Database.HDBC
 import           Data.Convertible
+import           Data.Conversion
 import           Model.General
 import           Data.Database 
 import           Control.Monad
