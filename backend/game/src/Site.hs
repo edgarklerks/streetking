@@ -84,6 +84,7 @@ import qualified Model.GarageReport as GRP
 import qualified Model.PersonnelReport as PR 
 import qualified Model.TravelReport as TR 
 import qualified Model.Functions as DBF
+import qualified Model.Support as SUP 
 import qualified Data.HashMap.Strict as HM
 import           Control.Monad.Trans
 import           Application
@@ -1391,7 +1392,6 @@ carSetOptions = do
 
 unixtime :: IO Integer
 unixtime = floor <$> getPOSIXTime
-
 
 {-
  - Actions: transactions to be taken before selecting data
