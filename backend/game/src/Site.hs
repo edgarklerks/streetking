@@ -1636,6 +1636,7 @@ raceChallengeAccept = do
             Task.giveRespect wt (fromJust $ A.id wacc) $ respect wrew
             Task.giveMoney wt (fromJust $ A.id wacc) $ money wrew
             unless (isNothing $ part wrew) $ Task.givePart wt (fromJust $ A.id wacc) (fromJust $ part wrew)
+
             Task.giveRespect lt (fromJust $ A.id lacc) $ respect lrew
             Task.giveMoney lt (fromJust $ A.id lacc) $ money lrew
             unless (isNothing $ part lrew) $ Task.givePart lt (fromJust $ A.id lacc) (fromJust $ part lrew)
