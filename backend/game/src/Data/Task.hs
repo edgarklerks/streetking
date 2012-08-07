@@ -235,17 +235,13 @@ process d = do
                 Just GivePart -> do
                         mp <- load $ "part_model_id" .<< d :: SqlTransaction Connection (Maybe PM.Part)
                         when (isNothing mp) $ throwError $ "process: give part: part model not found"
-                        mg <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe G.Garage)
-                        case mg of
-                            Just g -> do
-                                save (def {
-                                        PI.garage_id = G.id g, 
-                                        PI.part_id = "part_model_id" .<< d,
-                                        PI.account_id = "account_id" .<< d
-                                    } :: PI.PartInstance) 
-                             
-                                return True
-                            Nothing -> throwError $ "process: give part: garage not found"
+                        g <- head <$> search ["account_id" |== (SqlInteger $ "account_id" .<< d )]  []  1 0 :: SqlTransaction Connection G.Garage
+                        save (def {
+                                PI.garage_id = G.id g, 
+                                PI.part_id = "part_model_id" .<< d,
+                                PI.account_id = "account_id" .<< d
+                            } :: PI.PartInstance) 
+                        return True
 
                 Just GiveCar -> throwError "process: not implemented: GiveCar"
 
