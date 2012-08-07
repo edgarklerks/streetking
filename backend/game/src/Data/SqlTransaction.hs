@@ -5,6 +5,8 @@ module Data.SqlTransaction (
     quickQuery,
     quickQuery',
     rollback,
+    waitWhen, 
+    waitUnless,
     run,
     sRun,
     execute,
@@ -332,3 +334,15 @@ makeQueryInsert tbl fields = "insert into \"" ++ tbl ++ "\" (" ++ fstr ++ ") val
 -- quickInsert: insert data map into a single specified table. data map has the form [(field, value)]. values are SqlValues. lastval() is returned.
 quickInsert :: H.IConnection c => String -> [(String, H.SqlValue)] -> SqlTransaction c H.SqlValue
 quickInsert tbl datamap = H.fromSql <$> sqlGetOne (makeQueryInsert tbl (map fst datamap)) (map snd datamap)
+
+waitWhen :: SqlTransaction Connection Bool -> SqlTransaction Connection ()
+waitWhen m = do 
+                    a <- m 
+                    case a of 
+                        False -> liftIO (threadDelay 10000) >> waitWhen m 
+                        True -> return ()
+
+
+
+waitUnless :: SqlTransaction Connection Bool -> SqlTransaction Connection () 
+waitUnless = waitWhen . fmap not 

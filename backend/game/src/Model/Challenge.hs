@@ -19,7 +19,6 @@ import qualified Data.Aeson as AS
 import Data.InRules
 
 import Data.Maybe
-import Application
 import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
