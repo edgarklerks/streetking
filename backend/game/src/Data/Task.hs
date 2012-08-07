@@ -28,6 +28,8 @@ import qualified Model.TrackTime as TTM
 import qualified Model.Account as A
 import qualified Model.Garage as G
 import qualified Model.CarInstance as CI
+import qualified Model.Part as PM
+import qualified Model.PartInstance as PI
 
 -- TODO: static tasks
 -- -> have start time, updated time, end time; field "static" boolean
@@ -230,9 +232,22 @@ process d = do
                                 save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
                                 return True
 
-                Just GivePart -> return True -- TODO; instantiate part and assign to user garage 
+                Just GivePart -> do
+                        mp <- load $ "part_model_id" .<< d :: SqlTransaction Connection (Maybe PM.Part)
+                        when (isNothing mp) $ throwError $ "process: give part: part model not found"
+                        mg <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe G.Garage)
+                        case mg of
+                            Just g -> do
+                                save (def {
+                                        PI.garage_id = G.id g, 
+                                        PI.part_id = "part_model_id" .<< d,
+                                        PI.account_id = "account_id" .<< d
+                                    } :: PI.PartInstance) 
+                             
+                                return True
+                            Nothing -> throwError $ "process: give part: garage not found"
 
-                Just GiveCar -> return True -- TODO; same for car
+                Just GiveCar -> throwError "process: not implemented: GiveCar"
 
                 -- TODO: use money transaction 
                 Just TransferMoney -> do
@@ -292,8 +307,8 @@ unpack :: forall a. AS.FromJSON a => Pack -> Maybe a
 unpack = AS.decode . LBC.pack . C.unpack
 
 -- force unpack data
-unpack' :: forall a. AS.FromJSON a => Pack -> a
-unpack' = fromJust . AS.decode . LBC.pack . C.unpack
+funpack :: forall a. AS.FromJSON a => Pack -> a
+funpack = fromJust . AS.decode . LBC.pack . C.unpack
 
 -- empty data
 new :: Data
@@ -334,11 +349,10 @@ getm k d = case get k d of
 (.<<) = getf
 infixr 4 .<<
 
+
 {-
  - Utility
  -}
-
-
 
 nubWith :: forall a b. Eq b => (a -> b) -> [a] -> [a]
 nubWith f = nubBy (\x y -> (f x) == (f y))
