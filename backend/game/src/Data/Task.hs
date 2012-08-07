@@ -235,9 +235,9 @@ process d = do
                                 save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
                                 return True
 
-                Just GivePart -> return True 
+                Just GivePart -> return True -- TODO; instantiate part and assign to user garage 
 
-                Just GiveCar -> return True 
+                Just GiveCar -> return True -- TODO; same for car
 
                 -- TODO: use money transaction 
                 Just TransferMoney -> do
