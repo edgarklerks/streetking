@@ -29,7 +29,7 @@ my $pass = 'Opm8r$';
 my $user = 'admin';
 my $cmd = "cd /usr/home/admin/streetking/templates; tar -cvzf /usr/home/admin/templates-day.tar.gz *";
 
-my $ssh = Net::SSH::Perl->new($host, port => 27010 );
+my $ssh = Net::SSH::Perl->new($host, port => 27010);
 $ssh->login($user, $pass);
 
 my ($out, $err, $exit) = $ssh->cmd($cmd);
