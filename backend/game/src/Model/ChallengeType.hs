@@ -18,7 +18,7 @@ import qualified Data.Aeson as AS
 import Data.InRules
 
 import Data.Maybe
-import Application
+
 
 
 $(genAll "ChallengeType" "challenge_type" [

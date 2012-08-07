@@ -5,6 +5,8 @@ module Data.SqlTransaction (
     quickQuery,
     quickQuery',
     rollback,
+    waitWhen, 
+    waitUnless,
     run,
     sRun,
     execute,
@@ -46,6 +48,7 @@ module Data.SqlTransaction (
     par3,
     par4,
     parN,
+    parSafe,
     fillFuture 
 
 ) where 
@@ -66,6 +69,7 @@ import Data.Map (Map)
 import qualified Database.HDBC as H
 import qualified Data.HashMap.Strict as M
 import Database.HDBC.PostgreSQL
+import Data.Either 
 
 newtype SqlTransaction c a = SqlTransaction {
                 unsafeRunSqlTransaction :: forall r. (c -> a -> IO (Either String r)) -> c -> IO (Either String r)
@@ -187,6 +191,26 @@ readFuture f = do
                 case b of 
                     Left e -> rollback e
                     Right a -> return a
+
+parSafe :: H.IConnection c => [SqlTransaction c a] -> SqlTransaction c [a]
+parSafe xs = do 
+            ts <- forM xs $ \i -> do 
+                    down <- liftIO $ newEmptyMVar 
+                    up <- liftIO $ newEmptyMVar 
+                    run down up i
+                    return (down, up)
+            rs <- forM (fst <$> ts) $ liftIO . takeMVar 
+            case (lefts $ rs) of 
+                    [] -> forM_ (snd <$> ts) $ \i -> liftIO $ putMVar i False 
+                    otherwise -> forM_ (snd <$> ts) $ \i -> liftIO $ putMVar i True
+            return (rights rs) 
+     where run d u m  = forkSqlTransaction $ do 
+                        a <- catchError (Right <$> m) (\e -> return (Left e)) 
+                        liftIO $ putMVar d a 
+                        u <- liftIO $ takeMVar u 
+                        case u of 
+                           True -> rollback ""
+                           False -> return () 
 
 
 par2 :: H.IConnection c => SqlTransaction c a -> SqlTransaction c b -> SqlTransaction c (a,b)
@@ -332,3 +356,15 @@ makeQueryInsert tbl fields = "insert into \"" ++ tbl ++ "\" (" ++ fstr ++ ") val
 -- quickInsert: insert data map into a single specified table. data map has the form [(field, value)]. values are SqlValues. lastval() is returned.
 quickInsert :: H.IConnection c => String -> [(String, H.SqlValue)] -> SqlTransaction c H.SqlValue
 quickInsert tbl datamap = H.fromSql <$> sqlGetOne (makeQueryInsert tbl (map fst datamap)) (map snd datamap)
+
+waitWhen :: SqlTransaction Connection Bool -> SqlTransaction Connection ()
+waitWhen m = do 
+                    a <- m 
+                    case a of 
+                        False -> liftIO (threadDelay 10000) >> waitWhen m 
+                        True -> return ()
+
+
+
+waitUnless :: SqlTransaction Connection Bool -> SqlTransaction Connection () 
+waitUnless = waitWhen . fmap not 
