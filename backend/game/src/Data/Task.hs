@@ -189,9 +189,7 @@ release n = do
 
 -- mark a task as deleted
 remove :: Integer -> SqlTransaction Connection ()
-remove n = do
-        update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)]
-        return ()
+remove n = void $ update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)]
 
 -- physically remove tasks marked as deleted before specified time
 cleanup :: Integer -> SqlTransaction Connection ()
@@ -262,15 +260,15 @@ process d = do
 --                                    True -> do
 --                                        save $ ci { CI.garage_id = tg }
 --                                        return ()
-                            _ -> throwErrorw "process: transfer car: unable to retrieve required records"
+                            _ -> throwError "process: transfer car: unable to retrieve required records"
 
 
                 Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
                 Nothing -> throwError "process: no action"
 
 -- fail processing a task
-fali :: Integer -> Data -> String -> SqlTransaction Connection () 
-fali n s e = return () -- throwError e -- TODO: error report 
+fali :: Integer -> Data -> String -> SqlTransaction Connection Bool 
+fali n s e = return False -- throwError e -- TODO: error report 
 
 
 {-
