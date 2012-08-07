@@ -1,14 +1,15 @@
-{-# LANGUAGE OverloadedStrings, RankNTypes, DisambiguateRecordFields, FlexibleContexts, TemplateHaskell  #-}
+{-# LANGUAGE OverloadedStrings, RankNTypes, DisambiguateRecordFields, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns  #-}
 
 module Data.Task where
 
 import           Control.Applicative
 import           Control.Monad
+import           Control.Monad.Error
 import           Data.List
 import           Data.Maybe
 import           Data.SqlTransaction
 import           Data.Database
-import           Database.HDBC 
+import           Database.HDBC (toSql) 
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.ByteString.Lazy.Char8 as LBC
@@ -148,10 +149,13 @@ runWith :: Constraints -> SqlTransaction Connection ()
 runWith cs = do 
         ss <- claim cs
         forM ss $ \(n, s) -> do
-            f <- process s -- TODO; catch fail?
+            f <- catchError (process s) (errorReport n s) -- TODO; catch fail?
             when f $ remove n
             release n
         return ()
+
+-- errorReport :: String -> SqlTransaction Connection a 
+errorReport n s e = throwError e 
 
 -- TODO: ensure concurrent processes do not claim the same tasks
 -- -> 1. mark: update records with unique key
@@ -194,9 +198,7 @@ remove n = do
 
 -- physically remove tasks marked as deleted before specified time
 cleanup :: Integer -> SqlTransaction Connection ()
-cleanup t = do
-        transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger t, "deleted" |== SqlBool True]
-        return ()
+cleanup t = void $ transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger t, "deleted" |== SqlBool True]
 
 
 {-
@@ -335,3 +337,6 @@ infixr 4 .<<
 
 nubWith :: forall a b. Eq b => (a -> b) -> [a] -> [a]
 nubWith f = nubBy (\x y -> (f x) == (f y))
+
+
+
