@@ -327,6 +327,11 @@ getd f k d = maybe f fromJust $ get k d
 getf :: forall a. AS.FromJSON a => Key -> Data -> a
 getf k d = getd (error $ "Data: force get: field not found") k d
 
+getm :: (MonadError String m, AS.FromJSON a) => Key -> Data -> m a
+getm k d = case get k d of 
+            Just a -> return a 
+            Nothing -> throwError $ strMsg $ "Data: force get: field not found " ++ (LBC.unpack k)
+
 (.<<) :: forall a. AS.FromJSON a => Key -> Data -> a
 (.<<) = getf
 infixr 4 .<<
@@ -334,6 +339,8 @@ infixr 4 .<<
 {-
  - Utility
  -}
+
+
 
 nubWith :: forall a b. Eq b => (a -> b) -> [a] -> [a]
 nubWith f = nubBy (\x y -> (f x) == (f y))

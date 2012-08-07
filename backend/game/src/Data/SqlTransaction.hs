@@ -48,6 +48,7 @@ module Data.SqlTransaction (
     par3,
     par4,
     parN,
+    parSafe,
     fillFuture 
 
 ) where 
@@ -68,6 +69,7 @@ import Data.Map (Map)
 import qualified Database.HDBC as H
 import qualified Data.HashMap.Strict as M
 import Database.HDBC.PostgreSQL
+import Data.Either 
 
 newtype SqlTransaction c a = SqlTransaction {
                 unsafeRunSqlTransaction :: forall r. (c -> a -> IO (Either String r)) -> c -> IO (Either String r)
@@ -189,6 +191,26 @@ readFuture f = do
                 case b of 
                     Left e -> rollback e
                     Right a -> return a
+
+parSafe :: H.IConnection c => [SqlTransaction c a] -> SqlTransaction c [a]
+parSafe xs = do 
+            ts <- forM xs $ \i -> do 
+                    down <- liftIO $ newEmptyMVar 
+                    up <- liftIO $ newEmptyMVar 
+                    run down up i
+                    return (down, up)
+            rs <- forM (fst <$> ts) $ liftIO . takeMVar 
+            case (lefts $ rs) of 
+                    [] -> forM_ (snd <$> ts) $ \i -> liftIO $ putMVar i False 
+                    otherwise -> forM_ (snd <$> ts) $ \i -> liftIO $ putMVar i True
+            return (rights rs) 
+     where run d u m  = forkSqlTransaction $ do 
+                        a <- catchError (Right <$> m) (\e -> return (Left e)) 
+                        liftIO $ putMVar d a 
+                        u <- liftIO $ takeMVar u 
+                        case u of 
+                           True -> rollback ""
+                           False -> return () 
 
 
 par2 :: H.IConnection c => SqlTransaction c a -> SqlTransaction c b -> SqlTransaction c (a,b)
