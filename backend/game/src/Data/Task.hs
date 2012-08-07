@@ -28,6 +28,8 @@ import qualified Model.TrackTime as TTM
 import qualified Model.Account as A
 import qualified Model.Garage as G
 import qualified Model.CarInstance as CI
+import qualified Model.Part as PM
+import qualified Model.PartInstance as PI
 
 -- TODO: static tasks
 -- -> have start time, updated time, end time; field "static" boolean
@@ -149,13 +151,10 @@ runWith :: Constraints -> SqlTransaction Connection ()
 runWith cs = do 
         ss <- claim cs
         forM ss $ \(n, s) -> do
-            f <- catchError (process s) (errorReport n s) -- TODO; catch fail?
+            f <- catchError (process s) $ fali n s
             when f $ remove n
             release n
         return ()
-
--- errorReport :: String -> SqlTransaction Connection a 
-errorReport n s e = throwError e 
 
 -- TODO: ensure concurrent processes do not claim the same tasks
 -- -> 1. mark: update records with unique key
@@ -181,7 +180,7 @@ claim cs = do
         -- read tasks and return 
         forM ss $ \s -> do
             case unpack $ TKE.data s of
-                Nothing -> fail "claim: could not decode task data" 
+                Nothing -> throwError "claim: could not decode task data" 
                 Just d -> return (TKE.task_id s, d)
 
 -- unmark a task as claimed
@@ -192,9 +191,7 @@ release n = do
 
 -- mark a task as deleted
 remove :: Integer -> SqlTransaction Connection ()
-remove n = do
-        update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)]
-        return ()
+remove n = void $ update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)]
 
 -- physically remove tasks marked as deleted before specified time
 cleanup :: Integer -> SqlTransaction Connection ()
@@ -222,7 +219,7 @@ process d = do
                 Just GiveMoney -> do
                         ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
                         case ma of
-                            Nothing -> fail "process: give money: user not found"
+                            Nothing -> throwError "process: give money: user not found"
                             Just a -> do
                                 save $ a { A.money = (A.money a) + ("amount" .<< d) }
                                 return True
@@ -230,14 +227,23 @@ process d = do
                 Just GiveRespect ->do
                         ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
                         case ma of
-                            Nothing -> fail "process: give respect: user not found"
+                            Nothing -> throwError "process: give respect: user not found"
                             Just a -> do
                                 save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
                                 return True
 
-                Just GivePart -> return True 
+                Just GivePart -> do
+                        mp <- load $ "part_model_id" .<< d :: SqlTransaction Connection (Maybe PM.Part)
+                        when (isNothing mp) $ throwError $ "process: give part: part model not found"
+                        g <- head <$> search ["account_id" |== (SqlInteger $ "account_id" .<< d )]  []  1 0 :: SqlTransaction Connection G.Garage
+                        save (def {
+                                PI.garage_id = G.id g, 
+                                PI.part_id = "part_model_id" .<< d,
+                                PI.account_id = "account_id" .<< d
+                            } :: PI.PartInstance) 
+                        return True
 
-                Just GiveCar -> return True 
+                Just GiveCar -> throwError "process: not implemented: GiveCar"
 
                 -- TODO: use money transaction 
                 Just TransferMoney -> do
@@ -248,7 +254,7 @@ process d = do
                                 save $ sa { A.money = (A.money sa) - ("amount" .<< d) }
                                 save $ ta { A.money = (A.money ta) + ("amount" .<< d) }
                                 return True
-                            _ -> fail "process: transfer money: unable to retrieve required records"
+                            _ -> throwError "process: transfer money: unable to retrieve required records"
 
                 Just TransferCar -> do 
                         msa <- load $ "source_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
@@ -265,11 +271,14 @@ process d = do
 --                                    True -> do
 --                                        save $ ci { CI.garage_id = tg }
 --                                        return ()
-                            _ -> fail "process: transfer car: unable to retrieve required records"
+                            _ -> throwError "process: transfer car: unable to retrieve required records"
 
+                Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
+                Nothing -> throwError "process: no action"
 
-                Just e -> fail $ "process: unknown action: " ++ (show $ fromEnum e)
-                Nothing -> fail "process: no action"
+-- fail processing a task
+fali :: Integer -> Data -> String -> SqlTransaction Connection Bool 
+fali n s e = return False -- throwError e -- TODO: error report 
 
 
 {-
@@ -294,8 +303,8 @@ unpack :: forall a. AS.FromJSON a => Pack -> Maybe a
 unpack = AS.decode . LBC.pack . C.unpack
 
 -- force unpack data
-unpack' :: forall a. AS.FromJSON a => Pack -> a
-unpack' = fromJust . AS.decode . LBC.pack . C.unpack
+funpack :: forall a. AS.FromJSON a => Pack -> a
+funpack = fromJust . AS.decode . LBC.pack . C.unpack
 
 -- empty data
 new :: Data
@@ -330,17 +339,16 @@ getf k d = getd (error $ "Data: force get: field not found") k d
 getm :: (MonadError String m, AS.FromJSON a) => Key -> Data -> m a
 getm k d = case get k d of 
             Just a -> return a 
-            Nothing -> throwError $ strMsg $ "Data: force get: field not found " ++ (LBC.unpack k)
+            Nothing -> throwError $ strMsg $ "Data: force get: field not found: " ++ (LBC.unpack k)
 
 (.<<) :: forall a. AS.FromJSON a => Key -> Data -> a
 (.<<) = getf
 infixr 4 .<<
 
+
 {-
  - Utility
  -}
-
-
 
 nubWith :: forall a b. Eq b => (a -> b) -> [a] -> [a]
 nubWith f = nubBy (\x y -> (f x) == (f y))
