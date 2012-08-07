@@ -21,7 +21,7 @@ import qualified Model.AccountProfileMin as APM
 import qualified Model.CarMinimal as CMI
 
 import Data.Maybe
-import Application
+
 
 $(genAll "ChallengeExtended" "challenge_extended" [
                     ("challenge_id", ''Integer),
