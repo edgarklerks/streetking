@@ -260,12 +260,7 @@ process d = do
 --                                    True -> do
 --                                        save $ ci { CI.garage_id = tg }
 --                                        return ()
-<<<<<<< local
                             _ -> throwError "process: transfer car: unable to retrieve required records"
-=======
-                            _ -> throwErrorw "process: transfer car: unable to retrieve required records"
->>>>>>> other
-
 
                 Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
                 Nothing -> throwError "process: no action"
