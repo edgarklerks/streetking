@@ -61,7 +61,9 @@ Executable admin
     attoparsec,
     QuickCheck,
     vector,
-    data-object
+    data-object,
+    base64-bytestring,
+    cereal  
 
   if flag(development)
     build-depends:
