@@ -5,6 +5,7 @@ module Data.Task where
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Error
+import           Control.Concurrent
 import           Data.List
 import           Data.Maybe
 import           Data.SqlTransaction
@@ -93,7 +94,7 @@ trackTime t trk uid tme  = do
 
 -- add or remove money from user account
 giveMoney :: Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
-giveMoney t uid amt  tn tv = do
+giveMoney t uid amt tn tv = do
         tid <- task GiveMoney t $ ("transaction_type_name", tn) .> ("transaction_type_id", tv) .> ("account_id", uid) .> ("amount", amt) .> new
         trigger User uid tid
         return () 
@@ -143,35 +144,34 @@ transferCar t suid tuid cid  = do
 
 -- fire task trigger by trigger type and subject ID
 run :: Trigger -> Integer -> SqlTransaction Connection ()
-run tp sid = void $ do 
-        ss <- claim tp sid 
+run tp sid = void $ (flip catchError) (runFail tp sid) $ do
+
+        t <- liftIO $ floor <$> getPOSIXTime
+
+        ss <- claim t tp sid 
         forM_ ss $ \(n, s) -> do
-            f <- catchError (process s) $ fali n s
+            f <- catchError (process s) (processFail n s) 
             when f $ remove n
             release n
-        -- TODO: check for claimed tasks and await completion (threadDelay)
+
+        cleanup $ t - 24 * 3600
+        wait t tp sid
 
 -- fire all task triggers of a trigger type 
 runAll :: Trigger -> SqlTransaction Connection ()
 runAll tp = Data.Task.run tp 0
 
 -- mark a selection of tasks as claimed, and return them 
-claim :: Trigger -> Integer -> SqlTransaction Connection [(Integer, Data)]
-claim tp sid = do
-
-        -- get time
-        t <- liftIO $ floor <$> getPOSIXTime
-
-        -- clean up old tasks
-        cleanup $ t - 24*3600
+claim :: Integer -> Trigger -> Integer -> SqlTransaction Connection [(Integer, Data)]
+claim t tp sid = do
 
         -- fetch tasks and remove duplicates caused by multiple triggers on the same task
-        ss <- Data.List.map ((flip updateHashMap) (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) (sid)
+        ss <- Data.List.map (flip updateHashMap (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) sid
         
         -- read tasks and return 
         forM ss $ \s -> do
             case unpack $ TK.data s of
-                Nothing -> throwError "claim: could not decode task data" 
+                Nothing -> throwError "Task claim: could not decode task data" 
                 Just d -> return (fromJust $ TK.id s, d)
 
 -- unmark a task as claimed
@@ -185,6 +185,20 @@ remove n = void $ update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)
 -- physically remove tasks marked as deleted that are older than t 
 cleanup :: Integer -> SqlTransaction Connection ()
 cleanup t = void $ transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger t, "deleted" |== SqlBool True]
+
+-- wait until there are no running tasks
+wait :: Integer -> Trigger -> Integer -> SqlTransaction Connection () 
+wait = wait' 0 
+    where
+        wait' :: Integer -> Integer -> Trigger -> Integer -> SqlTransaction Connection () 
+        wait' n t tp sid = void $ do
+                b <- Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
+                case n > 5 of
+                    False -> do
+                        when b $ do
+                            liftIO $ threadDelay $ 1000 * 50
+                            wait' (n+1) t tp sid
+                    True -> throwError "Task wait: timeout"
 
 
 {-
@@ -279,9 +293,20 @@ process d = do
                 Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
                 Nothing -> throwError "process: no action"
 
+
+{-
+ - Error handling
+ -
+ - TODO: store error report in database, mark task as invalid and continue
+ -}
+
 -- fail processing a task
-fali :: Integer -> Data -> String -> SqlTransaction Connection Bool 
-fali n s e = return False -- throwError e -- TODO: error report 
+processFail :: Integer -> Data -> String -> SqlTransaction Connection Bool 
+processFail n s e = return True 
+
+-- fail during task run
+runFail :: Trigger -> Integer -> String -> SqlTransaction Connection ()
+runFail tp sid e = return ()
 
 
 {-
