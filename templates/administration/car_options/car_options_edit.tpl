@@ -4,7 +4,7 @@
 	
 <div><label>car_instance_id:</label><input type="text" name="car_instance_id" value="[:0.car_instance_id]"/></div>
 <div><label>key:</label><input type="text" name="key" value="[:0.key]"/></div>
-<div><label>value:</label><input type="text" name="value" value="[:0.value]"/></div>
-	
+<div><label>value:</label><textarea name="value">[:0.value]</textarea></div>
+
 	<input type="button" value="save" id="save" module="SAVE">
 </form>
