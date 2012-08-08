@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
-module Model.Application where 
+module Model.DealerItem where 
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -12,12 +12,10 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
-import qualified Data.Aeson as AS 
-import Data.InRules
 
-$(genAll "Application" "application" 
+$(genAll "DealerItem" "dealer_item" 
     [
         ("id", ''Id),
-        ("platform", ''String),
-        ("token", ''String)
+        ("car_id", ''Integer),
+        ("part_id", ''Integer)
     ])
