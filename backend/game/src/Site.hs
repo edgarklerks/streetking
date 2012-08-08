@@ -56,6 +56,7 @@ import qualified Model.CarMarket as CM
 import qualified Model.ManufacturerMarket as MAM 
 import qualified Model.MarketItem as MI 
 import qualified Model.Transaction as Transaction
+import           Model.Transaction (transactionMoney)
 import qualified Model.MarketPartType as MPT
 import qualified Model.GarageParts as GPT 
 import qualified Model.Config as CFG 
@@ -1224,25 +1225,6 @@ reportGarage uid tr = do
             return ()
 
 {-- Money stuff --}
-transactionMoney :: Integer -> Transaction.Transaction -> SqlTransaction Connection ()
-transactionMoney uid tr' =   do 
-                            tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
-                            let tr = tr' {Transaction.time = tpsx }
-                            a <- load uid :: SqlTransaction Connection (Maybe A.Account)
-                            case a of 
-               
-                                Nothing -> rollback "tri tho serch yer paspoht suplieh bette, friennd"
-                                Just a -> do 
-
-                                    when (A.money a + Transaction.amount tr < 0) $ rollback "You don' tno thgave eninh monye, brotther"
-
-                                    -- save transaction 
-
-                                    save $ tr { Transaction.current = A.money a, Transaction.account_id = uid }
-                                    -- save user 
-                                    save $ a { A.money = A.money a + Transaction.amount tr }
-                                    return ()
-
 cityTravel :: Application ()
 cityTravel = do
         uid <- getUserId 
@@ -1628,17 +1610,17 @@ raceChallengeAccept = do
 
             -- task transfer challenge object
             case ChgE.type chge of
-                "money" -> Task.transferMoney te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (Chg.amount chg)
+                "money" -> Task.transferMoney te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (Chg.amount chg) "challenge" (ChgE.challenge_id chge)
                 "car" -> Task.transferCar te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (fromJust $ CIG.id lcar)
                 _ -> rollback $ "challenge type not recognized: " ++ (ChgE.type chge)
             
             -- task grant rewards -- TODO: single task builder takes time, uid, RaceRewards and creates task for each reward type
             Task.giveRespect wt (fromJust $ A.id wacc) $ respect wrew
-            Task.giveMoney wt (fromJust $ A.id wacc) $ money wrew
+            Task.giveMoney wt (fromJust $ A.id wacc) (money wrew) ("challenge") (ChgE.challenge_id chge)
             unless (isNothing $ part wrew) $ Task.givePart wt (fromJust $ A.id wacc) (fromJust $ part wrew)
 
             Task.giveRespect lt (fromJust $ A.id lacc) $ respect lrew
-            Task.giveMoney lt (fromJust $ A.id lacc) $ money lrew
+            Task.giveMoney lt (fromJust $ A.id lacc) (money lrew) ("challenge") (ChgE.challenge_id chge)
             unless (isNothing $ part lrew) $ Task.givePart lt (fromJust $ A.id lacc) (fromJust $ part lrew)
 
             -- return race id
