@@ -92,7 +92,6 @@ handleNewUser = method GET handleForm <|> method POST handleFormSubmit
 
 
 
-
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
@@ -111,6 +110,30 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/part_modifier/put", putModel (def :: PM.PartModifier))
          , ("/part_instance/get", getModel (def :: PI.PartInstance))
          , ("/part_instance/put", putModel (def :: PI.PartInstance))
+         , ("/city/get", getModel (def :: CIT.City))
+         , ("/city/put", putModel (def :: CIT.City))
+         , ("/continent/get", getModel (def :: CON.Continent))
+         , ("/continent/put", putModel (def :: CON.Continent))
+         , ("/garage/get", getModel (def :: G.Garage))
+         , ("/garage/put", putModel (def :: G.Garage))
+         , ("/config/get", getModel (def :: CO.Config))
+         , ("/config/put", putModel (def :: CO.Config))
+         , ("/transaction/get", getModel (def :: TS.Transaction))
+         , ("/transaction/put", putModel (def :: TS.Transaction))
+         , ("/track/get", getModel (def :: TR.Track))
+         , ("/track/put", putModel (def :: TR.Track))
+         , ("/track_time/get", getModel (def :: TR.Track))
+         , ("/track_time/put", putModel (def :: TR.Track))
+         , ("/challenge/get", getModel (def :: CH.Challenge))
+         , ("/challenge/put", putModel (def :: CH.Challenge))
+         , ("/challenge_accept/get", getModel (def :: CHA.ChallengeAccept))
+         , ("/challenge_accept/put", putModel (def :: CHA.ChallengeAccept))
+         , ("/challenge_type/get", getModel (def :: CHT.ChallengeType))
+         , ("/challenge_type/put", putModel (def :: CHT.ChallengeType))
+         , ("/personnel/get", getModel (def :: P.Personnel))
+         , ("/personnel/put", putModel (def :: P.Personnel))
+         , ("/part_type/get", getModel (def :: PT.PartType))
+         , ("/part_type/put", putModel (def :: PT.PartType))
          , ("",          serveDirectory "static")
          ]
 
