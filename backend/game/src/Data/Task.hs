@@ -9,7 +9,7 @@ import           Data.List
 import           Data.Maybe
 import           Data.SqlTransaction
 import           Data.Database
-import           Database.HDBC (toSql, fromSql) 
+import           Database.HDBC (toSql) 
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.ByteString.Lazy.Char8 as LBC
@@ -166,13 +166,13 @@ claim tp sid = do
         cleanup $ t - 24*3600
 
         -- fetch tasks and remove duplicates caused by multiple triggers on the same task
-        ss <- Fun.claim_tasks t (toInteger $ fromEnum tp) (sid)
-
+        ss <- Data.List.map ((flip updateHashMap) (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) (sid)
+        
         -- read tasks and return 
         forM ss $ \s -> do
-            case unpack $ fromSql $ fromJust $ HM.lookup "data" s of
+            case unpack $ TK.data s of
                 Nothing -> throwError "claim: could not decode task data" 
-                Just d -> return (fromSql $ fromJust $ HM.lookup "id" s, d)
+                Just d -> return (fromJust $ TK.id s, d)
 
 -- unmark a task as claimed
 release :: Integer -> SqlTransaction Connection ()
@@ -251,12 +251,12 @@ process d = do
                                         TR.amount = - am,
                                         TR.type = tn,
                                         TR.type_id = tv 
-                                    })
+                                        })
                         transactionMoney tid (def { 
                                         TR.amount = am,
                                         TR.type = tn,
                                         TR.type_id = tv 
-                                    })
+                                        })
  
                         return True
                 Just TransferCar -> do 
