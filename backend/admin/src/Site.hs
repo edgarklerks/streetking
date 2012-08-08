@@ -39,6 +39,7 @@ import qualified Model.Continent as CON
 import qualified Model.Config as CO  
 import qualified Model.Garage as G 
 import qualified Model.Personnel as P
+import qualified Model.PersonnelInstance as PI
 import           Snap.Util.FileServe
 import           Text.Templating.Heist
 import           SqlTransactionSnaplet hiding (runDb)
@@ -106,6 +107,8 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/car_options/put", putModel (def :: CO.CarOptions))
          , ("/account/get", getModel (def :: A.Account)) 
          , ("/account/put", putModel (def :: A.Account))
+         , ("/part_model/get", getModel (def :: P.Part))
+         , ("/part_model/put", putModel (def :: P.Part))
          , ("/part_modifier/get", getModel (def :: PM.PartModifier))
          , ("/part_modifier/put", putModel (def :: PM.PartModifier))
          , ("/part_instance/get", getModel (def :: PI.PartInstance))
@@ -122,8 +125,8 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/transaction/put", putModel (def :: TS.Transaction))
          , ("/track/get", getModel (def :: TR.Track))
          , ("/track/put", putModel (def :: TR.Track))
-         , ("/track_time/get", getModel (def :: TR.Track))
-         , ("/track_time/put", putModel (def :: TR.Track))
+         , ("/track_time/get", getModel (def :: TRM.TrackTime))
+         , ("/track_time/put", putModel (def :: TRM.TrackTime))
          , ("/challenge/get", getModel (def :: CH.Challenge))
          , ("/challenge/put", putModel (def :: CH.Challenge))
          , ("/challenge_accept/get", getModel (def :: CHA.ChallengeAccept))
@@ -132,6 +135,8 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/challenge_type/put", putModel (def :: CHT.ChallengeType))
          , ("/personnel/get", getModel (def :: P.Personnel))
          , ("/personnel/put", putModel (def :: P.Personnel))
+         , ("/personnel_instance/get", getModel (def :: PI.PersonnelInstance))
+         , ("/personnel_instance/put", putModel (def :: PI.PersonnelInstance))
          , ("/part_type/get", getModel (def :: PT.PartType))
          , ("/part_type/put", putModel (def :: PT.PartType))
          , ("",          serveDirectory "static")
@@ -165,7 +170,7 @@ getModel :: (Database Connection a, Mapable a) => a -> Application ()
 putModel :: (Mapable a, Database Connection a) => a -> Application ()
 getModel a = sgets 
         where sgets = do 
-                  let (dtd, so) = build defaultBehaviours a  [] 
+                  let (dtd, so) = build defaultBehaviours a  defaultExceptions  
                   (((l,o),xs),od) <- getPagesWithDTDOrdered so dtd 
                   ns <- runDb $ search xs od l o 
                   writeMapables (ns `asTypeOf` ([a]))
@@ -201,7 +206,7 @@ allowOrigin = do
             modifyResponse (addHeader "Content-Type" "text/plain")
             modifyResponse (\x -> 
                case getHeader "Origin" g <|> getHeader "Referer" g of 
-                    Nothing -> addHeader "Access-Control-Allow-Origin" "http://192.168.1.99" x
+                    Nothing -> addHeader "Access-Control-Allow-Origin" "*" x
                     Just n -> addHeader "Access-Control-Allow-Origin" n x
                 )
 -- Access-Control-Allow-Credentials: true  
