@@ -9,7 +9,7 @@ import           Data.List
 import           Data.Maybe
 import           Data.SqlTransaction
 import           Data.Database
-import           Database.HDBC (toSql) 
+import           Database.HDBC (toSql, fromSql) 
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.ByteString.Lazy.Char8 as LBC
@@ -23,6 +23,7 @@ import           Data.HashMap.Strict as HM
 import qualified Model.Transaction as TR 
 import           Model.Transaction (transactionMoney)
 
+import qualified Model.Functions as Fun
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
 import qualified Model.TaskExtended as TKE
@@ -142,33 +143,21 @@ transferCar t suid tuid cid  = do
 
 -- fire task trigger by trigger type and subject ID
 run :: Trigger -> Integer -> SqlTransaction Connection ()
-run tp sid = runWith ["type" |== (toSql $ toInteger $ fromEnum tp), "target_id" |== toSql sid]
-
--- fire all task triggers of a trigger type 
-runAll :: Trigger -> SqlTransaction Connection ()
-runAll tp = runWith ["type" |== (toSql $ toInteger $ fromEnum tp)]
-
--- fire tasks by a selection of triggers
-runWith :: Constraints -> SqlTransaction Connection ()
-runWith cs = do 
-        ss <- claim cs
-        forM ss $ \(n, s) -> do
+run tp sid = void $ do 
+        ss <- claim tp sid 
+        forM_ ss $ \(n, s) -> do
             f <- catchError (process s) $ fali n s
             when f $ remove n
             release n
-        return ()
+        -- TODO: check for claimed tasks and await completion (threadDelay)
 
--- TODO: ensure concurrent processes do not claim the same tasks
--- -> 1. mark: update records with unique key
--- -> 2. fetch: select marked records
--- Note: select on TKE.TaskExtended, but update on TK.Task. may require explicit sql.
-
--- TODO: ensure concurrent processes all return up-to-date information, i.e. data as updated by any tasks
--- -> lock table? allow duplicate task execution, use rollback? 
+-- fire all task triggers of a trigger type 
+runAll :: Trigger -> SqlTransaction Connection ()
+runAll tp = Data.Task.run tp 0
 
 -- mark a selection of tasks as claimed, and return them 
-claim :: Constraints -> SqlTransaction Connection [(Integer, Data)]
-claim cs = do
+claim :: Trigger -> Integer -> SqlTransaction Connection [(Integer, Data)]
+claim tp sid = do
 
         -- get time
         t <- liftIO $ floor <$> getPOSIXTime
@@ -177,25 +166,23 @@ claim cs = do
         cleanup $ t - 24*3600
 
         -- fetch tasks and remove duplicates caused by multiple triggers on the same task
-        ss :: [TKE.TaskExtended] <- nubWith TKE.task_id <$> search (("time" |<= SqlInteger t) : cs) [] 10000 0
+        ss <- Fun.claim_tasks t (toInteger $ fromEnum tp) (sid)
 
         -- read tasks and return 
         forM ss $ \s -> do
-            case unpack $ TKE.data s of
+            case unpack $ fromSql $ fromJust $ HM.lookup "data" s of
                 Nothing -> throwError "claim: could not decode task data" 
-                Just d -> return (TKE.task_id s, d)
+                Just d -> return (fromSql $ fromJust $ HM.lookup "id" s, d)
 
 -- unmark a task as claimed
 release :: Integer -> SqlTransaction Connection ()
-release n = do
-        -- TODO: unset mark
-        return ()
+release n = void $ update "task" ["id" |== toSql n] [] [("claim", SqlInteger 0)]
 
 -- mark a task as deleted
 remove :: Integer -> SqlTransaction Connection ()
 remove n = void $ update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)]
 
--- physically remove tasks marked as deleted before specified time
+-- physically remove tasks marked as deleted that are older than t 
 cleanup :: Integer -> SqlTransaction Connection ()
 cleanup t = void $ transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger t, "deleted" |== SqlBool True]
 
@@ -264,12 +251,12 @@ process d = do
                                         TR.amount = - am,
                                         TR.type = tn,
                                         TR.type_id = tv 
-                                        })
+                                    })
                         transactionMoney tid (def { 
                                         TR.amount = am,
                                         TR.type = tn,
                                         TR.type_id = tv 
-                                        })
+                                    })
  
                         return True
                 Just TransferCar -> do 
@@ -361,13 +348,6 @@ getm k d = case get k d of
 (.<<) = getf
 infixr 4 .<<
 
-
-{-
- - Utility
- -}
-
-nubWith :: forall a b. Eq b => (a -> b) -> [a] -> [a]
-nubWith f = nubBy (\x y -> (f x) == (f y))
 
 
 
