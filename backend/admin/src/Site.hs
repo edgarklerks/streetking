@@ -26,11 +26,24 @@ import qualified Model.CarOptions as CO
 import qualified Model.Account as A
 import qualified Model.PartModifier as PM 
 import qualified Model.PartInstance as PI 
+import qualified Model.Application as AP
+import qualified Model.Challenge as CH
+import qualified Model.ChallengeAccept as CHA 
+import qualified Model.ChallengeType as CHT 
+import qualified Model.Track as TR 
+import qualified Model.TrackTime as TRM 
+import qualified Model.Transaction as TS
+import qualified Model.City as CIT 
+import qualified Model.Continent as CON 
+import qualified Model.Config as CO  
+import qualified Model.Garage as G 
+import qualified Model.Personnel as P
 import           Snap.Util.FileServe
 import           Text.Templating.Heist
 import           SqlTransactionSnaplet hiding (runDb)
 import qualified SqlTransactionSnaplet as S 
 import qualified Model.Part as P 
+import qualified Model.PartType as PT 
 import           Model.General 
 import           Data.Monoid
 import           Control.Monad.Trans 
@@ -41,6 +54,7 @@ import           Database.HDBC.PostgreSQL (Connection)
 
 ------------------------------------------------------------------------------
 import           Application
+import           Control.Arrow 
 
 
 ------------------------------------------------------------------------------
@@ -81,7 +95,7 @@ handleNewUser = method GET handleForm <|> method POST handleFormSubmit
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = [ ("/login",    with auth handleLoginSubmit)
+routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/logout",   with auth handleLogout)
          , ("/new_user", with auth handleNewUser)
          , ("/car_model/get", getModel (def :: C.Car)) 
@@ -123,14 +137,14 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     return $ App h s a db
 
 
-getModel :: (Database Connection a) => a -> Application ()
+getModel :: (Database Connection a, Mapable a) => a -> Application ()
 putModel :: (Mapable a, Database Connection a) => a -> Application ()
 getModel a = sgets 
         where sgets = do 
                   let (dtd, so) = build defaultBehaviours a  [] 
                   (((l,o),xs),od) <- getPagesWithDTDOrdered so dtd 
-                  ns <- runDb $ search xs od l o :: Application [C.Car] 
-                  writeMapables ns
+                  ns <- runDb $ search xs od l o 
+                  writeMapables (ns `asTypeOf` ([a]))
 putModel a = sputs 
     where sputs = do 
                 xs <- getJson 
@@ -142,8 +156,39 @@ putModel a = sputs
 
 
 
+enroute x = do 
+        g <- rqMethod <$> getRequest 
+        case g of 
+            OPTIONS -> allowAll 
+            otherwise -> allowAll *> CIO.catch x (\(UserErrorE e) -> writeBS $ "{\"error\":\"" <> e <> "\"}")
+
+
 
 
                     
 
-                  
+allowAll = allowCredentials *> allowOrigin *> allowMethods *> allowHeaders
+        
+-- -Access-Control-Allow-Origin: * 
+
+allowOrigin :: Application ()
+allowOrigin = do 
+            g <- getRequest
+            modifyResponse (addHeader "Content-Type" "text/plain")
+            modifyResponse (\x -> 
+               case getHeader "Origin" g <|> getHeader "Referer" g of 
+                    Nothing -> addHeader "Access-Control-Allow-Origin" "http://192.168.1.99" x
+                    Just n -> addHeader "Access-Control-Allow-Origin" n x
+                )
+-- Access-Control-Allow-Credentials: true  
+
+allowCredentials :: Application () 
+allowCredentials = modifyResponse (addHeader "Access-Control-Allow-Credentials" "true")
+
+allowMethods :: Application ()
+allowMethods = modifyResponse (addHeader "Access-Control-Allow-Methods" "POST, GET, OPTIONS, PUT")
+
+allowHeaders :: Application ()
+allowHeaders = modifyResponse (addHeader "Access-Control-Allow-Headers" "origin, content-type, accept, cookie");
+
+

@@ -12,6 +12,7 @@ $(mkFunctions [
     ("personnel_train", [''Integer, ''String, ''String], ''Bool, Scalar),
     ("personnel_start_task", [''Integer, ''String, ''Integer], ''Bool, Scalar),
     ("personnel_cancel_task", [''Integer], ''Bool, Scalar),
+--    ("submit_for_top_time", [''Integer, ''Integer, ''Double], ''Bool, Scalar),
     ("garage_actions_account", [''Integer], ''Bool, Scalar),
     ("garage_car_ready", [''Integer, ''Integer], ''String, Row),
     ("garage_active_car_ready", [''Integer], ''String, Row),
