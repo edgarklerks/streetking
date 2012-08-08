@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, ViewPatterns, NoMonomorphismRestriction #-}
+{-# LANGUAGE OverloadedStrings, ViewPatterns, NoMonomorphismRestriction,FlexibleContexts #-}
 
 ------------------------------------------------------------------------------
 -- | This module is where all the routes and handlers are defined for your
@@ -23,6 +23,9 @@ import           Snap.Snaplet.Session.Backends.CookieSession
 import qualified Model.Car as C 
 import qualified Model.CarInstance as CI
 import qualified Model.CarOptions as CO 
+import qualified Model.Account as A
+import qualified Model.PartModifier as PM 
+import qualified Model.PartInstance as PI 
 import           Snap.Util.FileServe
 import           Text.Templating.Heist
 import           SqlTransactionSnaplet hiding (runDb)
@@ -32,6 +35,8 @@ import           Model.General
 import           Data.Monoid
 import           Control.Monad.Trans 
 import           Data.DatabaseTemplate
+import           Data.SearchBuilder 
+import           Database.HDBC.PostgreSQL (Connection) 
 
 
 ------------------------------------------------------------------------------
@@ -79,12 +84,18 @@ routes :: [(ByteString, Handler App App ())]
 routes = [ ("/login",    with auth handleLoginSubmit)
          , ("/logout",   with auth handleLogout)
          , ("/new_user", with auth handleNewUser)
-         , ("/car_model/get", getCarModel) 
-         , ("/car_model/put", putCarModel)
-         , ("/car_instance/get", getCarInstance)
-         , ("/car_instance/put", putCarInstance)
-         , ("/car_options/get", getCarOption)
-         , ("/car_options/put", putCarOption)
+         , ("/car_model/get", getModel (def :: C.Car)) 
+         , ("/car_model/put", putModel (def :: C.Car))
+         , ("/car_instance/get", getModel (def :: CI.CarInstance))
+         , ("/car_instance/put", putModel (def :: CI.CarInstance))
+         , ("/car_options/get", getModel (def :: CO.CarOptions))
+         , ("/car_options/put", putModel (def :: CO.CarOptions))
+         , ("/account/get", getModel (def :: A.Account)) 
+         , ("/account/put", putModel (def :: A.Account))
+         , ("/part_modifier/get", getModel (def :: PM.PartModifier))
+         , ("/part_modifier/put", putModel (def :: PM.PartModifier))
+         , ("/part_instance/get", getModel (def :: PI.PartInstance))
+         , ("/part_instance/put", putModel (def :: PI.PartInstance))
          , ("",          serveDirectory "static")
          ]
 
@@ -112,80 +123,27 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     return $ App h s a db
 
 
-getCarModel :: Application ()
-getCarModel = do 
-    (((l,o), xs),od) <- getPagesWithDTDOrdered [
-                        "top_speed", "acceleration", "braking", 
-                        "nos", "handling", "name", 
-                        "id", "manufacturer_id", "braking",
-                        "nos", "use_3d", "year",
-                        "price" 
-                        ] (
-            "id" +== "id" +&& 
-            "manufacturer_id" +== "manufacturer_id" +&& 
-            "top_speed" +>= "top-speed-min" +&&
-            "top_speed" +<= "top-speed-max" +&& 
-            "acceleration" +>= "acceleration-min" +&&
-            "acceleration" +<= "acceleration-max" +&& 
-            "braking" +>= "braking-min" +&&
-            "braking" +<= "braking-max" +&& 
-            "nos" +>= "nos-min" +&&
-            "nos" +<= "nos-max" +&& 
-            "handling" +>= "handling-min" +&&
-            "handling" +<= "handling-max" +&& 
-            "name" +%% "name" +&& 
-            "use_3d" +%% "name" +&& 
-            "year" +>= "year-min" +&& 
-            "year" +<= "year-max" +&& 
-            "price" +>= "price-min" +&& 
-            "price" +<= "price-max"
-        )
-    ns <- runDb $ search xs od l o :: Application [C.Car] 
-    writeMapables ns
+getModel :: (Database Connection a) => a -> Application ()
+putModel :: (Mapable a, Database Connection a) => a -> Application ()
+getModel a = sgets 
+        where sgets = do 
+                  let (dtd, so) = build defaultBehaviours a  [] 
+                  (((l,o),xs),od) <- getPagesWithDTDOrdered so dtd 
+                  ns <- runDb $ search xs od l o :: Application [C.Car] 
+                  writeMapables ns
+putModel a = sputs 
+    where sputs = do 
+                xs <- getJson 
+                let p = updateHashMap xs a
+                x <- runDb $ save p
+                writeResult x 
 
 
-putCarModel :: Application ()
-putCarModel = do 
-    xs <- getJson 
-    let p = updateHashMap xs (def :: C.Car)
-    x <- runDb $ save p
-    writeResult x 
 
 
-getCarOption :: Application ()
-getCarOption = do 
-    (((l,o),xs),od) <- getPagesWithDTDOrdered ["id", "car_instance_id", "key", "value"] (
-                    "id" +== "id" +&&
-                    "car_instance_id" +== "car_instance_id" +&&
-                    "key" +%% "key" +&& 
-                    "value" +%% "value" 
-            )
-    ns <- runDb $ search xs od l o :: Application [CO.CarOptions]
-    writeMapables ns 
-
-putCarOption :: Application ()
-putCarOption = do 
-        xs <- getJson 
-        let p = updateHashMap xs (def :: CO.CarOptions)
-        x <- runDb $ save p
-        writeResult x 
-
-getCarInstance :: Application ()
-getCarInstance = do 
-        (((l,o),xs),od) <- getPagesWithDTDOrdered ["id", "car_instance_id", "key", "value"] (
-            "id" +== "id" +&& 
-            "car_id" +== "car_id" +&& 
-            "garage" +== "garage" +&& 
-            "deleted" +== "deleted" 
-            )
-        ns <- runDb $ search xs od l o :: Application [CI.CarInstance] 
-        writeMapables ns 
-
-putCarInstance :: Application ()
-putCarInstance = do 
-        xs <- getJson 
-        let p = updateHashMap xs (def :: CI.CarInstance)
-        x <- runDb $ save p 
-        writeResult x 
 
 
+
+                    
+
+                  
