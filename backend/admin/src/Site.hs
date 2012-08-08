@@ -20,6 +20,7 @@ import           Snap.Snaplet.Auth hiding (save)
 import           Snap.Snaplet.Auth.Backends.JsonFile
 import           Snap.Snaplet.Heist
 import           Snap.Snaplet.Session.Backends.CookieSession
+import qualified Control.Monad.CatchIO as CIO 
 import qualified Model.Car as C 
 import qualified Model.CarInstance as CI
 import qualified Model.CarOptions as CO 
@@ -54,7 +55,7 @@ import           Database.HDBC.PostgreSQL (Connection)
 
 ------------------------------------------------------------------------------
 import           Application
-import           Control.Arrow 
+import           Control.Arrow (second) 
 
 
 ------------------------------------------------------------------------------

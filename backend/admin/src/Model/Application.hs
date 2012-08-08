@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell,OverloadedStrings #-}
 module Model.Application where 
 
 import           Data.SqlTransaction
@@ -12,6 +12,8 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+import           Data.Aeson as AS 
+import           Data.InRules 
 
 $(genAll "Application" "application" 
     [
