@@ -1,4 +1,4 @@
-<form id="edit_form" action="track/put" method="post">
+<form id="edit_form" action="challenge_accept/put" method="post">
 	<div class="error">&nbsp;</div>
 	<input type="hidden" name="id" value="[:0.id]"/>
 	
