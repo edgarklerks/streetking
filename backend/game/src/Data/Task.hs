@@ -20,6 +20,8 @@ import           Data.Time.Clock.POSIX
 import           Control.Monad.Trans
 import           Model.General 
 import           Data.HashMap.Strict as HM
+import qualified Model.Transaction as TR 
+import           Model.Transaction (transactionMoney)
 
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
@@ -89,9 +91,9 @@ trackTime t trk uid tme  = do
         return () 
 
 -- add or remove money from user account
-giveMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
-giveMoney t uid amt  = do
-        tid <- task GiveMoney t $ ("account_id", uid) .> ("amount", amt) .> new
+giveMoney :: Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
+giveMoney t uid amt  tn tv = do
+        tid <- task GiveMoney t $ ("transaction_type_name", tn) .> ("transaction_type_id", tv) .> ("account_id", uid) .> ("amount", amt) .> new
         trigger User uid tid
         return () 
 
@@ -117,9 +119,9 @@ givePart t uid pid  = do
         return ()
 
 -- remove money from one account and add it to another
-transferMoney :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection ()
-transferMoney t suid tuid amt  = do
-        tid <- task TransferMoney t $ ("source_account_id", suid) .> ("target_account_id", tuid) .> ("amount", amt) .> new
+transferMoney :: Integer -> Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
+transferMoney t suid tuid amt tn tv = do
+        tid <- task TransferMoney t $ ("transaction_type_name", tn) .> ("transaction_type_id", tv) .> ("source_account_id", suid) .> ("target_account_id", tuid) .> ("amount", amt) .> new
         trigger User suid tid
         trigger User tuid tid
         return ()
@@ -217,13 +219,18 @@ process d = do
                         return True 
 
                 Just GiveMoney -> do
-                        ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
-                        case ma of
-                            Nothing -> throwError "process: give money: user not found"
-                            Just a -> do
-                                save $ a { A.money = (A.money a) + ("amount" .<< d) }
-                                return True
+                        let sid = "account_id" .<< d
+                        let tn = "transaction_type_name" .<< d
+                        let tv = "transaction_type_id" .<< d 
+                        let am = "amount" .<< d
 
+                        transactionMoney sid (def { 
+                                        TR.amount = am,
+                                        TR.type = tn,
+                                        TR.type_id = tv 
+                                        })
+                        return True 
+   
                 Just GiveRespect ->do
                         ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
                         case ma of
@@ -247,15 +254,24 @@ process d = do
 
                 -- TODO: use money transaction 
                 Just TransferMoney -> do
-                        msa <- load $ "source_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
-                        mta <- load $ "target_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
-                        case (msa, mta) of
-                            (Just sa, Just ta) -> do
-                                save $ sa { A.money = (A.money sa) - ("amount" .<< d) }
-                                save $ ta { A.money = (A.money ta) + ("amount" .<< d) }
-                                return True
-                            _ -> throwError "process: transfer money: unable to retrieve required records"
+                        let sid = "source_account_id" .<< d 
+                        let tid = "target_account_id" .<< d 
+                        let tn = "transaction_type_name" .<< d
+                        let tv = "transaction_type_id" .<< d 
+                        let am = "amount" .<< d
 
+                        transactionMoney sid (def { 
+                                        TR.amount = - am,
+                                        TR.type = tn,
+                                        TR.type_id = tv 
+                                        })
+                        transactionMoney tid (def { 
+                                        TR.amount = am,
+                                        TR.type = tn,
+                                        TR.type_id = tv 
+                                        })
+ 
+                        return True
                 Just TransferCar -> do 
                         msa <- load $ "source_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
                         mta <- load $ "target_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)

@@ -1,5 +1,5 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
-module Model.Application where 
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
+module Model.City where 
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -12,12 +12,18 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
-import qualified Data.Aeson as AS 
+
+import qualified Data.Aeson as AS
 import Data.InRules
 
-$(genAll "Application" "application" 
+$(genAll "City" "city"
     [
         ("id", ''Id),
-        ("platform", ''String),
-        ("token", ''String)
-    ])
+        ("continent_id", ''Integer),
+        ("level", ''Integer),
+        ("name", ''String),
+        ("data", ''String),
+        ("default", ''Bool)
+    ]
+ )
+
