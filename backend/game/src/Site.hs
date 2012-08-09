@@ -1614,19 +1614,20 @@ raceChallengeAccept = do
                 "car" -> Task.transferCar te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (fromJust $ CIG.id lcar)
                 _ -> rollback $ "challenge type not recognized: " ++ (ChgE.type chge)
             
-            -- task grant rewards -- TODO: single task builder takes time, uid, RaceRewards and creates task for each reward type
-            Task.giveRespect wt (fromJust $ A.id wacc) $ respect wrew
-            Task.giveMoney wt (fromJust $ A.id wacc) (money wrew) ("challenge") (ChgE.challenge_id chge)
-            unless (isNothing $ part wrew) $ Task.givePart wt (fromJust $ A.id wacc) (fromJust $ part wrew)
-
-            Task.giveRespect lt (fromJust $ A.id lacc) $ respect lrew
-            Task.giveMoney lt (fromJust $ A.id lacc) (money lrew) ("challenge") (ChgE.challenge_id chge)
-            unless (isNothing $ part lrew) $ Task.givePart lt (fromJust $ A.id lacc) (fromJust $ part lrew)
+            -- task grant rewards
+            taskRewards wt (fromJust $ A.id wacc) wrew (ChgE.challenge_id chge) "challenge"
+            taskRewards lt (fromJust $ A.id lacc) lrew (ChgE.challenge_id chge) "challenge"
 
             -- return race id
             return rid
 
         writeResult res
+
+taskRewards :: Integer -> Integer -> RaceRewards -> Integer -> String -> SqlTransaction Connection () 
+taskRewards t u r d s = void $ do
+            unless ((==0) $ respect r) $ Task.giveRespect t u $ respect r
+            unless ((==0) $ money r) $ Task.giveMoney t u (money r) s d
+            unless (isNothing $ part r) $ Task.givePart t u $ fromJust $ part r
 
 searchRaceChallenge :: Application ()
 searchRaceChallenge = do
