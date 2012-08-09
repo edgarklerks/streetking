@@ -147,6 +147,8 @@ run :: Trigger -> Integer -> SqlTransaction Connection ()
 run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 
         t <- liftIO $ floor <$> getPOSIXTime
+        
+        cleanup $ t - 24 * 3600
 
         ss <- claim t tp sid 
         forM_ ss $ \(n, s) -> do
@@ -154,7 +156,6 @@ run tp sid = void $ (flip catchError) (runFail tp sid) $ do
             when f $ remove n
             release n
 
-        cleanup $ t - 24 * 3600
         wait t tp sid
 
 -- fire all task triggers of a trigger type 
@@ -192,13 +193,13 @@ wait = wait' 0
     where
         wait' :: Integer -> Integer -> Trigger -> Integer -> SqlTransaction Connection () 
         wait' n t tp sid = void $ do
-                b <- Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
                 case n > 5 of
+                    True -> throwError "Task wait: timeout"
                     False -> do
+                        b <- Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
                         when b $ do
                             liftIO $ threadDelay $ 1000 * 50
                             wait' (n+1) t tp sid
-                    True -> throwError "Task wait: timeout"
 
 
 {-
