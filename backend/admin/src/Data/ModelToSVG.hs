@@ -130,6 +130,15 @@ button id l xy n a = def $ Button id l xy n a None
                          | otherwise = SVGDef (tailr xs S.|> insert (headr xs) l)
 
 
+
+(|->) :: SVGDef -> SVGDef -> SVGDef 
+(|->) = (<->) 
+
+(<-|) :: SVGDef -> SVGDef -> SVGDef 
+(<-|) = flip (<->) 
+
+
+
 multi :: SVGDef -> [SVGDef] -> SVGDef 
 multi (unSVGDef -> xs) l | S.null xs = mconcat l
                          | otherwise = SVGDef (tailr xs S.|> insert (headr xs) (mconcat l))
@@ -140,6 +149,8 @@ insert (Circle lbl rt r nm xs) ns = Circle lbl rt r nm (ns `connect` xs)
 insert (Button id lbl xy nm a xs) ns = Button id lbl xy nm a (ns `connect` xs)
 
 infixl 7 <-> 
+infixl 7 <-|
+infixr 7 |->
 
 test = box "testbox" ((10,10),(20,20)) "actiontest" <-> 
        box "bla box" ((30,30), (40,40)) "bla action" <!> [FGColor (0,0,0)]
@@ -317,22 +328,114 @@ loadContinent cid = do
 -- 550 10 
 -- 820 10 
 
+
 loadCarInstance :: Integer -> SqlTransaction Connection SVGDef 
 loadCarInstance cid = do 
-                    ci <- fromJust <$> load cid :: SqlTransaction Connection CRI.CarInstance
-                    c <- fromJust <$> load (CRI.car_id ci) :: SqlTransaction Connection Car.Car 
-                    ps <- search [("car_instance_id" |== (toSql $ CRI.id ci))] [] 1000 0 :: SqlTransaction Connection [P.PartInstance]
-                    let bm (x,y) (i:xs) = do 
-                            pi <- fromJust <$> load (P.part_id i) :: SqlTransaction Connection Part.Part
-                            pt <- fromJust <$> load (Part.part_type_id pi) :: SqlTransaction Connection PT.PartType  
-                            rest <- bm (x, y + 220) xs 
-                            return $ ((record ("part_instance_" ++ show (fromJust $ P.id i)) (x, y) (fromJust $ P.id i) "part_instance" ["edit", "delete"])
-                                        <-> (record (PT.name pt) (270 + x, y) (fromJust $ Part.id pi) "part_model" ["edit", "delete"])) : rest
-                        bm (x,y) [] = return []
+                {-- Load car and record --}
+                ci <- fromJust <$> load cid :: SqlTransaction Connection CRI.CarInstance 
+                car <- fromJust <$> load (CRI.car_id ci) :: SqlTransaction Connection Car.Car
 
-                    cs <- bm (550, 10) ps
-                    return $   (record (Car.name c) (10,10)  (fromJust $ Car.id c) "car_model" ["edit", "delete"]) <-> 
-                                    (record ("car_instance_" ++ (show $ fromJust $ CRI.id ci)) (280, 10) (fromJust $ CRI.id ci) "car_instance" ["edit", "delete"] `multi` cs)
-                        
+                let carrecord = record (Car.name car) (10,10) (fromJust $ Car.id car) "car_model" ["edit", "delete"]
+                let cirecord = record ("car_instance_" ++ (show $ CRI.id ci)) (280,10) (fromJust $ CRI.id ci) "car_instance"  ["edit", "delete"]
 
+                {-- search for part instances --}
+
+                ps <- search [("car_instance_id" |== (toSql $ CRI.id ci))] [] 1000 0 :: SqlTransaction Connection [P.PartInstance]
+
+                s <- addRecords 550 10 (cirecord) ps $ \x y i ->  do 
+                                        {-- load part --}
+                                        pi <- fromJust <$> load (P.part_id i) :: SqlTransaction Connection Part.Part 
+                                        pt <- fromJust <$> load (Part.part_type_id pi) :: SqlTransaction Connection PT.PartType 
+                                        let pinst = (record ("part_instance_" ++ show (fromJust $ P.id i)) (x,y) (fromJust $ P.id i) "part_instance" ["edit", "delete"])
+                                        let pmod = record ("part_model_" ++ show (fromJust $ Part.id pi)) (x + 270 ,y) (fromJust $ Part.id pi) "part_model" ["edit", "delete"]
+                                        let ptinst = record (PT.name pt) (x + 270 + 270, y) (fromJust $ PT.id pt) "part_type" ["edit", "delete"]
+
+                                        return $ pinst |-> (pmod |-> ptinst)
+                return (carrecord |-> s)
+                                         
+
+loadPartModel :: Integer -> SqlTransaction Connection SVGDef 
+loadPartModel n = do 
+                p <- fromJust <$> load n :: SqlTransaction Connection Part.Part
+                pt <- fromJust <$> load (Part.part_type_id p) :: SqlTransaction Connection PT.PartType
+                let precord = record (PT.name pt) (10,10) (fromJust $ Part.id p) "part_model" ["edit", "delete"] 
+                ps <- search ["part_id" |== (toSql $ Part.id p)] [] 100000 0 :: SqlTransaction Connection [P.PartInstance]
+                
+                s <- addRecordsDivided 50 220 10 precord ps $ \x y i -> do 
+                                        return $ record (show $ "part_instance_" ++ (show (P.id i))) (x,y) (fromJust $ P.id i) "part_instance" ["edit", "delete"]
+                return s
+
+
+
+
+-- loadPartType :: String -> SqlTransaction Connection SVGDef 
+loadPartType nm = do 
+                p <- search ["name" |== (toSql nm)] [] 10000 0 :: SqlTransaction Connection [PT.PartType]
+                case p of 
+                    [] -> return $ mempty 
+                    (p:xs) -> do 
+                            let ptrecord = record (PT.name p) (10,10) (fromJust $ PT.id p) "part_type" ["edit", "delete"]
+                            ps <- search ["part_type_id" |== (toSql $ PT.id p)] [] 1000000 0 :: SqlTransaction Connection [Part.Part]
+                            s <- addRecordsPaged 50 220 10 10 20000 ptrecord ps 
+                                    $ \x y i -> do
+                                        let precord = record ("part_model_" ++ (show (Part.id i))) (x,y) (fromJust $ Part.id i) "part_model" ["edit","delete"]
+                                        ss <- search ["part_id" |== (toSql $ Part.id i)] [] 1000000 0 :: SqlTransaction Connection [P.PartInstance]
+                                        addRecordsPaged 50 (x + 220) 10 10 20000 precord ss $ (recId $ \x y i ->  
+                                                            return $ record ("part_instance_" ++ (show (P.id i))) (x,y) (fromJust $ P.id i) "part_instance" ["edit", "delete"])
+                            return (snd s)
+
+{-- This record follows normal x y convention --}
+recId :: Monad m => (X -> Y -> a -> m SVGDef) -> X -> Y -> a -> m ((X,Y), SVGDef)
+recId f x y a = do 
+            s <- f x y a
+            return ((x,y),s)
+
+-- addRecordsPaged :: Monad m => Int -> X -> Y -> SVGDef -> [a] -> (X -> Y -> a -> m ((X,Y), SVGDef)) -> m ((X,Y), SVGDef)
+addRecordsPaged i x y ymin ymax svg [] f =  pure ((x,y),svg) 
+addRecordsPaged i x y ymin ymax svg xs f = do 
+                            ((x',y'),svg') <- addRecords' x y svg  (take i xs) f 
+                            case ymax > y' of 
+                                True -> addRecordsPaged i x' (y + 170) ymin ymax svg' (drop i xs) f
+                                False -> addRecordsPaged i (x' + 270) ymin ymin ymax svg' (drop i xs) f
+
+addRecords' :: Monad m => X -> Y -> SVGDef -> [a] -> ( X -> Y -> a -> m ((X,Y),SVGDef) ) -> m ((X,Y),SVGDef)
+addRecords' x y svg xs f = bm x y xs []
+                where bm x y [] vs = return ((x,y), svg `multi` vs)
+                      bm x y (p:ps) vs = do 
+                                ((x',y'), a) <- f x y p 
+                                bm x' (y' + 170)  ps (a:vs)
+
+addRecordsDivided :: Monad m => Int -> X -> Y -> SVGDef -> [a] -> (X -> Y -> a -> m SVGDef) -> m SVGDef 
+addRecordsDivided n x y svg [] f = return svg 
+addRecordsDivided n x y svg xs f =  do 
+                            svg' <- addRecords x y svg (take n xs) f
+                            addRecordsDivided n (x + 210) y svg' (drop n xs) f
+
+
+divide n [] = [] 
+divide n xs = take n : divide n (drop n xs)
+
+test2 :: SVGDef 
+test2 = record "hello" (200,10) 3 "lala" ["edit", "delete"] <-| record "slaas" (10,200) 2 "asd" ["edit", "delete"]
+
+test3 :: SVGDef 
+test3 = record "right" (100, 200) 3 "lala" ["edit", "delete"] <-| (record "mid" (200,10) 3 "lala" ["edit", "delete"] |-> record "left" (400,120) 3 "test"  ["edit", "delete"])
+
+addRecords :: Monad m => X -> Y -> SVGDef -> [a] -> (X -> Y -> a -> m SVGDef) ->  m SVGDef 
+addRecords x y svg xs f = bm y xs [] 
+        where bm y [] vs = return (svg `multi` vs)
+              bm y (p:ps) vs = do 
+                                a <- f x y p 
+                                bm (y + 170) ps (a:vs)
+
+{--
+-
+loadPartModel :: Integer -> SqlTransaction Connection SVGDef 
+loadPartModel n = do 
+                p <- fromJust <$> load n :: SqlTransaction Connection Part.Part
+                ps <- search ["part_id" |== (Part.id p)] [] 100000 0 :: SqlTransaction Connection [P.PartInstance]
+                let step z x = z <-> (record ("part_instance_" ++ (show (P.id x)) (220,) 
+                let s = record ("part_"  ++ (show (Part.id p))) (10,10) 
+                s <- foldM step (record) ps  
+--}
 runl m = testdb >>= \x -> runSqlTransaction m error x <* disconnect x
