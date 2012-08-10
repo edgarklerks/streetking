@@ -98,17 +98,37 @@ instance Monad (SqlTransaction c) where
     return a = SqlTransaction $ \r c -> r c a
     (>>=) m f = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\c a -> unsafeRunSqlTransaction (f a) r $ c )
 
+catchSqlError :: SqlTransaction c a -> (String -> SqlTransaction c a) -> SqlTransaction c a
+catchSqlError m f = SqlTransaction $ \r c -> do 
+                                    x <- unsafeRunSqlTransaction m (\_ a -> return (Right a)) c
+                                    case x of 
+                                        Left s -> unsafeRunSqlTransaction (f s) r c
+                                        Right a -> r c a
+
+testCatch :: SqlTransaction Connection () 
+testCatch = do 
+            s <- catchSqlError (do 
+                        liftIO $ print "in catch error"
+                        rollback "suck me dick"
+                        return 0) (\e -> liftIO $ print e >> return 1)
+            liftIO $ print s
+            return ()
+
+-- r :: c -> a -> IO (Either String r) 
+-- unsafeRunSqlTransaction :: SqlTransaction c a -> (c -> a -> IO (Either String r))  -> c -> IO (Either String r)
+-- SqlTransaction :: ( (c -> a -> IO (Either String r)) -> c -> IO (Either String r)) -> SqlTransaction c a 
+--
+                                                           
+
+
+ 
 instance Applicative (SqlTransaction c) where 
     pure = return 
     (<*>) f m = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\c a -> unsafeRunSqlTransaction f (\_ f' -> r c $ f' a) $ c)
 
 instance Alternative (SqlTransaction c) where 
     empty = SqlTransaction $ \r c ->  (return $ Left "empty")
-    (<|>) m n = SqlTransaction $ \r c -> unsafeRunSqlTransaction m (\c a ->  do 
-                                                                p <- r c a 
-                                                                case p of 
-                                                                    Left s -> unsafeRunSqlTransaction n (\c a -> r c a) c 
-                                                                    Right a -> return (Right a)) $ c
+    (<|>) m n = catchSqlError m (const n) 
 
 instance MonadPlus (SqlTransaction c) where 
         mzero = empty 
@@ -124,11 +144,10 @@ instance MonadState c (SqlTransaction c) where
 
 instance MonadError String (SqlTransaction c) where 
        throwError e = SqlTransaction $ \r c -> return (Left e)  
-       catchError m f = SqlTransaction $ \r c -> unsafeRunSqlTransaction m (\c a -> do 
-                                                                                b' <- r c a
-                                                                                case b' of 
-                                                                                    Left s -> unsafeRunSqlTransaction (f s) (\c a -> r c a) $ c 
-                                                                                    Right a -> return (Right a)) c
+       catchError m f = catchSqlError m f 
+                               
+
+
 instance MonadIO (SqlTransaction c) where 
     liftIO m = SqlTransaction $ \r c -> (m >>= r c)
 
@@ -368,3 +387,12 @@ waitWhen m = do
 
 waitUnless :: SqlTransaction Connection Bool -> SqlTransaction Connection () 
 waitUnless = waitWhen . fmap not 
+
+
+testcon = connectPostgreSQL "host=db.graffity.me password=#*rl& user=deosx dbname=streetking_dev"
+
+runTestDb m = do 
+            c <- testcon 
+            a <- runSqlTransaction m (\x -> print x >> return undefined ) c
+            H.disconnect c 
+            return a
