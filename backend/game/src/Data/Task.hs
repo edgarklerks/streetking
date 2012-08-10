@@ -5,6 +5,7 @@ module Data.Task where
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Error
+import           Control.Concurrent
 import           Data.List
 import           Data.Maybe
 import           Data.SqlTransaction
@@ -20,7 +21,10 @@ import           Data.Time.Clock.POSIX
 import           Control.Monad.Trans
 import           Model.General 
 import           Data.HashMap.Strict as HM
+import qualified Model.Transaction as TR 
+import           Model.Transaction (transactionMoney)
 
+import qualified Model.Functions as Fun
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
 import qualified Model.TaskExtended as TKE
@@ -89,9 +93,9 @@ trackTime t trk uid tme  = do
         return () 
 
 -- add or remove money from user account
-giveMoney :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
-giveMoney t uid amt  = do
-        tid <- task GiveMoney t $ ("account_id", uid) .> ("amount", amt) .> new
+giveMoney :: Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
+giveMoney t uid amt tn tv = do
+        tid <- task GiveMoney t $ ("transaction_type_name", tn) .> ("transaction_type_id", tv) .> ("account_id", uid) .> ("amount", amt) .> new
         trigger User uid tid
         return () 
 
@@ -117,9 +121,9 @@ givePart t uid pid  = do
         return ()
 
 -- remove money from one account and add it to another
-transferMoney :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection ()
-transferMoney t suid tuid amt  = do
-        tid <- task TransferMoney t $ ("source_account_id", suid) .> ("target_account_id", tuid) .> ("amount", amt) .> new
+transferMoney :: Integer -> Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
+transferMoney t suid tuid amt tn tv = do
+        tid <- task TransferMoney t $ ("transaction_type_name", tn) .> ("transaction_type_id", tv) .> ("source_account_id", suid) .> ("target_account_id", tuid) .> ("amount", amt) .> new
         trigger User suid tid
         trigger User tuid tid
         return ()
@@ -140,62 +144,62 @@ transferCar t suid tuid cid  = do
 
 -- fire task trigger by trigger type and subject ID
 run :: Trigger -> Integer -> SqlTransaction Connection ()
-run tp sid = runWith ["type" |== (toSql $ toInteger $ fromEnum tp), "target_id" |== toSql sid]
+run tp sid = void $ (flip catchError) (runFail tp sid) $ do
+
+        t <- liftIO $ floor <$> getPOSIXTime
+        
+        cleanup $ t - 24 * 3600
+
+        ss <- claim t tp sid 
+        forM_ ss $ \(n, s) -> do
+            f <- catchError (process s) (processFail n s) 
+            when f $ remove n
+            release n
+
+        wait t tp sid
 
 -- fire all task triggers of a trigger type 
 runAll :: Trigger -> SqlTransaction Connection ()
-runAll tp = runWith ["type" |== (toSql $ toInteger $ fromEnum tp)]
-
--- fire tasks by a selection of triggers
-runWith :: Constraints -> SqlTransaction Connection ()
-runWith cs = do 
-        ss <- claim cs
-        forM ss $ \(n, s) -> do
-            f <- catchError (process s) $ fali n s
-            when f $ remove n
-            release n
-        return ()
-
--- TODO: ensure concurrent processes do not claim the same tasks
--- -> 1. mark: update records with unique key
--- -> 2. fetch: select marked records
--- Note: select on TKE.TaskExtended, but update on TK.Task. may require explicit sql.
-
--- TODO: ensure concurrent processes all return up-to-date information, i.e. data as updated by any tasks
--- -> lock table? allow duplicate task execution, use rollback? 
+runAll tp = Data.Task.run tp 0
 
 -- mark a selection of tasks as claimed, and return them 
-claim :: Constraints -> SqlTransaction Connection [(Integer, Data)]
-claim cs = do
-
-        -- get time
-        t <- liftIO $ floor <$> getPOSIXTime
-
-        -- clean up old tasks
-        cleanup $ t - 24*3600
+claim :: Integer -> Trigger -> Integer -> SqlTransaction Connection [(Integer, Data)]
+claim t tp sid = do
 
         -- fetch tasks and remove duplicates caused by multiple triggers on the same task
-        ss :: [TKE.TaskExtended] <- nubWith TKE.task_id <$> search (("time" |<= SqlInteger t) : cs) [] 10000 0
-
+        ss <- Data.List.map (flip updateHashMap (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) sid
+        
         -- read tasks and return 
         forM ss $ \s -> do
-            case unpack $ TKE.data s of
-                Nothing -> throwError "claim: could not decode task data" 
-                Just d -> return (TKE.task_id s, d)
+            case unpack $ TK.data s of
+                Nothing -> throwError "Task claim: could not decode task data" 
+                Just d -> return (fromJust $ TK.id s, d)
 
 -- unmark a task as claimed
 release :: Integer -> SqlTransaction Connection ()
-release n = do
-        -- TODO: unset mark
-        return ()
+release n = void $ update "task" ["id" |== toSql n] [] [("claim", SqlInteger 0)]
 
 -- mark a task as deleted
 remove :: Integer -> SqlTransaction Connection ()
 remove n = void $ update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)]
 
--- physically remove tasks marked as deleted before specified time
+-- physically remove tasks marked as deleted that are older than t 
 cleanup :: Integer -> SqlTransaction Connection ()
 cleanup t = void $ transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger t, "deleted" |== SqlBool True]
+
+-- wait until there are no running tasks
+wait :: Integer -> Trigger -> Integer -> SqlTransaction Connection () 
+wait = wait' 0 
+    where
+        wait' :: Integer -> Integer -> Trigger -> Integer -> SqlTransaction Connection () 
+        wait' n t tp sid = void $ do
+                case n > 5 of
+                    True -> throwError "Task wait: timeout"
+                    False -> do
+                        b <- Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
+                        when b $ do
+                            liftIO $ threadDelay $ 1000 * 50
+                            wait' (n+1) t tp sid
 
 
 {-
@@ -217,13 +221,18 @@ process d = do
                         return True 
 
                 Just GiveMoney -> do
-                        ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
-                        case ma of
-                            Nothing -> throwError "process: give money: user not found"
-                            Just a -> do
-                                save $ a { A.money = (A.money a) + ("amount" .<< d) }
-                                return True
+                        let sid = "account_id" .<< d
+                        let tn = "transaction_type_name" .<< d
+                        let tv = "transaction_type_id" .<< d 
+                        let am = "amount" .<< d
 
+                        transactionMoney sid (def { 
+                                        TR.amount = am,
+                                        TR.type = tn,
+                                        TR.type_id = tv 
+                                        })
+                        return True 
+   
                 Just GiveRespect ->do
                         ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
                         case ma of
@@ -247,15 +256,24 @@ process d = do
 
                 -- TODO: use money transaction 
                 Just TransferMoney -> do
-                        msa <- load $ "source_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
-                        mta <- load $ "target_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
-                        case (msa, mta) of
-                            (Just sa, Just ta) -> do
-                                save $ sa { A.money = (A.money sa) - ("amount" .<< d) }
-                                save $ ta { A.money = (A.money ta) + ("amount" .<< d) }
-                                return True
-                            _ -> throwError "process: transfer money: unable to retrieve required records"
+                        let sid = "source_account_id" .<< d 
+                        let tid = "target_account_id" .<< d 
+                        let tn = "transaction_type_name" .<< d
+                        let tv = "transaction_type_id" .<< d 
+                        let am = "amount" .<< d
 
+                        transactionMoney sid (def { 
+                                        TR.amount = - am,
+                                        TR.type = tn,
+                                        TR.type_id = tv 
+                                        })
+                        transactionMoney tid (def { 
+                                        TR.amount = am,
+                                        TR.type = tn,
+                                        TR.type_id = tv 
+                                        })
+ 
+                        return True
                 Just TransferCar -> do 
                         msa <- load $ "source_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
                         mta <- load $ "target_account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
@@ -276,9 +294,20 @@ process d = do
                 Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
                 Nothing -> throwError "process: no action"
 
+
+{-
+ - Error handling
+ -
+ - TODO: store error report in database, mark task as invalid and continue
+ -}
+
 -- fail processing a task
-fali :: Integer -> Data -> String -> SqlTransaction Connection Bool 
-fali n s e = return False -- throwError e -- TODO: error report 
+processFail :: Integer -> Data -> String -> SqlTransaction Connection Bool 
+processFail n s e = return True 
+
+-- fail during task run
+runFail :: Trigger -> Integer -> String -> SqlTransaction Connection ()
+runFail tp sid e = return ()
 
 
 {-
@@ -345,13 +374,6 @@ getm k d = case get k d of
 (.<<) = getf
 infixr 4 .<<
 
-
-{-
- - Utility
- -}
-
-nubWith :: forall a b. Eq b => (a -> b) -> [a] -> [a]
-nubWith f = nubBy (\x y -> (f x) == (f y))
 
 
 
