@@ -11,5 +11,4 @@
 <div><label>wear:</label><input type="text" name="wear" value="[:0.wear]"/></div>
 	
 	<input type="button" value="save" id="save" module="SAVE">
-	<div id="svg"></div>
 </form>
