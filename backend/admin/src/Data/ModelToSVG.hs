@@ -29,6 +29,7 @@ import Data.Database hiding (insert)
 import Data.SqlTransaction
 import Database.HDBC.SqlValue 
 import Data.Maybe 
+import Data.Char
 
 type X = Double 
 type Y = Double  
@@ -48,10 +49,12 @@ instance Monoid (Connect a) where
         mappend None x = x
         mappend x None = x
 
+type Action = String 
+
 data SVGTree where 
     Box :: Label -> (X,Y) -> (X,Y) -> Name -> Connect SVGTree -> SVGTree 
     Circle :: Label -> (X,Y) -> Radius -> Name -> Connect SVGTree -> SVGTree  
-    Button :: Integer -> Label -> (X,Y) -> Name -> Connect SVGTree -> SVGTree 
+    Button :: Integer -> Label -> (X,Y) -> Name -> Action -> Connect SVGTree -> SVGTree 
     Line :: Label -> (X,Y) -> (X,Y) -> Name -> Connect SVGTree ->  SVGTree 
     Modifier :: SVGTree -> Options -> SVGTree 
  deriving (Show, Eq)
@@ -115,8 +118,8 @@ line l (xy,x'y') n = def $ Line l xy x'y' n None
 
 -- | Creates a button with center (X,Y). Name can be used for the action.
 -- | Label is placed in the box 
-button :: Integer -> Label -> (X,Y) -> Name -> SVGDef 
-button id l xy n = def $ Button id l xy n None 
+button :: Integer -> Label -> (X,Y) -> Name -> Action -> SVGDef 
+button id l xy n a = def $ Button id l xy n a None 
 
 {-- Combinators --}
 
@@ -134,7 +137,7 @@ insert :: SVGTree -> SVGDef -> SVGTree
 insert (Modifier svg opts) xs = Modifier (insert svg xs) opts 
 insert (Box lbl rt bl n ys) ns = Box lbl rt bl n (ns `connect` ys)
 insert (Circle lbl rt r nm xs) ns = Circle lbl rt r nm (ns `connect` xs)
-insert (Button id lbl xy nm xs) ns = Button id lbl xy nm (ns `connect` xs)
+insert (Button id lbl xy nm a xs) ns = Button id lbl xy nm a (ns `connect` xs)
 
 infixl 7 <-> 
 
@@ -143,7 +146,7 @@ test = box "testbox" ((10,10),(20,20)) "actiontest" <->
        <> box "loosebox" ((50,50), (60,60)) "shitfuck" <-> 
        (box "newbox" ((200,10),(300,50)) "test" <!> [BGColor (231,230,0)])
        <-> circle "circlebox" ((50,90),20) "circlesda" <!> [BGColor (233,230,10)] 
-       <-> button 10 "value" (310,50) "edit" 
+       <-> button 10 "value" (310,50) "edit" "edit" 
 
 
 infixr 8 <!>
@@ -185,10 +188,10 @@ renderData (Circle lbl (x,y) r nm xs) = do
                         None -> return ()
                         Many xs -> renderLocal rside xs 
                     return ()
-renderData (Button id lbl (x,y) n xs) = do 
+renderData (Button id lbl (x,y) n a xs) = do 
                     os <- access opts
                     let rside = (x,y)
-                    buttons ++= pure ((Button id lbl (x,y) n None), os)
+                    buttons ++= pure ((Button id lbl (x,y) n a None), os)
                     opts ~= []
                     case xs of 
                         None -> return ()
@@ -244,7 +247,7 @@ renderBox ((Box lbl (x,y) (x',y') nm None),opts) = let obj = S.rect ! A.height (
               height = abs $ y' - y
               lm = (x + width / 10, y' - height / 2)
 
-modelAttribute s = customAttribute (stringTag $ "module") (toValue s) 
+modelAttribute s = customAttribute (stringTag $ "module") (toValue (toUpper <$> s)) 
 
 testBox :: SVGPair 
 testBox = (Box "testbox" (10,20) (30,40) "hello" None, [FGColor (20,30,255)])
@@ -260,7 +263,7 @@ renderLine ((Line lbl (x,y) (x',y') nm None),opts) = undefined
 
 renderCon ((x,y), (x',y')) = S.line ! A.x1 (toValue x) ! A.x2 (toValue x') ! A.y1 (toValue y) ! A.y2 (toValue y') ! A.color ("red") ! A.style ("stroke:rgb(255,0,0);stroke-width=2")
 
-renderButton ((Button id lbl (x,y) nm None),opts) = let obj = S.image ! A.x (toValue x) ! A.y (toValue y) ! A.xlinkHref (toValue (nm ++ ".png")) ! A.height "15" ! A.width "15" in addOpts opts obj ! modelAttribute nm  ! A.id_ (toValue id)
+renderButton ((Button id lbl (x,y) nm a None),opts) = let obj = S.image ! A.x (toValue x) ! A.y (toValue y) ! A.xlinkHref (toValue (a ++ ".png")) ! A.height "15" ! A.width "15" in addOpts opts obj ! modelAttribute nm  ! A.id_ (toValue id) 
 
 (++=) x z = x %= (`mappend`z)
 
@@ -293,7 +296,7 @@ record lbl (x,y) id nm xs = addButtons (x,y) 200 100 id nm xs  <> (bt <!> [BGCol
 
 addButtons :: (X,Y) -> X -> Y -> Integer -> String -> [String] -> SVGDef 
 addButtons (x,y) w h id nm xs = fst $ foldr step (mempty,y) xs 
-        where step lbl (z,h) = (z <> button id nm (x+10+ w,h) lbl, h + 20)
+        where step lbl (z,h) = (z <> button id nm (x+10+ w,h) (nm `mappend` "_" `mappend` lbl) lbl, h + 20)
 
 
 testdb = connectPostgreSQL "host=db.graffity.me user=deosx password=#*rl& dbname=streetking_dev"
@@ -323,13 +326,13 @@ loadCarInstance cid = do
                             pi <- fromJust <$> load (P.part_id i) :: SqlTransaction Connection Part.Part
                             pt <- fromJust <$> load (Part.part_type_id pi) :: SqlTransaction Connection PT.PartType  
                             rest <- bm (x, y + 220) xs 
-                            return $ ((record ("part_" ++ show (fromJust $ P.id i)) (x, y) (fromJust $ P.id i) "part" ["edit", "delete"])
-                                        <-> (record (PT.name pt) (270 + x, y) (fromJust $ PT.id pt) "part_model" ["edit", "delete"])) : rest
+                            return $ ((record ("part_instance_" ++ show (fromJust $ P.id i)) (x, y) (fromJust $ P.id i) "part_instance" ["edit", "delete"])
+                                        <-> (record (PT.name pt) (270 + x, y) (fromJust $ Part.id pi) "part_model" ["edit", "delete"])) : rest
                         bm (x,y) [] = return []
 
                     cs <- bm (550, 10) ps
-                    return $ record (Car.name c) (10,10)  (fromJust $ Car.id c) "car" ["edit", "delete"] <-> 
-                                (record ("car_instance_id_" ++ (show $ fromJust $ CRI.id ci)) (280, 10) (fromJust $ CRI.id ci) "car" ["edit", "delete"] `multi` cs)
+                    return $   (record (Car.name c) (10,10)  (fromJust $ Car.id c) "car_model" ["edit", "delete"]) <-> 
+                                    (record ("car_instance_" ++ (show $ fromJust $ CRI.id ci)) (280, 10) (fromJust $ CRI.id ci) "car_instance" ["edit", "delete"] `multi` cs)
                         
 
 runl m = testdb >>= \x -> runSqlTransaction m error x <* disconnect x
