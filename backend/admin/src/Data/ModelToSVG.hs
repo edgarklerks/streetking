@@ -358,12 +358,14 @@ loadPartModel :: Integer -> SqlTransaction Connection SVGDef
 loadPartModel n = do 
                 p <- fromJust <$> load n :: SqlTransaction Connection Part.Part
                 pt <- fromJust <$> load (Part.part_type_id p) :: SqlTransaction Connection PT.PartType
-                let precord = record (PT.name pt) (10,10) (fromJust $ Part.id p) "part_model" ["edit", "delete"] 
+                let precord = record ("part_model_" ++ show (Part.id p)) (270,10) (fromJust $ Part.id p) "part_model" ["edit", "delete"] 
+                let ptinst = record (PT.name pt) (10, 10) (fromJust $ PT.id pt) "part_type" ["edit", "delete"]
                 ps <- search ["part_id" |== (toSql $ Part.id p)] [] 100000 0 :: SqlTransaction Connection [P.PartInstance]
                 
-                s <- addRecordsDivided 50 220 10 precord ps $ \x y i -> do 
+                s <- addRecordsDivided 50 550 10 (precord) ps $ \x y i -> do 
+
                                         return $ record (show $ "part_instance_" ++ (show (P.id i))) (x,y) (fromJust $ P.id i) "part_instance" ["edit", "delete"]
-                return s
+                return (ptinst <-> s)
 
 
 
