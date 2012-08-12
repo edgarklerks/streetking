@@ -1576,7 +1576,7 @@ raceChallengeAccept = do
             ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
 
             -- delete challenge
---            save $ chg { Chg.deleted = True }
+            save $ chg { Chg.deleted = True }
             
             let env = defaultEnvironment
             let trk = trackDetailsTrack ts
