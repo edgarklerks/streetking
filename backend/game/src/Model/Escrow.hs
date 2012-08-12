@@ -49,6 +49,7 @@ cancel eid = do
         case me of
                 Nothing -> Data.SqlTransaction.rollback $ "Cancel: Escrow id not found: " ++ (show eid)
                 Just e -> do
+                        when (deleted e) $ Data.SqlTransaction.rollback $ "Cancel: Escrow is deleted for id " ++ (show eid)
                         TR.transactionMoney (account_id e) (def {
                                 TR.amount = amount e,
                                 TR.type = "escrow_cancel",
@@ -64,6 +65,7 @@ release eid uid = do
         case me of
                 Nothing -> Data.SqlTransaction.rollback $ "Release: Escrow id not found: " ++ (show eid)
                 Just e -> do
+                        when (deleted e) $ Data.SqlTransaction.rollback $ "Cancel: Escrow is deleted for id " ++ (show eid)
                         TR.transactionMoney uid (def {
                                 TR.amount = amount e,
                                 TR.type = "escrow_release",
