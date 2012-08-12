@@ -1560,10 +1560,10 @@ raceChallengeAccept = do
             Task.run Task.User uid
             Task.run Task.User $ fromJust $ A.id $ Chg.account chg
 
-            ya <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             ymeid <- case (Chg.amount chg) > 0 of
-                    True -> fmap Just $ Escrow.deposit uid $ Chg.amount chg -- TODO: debug: deposit is created but money is not subtracted
+                    True -> fmap Just $ Escrow.deposit uid $ Chg.amount chg
                     False -> return Nothing
+            ya <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             yma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             yc <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
           
@@ -1619,7 +1619,7 @@ raceChallengeAccept = do
                     }
             
             -- set accounts busy
-            save (wacc  { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = wt })
+            save (wacc { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = wt })
             save (lacc { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = lt })
 
             -- task update race times on user finish
