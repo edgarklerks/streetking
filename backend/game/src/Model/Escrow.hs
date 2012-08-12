@@ -36,7 +36,7 @@ deposit uid amt = do
                 deleted = False
             }
         TR.transactionMoney uid (def {
-                TR.amount = 0 - amt,
+                TR.amount = (0-amt),
                 TR.type = "escrow_deposit",
                 TR.type_id = eid
             })
