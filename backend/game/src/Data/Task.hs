@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, RankNTypes, DisambiguateRecordFields, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns  #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns  #-}
 
 module Data.Task where
 
@@ -23,6 +23,7 @@ import           Model.General
 import           Data.HashMap.Strict as HM
 import qualified Model.Transaction as TR 
 import           Model.Transaction (transactionMoney)
+import qualified Model.Escrow as Escrow
 
 import qualified Model.Functions as Fun
 import qualified Model.Task as TK
@@ -55,6 +56,8 @@ data Action =
     | GivePart
     | TransferMoney
     | TransferCar
+    | EscrowCancel
+    | EscrowRelease
        deriving (Eq, Enum)
 
 data Trigger =
@@ -135,6 +138,24 @@ transferCar t suid tuid cid  = do
         trigger User suid tid
         trigger User tuid tid
         trigger Car cid tid
+        return ()
+
+-- cancel escrow account: return money to depositor 
+escrowCancel :: Integer -> Integer -> SqlTransaction Connection ()
+escrowCancel t eid = do
+        me <- load eid
+        uid <- case me of
+            Nothing -> rollback $ "Task: escrowCancel: escrow account not found for id " ++ (show eid)
+            Just e -> return $ Escrow.account_id e
+        tid <- task EscrowCancel t $ ("escrow_id", eid) .> new
+        trigger User uid tid
+        return ()
+
+-- release escrow account: transfer money to target account 
+escrowRelease :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
+escrowRelease t eid uid = do
+        tid <- task EscrowRelease t $ ("escrow_id", eid) .> ("account_id", uid) .> new
+        trigger User uid tid
         return ()
 
 
@@ -290,6 +311,14 @@ process d = do
 --                                        save $ ci { CI.garage_id = tg }
 --                                        return ()
                             _ -> throwError "process: transfer car: unable to retrieve required records"
+
+                Just EscrowCancel -> do
+                        Escrow.cancel $ "escrow_id" .<< d
+                        return True
+ 
+                Just EscrowRelease -> do
+                        Escrow.release ("escrow_id" .<< d) ("account_id" .<< d)
+                        return True
 
                 Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
                 Nothing -> throwError "process: no action"

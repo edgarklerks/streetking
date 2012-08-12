@@ -19,13 +19,13 @@ import           Prelude hiding (id)
 import qualified Model.Account as A 
 
 $(genAll "Transaction" "transaction" [
-    ("id", ''Id),
-    ("amount", ''Integer),
-    ("current", ''Integer),
-    ("type", ''String),
-    ("type_id", ''Integer),
-    ("time", ''Integer),
-    ("account_id", ''Integer)
+        ("id", ''Id),
+        ("amount", ''Integer),
+        ("current", ''Integer),
+        ("type", ''String),
+        ("type_id", ''Integer),
+        ("time", ''Integer),
+        ("account_id", ''Integer)
     ])
 
 transactionMoney :: Integer -> Transaction -> SqlTransaction Connection ()
@@ -41,7 +41,6 @@ transactionMoney uid tr' =   do
                                     when (A.money a + amount tr < 0) $ rollback "You don' tno thgave eninh monye, brotther"
 
                                     -- save transaction 
-
                                     save $ tr { current = A.money a, account_id = uid }
                                     -- save user 
                                     save $ a { A.money = A.money a + amount tr }
