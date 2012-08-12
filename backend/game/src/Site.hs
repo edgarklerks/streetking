@@ -57,6 +57,7 @@ import qualified Model.ManufacturerMarket as MAM
 import qualified Model.MarketItem as MI 
 import qualified Model.Transaction as Transaction
 import           Model.Transaction (transactionMoney)
+import qualified Model.Escrow as Escrow
 import qualified Model.MarketPartType as MPT
 import qualified Model.GarageParts as GPT 
 import qualified Model.Config as CFG 
@@ -1517,6 +1518,9 @@ raceChallengeWith p = do
             t <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _ <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
+            meid <- case amt > 0 of
+                    True -> Just <$> Escrow.deposit uid amt
+                    False -> return Nothing
             save $ (def :: Chg.Challenge) {
                     Chg.track_id = tid,
                     Chg.account_id = uid,
@@ -1527,6 +1531,7 @@ raceChallengeWith p = do
                     Chg.car = c,
                     Chg.car_min = cmi,
                     Chg.amount = amt,
+                    Chg.escrow_id = meid,
                     Chg.deleted = False
                 }
         writeResult i
@@ -1555,15 +1560,19 @@ raceChallengeAccept = do
             Task.run Task.User uid
             Task.run Task.User $ fromJust $ A.id $ Chg.account chg
 
-            a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
+            ya <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
+            ymeid <- case (Chg.amount chg) > 0 of
+                    True -> fmap Just $ Escrow.deposit uid $ Chg.amount chg
+                    False -> return Nothing
+            yma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
+            yc <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+          
             oa <- aget ["id" |== (toSql $ A.id $ Chg.account chg)] (rollback "opponent current account not found") :: SqlTransaction Connection A.Account
-            ma <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            c <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-
             let oma = Chg.account_min chg
             let oc = Chg.car chg
+            let omeid = Chg.escrow_id chg
            
-            tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
+            tr <- aget ["track_id" |== (SqlInteger $ Chg.track_id chg), "track_level" |<= (SqlInteger $ A.level ya), "city_id" |== (SqlInteger $ A.city ya)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             ts <- agetlist ["track_id" |== (SqlInteger $ TT.track_id tr) ] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails]
 
             -- delete challenge
@@ -1573,7 +1582,7 @@ raceChallengeAccept = do
             let trk = trackDetailsTrack ts
 
             -- run race
-            let yrs = raceResult2FE $ runRace trk (accountDriver a) (carInGarageCar c) env
+            let yrs = raceResult2FE $ runRace trk (accountDriver ya) (carInGarageCar yc) env
             let ors = raceResult2FE $ runRace trk (accountDriver $ Chg.account chg) (carInGarageCar $ Chg.car chg) env
 
             -- time 
@@ -1585,11 +1594,20 @@ raceChallengeAccept = do
             -- set rewards: money, respect, part model id
             let wrew = RaceRewards 0 20 $ Just 59075
             let lrew = RaceRewards 0 5 Nothing
-            
+           
+--            let account = [a, oa]
+--            let account_min = [ma, oma]
+--            let car = [c, oc]
+--            let time = [yt, ot]
+--            let result = [yrs, ors]
+
+            let dats = [(ya, yma, yc, yt, yrs, ymeid), (oa, oma, oc, ot, ors, omeid)]
+
             -- set winner/loser account/min_account/car; acceptor reward; challenger reward; times
-            let ((wacc, wmac, wcar, wt, wrs), (lacc, lmac, lcar, lt, lrs)) = case yt < ot of
-                    True -> ((a, ma, c, yt, yrs), (oa, oma, oc, ot, ors))
-                    False -> ((oa, oma, oc, ot, ors), (a, ma, c, yt, yrs))
+            -- TODO: rewrite to array; sort array by result time
+            let ((wacc, wmac, wcar, wt, wrs, wesc), (lacc, lmac, lcar, lt, lrs, lesc)) = case yt < ot of
+                    True -> (head dats, head $ tail dats)
+                    False -> (head $ tail dats, head dats) 
 
             -- save race data
             rid <- save $ (def :: R.Race) {
@@ -1601,16 +1619,21 @@ raceChallengeAccept = do
                     }
             
             -- set accounts busy
-            save (a  { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = yt })
-            save (oa { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = ot })
+            save (wacc  { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = wt })
+            save (lacc { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = lt })
 
             -- task update race times on user finish
-            Task.trackTime yt (Chg.track_id chg) (fromJust $ A.id a) $ raceTime yrs 
-            Task.trackTime ot (Chg.track_id chg) (fromJust $ A.id oa) $ raceTime ors 
+            Task.trackTime wt (Chg.track_id chg) (fromJust $ A.id wacc) $ raceTime wrs 
+            Task.trackTime lt (Chg.track_id chg) (fromJust $ A.id lacc) $ raceTime lrs 
 
             -- task transfer challenge object
             case ChgE.type chge of
-                "money" -> Task.transferMoney te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (Chg.amount chg) "challenge" (ChgE.challenge_id chge)
+                "money" -> case (wesc, lesc) of   -- Task.transferMoney te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (Chg.amount chg) "challenge" (ChgE.challenge_id chge)
+                        (Just we, Just le) -> do
+                            Task.escrowCancel wt we
+                            Task.escrowRelease wt le $ fromJust $ A.id wacc
+                        (Nothing, Nothing) -> return () 
+                        _ -> rollback "challenge error: one player has deposited to escrow, but not all."
                 "car" -> Task.transferCar te (fromJust $ A.id lacc) (fromJust $ A.id wacc) (fromJust $ CIG.id lcar)
                 _ -> rollback $ "challenge type not recognized: " ++ (ChgE.type chge)
             

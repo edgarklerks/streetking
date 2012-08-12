@@ -24,6 +24,8 @@ import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
 
+type MInteger = Maybe Integer
+
 $(genAll "Challenge" "challenge" [
                     ("id", ''Id),
                     ("account_id", ''Integer),
@@ -35,6 +37,7 @@ $(genAll "Challenge" "challenge" [
                     ("car", ''CIG.CarInGarage),
                     ("car_min", ''CMI.CarMinimal),
                     ("deleted", ''Bool),
-                    ("amount", ''Integer)
+                    ("amount", ''Integer),
+                    ("escrow_id", ''MInteger)
    ])
 
