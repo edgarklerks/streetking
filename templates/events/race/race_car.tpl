@@ -1,0 +1,2 @@
+<div class="race-car-element-create-container"><a href="#Race/car?" class="button" module="RACE_CAR_CREATE">create a new race</a></div>
+<div id="race-car-opponents-list" class="race-car-element-list-container scroll-content">&nbsp;</div>
