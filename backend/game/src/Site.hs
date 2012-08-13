@@ -1373,7 +1373,7 @@ carSetOptions = do
                                 save (co {CO.id = CO.id id})
                                 
         writeResult (1 :: Integer)
-
+i
 unixtime :: IO Integer
 unixtime = floor <$> getPOSIXTime
 
@@ -1501,14 +1501,16 @@ raceChallengeWith p = do
         liftIO $ print $ (show tid) ++ " " ++ tp ++ " " ++ (show amt)
 
         i <- runDb $ do
-
+            liftIO (print "Asdasasdssss")
             userActions uid
             Task.run Task.User uid
-
+            liftIO (print "ksdfsdf")
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             am <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
             c  <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            liftIO (print "tats")
             cm <- aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            liftIO (print "poiy")
             t  <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _  <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
