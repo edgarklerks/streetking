@@ -1477,6 +1477,9 @@ raceChallenge = raceChallengeWith 2
 
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
+        
+        liftIO $ print "race challenge "
+
         uid <- getUserId
         xs <- getJson -- >>= scheck ["track_id", "type"]
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
@@ -1507,7 +1510,7 @@ raceChallengeWith p = do
             me <- case amt > 0 of
                     True -> Just <$> Escrow.deposit uid amt
                     False -> return Nothing
-
+{-
             save $ (def :: Chg.Challenge) {
                     Chg.track_id = tid,
                     Chg.account_id = uid,
@@ -1521,7 +1524,10 @@ raceChallengeWith p = do
                     Chg.challenger = RaceParticipant a am c cm me,
 --                    Chg.escrow_id = meid,
                     Chg.deleted = False
-                }
+                } -}
+
+            return True
+
         writeResult i
 
 raceChallengeAccept :: Application ()
