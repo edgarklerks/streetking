@@ -1489,6 +1489,8 @@ raceChallengeWith p = do
 
         let amt = min amt 0
 
+        liftIO $ print $ (show tid) ++ " " ++ tp ++ " " ++ (show amt)
+
         i <- runDb $ do
 
             userActions uid
