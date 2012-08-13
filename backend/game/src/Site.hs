@@ -1493,7 +1493,10 @@ raceChallengeWith p = do
                 "money" -> rextract "declare_money" xs
                 _ -> return 0
 
+        liftIO $ print "boooobbobob"
         let amt = min amt 0
+
+        liftIO $ print "lalalala"
 
         liftIO $ print $ (show tid) ++ " " ++ tp ++ " " ++ (show amt)
 
