@@ -316,6 +316,17 @@ addButtons (x,y) w h id nm xs = fst $ foldr step (mempty,y) xs
 
 testdb = connectPostgreSQL "host=db.graffity.me user=deosx password=#*rl& dbname=streetking_dev"
 
+loadContinent' :: Integer -> SqlTransaction Connection SVGDef 
+loadContinent' cid = do 
+                x <- fromJust <$> load cid :: SqlTransaction Connection C.Continent
+                xs <- search ["continent_id" |== (toSql $ C.id x)] [] 1000 0 :: SqlTransaction Connection [CI.City] 
+                fmap snd $ addRecords' 270 10 (continentRecord 10 10 x) xs $ \x y i -> do 
+                            ts <- search ["city_id" |== (toSql $ CI.id i)] [] 10000 0 :: SqlTransaction Connection [TR.Track]
+                            liftIO (print ts)
+                            addRecords' (550) (y) (cityRecord 270 y i) ts $ \x y i -> do 
+                                                                            return $ ((x, y + 170), trackRecord x y  i)
+
+
 
 loadContinent :: Integer -> SqlTransaction Connection SVGDef
 loadContinent cid = do
@@ -367,7 +378,7 @@ loadCarInstance cid = do
                                          
 
 carInstanceRecord :: X -> Y -> CRI.CarInstance -> SVGDef 
-carInstanceRecord x y c = record ("car_instance_" ++ (show $ CRI.id c)) (x,y) (fromJust $ CRI.id c) "car_instance" ["edit", "delete"]
+carInstanceRecord x y c = record ("car_instance_" ++ (show $ fromJust $ CRI.id c)) (x,y) (fromJust $ CRI.id c) "car_instance" ["edit", "delete"]
 
 carModelRecord :: X -> Y -> Car.Car -> SVGDef 
 carModelRecord x y c = record (Car.name c) (x,y) (fromJust $ Car.id c) "car_model" ["edit", "delete"]
@@ -459,7 +470,7 @@ addRecords' x y svg xs f = bm x y xs []
                 where bm x y [] vs = return ((x,y), svg `multi` vs)
                       bm x y (p:ps) vs = do 
                                 ((x',y'), a) <- f x y p 
-                                bm x' (y' + 170)  ps (a:vs)
+                                bm x' y'  ps (a:vs)
 
 addRecordsDivided :: Monad m => Int -> X -> Y -> SVGDef -> [a] -> (X -> Y -> a -> m SVGDef) -> m SVGDef 
 addRecordsDivided n x y svg [] f = return svg 
