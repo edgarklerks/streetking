@@ -1533,7 +1533,7 @@ raceChallengeWith p = do
                 } -}
 
             return True
-
+        liftIO (print "asdasd-i")
         writeResult i
 
 raceChallengeAccept :: Application ()
