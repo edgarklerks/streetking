@@ -1500,6 +1500,8 @@ raceChallengeWith p = do
 
         liftIO $ print $ (show tid) ++ " " ++ tp ++ " " ++ (show amt)
 
+        writeResult ( "lala" :: String)
+{-
         i <- runDb $ do
             liftIO (print "Asdasasdssss")
             userActions uid
@@ -1537,6 +1539,7 @@ raceChallengeWith p = do
             return True
         liftIO (print "asdasd-i")
         writeResult i
+        -}
 
 raceChallengeAccept :: Application ()
 raceChallengeAccept = do
