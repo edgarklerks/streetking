@@ -16,13 +16,14 @@ import           Model.TH
 import           Prelude hiding (id)
 
 import qualified Data.Aeson as AS
-import Data.InRules
+import           Data.InRules
 
-import Data.Maybe
-import qualified Model.Account as A
+import           Data.Maybe
+--import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
-import qualified Model.CarInGarage as CIG
+--import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
+import           Data.Racing
 
 type MInteger = Maybe Integer
 
@@ -32,12 +33,13 @@ $(genAll "Challenge" "challenge" [
                     ("track_id", ''Integer),
                     ("participants", ''Integer),
                     ("type", ''Integer),
-                    ("account", ''A.Account),
+--                    ("account", ''A.Account),
                     ("account_min", ''APM.AccountProfileMin),
-                    ("car", ''CIG.CarInGarage),
+--                    ("car", ''CIG.CarInGarage),
                     ("car_min", ''CMI.CarMinimal),
+                    ("challenger", ''RaceParticipant),
                     ("deleted", ''Bool),
-                    ("amount", ''Integer),
-                    ("escrow_id", ''MInteger)
+--                    ("escrow_id", ''MInteger),
+                    ("amount", ''Integer)
    ])
 
