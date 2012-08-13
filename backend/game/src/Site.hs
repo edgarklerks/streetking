@@ -1498,7 +1498,7 @@ raceChallengeWith p = do
 
         liftIO $ print "lalalala"
 
-        liftIO $ print $ (show tid) ++ " " ++ tp ++ " " ++ (show amt)
+   --     liftIO $ print $ (show tid) ++ " " ++ tp ++ " " ++ (show amt)
 
         writeResult ( "lala" :: String)
 {-
