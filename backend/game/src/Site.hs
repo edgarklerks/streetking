@@ -1484,8 +1484,11 @@ raceChallengeWith p = do
         xs <- getJson -- >>= scheck ["track_id", "type"]
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         -- what if challenger leaves city? disallow travel if challenge active? or do not care?
+        liftIO $ print "kutas"
         tid :: Integer <- rextract "track_id" xs
+        liftIO $ print "trasc"
         tp :: String <- rextract "type" xs
+        liftIO $ print "asdasd"
         amt :: Integer <- case tp of
                 "money" -> rextract "declare_money" xs
                 _ -> return 0
