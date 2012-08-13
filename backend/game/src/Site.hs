@@ -1489,16 +1489,17 @@ raceChallengeWith p = do
         liftIO $ print "trasc"
         tp :: String <- rextract "type" xs
         liftIO $ print "asdasd"
-        amt :: Integer <- case tp of
-                "money" -> liftIO (print "tskd" *> print tp) *> rextract "declare_money" xs <* liftIO (print "wupie")
-                _ -> liftIO (print "asd") *> return 0 <* liftIO (print "ljaksd")
+--        amt :: Integer <- case tp of
+--                "money" -> liftIO (print "tskd" *> print tp) *> rextract "declare_money" xs <* liftIO (print "wupie")
+--                _ -> liftIO (print "asd") *> return 0 <* liftIO (print "ljaksd")
+        amt :: Integer <- rextract "declare_money" xs
+        let amt = min amt 0
 
         liftIO $ print "boooobbobob"
-        let amt = min amt 0
 
         liftIO $ print "lalalala"
 
-        liftIO $ print $ (show tid) ++ " " ++ tp ++ " "  -- ++ (show amt)
+        liftIO $ print $ (show tid) ++ " " ++ tp ++ " "  ++ (show amt)
 
         writeResult ( "lala" :: String)
 {-
