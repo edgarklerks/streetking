@@ -1493,7 +1493,7 @@ raceChallengeWith p = do
 --                "money" -> liftIO (print "tskd" *> print tp) *> rextract "declare_money" xs <* liftIO (print "wupie")
 --                _ -> liftIO (print "asd") *> return 0 <* liftIO (print "ljaksd")
         amt :: Integer <- rextract "declare_money" xs
-        let amt = min amt 0
+--        let amt = min amt 0
 
         liftIO $ print "boooobbobob"
 
