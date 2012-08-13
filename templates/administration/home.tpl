@@ -21,7 +21,7 @@
 		<li><a href="#continent/get" class="button" module="CONTINENT_LIST">continent</a></li>
 		<li><a href="#city/get" class="button" module="CITY_LIST">city</a></li>
 		<li><a href="#track/get" class="button" module="TRACK_LIST">tracks</a></li>
-		<div><a href="#track_time/get" class="button" module="TRACK_TIME_LIST">track times</a></div>
+		<li><a href="#track_time/get" class="button" module="TRACK_TIME_LIST">track times</a></li>
 	</ul>
 	
 	<div><a href="#account/get" class="button" module="PROFILE_LIST">Manage profiles</a></div>

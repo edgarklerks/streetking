@@ -7,3 +7,4 @@
 	
 	<input type="button" value="save" id="save" module="SAVE">
 </form>
+<div>[:0.visual]</div>
