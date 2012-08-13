@@ -25,6 +25,7 @@ import qualified Model.Car as Car
 import qualified Model.PartInstance as P 
 import qualified Model.Part as Part 
 import qualified Model.PartType as PT 
+import qualified Model.Track as TR 
 import Model.General hiding (def) 
 import Database.HDBC.PostgreSQL 
 import Data.Database hiding (insert) 
@@ -315,6 +316,7 @@ addButtons (x,y) w h id nm xs = fst $ foldr step (mempty,y) xs
 
 testdb = connectPostgreSQL "host=db.graffity.me user=deosx password=#*rl& dbname=streetking_dev"
 
+
 loadContinent :: Integer -> SqlTransaction Connection SVGDef
 loadContinent cid = do
                 x <- fromJust <$> load cid :: SqlTransaction Connection (C.Continent)
@@ -325,6 +327,8 @@ loadContinent cid = do
     where bm (x,y) (r:xs) = cityRecord x y r : bm (x,y + 220) xs  
           bm (x,y) _ = [] 
 
+trackRecord :: X -> Y -> TR.Track -> SVGDef 
+trackRecord x y c = record (TR.name c) (x,y) (fromJust $ TR.id c)  "track" ["edit", "delete"]
 
 continentRecord :: X -> Y -> C.Continent -> SVGDef 
 continentRecord x y c = record (C.name c) (x,y) (fromJust $ C.id c) "continent" ["edit", "delete"]
@@ -369,7 +373,7 @@ carModelRecord :: X -> Y -> Car.Car -> SVGDef
 carModelRecord x y c = record (Car.name c) (x,y) (fromJust $ Car.id c) "car_model" ["edit", "delete"]
 
 accountRecord :: X -> Y -> A.Account -> SVGDef 
-accountRecord x y a = record (A.nickname a) (x,y) (fromJust $ A.id a) "account" ["edit", "delete"]
+accountRecord x y a = record (A.nickname a) (x,y) (fromJust $ A.id a) "profile" ["edit", "delete"]
 
 loadPartModel :: Integer -> SqlTransaction Connection SVGDef 
 loadPartModel n = do 
@@ -407,14 +411,17 @@ loadPartInstance n = do
                         Nothing -> return Nothing 
                         Just x -> return $ accountRecord (550) 220 <$> a 
                   rht pi = do 
-                    a <- load (convert $ P.car_instance_id pi) :: SqlTransaction Connection (Maybe CRI.CarInstance)
-                    case a of 
-                        Nothing -> return Nothing 
-                        Just c -> do 
-                                x <- fromJust <$> load (CRI.car_id c) :: SqlTransaction Connection (Car.Car)
-                                s <- fromJust <$> load (P.account_id pi) :: SqlTransaction Connection A.Account 
-
-                                return $ Just $ (carInstanceRecord (550) 220 c <-> accountRecord (550 + 270) (540) s) <-> (carModelRecord (550 + 270) 220 x)
+                    case (P.car_instance_id pi) of 
+                               Nothing -> return Nothing 
+                               Just pid -> do 
+                                    a <- load pid :: SqlTransaction Connection (Maybe CRI.CarInstance)
+                                    case a of 
+                                        Nothing -> return Nothing 
+                                        Just c -> do 
+                                            x <- fromJust <$> load (CRI.car_id c) :: SqlTransaction Connection (Car.Car)
+                                            s <- fromJust <$> load (P.account_id pi) :: SqlTransaction Connection A.Account 
+    
+                                            return $ Just $ (carInstanceRecord (550) 220 c <-> accountRecord (550 + 270) (540) s) <-> (carModelRecord (550 + 270) 220 x)
 
 
 
