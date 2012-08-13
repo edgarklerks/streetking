@@ -1490,8 +1490,8 @@ raceChallengeWith p = do
         tp :: String <- rextract "type" xs
         liftIO $ print "asdasd"
         amt :: Integer <- case tp of
-                "money" -> rextract "declare_money" xs
-                _ -> return 0
+                "money" -> liftIO (print "tskd" *> print tp) *> rextract "declare_money" xs <* liftIO (print "wupie")
+                _ -> liftIO (print "asd") *> return 0 <* liftIO (print "ljaksd")
 
         liftIO $ print "boooobbobob"
         let amt = min amt 0
