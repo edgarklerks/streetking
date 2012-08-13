@@ -63,7 +63,8 @@ Executable admin
     vector,
     data-object,
     base64-bytestring,
-    cereal  
+    cereal,
+    blaze-svg
 
   if flag(development)
     build-depends:

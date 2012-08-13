@@ -18,8 +18,9 @@ import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Auth hiding (save)
 import           Snap.Snaplet.Auth.Backends.JsonFile
-import           Snap.Snaplet.Heist
+import           Snap.Snaplet.Heist as H
 import           Snap.Snaplet.Session.Backends.CookieSession
+import qualified Data.HashMap.Strict as S 
 import qualified Control.Monad.CatchIO as CIO 
 import qualified Model.Car as C 
 import qualified Model.CarInstance as CI
@@ -27,6 +28,7 @@ import qualified Model.CarOptions as CO
 import qualified Model.Account as A
 import qualified Model.PartModifier as PM 
 import qualified Model.PartInstance as PI 
+import qualified Model.PartInstance as PIn 
 import qualified Model.Application as AP
 import qualified Model.Challenge as CH
 import qualified Model.ChallengeAccept as CHA 
@@ -41,17 +43,22 @@ import qualified Model.Garage as G
 import qualified Model.Personnel as P
 import qualified Model.PersonnelInstance as PI
 import           Snap.Util.FileServe
-import           Text.Templating.Heist
+import           Text.Templating.Heist 
 import           SqlTransactionSnaplet hiding (runDb)
 import qualified SqlTransactionSnaplet as S 
 import qualified Model.Part as P 
+import qualified Model.Part as PP 
 import qualified Model.PartType as PT 
 import           Model.General 
 import           Data.Monoid
 import           Control.Monad.Trans 
 import           Data.DatabaseTemplate
-import           Data.SearchBuilder 
+import           Data.SearchBuilder  
 import           Database.HDBC.PostgreSQL (Connection) 
+import qualified Data.ModelToSVG as SB  
+import           Data.ModelToSVG hiding (def, render, lines)
+import           Data.InRules 
+import           Data.Conversion 
 
 
 ------------------------------------------------------------------------------
@@ -62,7 +69,7 @@ import           Control.Arrow (second)
 ------------------------------------------------------------------------------
 -- | Render login form
 handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
-handleLogin authError = heistLocal (bindSplices errs) $ render "login"
+handleLogin authError = heistLocal (bindSplices errs) $ H.render "login"
   where
     errs = [("loginError", textSplice c) | c <- maybeToList authError]
 
@@ -88,9 +95,30 @@ handleLogout = logout >> redirect "/"
 handleNewUser :: Handler App (AuthManager App) ()
 handleNewUser = method GET handleForm <|> method POST handleFormSubmit
   where
-    handleForm = render "new_user"
+    handleForm = H.render "new_user"
     handleFormSubmit = registerUser "login" "password" >> redirect "/"
 
+
+visualPartModel = do 
+            xs <- getJson 
+            let c = updateHashMap xs (def :: P.Part) 
+            s <- runDb $ loadPartModel (fromJust (PP.id c))
+            writeSVG s
+
+visualCarInstance = do 
+            xs <- getJson 
+            let c = updateHashMap xs (def :: CI.CarInstance)
+            s <- runDb $ loadCarInstance (fromJust (CI.id c)) 
+            writeSVG s
+
+visualPartInstance = do 
+            xs <- getJson 
+            let c = updateHashMap xs (def :: PI.PartInstance)
+            s <- runDb $ loadPartInstance (fromJust (PIn.id c))
+            writeSVG s 
+
+writeSVG s = do 
+    writeAeson $ S.fromList  [("result" :: String, unlines $ drop 4 $ lines $ SB.render s)]
 
 
 ------------------------------------------------------------------------------
@@ -103,16 +131,19 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/car_model/put", putModel (def :: C.Car))
          , ("/car_instance/get", getModel (def :: CI.CarInstance))
          , ("/car_instance/put", putModel (def :: CI.CarInstance))
+         , ("/car_instance/visual", visualCarInstance) 
          , ("/car_options/get", getModel (def :: CO.CarOptions))
          , ("/car_options/put", putModel (def :: CO.CarOptions))
          , ("/account/get", getModel (def :: A.Account)) 
          , ("/account/put", putModel (def :: A.Account))
          , ("/part_model/get", getModel (def :: P.Part))
          , ("/part_model/put", putModel (def :: P.Part))
+         , ("/part_model/visual", visualPartModel)
          , ("/part_modifier/get", getModel (def :: PM.PartModifier))
          , ("/part_modifier/put", putModel (def :: PM.PartModifier))
          , ("/part_instance/get", getModel (def :: PI.PartInstance))
          , ("/part_instance/put", putModel (def :: PI.PartInstance))
+         , ("/part_instance/visual", visualPartInstance) 
          , ("/city/get", getModel (def :: CIT.City))
          , ("/city/put", putModel (def :: CIT.City))
          , ("/continent/get", getModel (def :: CON.Continent))
