@@ -277,7 +277,7 @@ renderLine ((Line lbl (x,y) (x',y') nm None),opts) = undefined
 
 renderCon ((x,y), (x',y')) = S.line ! A.x1 (toValue x) ! A.x2 (toValue x') ! A.y1 (toValue y) ! A.y2 (toValue y') ! A.color ("red") ! A.style ("stroke:rgb(255,0,0);stroke-width=2")
 
-renderButton ((Button id lbl (x,y) nm a None),opts) = let obj = S.image ! A.x (toValue x) ! A.y (toValue y) ! A.xlinkHref (toValue (a ++ ".png")) ! A.height "15" ! A.width "15" in addOpts opts obj ! modelAttribute nm  ! A.id_ (toValue id) 
+renderButton ((Button id lbl (x,y) nm a None),opts) = let obj = S.image ! A.x (toValue x) ! A.y (toValue y) ! A.xlinkHref (toValue ("img/" ++ a ++ ".png")) ! A.height "15" ! A.width "15" in addOpts opts obj ! modelAttribute nm  ! A.id_ (toValue id) 
 
 (++=) x z = x %= (`mappend`z)
 
@@ -375,12 +375,11 @@ loadPartModel :: Integer -> SqlTransaction Connection SVGDef
 loadPartModel n = do 
                 p <- fromJust <$> load n :: SqlTransaction Connection Part.Part
                 pt <- fromJust <$> load (Part.part_type_id p) :: SqlTransaction Connection PT.PartType
-                let precord = partModelRecord 270 10 p  
-                let ptinst =  partTypeRecord 10 10 pt 
                 ps <- search ["part_id" |== (toSql $ Part.id p)] [] 100000 0 :: SqlTransaction Connection [P.PartInstance]
+                let precord = partModelRecord 270 10 p 
+                let ptinst = partTypeRecord 10 10 pt 
                 
                 s <- addRecordsDivided 50 550 10 (precord) ps $ \x y i -> do 
-
                                          return $ partInstanceRecord x y i 
                 return (ptinst <-> s)
 
