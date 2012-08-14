@@ -52,9 +52,12 @@ average xs = Just $ sum xs / genericLength xs
 averageCurvature :: [Vector Double] -> Maybe Double 
 averageCurvature = average . catMaybes . curvatures
 
+arcl [] = [] 
+arcl (x1:x2:x3:x4:x5:x6:x7:xs) = ((fromScalar . magnitude) <$> thirdStepDifferenceVector [x1,x2,x3,x4,x5,x6,x7]) : arcl xs 
+arcl xs = replicate (length xs) Nothing 
 
-curvatures :: [Vector Double] -> [Maybe Double]
-curvatures (x1:x2:x3:x4:x5:xs) = ((fromScalar . magnitude) <$> secondStepDifferenceVector ([x1,x2,x3,x4,x5]))  : curvatures (x2:x3:x4:x5:xs)
+-- curvatures :: [Vector Double] -> [Maybe Double]
+curvatures (x1:x2:x3:x4:x5:xs) = (fromScalar . magnitude <$> secondStepDifferenceVector ([x1,x2,x3,x4,x5]))  : curvatures (x2:x3:x4:x5:xs)
 curvatures xs = replicate (length xs) Nothing
 
 arcLength :: [Vector Double] -> Double 
