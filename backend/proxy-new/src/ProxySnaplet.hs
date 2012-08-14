@@ -197,6 +197,7 @@ sendAbroad r rq = do
     liftIO $ writeIORef (rqBody r) (SomeEnumerator enumEOF)
     resp <- getResponse
     p <- liftIO $ newChan 
+    m <- gets _manager 
     liftIO $ forkIO $ withManager $ \m -> run_ $  http r' (\_ _ -> chanIterator p) m 
     finishWith (setResponseBody (mapEnum toByteString fromByteString $ chanEnum p) resp) 
     return ()
