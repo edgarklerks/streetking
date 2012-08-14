@@ -79,6 +79,7 @@ handleUpdates = do
 
 handleCommand :: Sender a => Socket a -> Proto -> ProtoMonad p ()
 handleCommand s (fromJust . getCommand -> p) = do 
+            liftIO $ print $ "received " ++ (show p)
             case p of 
                Sync -> do H.keys <$> readsDVar outgoing  >>= sendProto s . nodeList 
                NodeList xs -> forM_ xs connectToNode *> sendProto s (result Empty)
