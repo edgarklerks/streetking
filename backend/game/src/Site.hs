@@ -1508,13 +1508,13 @@ raceChallengeWith p = do
                     Chg.account_id = uid,
                     Chg.participants = p,
                     Chg.type = (fromJust $ ChgT.id n),
-                    Chg.account = a,
+--                    Chg.account = a,
                     Chg.account_min = am,
-                    Chg.car = c,
+--                    Chg.car = c,
                     Chg.car_min = cm,
                     Chg.amount = amt,
                     Chg.challenger = RaceParticipant a am c cm me,
-                    Chg.escrow_id = me,
+--                    Chg.escrow_id = me,
                     Chg.deleted = False
                 } 
 
@@ -1620,8 +1620,9 @@ processRace ps tid = do
                 let isWinner = (rp_account_id p) == winner_id
 
                 -- set account busy until user finish
-                a  <- aload (rp_account_id p) (rollback $ "account not found for id " ++ (show $ rp_account_id p)) :: SqlTransaction Connection A.Account
-                save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = fin r })
+--                a  <- aload (rp_account_id p) (rollback $ "account not found for id " ++ (show $ rp_account_id p)) :: SqlTransaction Connection A.Account
+--                save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = fin r })
+                update "account" ["id" |== (toSql $ rp_account_id p)] [] [("busy_until", toSql $ fin r), ("busy_subject_id", toSql rid), ("busy_type", SqlInteger 2)]
 
                 -- task: update race time on user finish
                 Task.trackTime (fin r) tid (rp_account_id p) (raceTime r)
