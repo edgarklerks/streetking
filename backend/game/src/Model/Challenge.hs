@@ -33,13 +33,13 @@ $(genAll "Challenge" "challenge" [
                     ("track_id", ''Integer),
                     ("participants", ''Integer),
                     ("type", ''Integer),
-                    ("account", ''A.Account),
+--                    ("account", ''A.Account),
                     ("account_min", ''APM.AccountProfileMin),
-                    ("car", ''CIG.CarInGarage),
+--                    ("car", ''CIG.CarInGarage),
                     ("car_min", ''CMI.CarMinimal),
                     ("challenger", ''RC.RaceParticipant),
                     ("deleted", ''Bool),
-                    ("escrow_id", ''MInteger),
+ --                   ("escrow_id", ''MInteger),
                     ("amount", ''Integer)
    ])
 
