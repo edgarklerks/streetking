@@ -1,5 +1,6 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
-module Model.Application where 
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
+module Model.ChallengeType where
+
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -13,9 +14,15 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-$(genAll "Application" "application" 
-    [
-        ("id", ''Id),
-        ("platform", ''String),
-        ("token", ''String)
-    ])
+import qualified Data.Aeson as AS
+import Data.InRules
+
+import Data.Maybe
+
+
+
+$(genAll "ChallengeType" "challenge_type" [
+                    ("id", ''Id),
+                    ("name", ''String)
+   ])
+

@@ -15,8 +15,6 @@ import qualified Data.Aeson as AS
 import Data.InRules
 import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString as B
-import Data.InRules
-
 
 checkTables :: String -> [(String,a)] -> Q ()
 checkTables tbl (fmap fst -> xs) = runIO $ do 
@@ -37,26 +35,27 @@ genAll :: String -> String -> [(String, Name)] ->  Q [Dec]
 genAll nm tbl xs = do checkTables tbl xs
                       r <- genRecord nm xs  
                       i <- genInstance nm xs
-                      d <- genDatabase nm tbl "id"
+                      d <- genDatabase nm tbl "id" xs
                       x <- genDefaultInstance nm xs
                       fj <- genInstanceFromJSON nm xs
                       tj <- genInstanceToJSON nm xs
                       fir <- genInstanceFromInRule nm xs
                       tir <- genInstanceToInRule nm xs
-                      return $ r ++ i ++ d ++ x ++ fj ++ tj ++ fir ++ tir
+                      return $ r ++ i ++ d ++ x ++ fj ++ tj ++ fir ++ tir 
 
 genAllId :: String -> String -> String -> [(String, Name)] -> Q [Dec]
 genAllId nm tbl td xs = 
                    do checkTables tbl xs
                       r <- genRecord nm xs  
                       i <- genInstance nm xs
-                      d <- genDatabase nm tbl td
+                      d <- genDatabase nm tbl td xs
                       x <- genDefaultInstance nm xs
                       fj <- genInstanceFromJSON nm xs
                       tj <- genInstanceToJSON nm xs
                       fir <- genInstanceFromInRule nm xs
                       tir <- genInstanceToInRule nm xs
-                      return $ r ++ i ++ d ++ x ++ fj ++ tj ++ fir ++ tir
+ 
+                      return $ r ++ i ++ d ++ x ++ fj ++ tj ++ fir ++ tir 
 
 -- genMapableRecord :: String -> [(String, Name)] -> Q [Dec]
 genMapableRecord nm xs = do 
@@ -67,7 +66,9 @@ genMapableRecord nm xs = do
                 tj <- genInstanceToJSON nm xs
                 fir <- genInstanceFromInRule nm xs
                 tir <- genInstanceToInRule nm xs
-                return $ r ++ i ++ d ++ fj ++ tj ++ fir ++ tir
+ 
+
+                return $ r ++ i ++ d ++ fj ++ tj ++ fir ++ tir 
 
 genRecord :: String -> [(String, Name)] -> Q [Dec]
 genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] ([''Show, ''Eq])]
@@ -75,12 +76,11 @@ genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] 
         tp = foldr step [] xs
         step (x,t) z = (varStrictType (mkName x) (strictType notStrict (conT t)))  : z 
 
-genDatabase :: String -> String -> String -> Q [Dec]
-genDatabase n tbl td = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl td ++ saveDb tbl ++ searchDB tbl ++ deleteDb tbl)]
+genDatabase :: String -> String -> String -> [(String, Name)] ->  Q [Dec]
+genDatabase n tbl td xs = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl td ++ saveDb tbl ++ searchDB tbl ++ deleteDb tbl ++ fieldsDb xs ++ tableDb tbl)]
 
 genInstance :: String -> [(String, Name)] -> Q [Dec] 
 genInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Mapable")) (conT $ mkName nm)) (tmMap nm (fmap fst xs) ++ frmMap nm (fmap fst xs) ++ tmHashMap nm (fmap fst xs) ++ frmHashMap nm (fmap fst xs))]  
-
 
 genDefaultInstance :: String -> [(String, Name)] -> Q [Dec]
 genDefaultInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Default")) (conT $ mkName nm)) fdn]
@@ -108,6 +108,19 @@ loadDb n td = [funD (mkName "load") [clausem]]
             where decs = appE sl [| [ (td, $(varE $ mkName "cEQ")) ]|]
                   sl = appE (varE (mkName "select")) (stringE n)
                   ff = appE (varE $ mkName "nhead")
+fieldsDb :: [(String, Name)] -> [DecQ]
+fieldsDb xs = [funD (mkName "fields") $ [clause 
+                    [varP (mkName "i")] (normalB $  
+                        let xs' = fmap (\(x,y) -> (x, nameBase y)) xs 
+                        in [|xs'|]) []
+                    
+                ]]
+tableDb :: String -> [DecQ] 
+tableDb s = [funD (mkName "tableName") [clause 
+                    [varP (mkName "i")] (normalB ([|s|])) [] 
+                ]
+            ]
+
 
 searchDB :: String -> [DecQ]
 searchDB tbl = [funD (mkName "search") [clausem]]
