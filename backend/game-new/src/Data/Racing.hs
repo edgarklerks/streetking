@@ -26,9 +26,12 @@ import Control.Monad
 import Control.Applicative
 import Data.InRules
 
+import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
+import qualified Model.CarMinimal as CMI
 import qualified Model.TrackDetails as TD
+import qualified Model.Part as Part
 
 type Path = Double
 type Speed = Double
@@ -48,24 +51,6 @@ initialSpeed = 0
 
 trackWidth :: Radius
 trackWidth = 10.0 -- road width in metres. TODO: this should be a variable in every section.
-
-{--
-data RaceResult = RaceResult {
-    raceTime :: Time',
-    raceSpeedMax :: Speed,
-    raceSpeedAvg :: Speed,
-    raceSpeedFin :: Speed,
-    sectionResults :: [SectionResult]
-} deriving Show
-
-data SectionResult = SectionResult {
-    sectionPath :: Path,        -- path taken (0-1)
-    sectionSpeedMax :: Speed,   -- highest speed achieved in section
-    sectionSpeedAvg :: Speed,   -- average speed across section
-    sectionSpeedOut :: Speed,   -- speed on leaving section
-    sectionTime :: Time'        -- time taken for section
-} deriving Show
---}
 
 $(genMapableRecord "SectionResult" 
     [
@@ -89,21 +74,58 @@ $(genMapableRecord "RaceResult"
             ("sectionResults", ''SectionResults)
         ])
 
+type MInteger = Maybe Integer
+
+$(genMapableRecord "RaceParticipant"
+    [
+            ("rp_account", ''A.Account),
+            ("rp_account_min", ''APM.AccountProfileMin),
+            ("rp_car", ''CIG.CarInGarage),
+            ("rp_car_min", ''CMI.CarMinimal),
+            ("rp_escrow_id", ''MInteger)
+       ])
+
+rp_account_id :: RaceParticipant -> Integer
+rp_account_id = fromJust . A.id . rp_account
+
+rp_car_id :: RaceParticipant -> Integer
+rp_car_id = fromJust . CIG.id . rp_car
+
+type Parts = [Part.Part]
+
+$(genMapableRecord "RaceRewards"
+    [
+            ("money", ''Integer),
+            ("respect", ''Integer),
+            ("parts", ''Parts)
+       ])
+
+instance Num RaceRewards where
+    (+) r1 r2 = RaceRewards ((money r1) + (money r2)) ((respect r1) + (respect r2)) ((parts r1) ++ (parts r2))
+
 $(genMapableRecord "RaceData"
     [
             ("rd_user", ''APM.AccountProfileMin),
-            ("rd_car", ''CIG.CarInGarage),
+            ("rd_car", ''CMI.CarMinimal),
             ("rd_result", ''RaceResult)
+--            ("rd_rewards", ''RaceRewards)
        ])
 
 type RaceDatas = [RaceData]
 
+runRaceWithParticipant :: RaceParticipant -> Track -> Environment -> RaceResult 
+runRaceWithParticipant p t e = raceResult2FE $ runRace t (accountDriver $ rp_account p) (carInGarageCar $ rp_car p) e
+
+raceData :: RaceParticipant -> RaceResult -> RaceData
+raceData p r = RaceData (rp_account_min p) (rp_car_min p) r
+
+-- convert to front-end units (km/h instead of m/s)
 raceResult2FE :: RaceResult -> RaceResult
 raceResult2FE (RaceResult i t vm va vf ss) = RaceResult i t (ms2kmh vm) (ms2kmh va) (ms2kmh vf) (map sectionResult2FE ss)
-
 sectionResult2FE :: SectionResult -> SectionResult
 sectionResult2FE (SectionResult i p vm va vo t)  = SectionResult i p (ms2kmh vm) (ms2kmh va) (ms2kmh vo) t
 
+{-
 -- 500m straight
 testSection1 = Section 0 Nothing 500
 
@@ -123,17 +145,16 @@ track1 = Track 0 [
     ]
 
 track2 = Track 0 [
-        Section 0 Nothing 2000,
-        Section 0 (Just 100) 200,
-        Section 0 (Just 20) 30,
-        Section 0 (Just 100) 150,
-        Section 0 (Just 20) 30,
-        Section 0 (Just 100) 200,
-        Section 0 Nothing 3000
+        Section 0 Nothing 500,
+        Section 0 (Just 50) 75,
+        Section 0 Nothing 100,
+        Section 0 (Just 20) 60,
+        Section 0 Nothing 1000
     ]
 
 track3 = Track 0 [Section 0 (Just 100) 700]
 track4 = Track 0 [Section 0 Nothing 700]
+-}
 
 -- run a path using driver skills. path is a double 0 - 1 indicating the quality of the traveled path.
 -- from this and the section properties, the effective radius and path length are calculated.
@@ -143,15 +164,6 @@ path d =  skillIntelligence d
 -- "correct" a section, i.e. take into account the path and modify the angle, arclength and radius accordingly
 pathSection :: Section -> Path -> Section
 pathSection s@(Section i _ _) p = Section i (sectionPathRadius s p) (sectionPathLength s p)
-
-{-
-sectionPathAngle :: Section -> Path -> Maybe Angle
-sectionPathAngle s p = case (radius s) of
-    Nothing -> Nothing
-    Just r -> Just $ (2 *) $ asin $ y / (fromJust $ sectionPathRadius s p)
-        where
-            y = (r *) $ sin $ (arclength s) / (r * 2)
--}
 
 pathDeviation :: Path -> Length
 pathDeviation p = trackWidth * (0.5 - p)
@@ -210,7 +222,8 @@ data RaceConfig = RC {
 
 newtype RaceMonad a = RM {
         unRM :: RandT StdGen (State RaceConfig) a 
-    } deriving (Monad, Functor, Applicative, MonadState RaceConfig, MonadRandom) 
+    } deriving (Monad, Functor, Applicative, MonadState RaceConfig, MonadRandom)
+
 runRaceMonad :: RaceMonad a -> StdGen -> RaceConfig -> a 
 runRaceMonad m g c = evalState (evalRandT (unRM m) g) c
 
@@ -220,7 +233,7 @@ raceM = do
     (r :: Double) <- getRandomR (0, 1)
     return []
 --}
-  
+ 
 -- for a driver, car and environment, given a list of sections, make a list of section results
 runRace :: Track -> Driver -> Car -> Environment -> RaceResult
 runRace (Track i ss) d c e = res $ runRace' ss' d c e
@@ -257,7 +270,7 @@ runSection s@(Section i _ _) p vin vnext d c e = proc $ IState 0 0 vin vin False
     where
         s' = pathSection s p
         l = arclength s'
-        vlim = topSpeed s d c e
+        vlim = topSpeed s' d c e
         proc :: IState -> SectionResult
         proc ist@(IState t x vm v b n) = case (x >= l) of
             True -> SectionResult i p (max v vm) (l/t) v t

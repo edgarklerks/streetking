@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, NoMonomorphismRestriction #-}
+{-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, NoMonomorphismRestriction, FunctionalDependencies #-}
 module Model.General
     (
         module Data.Default,
@@ -34,12 +34,14 @@ import           Data.Database
 import           Data.Default
 import           Data.Hstore 
 
-class H.IConnection c => Database c a where 
+class H.IConnection c => Database c a | a -> c where 
     save :: a -> SqlTransaction c Integer
     load :: Integer -> SqlTransaction c (Maybe a) 
     -- Constraints Orders limit offset
     search :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction c [a]
     delete :: a -> Constraints -> SqlTransaction c ()
+    fields :: a -> [(String, String)]
+    tableName :: a -> String  
 
 
 class Mapable a where 

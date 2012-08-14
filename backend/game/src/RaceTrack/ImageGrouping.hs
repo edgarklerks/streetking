@@ -134,7 +134,10 @@ walkImage = do
     xs <- scanFront 
     case sniff Black xs of 
                 Nothing ->  return ()
-                Just a -> a `seq` gotoDir a >> walkImage
+                Just a -> do  
+                        a `seq` gotoDir a 
+                        sprayBack 
+                        walkImage
 
 
 mkList :: (Int, Int) -> (Int, Int) -> [(Int, Int)]
