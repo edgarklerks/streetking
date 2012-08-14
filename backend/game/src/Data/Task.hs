@@ -275,7 +275,6 @@ process d = do
 
                 Just GiveCar -> throwError "process: not implemented: GiveCar"
 
-                -- TODO: use money transaction 
                 Just TransferMoney -> do
                         let sid = "source_account_id" .<< d 
                         let tid = "target_account_id" .<< d 

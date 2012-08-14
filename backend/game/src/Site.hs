@@ -1508,13 +1508,10 @@ raceChallengeWith p = do
                     Chg.account_id = uid,
                     Chg.participants = p,
                     Chg.type = (fromJust $ ChgT.id n),
---                    Chg.account = a,
                     Chg.account_min = am,
---                    Chg.car = c,
                     Chg.car_min = cm,
                     Chg.amount = amt,
                     Chg.challenger = RaceParticipant a am c cm me,
---                    Chg.escrow_id = me,
                     Chg.deleted = False
                 } 
 
