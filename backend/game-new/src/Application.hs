@@ -77,6 +77,7 @@ instance HasSqlTransaction App where
 instance HasRandom App where 
     randomLens = subSnaplet rnd 
 
+
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
 
