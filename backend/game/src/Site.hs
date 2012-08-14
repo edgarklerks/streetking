@@ -1478,42 +1478,23 @@ raceChallenge = raceChallengeWith 2
 raceChallengeWith :: Integer -> Application ()
 raceChallengeWith p = do
         
-        liftIO $ print "race challenge "
-
         uid <- getUserId
         xs <- getJson -- >>= scheck ["track_id", "type"]
         -- challenger busy during race?? what if challenger already busy? --> active challenge sets user busy?
         -- what if challenger leaves city? disallow travel if challenge active? or do not care?
-        liftIO $ print "kutas"
         tid :: Integer <- rextract "track_id" xs
-        liftIO $ print "trasc"
         tp :: String <- rextract "type" xs
-        liftIO $ print "asdasd"
---        amt :: Integer <- case tp of
---                "money" -> liftIO (print "tskd" *> print tp) *> rextract "declare_money" xs <* liftIO (print "wupie")
---                _ -> liftIO (print "asd") *> return 0 <* liftIO (print "ljaksd")
-        amt :: Integer <- rextract "declare_money" xs
---        let amt = min amt 0
+        amt :: Integer <- min 0 <$> case tp of
+                "money" -> liftIO (print "tskd" *> print tp) *> rextract "declare_money" xs <* liftIO (print "wupie")
+                _ -> liftIO (print "asd") *> return 0 <* liftIO (print "ljaksd")
 
-        liftIO $ print "boooobbobob"
-
-        liftIO $ print "lalalala"
-
-        liftIO $ print $ (show tid) ++ " " ++ tp ++ " "  ++ (show amt)
-
-        writeResult ( "lala" :: String)
-{-
         i <- runDb $ do
-            liftIO (print "Asdasasdssss")
             userActions uid
             Task.run Task.User uid
-            liftIO (print "ksdfsdf")
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             am <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
             c  <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            liftIO (print "tats")
             cm <- aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
-            liftIO (print "poiy")
             t  <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _  <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
@@ -1521,7 +1502,7 @@ raceChallengeWith p = do
             me <- case amt > 0 of
                     True -> Just <$> Escrow.deposit uid amt
                     False -> return Nothing
-{-
+
             save $ (def :: Chg.Challenge) {
                     Chg.track_id = tid,
                     Chg.account_id = uid,
@@ -1535,12 +1516,10 @@ raceChallengeWith p = do
                     Chg.challenger = RaceParticipant a am c cm me,
 --                    Chg.escrow_id = meid,
                     Chg.deleted = False
-                } -}
+                } 
 
             return True
-        liftIO (print "asdasd-i")
         writeResult i
-        -}
 
 raceChallengeAccept :: Application ()
 raceChallengeAccept = do
