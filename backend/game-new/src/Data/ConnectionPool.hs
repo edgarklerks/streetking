@@ -101,5 +101,7 @@ unsafeGetConnection t@(ConnectionPool (pt, ta)) e = do
 
 initConnectionReclaimer :: ConnectionPool -> Int -> IO ThreadId
 initConnectionReclaimer (ConnectionPool (pt, ta)) i = forkIO $ forever $ do 
+        xs <- atomically $ getAssocs ta
+        print xs
         threadDelay (1000 * 1000 * 1)
 

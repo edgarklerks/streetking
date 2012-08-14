@@ -411,6 +411,9 @@ upsert t m = do
     where con = ["id" |== i]
           i = maybe SqlNull id (M.lookup "id" m)
 
+-- delete 
+--delete :: Sql -> Constraints -> SqlTransaction Connection ()
+--delete t con = transaction sqlExecute $ Delete (table t) con
 
 
 
