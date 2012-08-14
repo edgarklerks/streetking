@@ -25,7 +25,7 @@ import qualified Data.Text.Encoding as T
 import qualified Data.Text as T 
 import           Snap.Util.FileServe
 import           Snap.Util.FileUploads
-import           Snap.Types
+import           Snap.Core
 import qualified Data.Aeson as AS 
 import qualified Model.Account as A 
 import qualified Model.AccountProfile as AP 
@@ -95,7 +95,6 @@ import           Data.Time.Clock
 import           Data.Time.Clock.POSIX
 import qualified Data.Foldable as F
 import           Data.Hstore
-import           Model.ChallengeExtended (getRaceChallenge)
 
 import qualified Data.Digest.TigerHash as H
 import qualified Data.Digest.TigerHash.ByteString as H
@@ -220,6 +219,7 @@ loadMenu = do
     mt <- getOParam "tree_type"
     n <- runDb (search ["menu_type" |== (toSql mt) ] [Order ("number", []) True] 100000 0) :: Application [MM.MenuModel] 
     writeResult  (AS.toJSON (MM.fromFlat (convert n :: MM.FlatTree)))
+
 marketPlace :: Application ()
 marketPlace = do 
            uid <- getUserId
@@ -1507,13 +1507,10 @@ raceChallengeWith p = do
                     Chg.account_id = uid,
                     Chg.participants = p,
                     Chg.type = (fromJust $ ChgT.id n),
---                    Chg.account = a,
                     Chg.account_min = am,
---                    Chg.car = c,
                     Chg.car_min = cm,
                     Chg.amount = amt,
                     Chg.challenger = RaceParticipant a am c cm me,
---                    Chg.escrow_id = me,
                     Chg.deleted = False
                 } 
 
@@ -1699,7 +1696,6 @@ serverTime = do
         t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
         writeResult t
 
-
 wrapErrors x = CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
 ------------------------------------------------------------------------------
@@ -1712,6 +1708,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/User/data", userData),
                 ("/User/me", userMe),
                 ("/User/currentRace", userCurrentRace),
+                -- skill_acceleration: <number>
                 ("/User/addSkill", userAddSkill),
                 ("/Market/manufacturer", marketManufacturer),
                 ("/Market/model", marketModel),
@@ -1769,11 +1766,11 @@ routes = fmap (second wrapErrors) $ [
                 ("/Test/write", testWrite),
                 ("/Race/challenge", raceChallenge),
                 ("/Race/challengeAccept", raceChallengeAccept),
-                ("/Race/challengeGet", getRaceChallenge),
+                ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
-                ("/Race/get", getRace)
- 
-         ]
+                ("/Race/get", getRace),
+                ("/Time/get", serverTime)
+          ]
 
 
 ------------------------------------------------------------------------------
