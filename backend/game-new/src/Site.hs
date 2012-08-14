@@ -96,8 +96,6 @@ import           Data.Time.Clock.POSIX
 import qualified Data.Foldable as F
 import           Data.Hstore
 
-import qualified Data.Digest.TigerHash as H
-import qualified Data.Digest.TigerHash.ByteString as H
 import           Data.Conversion
 import           Data.InRules
 import           Data.Tools
