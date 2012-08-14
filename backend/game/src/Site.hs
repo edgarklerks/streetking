@@ -1485,8 +1485,8 @@ raceChallengeWith p = do
         tid :: Integer <- rextract "track_id" xs
         tp :: String <- rextract "type" xs
         amt :: Integer <- max 0 <$> case tp of
-                "money" -> liftIO (print "tskd" *> print tp) *> rextract "declare_money" xs <* liftIO (print "wupie")
-                _ -> liftIO (print "asd") *> return 0 <* liftIO (print "ljaksd")
+                "money" -> rextract "declare_money" xs
+                _ -> return 0 
 
         i <- runDb $ do
             userActions uid
