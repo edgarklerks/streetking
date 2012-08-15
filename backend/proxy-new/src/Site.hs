@@ -152,7 +152,7 @@ allowOrigin = do
             liftIO (print g)
             modifyResponse (addHeader "Content-Type" "text/plain")
             modifyResponse (\x -> 
-               case getHeader "Origin" g <|> getHeader "Referer" g of 
+               case getHeader "Origin" g of 
                     Nothing -> traceShow x $ addHeader "Access-Control-Allow-Origin" "http://192.168.1.99" x
                     Just n -> traceShow n $  addHeader "Access-Control-Allow-Origin" n x
                 )
