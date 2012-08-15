@@ -79,6 +79,7 @@ import qualified Model.ChallengeType as ChgT
 import qualified Model.ChallengeExtended as ChgE
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
+import qualified Model.RaceReward as RWD
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -192,6 +193,11 @@ userData :: Application ()
 userData = do 
     x <- getJson >>= scheck ["id"]
     let m = updateHashMap x (def :: APM.AccountProfileMin)
+
+    runDb $ do
+                userActions $ fromJust $ APM.id m
+                Task.run Task.User $ fromJust $ APM.id m
+ 
     n <- runCompose $ do 
                 action "user" ((load $ fromJust $ APM.id m) :: SqlTransaction Connection (Maybe APM.AccountProfileMin))
                 action "car" $ do
@@ -203,8 +209,10 @@ userData = do
 
 userMe :: Application ()
 userMe = do 
-    x <- getUserId 
+    x <- getUserId
     n <- runDb $ do 
+            userActions x
+            Task.run Task.User x
             DBF.account_update_energy x 
             p <- (load x) :: SqlTransaction Connection (Maybe AP.AccountProfile)
             return p
@@ -1621,9 +1629,14 @@ processRace ps tid = do
                 -- task: update race time on user finish
                 Task.trackTime (fin r) tid (rp_account_id p) (raceTime r)
 
-                -- task: grant reward on user finish
+                -- generate race rewards
                 rew <- getReward isWinner -- TODO: extend function; different rewards for practice etc.
+
+                -- task: grant rewards on user finish
                 taskRewards (fin r) (rp_account_id p) rew rid
+
+                -- store rewards for retrieval after user finish
+                save (def :: RWD.RaceReward) { RWD.account_id = rp_account_id p, RWD.race_id = rid, RWD.time = fin r, RWD.rewards = rew }
 
                 return (p, r, isWinner, fin r)
 
@@ -1689,11 +1702,24 @@ userCurrentRace = do
                             return (r, td, ts) 
         writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
+searchRaceReward :: Application ()
+searchRaceReward = do
+        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+        uid <- getUserId
+        ((l,o), xs) <- getPagesWithDTD (
+                    "time" +<=| (SqlInteger t)
+                +&& "account_id" +==| (SqlInteger uid)
+                +&& "race_id" +== "race_id" 
+            )
+        rs <- runDb $ search xs [] l o :: Application [RWD.RaceReward]
+        writeMapables rs
+
 serverTime :: Application ()
 serverTime = do
-        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+        t <- liftIO (floor <$> (*1000) <$> getPOSIXTime :: IO Integer)
         writeResult t
 
+{-- till here --}
 wrapErrors x = CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
 ------------------------------------------------------------------------------
@@ -1706,7 +1732,6 @@ routes = fmap (second wrapErrors) $ [
                 ("/User/data", userData),
                 ("/User/me", userMe),
                 ("/User/currentRace", userCurrentRace),
-                -- skill_acceleration: <number>
                 ("/User/addSkill", userAddSkill),
                 ("/Market/manufacturer", marketManufacturer),
                 ("/Market/model", marketModel),
@@ -1766,6 +1791,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
+                ("/Race/reward", searchRaceReward),
                 ("/Race/get", getRace),
                 ("/Time/get", serverTime)
           ]
