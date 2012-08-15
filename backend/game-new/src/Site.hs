@@ -192,6 +192,11 @@ userData :: Application ()
 userData = do 
     x <- getJson >>= scheck ["id"]
     let m = updateHashMap x (def :: APM.AccountProfileMin)
+
+    runDb $ do
+                userActions $ fromJust $ APM.id m
+                Task.run Task.User $ fromJust $ APM.id m
+ 
     n <- runCompose $ do 
                 action "user" ((load $ fromJust $ APM.id m) :: SqlTransaction Connection (Maybe APM.AccountProfileMin))
                 action "car" $ do
@@ -203,8 +208,10 @@ userData = do
 
 userMe :: Application ()
 userMe = do 
-    x <- getUserId 
+    x <- getUserId
     n <- runDb $ do 
+            userActions x
+            Task.run Task.User x
             DBF.account_update_energy x 
             p <- (load x) :: SqlTransaction Connection (Maybe AP.AccountProfile)
             return p
@@ -1691,9 +1698,10 @@ userCurrentRace = do
 
 serverTime :: Application ()
 serverTime = do
-        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+        t <- liftIO (floor <$> (*1000) <$> getPOSIXTime :: IO Integer)
         writeResult t
 
+{-- till here --}
 wrapErrors x = CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
 ------------------------------------------------------------------------------
