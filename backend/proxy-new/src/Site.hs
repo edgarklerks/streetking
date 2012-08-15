@@ -38,6 +38,7 @@ import Data.Monoid
 import Database.HDBC.SqlValue
 import qualified Model.Application as A
 import  Control.Arrow (second)
+import Debug.Trace 
 ------------------------------------------------------------------------------
 import           Application
 
@@ -148,11 +149,12 @@ allowAll = allowCredentials *> allowOrigin *> allowMethods *> allowHeaders
 allowOrigin :: Application ()
 allowOrigin = do 
             g <- getRequest
+            liftIO (print g)
             modifyResponse (addHeader "Content-Type" "text/plain")
             modifyResponse (\x -> 
-               case getHeader "Referer" g of 
-                    Nothing -> addHeader "Access-Control-Allow-Origin" "http://192.168.1.99" x
-                    Just n -> addHeader "Access-Control-Allow-Origin" n x
+               case getHeader "Origin" g <|> getHeader "Referer" g of 
+                    Nothing -> traceShow x $ addHeader "Access-Control-Allow-Origin" "http://192.168.1.99" x
+                    Just n -> traceShow n $  addHeader "Access-Control-Allow-Origin" n x
                 )
 -- Access-Control-Allow-Credentials: true  
 
