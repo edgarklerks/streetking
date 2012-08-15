@@ -79,6 +79,7 @@ import qualified Model.ChallengeType as ChgT
 import qualified Model.ChallengeExtended as ChgE
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
+import qualified Model.RaceReward as RWD
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1628,9 +1629,14 @@ processRace ps tid = do
                 -- task: update race time on user finish
                 Task.trackTime (fin r) tid (rp_account_id p) (raceTime r)
 
-                -- task: grant reward on user finish
+                -- generate race rewards
                 rew <- getReward isWinner -- TODO: extend function; different rewards for practice etc.
+
+                -- task: grant rewards on user finish
                 taskRewards (fin r) (rp_account_id p) rew rid
+
+                -- store rewards for retrieval after user finish
+                save (def :: RWD.RaceReward) { RWD.account_id = rp_account_id p, RWD.race_id = rid, RWD.time = fin r, RWD.rewards = rew }
 
                 return (p, r, isWinner, fin r)
 
@@ -1696,6 +1702,17 @@ userCurrentRace = do
                             return (r, td, ts) 
         writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
+getRaceReward :: Application ()
+getRaceReward = do
+        uid <- getUserId
+        ((l,o), xs) <- getPagesWithDTD (
+                    "time" +<=| (SqlBool False)
+                +&& "account_id" +==| (SqlInteger uid)
+                +&& "race_id" +== "race_id" 
+            )
+        r <- runDb $ aget xs (rollback "could not find rewards") :: Application RWD.RaceReward
+        writeResult r
+
 serverTime :: Application ()
 serverTime = do
         t <- liftIO (floor <$> (*1000) <$> getPOSIXTime :: IO Integer)
@@ -1714,7 +1731,6 @@ routes = fmap (second wrapErrors) $ [
                 ("/User/data", userData),
                 ("/User/me", userMe),
                 ("/User/currentRace", userCurrentRace),
-                -- skill_acceleration: <number>
                 ("/User/addSkill", userAddSkill),
                 ("/Market/manufacturer", marketManufacturer),
                 ("/Market/model", marketModel),
@@ -1774,6 +1790,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
+                ("/Race/getReward", getRaceReward),
                 ("/Race/get", getRace),
                 ("/Time/get", serverTime)
           ]
