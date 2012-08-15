@@ -1702,8 +1702,8 @@ userCurrentRace = do
                             return (r, td, ts) 
         writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
-getRaceReward :: Application ()
-getRaceReward = do
+searchRaceReward :: Application ()
+searchRaceReward = do
         uid <- getUserId
         ((l,o), xs) <- getPagesWithDTD (
                     "time" +<=| (SqlBool False)
@@ -1790,7 +1790,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
-                ("/Race/getReward", getRaceReward),
+                ("/Race/reward", searchRaceReward),
                 ("/Race/get", getRace),
                 ("/Time/get", serverTime)
           ]
