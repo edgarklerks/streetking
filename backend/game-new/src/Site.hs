@@ -1698,7 +1698,7 @@ userCurrentRace = do
 
 serverTime :: Application ()
 serverTime = do
-        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+        t <- liftIO (floor <$> (*1000) <$> getPOSIXTime :: IO Integer)
         writeResult t
 
 {-- till here --}
