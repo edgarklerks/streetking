@@ -1704,9 +1704,10 @@ userCurrentRace = do
 
 searchRaceReward :: Application ()
 searchRaceReward = do
+        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
         uid <- getUserId
         ((l,o), xs) <- getPagesWithDTD (
-                    "time" +<=| (SqlBool False)
+                    "time" +<=| (SqlInteger t)
                 +&& "account_id" +==| (SqlInteger uid)
                 +&& "race_id" +== "race_id" 
             )
