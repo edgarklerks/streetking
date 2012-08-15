@@ -1711,8 +1711,8 @@ searchRaceReward = do
                 +&& "account_id" +==| (SqlInteger uid)
                 +&& "race_id" +== "race_id" 
             )
-        r <- runDb $ aget xs (rollback "could not find rewards") :: Application RWD.RaceReward
-        writeResult r
+        rs <- runDb $ search xs [] l o :: Application [RWD.RaceReward]
+        writeMapables rs
 
 serverTime :: Application ()
 serverTime = do
