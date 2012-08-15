@@ -65,9 +65,16 @@ routes = let ?proxyTransform = id in fmap (second enroute) $ [
          , ("/test", writeBS "Hello world")
           ,("/Role/application", roleApp)
           , ("/Role/user", roleUser)
+          , ("/crossdomain.xml", crossDomain)
  
          , ("/", transparent)
          ]
+
+-- cross domain shizzle for unity
+crossDomain :: Application()
+crossDomain = do
+    modifyResponse (addHeader "Content-Type" "text/xml")
+    writeBS $ B.pack $ ("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\"/></cross-domain-policy>" :: String)
 
 
 ------------------------------------------------------------------------------
