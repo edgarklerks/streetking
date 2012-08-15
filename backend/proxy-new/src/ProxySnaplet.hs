@@ -47,8 +47,7 @@ import NodeSnaplet
 
 
 data ProxySnaplet = PS {
-        _proxy :: IO (B.ByteString, Int),
-        _manager :: Manager 
+        _proxy :: IO (B.ByteString, Int)
     } 
 
 
@@ -225,8 +224,7 @@ initProxy fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other sid
         xs <- liftIO $ readConfig fp 
         let (Just (ArrayC c)) = lookupConfig "proxy" xs >>= lookupVar "pool"
         s <- liftIO $ tiemvar (fmap (first C.pack . second (read . tail) . Prelude.break (==':')) $ arrayToString c)  
-        h <- liftIO $ newManager 
-        return $ PS s h
+        return $ PS s 
 
 
 

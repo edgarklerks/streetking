@@ -100,6 +100,9 @@ $(genMapableRecord "RaceRewards"
             ("parts", ''Parts)
        ])
 
+emptyRaceRewards :: RaceRewards
+emptyRaceRewards = RaceRewards 0 0 []
+
 instance Num RaceRewards where
     (+) r1 r2 = RaceRewards ((money r1) + (money r2)) ((respect r1) + (respect r2)) ((parts r1) ++ (parts r2))
 
