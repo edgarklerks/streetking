@@ -50,7 +50,7 @@ instance CIO.Exception ApplicationException
 
 
 enroute x = do 
-        modifyRequest (setHeader "Content-Type" "application/x-www-form-urlencoded")
+--         modifyRequest (setHeader "Content-Type" "application/x-www-form-urlencoded")
         g <- rqMethod <$> getRequest 
         case g of 
             OPTIONS -> allowAll 

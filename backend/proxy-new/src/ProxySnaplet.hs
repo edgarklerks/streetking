@@ -42,6 +42,7 @@ import Blaze.ByteString.Builder.ByteString
 import Snap.Iteratee
 import Data.Monoid
 import NodeSnaplet 
+import qualified Snap.Iteratee as I 
 
 
 
@@ -191,13 +192,17 @@ chanIterator f = continue go
 
 sendAbroad :: (MonadState ProxySnaplet m, MonadSnap m) => S.Request -> HE.Request IO -> m ()
 sendAbroad r rq = do 
+--     liftIO $ consumeBody r  
     (SomeEnumerator s) <- liftIO $ readIORef (rqBody r)
-    let r' = t rq s
     liftIO $ writeIORef (rqBody r) (SomeEnumerator enumEOF)
+    let r' = t rq s
     resp <- getResponse
     p <- liftIO $ newChan 
+
     liftIO $ forkIO $ withManager $ \m -> run_ $  http r' (\_ _ -> chanIterator p) m 
+
     finishWith (setResponseBody (mapEnum toByteString fromByteString $ chanEnum p) resp) 
+
     return ()
     where   t :: HE.Request IO -> (forall a. Enumerator B.ByteString IO a) -> HE.Request IO
             t r (p :: (forall a. Enumerator B.ByteString IO a)) =
@@ -225,7 +230,3 @@ initProxy fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other sid
         let (Just (ArrayC c)) = lookupConfig "proxy" xs >>= lookupVar "pool"
         s <- liftIO $ tiemvar (fmap (first C.pack . second (read . tail) . Prelude.break (==':')) $ arrayToString c)  
         return $ PS s 
-
-
-
-
