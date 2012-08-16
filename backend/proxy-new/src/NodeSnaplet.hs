@@ -64,8 +64,11 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
         liftIO $ Z.bind pu addr  
         
         req <- liftIO $ Z.socket ctx Req 
-        liftIO $ Z.connect req ctr 
+        liftIO $ Z.connect req ctr
 
+        onUnload $ do 
+                print "Dumping state"
+                void $ runQuery (memstate s) DumpState  
 
         return $ DHC p ctx addr pu req s
 
