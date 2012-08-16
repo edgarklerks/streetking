@@ -32,6 +32,7 @@ import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
 import qualified Model.TrackDetails as TD
 import qualified Model.Part as Part
+import qualified Model.PartDetails as PD
 
 type Path = Double
 type Speed = Double
@@ -91,13 +92,14 @@ rp_account_id = fromJust . A.id . rp_account
 rp_car_id :: RaceParticipant -> Integer
 rp_car_id = fromJust . CIG.id . rp_car
 
-type Parts = [Part.Part]
+type PartsDetails = [PD.PartDetails]
 
 $(genMapableRecord "RaceRewards"
     [
             ("money", ''Integer),
             ("respect", ''Integer),
-            ("parts", ''Parts)
+            ("parts", ''PartsDetails)
+--            ("parts", ''Parts)
        ])
 
 emptyRaceRewards :: RaceRewards

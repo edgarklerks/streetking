@@ -1646,7 +1646,7 @@ processRace ps tid = do
 -- TODO: this function is not finished.
 getReward :: Bool -> SqlTransaction Connection RaceRewards
 getReward w = do
-        pt <- aload 59075 (rollback "reward part not found") :: SqlTransaction Connection Part.Part
+        pt <- aload 59075 (rollback "reward part details not found") :: SqlTransaction Connection PD.PartDetails
         let wr = RaceRewards 0 20 [pt] 
         let br = RaceRewards 0 5 []
         case w of
@@ -1657,7 +1657,7 @@ taskRewards :: Integer -> Integer -> RaceRewards -> Integer -> SqlTransaction Co
 taskRewards t u r d = void $ do
         unless ((==0) $ respect r) $ Task.giveRespect t u $ respect r
         unless ((==0) $ money r) $ Task.giveMoney t u (money r) "race" d
-        forM_ (parts r) $ \p -> Task.givePart t u $ fromJust $ Part.id p 
+        forM_ (parts r) $ \p -> Task.givePart t u $ fromJust $ PD.id p 
 
 searchRaceChallenge :: Application ()
 searchRaceChallenge = do
