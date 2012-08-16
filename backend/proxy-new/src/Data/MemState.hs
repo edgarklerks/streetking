@@ -4,6 +4,7 @@ module Data.MemState where
 import qualified Data.HashMap.Strict as H 
 import           Control.Monad.STM
 import           Control.Monad
+import           Control.Monad.Trans
 import           Control.Applicative
 import qualified Data.ByteString as B 
 import qualified Data.ByteString.Char8 as C
@@ -110,6 +111,7 @@ data Query where
         Insert :: B.ByteString -> B.ByteString -> Query 
         Delete :: B.ByteString -> Query 
         Query :: B.ByteString -> Query  
+        DumpState :: Query  
             deriving Show
 
 
@@ -194,6 +196,7 @@ queryManager fp m c = let ms = unMS m
                                                 case H.lookup a p of 
                                                         Nothing -> putTMVar u NotFound
                                                         Just a -> readTVar a >>= \x -> putTMVar u (Value x)
+                            DumpState -> storeSnapShot fp m >> (atomically $ putTMVar u Empty)
 
 
 
