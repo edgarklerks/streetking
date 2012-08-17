@@ -11,16 +11,13 @@ import           Data.Maybe
 import           Data.SqlTransaction
 import           Data.Database
 import           Database.HDBC (toSql) 
-import qualified Data.ByteString.Char8 as C
-import qualified Data.ByteString.Lazy as LB
-import qualified Data.ByteString.Lazy.Char8 as LBC
 import           Data.Default
 import qualified Data.Aeson as AS
 import           Data.Attoparsec.Number
 import           Data.Time.Clock.POSIX
-import           Control.Monad.Trans
 import           Model.General 
-import           Data.HashMap.Strict as HM
+import           Data.DataPack
+
 import qualified Model.Transaction as TR 
 import           Model.Transaction (transactionMoney)
 import qualified Model.Escrow as Escrow
@@ -28,7 +25,7 @@ import qualified Model.Escrow as Escrow
 import qualified Model.Functions as Fun
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
-import qualified Model.TaskExtended as TKE
+--import qualified Model.TaskExtended as TKE
 import qualified Model.TrackTime as TTM
 import qualified Model.Account as A
 import qualified Model.Garage as G
@@ -60,6 +57,11 @@ data Action =
     | EscrowRelease
        deriving (Eq, Enum)
 
+instance AS.ToJSON Action where toJSON a = AS.toJSON $ fromEnum a
+instance AS.FromJSON Action where 
+    parseJSON (AS.Number (I n)) = return $ toEnum $ fromInteger n
+    parseJSON _ = fail "parseJSON: improper type for Action"
+
 data Trigger =
       Track
     | User
@@ -74,7 +76,7 @@ data Trigger =
 
 -- make a new task with time and data
 task :: Action -> Integer -> Data -> SqlTransaction Connection Integer 
-task a t d = save $ (def :: TK.Task) { TK.time = t, TK.data = (pack $ ("action", a) .> d), TK.deleted = False }
+task a t d = save $ (def :: TK.Task) { TK.time = t, TK.data = ("action", a) .> d, TK.deleted = False }
 
 -- make a new task trigger with subject type, subject ID and task ID
 trigger :: Trigger -> Integer -> Integer -> SqlTransaction Connection Integer 
@@ -85,7 +87,10 @@ trackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connectio
 trackTime t trk uid tme  = do
 
         -- create the task: set action type, timestamp, and additional data fields (mixed types allowed)
-        tid <- task TrackTime t $ ("track_id", trk) .> ("account_id", uid) .> ("time", tme) .> new
+        tid <- task TrackTime t $ mkData $ do
+            set "track_id" trk
+            set "account_id"  uid
+            set "time" tme
 
         -- create triggers for task execution: set trigger type, subject id, and task id
         -- a task can have more than one trigger, but will fire only once
@@ -98,35 +103,50 @@ trackTime t trk uid tme  = do
 -- add or remove money from user account
 giveMoney :: Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
 giveMoney t uid amt tn tv = do
-        tid <- task GiveMoney t $ ("transaction_type_name", tn) .> ("transaction_type_id", tv) .> ("account_id", uid) .> ("amount", amt) .> new
+        tid <- task GiveMoney t $ mkData $ do
+            set "transaction_type_name" tn
+            set "transaction_type_id" tv
+            set "account_id" uid
+            set "amount" amt
         trigger User uid tid
         return () 
 
 -- add or remove respect from user account
 giveRespect :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
 giveRespect t uid amt  = do
-        tid <- task GiveRespect t $ ("account_id", uid) .> ("amount", amt) .> new
+        tid <- task GiveRespect t $ mkData $ do
+            set "account_id"  uid
+            set "amount" amt
         trigger User uid tid
         return ()
 
 -- create a new car instance and assign it to user garage
 giveCar :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
 giveCar t uid cid  = do
-        tid <- task GiveCar t $ ("account_id", uid) .> ("car_model_id", cid) .> new
+        tid <- task GiveCar t $ mkData $ do
+            set "account_id" uid
+            set "car_model_id" cid
         trigger User uid tid
         return ()
 
 -- create a new part instance and assign it to user garage
 givePart :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
 givePart t uid pid  = do
-        tid <- task GivePart t $ ("account_id", uid) .> ("part_model_id", pid) .> new
+        tid <- task GivePart t $ mkData $ do
+            set "account_id" uid
+            set "part_model_id" pid
         trigger User uid tid
         return ()
 
 -- remove money from one account and add it to another
 transferMoney :: Integer -> Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
 transferMoney t suid tuid amt tn tv = do
-        tid <- task TransferMoney t $ ("transaction_type_name", tn) .> ("transaction_type_id", tv) .> ("source_account_id", suid) .> ("target_account_id", tuid) .> ("amount", amt) .> new
+        tid <- task TransferMoney t $ mkData $ do
+            set "transaction_type_name" tn
+            set "transaction_type_id" tv
+            set "source_account_id" suid
+            set "target_account_id" tuid
+            set "amount" amt
         trigger User suid tid
         trigger User tuid tid
         return ()
@@ -134,7 +154,10 @@ transferMoney t suid tuid amt tn tv = do
 -- remove a car from one user's garage and add it to another's
 transferCar :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection ()
 transferCar t suid tuid cid  = do
-        tid <- task TransferCar t $ ("source_account_id", suid) .> ("target_account_id", tuid) .> ("car_instance_id", cid) .> new
+        tid <- task TransferCar t $ mkData $ do
+            set "source_account_id" suid
+            set "target_account_id" tuid
+            set "car_instance_id" cid
         trigger User suid tid
         trigger User tuid tid
         trigger Car cid tid
@@ -147,14 +170,16 @@ escrowCancel t eid = do
         uid <- case me of
             Nothing -> rollback $ "Task: escrowCancel: escrow account not found for id " ++ (show eid)
             Just e -> return $ Escrow.account_id e
-        tid <- task EscrowCancel t $ ("escrow_id", eid) .> new
+        tid <- task EscrowCancel t $ mkData $ set "escrow_id" eid
         trigger User uid tid
         return ()
 
 -- release escrow account: transfer money to target account 
 escrowRelease :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
 escrowRelease t eid uid = do
-        tid <- task EscrowRelease t $ ("escrow_id", eid) .> ("account_id", uid) .> new
+        tid <- task EscrowRelease t $ mkData $ do 
+            set "escrow_id" eid
+            set "account_id" uid
         trigger User uid tid
         return ()
 
@@ -162,6 +187,10 @@ escrowRelease t eid uid = do
 {-
  - Trigger tasks 
  -}
+
+-- fire all task triggers of a trigger type 
+runAll :: Trigger -> SqlTransaction Connection ()
+runAll tp = Data.Task.run tp 0
 
 -- fire task trigger by trigger type and subject ID
 run :: Trigger -> Integer -> SqlTransaction Connection ()
@@ -172,37 +201,24 @@ run tp sid = void $ (flip catchError) (runFail tp sid) $ do
         cleanup $ t - 24 * 3600
 
         ss <- claim t tp sid 
-        forM_ ss $ \(n, s) -> do
-            f <- catchError (process s) (processFail n s) 
-            when f $ remove n
-            release n
+        forM_ ss $ \s -> do
+            f <- catchError (process s) (processFail s) 
+            when f $ remove s 
+            release s 
 
         wait t tp sid
-
--- fire all task triggers of a trigger type 
-runAll :: Trigger -> SqlTransaction Connection ()
-runAll tp = Data.Task.run tp 0
-
--- mark a selection of tasks as claimed, and return them 
-claim :: Integer -> Trigger -> Integer -> SqlTransaction Connection [(Integer, Data)]
-claim t tp sid = do
-
-        -- fetch tasks and remove duplicates caused by multiple triggers on the same task
-        ss <- Data.List.map (flip updateHashMap (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) sid
         
-        -- read tasks and return 
-        forM ss $ \s -> do
-            case unpack $ TK.data s of
-                Nothing -> throwError "Task claim: could not decode task data" 
-                Just d -> return (fromJust $ TK.id s, d)
+-- mark a selection of tasks as claimed, and return them 
+claim :: Integer -> Trigger -> Integer -> SqlTransaction Connection [TK.Task] --[(Integer, Data)]
+claim t tp sid = Data.List.map (flip updateHashMap (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) sid
 
 -- unmark a task as claimed
-release :: Integer -> SqlTransaction Connection ()
-release n = void $ update "task" ["id" |== toSql n] [] [("claim", SqlInteger 0)]
+release :: TK.Task -> SqlTransaction Connection ()
+release s = void $ update "task" ["id" |== (toSql $ TK.id s)] [] [("claim", SqlInteger 0)]
 
 -- mark a task as deleted
-remove :: Integer -> SqlTransaction Connection ()
-remove n = void $ update "task" ["id" |== toSql n] [] [("deleted", SqlBool True)]
+remove :: TK.Task -> SqlTransaction Connection ()
+remove s = void $ update "task" ["id" |== (toSql $ TK.id s)] [] [("deleted", SqlBool True)]
 
 -- physically remove tasks marked as deleted that are older than t 
 cleanup :: Integer -> SqlTransaction Connection ()
@@ -210,17 +226,14 @@ cleanup t = void $ transaction sqlExecute $ Delete (table "task") ["time" |<= Sq
 
 -- wait until there are no running tasks
 wait :: Integer -> Trigger -> Integer -> SqlTransaction Connection () 
-wait = wait' 0 
+wait t tp sid = w 0 $ Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
     where
-        wait' :: Integer -> Integer -> Trigger -> Integer -> SqlTransaction Connection () 
-        wait' n t tp sid = void $ do
-                case n > 5 of
-                    True -> throwError "Task wait: timeout"
-                    False -> do
-                        b <- Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
-                        when b $ do
-                            liftIO $ threadDelay $ 1000 * 50
-                            wait' (n+1) t tp sid
+        w n test = void $ do
+            when (n>5) $ throwError "Task wait: timeout"
+            b <- test
+            when b $ do
+                liftIO $ threadDelay $ 1000 * 50
+                w (n+1) test
 
 
 {-
@@ -228,10 +241,10 @@ wait = wait' 0
  -}
 
 -- process task data. return true if task is to be deleted, false otherwise
-process :: Data -> SqlTransaction Connection Bool 
-process d = do
+process :: TK.Task -> SqlTransaction Connection Bool 
+process t = let d = TK.data t in do
 
-         case "action" .< d :: Maybe Action of
+        case "action" .< d :: Maybe Action of
 
                 Just TrackTime -> do
                         save $ (def :: TTM.TrackTime) {
@@ -331,78 +344,12 @@ process d = do
  -}
 
 -- fail processing a task
-processFail :: Integer -> Data -> String -> SqlTransaction Connection Bool 
-processFail n s e = return True 
+processFail :: TK.Task -> String -> SqlTransaction Connection Bool 
+processFail s e = return True 
 
 -- fail during task run
 runFail :: Trigger -> Integer -> String -> SqlTransaction Connection ()
 runFail tp sid e = return ()
-
-
-{-
- - Task data
- -}
-
-type Key = LB.ByteString
-type Data = HM.HashMap Key AS.Value
-type Pack = C.ByteString -- TODO: InRule support for ByteString.Lazy to allow Pack to be of this type
-
-instance AS.ToJSON Action where toJSON a = AS.toJSON $ fromEnum a
-instance AS.FromJSON Action where 
-    parseJSON (AS.Number (I n)) = return $ toEnum $ fromInteger n
-    parseJSON _ = fail "parseJSON: improper type for Action"
-
--- pack data
-pack :: forall a. AS.ToJSON a => a -> Pack 
-pack = C.pack . LBC.unpack . AS.encode
-
--- unpack data
-unpack :: forall a. AS.FromJSON a => Pack -> Maybe a
-unpack = AS.decode . LBC.pack . C.unpack
-
--- force unpack data
-funpack :: forall a. AS.FromJSON a => Pack -> a
-funpack = fromJust . AS.decode . LBC.pack . C.unpack
-
--- empty data
-new :: Data
-new = HM.empty 
-
--- set data field
-set :: forall a. AS.ToJSON a => (Key, a) -> Data -> Data
-set (k, v) d = HM.insert k (AS.toJSON v) d
-
-(.>) :: forall a. AS.ToJSON a => (Key, a) -> Data -> Data
-(.>) = set
-infixr 4 .>
-
--- get data field of specified type
-get :: forall a. AS.FromJSON a => Key -> Data -> Maybe a
-get k d = case fmap AS.fromJSON $ HM.lookup k d of
-        Just (AS.Success v) -> Just v
-        _ -> Nothing
-
-(.<) :: forall a. AS.FromJSON a => Key -> Data -> Maybe a
-(.<) = get
-infixr 4 .<
-
--- get data field with default
-getd :: forall a. AS.FromJSON a => a -> Key -> Data -> a 
-getd f k d = maybe f fromJust $ get k d
-
--- force get data field
-getf :: forall a. AS.FromJSON a => Key -> Data -> a
-getf k d = getd (error $ "Data: force get: field not found") k d
-
-getm :: (MonadError String m, AS.FromJSON a) => Key -> Data -> m a
-getm k d = case get k d of 
-            Just a -> return a 
-            Nothing -> throwError $ strMsg $ "Data: force get: field not found: " ++ (LBC.unpack k)
-
-(.<<) :: forall a. AS.FromJSON a => Key -> Data -> a
-(.<<) = getf
-infixr 4 .<<
-
 
 
 
