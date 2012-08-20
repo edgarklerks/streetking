@@ -1330,13 +1330,22 @@ garageReports = do
             search xs [Order ("time",[]) False] l o 
         writeMapables (ns :: [GRP.GarageReport])
 
-   
 travelReports :: Application ()
 travelReports = do 
     uid <- getUserId 
     ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
     ns <- runDb (search xs [] l o) :: Application [TR.TravelReport]
     writeMapables ns 
+    
+searchReports :: RP.Type -> Application ()
+searchReports t = do
+        uid <- getUserId
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid) +&& "type" +==| (toSql t))
+        ns :: [RP.Report] <- runDb $ do
+            userActions uid
+            search xs [Order ("time",[]) False] l o 
+--        writeMapables ns -- toInRule wraps Data in ByteString so it ends up as a JSON string
+        writeResult' ns
 
 uploadCarImage :: Application ()
 uploadCarImage = do 
@@ -1823,6 +1832,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
                 ("/Race/reward", searchRaceReward),
+                ("/Race/reports", searchReports RP.Race),
                 ("/Race/get", getRace),
                 ("/Time/get", serverTime)
           ]

@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns  #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns #-}
 
 module Data.Task where
 
@@ -25,7 +25,6 @@ import qualified Model.Escrow as Escrow
 import qualified Model.Functions as Fun
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
---import qualified Model.TaskExtended as TKE
 import qualified Model.TrackTime as TTM
 import qualified Model.Account as A
 import qualified Model.Garage as G
