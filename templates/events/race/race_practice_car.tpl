@@ -1,3 +1,5 @@
+<div class="race-car-box-container corner-box">
+
 [:when (race.data.length == 2)]{
 	<div class="car-element-container backgound-darkgray">
 		<div class="car-element-image-container car-element-image-container-image" style="background-image:url(test_store/car_[:race.data.0.rd_car.id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
@@ -57,6 +59,15 @@
 	</div>
 	<div class="clearfix"></div>
 }
+	<div class="dialog-corner dialog-corner-tl dialog-corner-h"></div>
+	<div class="dialog-corner dialog-corner-tl dialog-corner-v"></div>
+	<div class="dialog-corner dialog-corner-tr dialog-corner-h"></div>
+	<div class="dialog-corner dialog-corner-tr dialog-corner-v"></div>
+	<div class="dialog-corner dialog-corner-bl dialog-corner-h"></div>
+	<div class="dialog-corner dialog-corner-bl dialog-corner-v"></div>
+	<div class="dialog-corner dialog-corner-br dialog-corner-h"></div>
+	<div class="dialog-corner dialog-corner-br dialog-corner-v"></div>
+</div>
 
 <!--
 	<div class="vertical-element-container ui-corner-all">

@@ -1,4 +1,4 @@
-<div class="track-info-box-container">
+<div class="track-info-box-container corner-box">
 	<div id="track-info-box" class="ui-dialog-content track-info-box-content">
 		<div class="track-info-time-container">
 			<div class="track-info-time-container-left track-info-time-race-timer">00:00:000</div>
