@@ -1,4 +1,4 @@
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE BangPatterns, ViewPatterns #-}
 module Data.Matrix where 
 
 import Data.Array.Base

@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings, ViewPatterns #-}
 
 module Data.Racing where
 
@@ -25,6 +25,7 @@ import Control.Monad.Writer
 import Control.Monad
 import Control.Applicative
 import Data.InRules
+import Data.Monoid 
 
 import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
@@ -105,8 +106,17 @@ $(genMapableRecord "RaceRewards"
 emptyRaceRewards :: RaceRewards
 emptyRaceRewards = RaceRewards 0 0 []
 
+instance Monoid RaceRewards where 
+        mempty = RaceRewards 0 0 [] 
+        mappend (RaceRewards a b c)  (RaceRewards a' b' c') = RaceRewards (a + a') (b + b') (c <> c')
+
 instance Num RaceRewards where
-    (+) r1 r2 = RaceRewards ((money r1) + (money r2)) ((respect r1) + (respect r2)) ((parts r1) ++ (parts r2))
+    (+) = (<>) 
+    fromInteger n = RaceRewards n 0 []
+    abs n = n 
+    signum _ = 1
+    (*) = error "race rewards didn't implement times"
+
 
 $(genMapableRecord "RaceData"
     [
