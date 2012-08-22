@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings, ViewPatterns #-}
+{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings, ViewPatterns, FlexibleContexts #-}
 
 module Data.Racing where
 
@@ -34,6 +34,7 @@ import qualified Model.CarMinimal as CMI
 import qualified Model.TrackDetails as TD
 import qualified Model.Part as Part
 import qualified Model.PartDetails as PD
+import Data.Char 
 
 type Path = Double
 type Speed = Double
@@ -420,5 +421,25 @@ drand m = do
         case n > m of
             False -> return $ sqrt $ n * m
             True -> return $ (1 -) $ sqrt $ (m-1) *  (n-1)
+
+
+newtype StrangeFunctor f a b = HF {
+                    unHF :: f a (StrangeFunctor f a (a -> f a b))
+                }
+
+newtype WarpedFunctor f a b = WP {
+                    unWP :: f a (a -> f a (WarpedFunctor f a b -> b))    
+            }
+
+
+imap f h = WP . (fmap . fmap . fmap) (\g -> f . g . (WP . (fmap . fmap . fmap) (\g ->  h . g . (imap f h) ) . unWP)) . unWP  
+
+cst p = WP (return (const (return (const p))))  
+
+test212 :: WarpedFunctor Either String Int 
+test212 = imap (ord) (chr) (cst 'a') 
+
+instance Functor (f a) => Functor (StrangeFunctor f a) where 
+        fmap f = HF . fmap ((fmap.fmap.fmap) f)  . unHF 
 
 
