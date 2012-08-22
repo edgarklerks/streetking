@@ -1627,6 +1627,7 @@ processRace t ps tid = do
         tdt <- aget ["track_id" |== toSql tid] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
  
           -- race participants
+--        let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
         let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
 
         -- current time, finishing times, race time (slowest finishing time) 
