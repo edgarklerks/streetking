@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns #-}
 
 ------------------------------------------------------------------------------
 -- | This module is where all the routes and handlers are defined for your
@@ -131,6 +131,8 @@ import           NodeSnaplet
 import           Data.Tiger
 import           Control.Arrow 
 import           Snap.Snaplet
+import           Data.Tournament 
+import           Model.Tournament 
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
