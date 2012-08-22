@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns  #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns, TypeSynonymInstances, FlexibleInstances #-}
 
 module Data.Task where
 
@@ -25,13 +25,13 @@ import qualified Model.Escrow as Escrow
 import qualified Model.Functions as Fun
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
---import qualified Model.TaskExtended as TKE
 import qualified Model.TrackTime as TTM
 import qualified Model.Account as A
 import qualified Model.Garage as G
 import qualified Model.CarInstance as CI
 import qualified Model.Part as PM
 import qualified Model.PartInstance as PI
+import Data.TaskRevised 
 
 -- TODO: static tasks
 -- -> have start time, updated time, end time; field "static" boolean
@@ -56,6 +56,13 @@ data Action =
     | EscrowCancel
     | EscrowRelease
        deriving (Eq, Enum)
+
+
+
+
+
+
+
 
 instance AS.ToJSON Action where toJSON a = AS.toJSON $ fromEnum a
 instance AS.FromJSON Action where 
@@ -235,17 +242,9 @@ wait t tp sid = w 0 $ Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
                 liftIO $ threadDelay $ 1000 * 50
                 w (n+1) test
 
-
-{-
- - Process tasks
- -}
-
--- process task data. return true if task is to be deleted, false otherwise
-process :: TK.Task -> SqlTransaction Connection Bool 
-process t = let d = TK.data t in do
-
-        case "action" .< d :: Maybe Action of
-
+instance Execute Zero where 
+    executeTask f t = let d = TK.data t in 
+            case "action" .< d :: Maybe Action of
                 Just TrackTime -> do
                         save $ (def :: TTM.TrackTime) {
                                 TTM.account_id = "account_id" .<< d,
@@ -253,7 +252,6 @@ process t = let d = TK.data t in do
                                 TTM.time = "time" .<< d
                             }
                         return True 
-
                 Just GiveMoney -> do
                         let sid = "account_id" .<< d
                         let tn = "transaction_type_name" .<< d
@@ -334,8 +332,14 @@ process t = let d = TK.data t in do
                         return True
 
                 Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
-                Nothing -> throwError "process: no action"
+                Nothing -> executeTask (plus f) t 
 
+
+process :: TK.Task -> SqlTransaction Connection Bool 
+process = executeTask (undefined :: Zero) 
+
+instance Execute One where 
+        executeTask f d = error "asdads"
 
 {-
  - Error handling

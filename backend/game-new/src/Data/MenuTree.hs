@@ -1,4 +1,5 @@
-{-# LANGUAGE TemplateHaskell, DeriveGeneric, StandaloneDeriving #-}
+{-# LANGUAGE TemplateHaskell, DeriveGeneric, StandaloneDeriving,
+ ViewPatterns  #-}
 
 module Data.MenuTree where 
 

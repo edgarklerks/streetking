@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns #-}
 
 ------------------------------------------------------------------------------
 -- | This module is where all the routes and handlers are defined for your
@@ -131,6 +131,8 @@ import           NodeSnaplet
 import           Data.Tiger
 import           Control.Arrow 
 import           Snap.Snaplet
+import           Data.Tournament 
+import           Model.Tournament 
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -1330,27 +1332,23 @@ garageReports = do
             search xs [Order ("time",[]) False] l o 
         writeMapables (ns :: [GRP.GarageReport])
 
-   
 travelReports :: Application ()
 travelReports = do 
     uid <- getUserId 
     ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
     ns <- runDb (search xs [] l o) :: Application [TR.TravelReport]
     writeMapables ns 
-
-uploadCarImage :: Application ()
-uploadCarImage = do 
-    uid <- getUserId
-    xs <- getJson >>= scheck ["car_instance_id"]
-    let ns = updateHashMap xs (def :: PI.PartInstance)
-    handleFileUploads "resources/static/carimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
-        when (null xs)  $ internalError "no file uploaded"
-        case snd $ head xs of 
-            Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
-            Right e -> do 
-                    liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
-                    return ()
-  
+    
+searchReports :: RP.Type -> Application ()
+searchReports t = do
+        uid <- getUserId
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid) +&& "type" +==| (toSql t))
+        ns :: [RP.Report] <- runDb $ do
+            userActions uid
+            search xs [Order ("time",[]) False] l o 
+--        writeMapables ns -- toInRule wraps Data in ByteString so it ends up as a JSON string
+        writeResult' ns
+ 
 downloadCarImage :: Application ()
 downloadCarImage = do
     uid <- getUserId
@@ -1391,7 +1389,20 @@ carSetOptions = do
 unixtime :: IO Integer
 unixtime = floor <$> getPOSIXTime
 
-{-
+
+uploadCarImage :: Application ()
+uploadCarImage = do 
+    uid <- getUserId
+    xs <- getJson >>= scheck ["car_instance_id"]
+    let ns = updateHashMap xs (def :: PI.PartInstance)
+    handleFileUploads "resources/static/carimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
+        when (null xs)  $ internalError "no file uploaded"
+        case snd $ head xs of 
+            Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
+            Right e -> do 
+                    liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
+                    return ()
+ {-
  - Actions: transactions to be taken before selecting data
  -}
 
@@ -1618,6 +1629,7 @@ processRace t ps tid = do
         tdt <- aget ["track_id" |== toSql tid] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
  
           -- race participants
+--        let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
         let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
 
         -- current time, finishing times, race time (slowest finishing time) 
@@ -1823,6 +1835,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
                 ("/Race/reward", searchRaceReward),
+                ("/Race/reports", searchReports RP.Race),
                 ("/Race/get", getRace),
                 ("/Time/get", serverTime)
           ]
