@@ -1348,20 +1348,7 @@ searchReports t = do
             search xs [Order ("time",[]) False] l o 
 --        writeMapables ns -- toInRule wraps Data in ByteString so it ends up as a JSON string
         writeResult' ns
-
-uploadCarImage :: Application ()
-uploadCarImage = do 
-    uid <- getUserId
-    xs <- getJson >>= scheck ["car_instance_id"]
-    let ns = updateHashMap xs (def :: PI.PartInstance)
-    handleFileUploads "resources/static/carimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
-        when (null xs)  $ internalError "no file uploaded"
-        case snd $ head xs of 
-            Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
-            Right e -> do 
-                    liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
-                    return ()
-  
+ 
 downloadCarImage :: Application ()
 downloadCarImage = do
     uid <- getUserId
@@ -1402,7 +1389,20 @@ carSetOptions = do
 unixtime :: IO Integer
 unixtime = floor <$> getPOSIXTime
 
-{-
+
+uploadCarImage :: Application ()
+uploadCarImage = do 
+    uid <- getUserId
+    xs <- getJson >>= scheck ["car_instance_id"]
+    let ns = updateHashMap xs (def :: PI.PartInstance)
+    handleFileUploads "resources/static/carimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
+        when (null xs)  $ internalError "no file uploaded"
+        case snd $ head xs of 
+            Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
+            Right e -> do 
+                    liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
+                    return ()
+ {-
  - Actions: transactions to be taken before selecting data
  -}
 
