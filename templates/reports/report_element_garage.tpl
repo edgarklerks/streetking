@@ -93,7 +93,7 @@
 				<div class="clearfix"></div>
 			</div>
 			<div class="report-element-additional-info-box">
-				<div>Time:&nbsp;<span>[:eval TIMESTAMP(time)]</span> [:time] [:eval TIMESTAMPTODATE(time)]</div>
+				<div>Time:&nbsp;<span>[:eval TIMESTAMPTODATE(time)]</span></div>
 			</div>
 		</div>
 		<div class="clearfix"></div>
