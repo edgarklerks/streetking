@@ -1,4 +1,7 @@
-module Data.Tournament where 
+{-# LANGUAGE ViewPatterns #-}
+module Data.Tournament (
+        joinTournament                   
+    ) where 
 
 import Model.TournamentPlayers as TP
 import Model.Tournament as T
@@ -16,6 +19,8 @@ import Control.Monad
 import Control.Applicative
 import Data.Database
 import Database.HDBC.SqlValue 
+import qualified Data.List as L
+import Test.QuickCheck as Q 
 
 
 
@@ -61,5 +66,48 @@ checkPrequisites a (Tournament id cid st cs mnl mxl rw) = do
 
 
 
+-- divideClowns :: Tournament -> SqlTransaction Connection [(TP.TournamentPlayer, TP.TournamentPlayer)]
+divideClowns t = do 
+                xs <- search ["tournament_id" |== (toSql $ T.id t)] [] 10000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
+                return (divd xs) 
+
+
+-- 2 | 3 solutions 
+--
+--
+
+twothree :: [a] -> [[a]]
+twothree [] = [] 
+twothree [x] = [[x]]
+twothree [x,y] = [[x,y]]
+twothree [x,y,z] = [[x,y,z]]
+twothree (x:y:xs) = [x,y] : twothree xs 
+
+-- | Problem: I have to divide a group fairly into groups of 2,3,5,7 etc, with fair 
+-- dirty solution, calc mod of list length at 2,3,5,7 etc 
+-- more dirty, just search solution from list [1..100] 
+divd :: [a] -> [[a]]
+divd xs@(length -> l) = dvd (fromJust prs) xs 
+        where prs = L.find (\x -> l `mod` x == 0 || (l - (l `div` 2)) `mod` x == 0) [2..(l - 1)]
+
+
+dvd :: Int -> [a] -> [[a]] 
+dvd n [] = []
+dvd n [x,y] = [[x,y]]
+dvd n [x,y,z] = [[x,y,z]]
+dvd n xs = take n xs : dvd n (drop n xs)
+
+
+testlnotone = property test
+    where test :: [()] -> Bool
+          test [] = True 
+          test [x] = True 
+          test xs = minimum (fmap length $ divd xs) > 1
+
+testpnotone = property test 
+    where test :: [()] -> Bool 
+          test [] = True 
+          test [x] = True 
+          test xs = minimum (fmap length $ twothree xs) > 1
 
 
