@@ -4,7 +4,7 @@
 		[:when (task == "improve_part")]{Part improved}
 	</div>
 	<div class="report-element-container-inner">
-		<div class="report-element-image-container [:when (improvement > 0 & unique == false)]{report-element-image-container-improved}[:when (unique)]{report-element-image-container-unique} black-icons-100 [:when (part_type == "engine")]{report-element-[:part_type]-black}[:when (part_type != "engine")]{report-element-image-container-image}" [:when (part_type != "engine")]{style="background-image:url(test_store/[:part_type]/[:part_type]_[:d3d_model_id].jpg?t=[:eval TIMESTAMP(id)])"}>[:when (part_type != "engine")]{<div class="report-element-image-zoom element-image-zoom">&nbsp;</div>}</div>
+		<div class="report-element-image-container [:when (improvement > 0 & unique == false)]{report-element-image-container-improved}[:when (unique)]{report-element-image-container-unique} black-icons-100 [:when (part_type == "engine")]{report-element-[:part_type]-black}[:when (part_type != "engine")]{report-element-image-container-image}" [:when (part_type != "engine")]{style="background-image:url(test_store/[:part_type]/[:part_type]_[:picture].jpg?t=[:eval TIMESTAMP(id)])"}>[:when (part_type != "engine")]{<div class="report-element-image-zoom element-image-zoom">&nbsp;</div>}</div>
 		<div class="report-element-data-container">
 			<div class="report-element-info-container">
 				<div class="report-element-infotext-container">
@@ -13,6 +13,7 @@
 					[:when (part_modifier != null)]{<div>Type:&nbsp;<span>[:part_modifier]</span></div>}
 					[:when (car_year != null)]{<div>Year:&nbsp;<span>[:car_year]</span></div>}
 					<div>Level:&nbsp;<span>[:when (level != null)]{[:level]}[:when (car_level != null)]{[:car_level]}</span></div>
+					<div>Type:&nbsp;<span>[:part_type]</span></div>
 				</div>
 				<div class="report-element-vertical-line"></div>
 				<div class="report-element-infobar-container">
@@ -92,7 +93,7 @@
 				<div class="clearfix"></div>
 			</div>
 			<div class="report-element-additional-info-box">
-				<div>Time:&nbsp;<span>[:eval TIMESTAMP(time)]</span></div>
+				<div>Time:&nbsp;<span>[:eval TIMESTAMPTODATE(time)]</span></div>
 			</div>
 		</div>
 		<div class="clearfix"></div>
