@@ -108,7 +108,7 @@ emptyRaceRewards :: RaceRewards
 emptyRaceRewards = RaceRewards 0 0 []
 
 instance Monoid RaceRewards where 
-        mempty = RaceRewards 0 0 [] 
+        mempty = emptyRaceRewards 
         mappend (RaceRewards a b c)  (RaceRewards a' b' c') = RaceRewards (a + a') (b + b') (c <> c')
 
 instance Num RaceRewards where
