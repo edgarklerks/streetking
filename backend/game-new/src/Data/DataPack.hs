@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts, FlexibleInstances, TypeSynonymInstances, FunctionalDependencies, MultiParamTypeClasses, OverloadedStrings #-}
+{-# LANGUAGE FlexibleContexts, FlexibleInstances, TypeSynonymInstances, FunctionalDependencies, MultiParamTypeClasses, OverloadedStrings, RankNTypes #-}
 
 module Data.DataPack where
 
@@ -40,7 +40,7 @@ infixr 4 .<
 
 -- get data field with default
 getFieldWithDefault :: forall a. AS.FromJSON a => a -> Key -> Data -> a 
-getFieldWithDefault f k d = maybe f fromJust $ getField k d
+getFieldWithDefault f k d = maybe f id $ getField k d
 
 -- force get data field
 getFieldForced :: forall a. AS.FromJSON a => Key -> Data -> a
@@ -73,6 +73,9 @@ unpackDataForced = fromJust . AS.decode . LBC.pack . C.unpack
 instance Default Data where
     def = emptyData
 
+-- InRule instances to allow Data as a record field.
+-- NOTE: the path Data -> InRule -> HashMap -> JSON causes Data to end up as a JSON string inside the JSON object.
+-- TODO: use InObject or update InRules to accomodate Data.
 instance IR.ToInRule Data where
     toInRule d = IR.toInRule $ packData d 
 instance IR.FromInRule Data where

@@ -1,3 +1,4 @@
+{-# LANGUAGE ViewPatterns #-}
 module Data.DatabaseTemplate where 
 
 import qualified Data.Database as D 
