@@ -16,7 +16,7 @@ import           Prelude hiding (id)
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
-import Data.InRules
+import Data.Conversion
 
 
 $(genAll "CarMinimal" "car_in_garage"

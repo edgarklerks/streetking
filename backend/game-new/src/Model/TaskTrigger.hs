@@ -8,7 +8,7 @@ import           Model.General
 import           Data.Database 
 import           Control.Monad
 import qualified Data.Aeson as AS
-import Data.InRules
+import Data.Conversion
 
 import qualified Data.HashMap.Strict as HM
 import           Control.Applicative
