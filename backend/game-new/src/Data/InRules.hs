@@ -50,8 +50,11 @@ data InRule =
 	  | InNull
 	  | InArray [InRule]
 	  | InObject (Map.HashMap String InRule) 
-    deriving (Eq, Show)
-                        
+    deriving (Eq)
+               
+
+instance Show InRule where 
+        show a = pprint' "  " 0 a 
 
 newtype Readable = Readable {
         unReadable :: String 
