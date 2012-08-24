@@ -1,6 +1,27 @@
 {-# LANGUAGE FlexibleContexts, FlexibleInstances, TypeSynonymInstances, FunctionalDependencies, MultiParamTypeClasses, OverloadedStrings, RankNTypes #-}
 
-module Data.DataPack where
+module Data.DataPack (
+        Data,
+        emptyData,
+        Pack,
+        emptyData,
+        setField,
+        (.>),
+        (.<),
+        getField,
+        getFieldWithDefault,
+        getFieldForced,
+        (.<<),
+        packData,
+        unpackData,
+        DataM,
+        set,
+        get,
+        readData,
+        withData,
+        mkData 
+
+    ) where
 
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as LB
@@ -13,16 +34,18 @@ import           Data.Maybe
 import           Data.Default
 
 type Key = LB.ByteString
-type Data = HM.HashMap Key AS.Value
+newtype Data = Data {
+             unData ::  HM.HashMap Key AS.Value
+            } deriving (Show, Eq)
 type Pack = C.ByteString -- TODO: InRule support for ByteString.Lazy to allow Pack to be of this type
 
 -- empty data
 emptyData :: Data
-emptyData = HM.empty 
+emptyData = Data $ HM.empty 
 
 -- set data field
 setField :: forall a. AS.ToJSON a => (Key, a) -> Data -> Data
-setField (k, v) d = HM.insert k (AS.toJSON v) d
+setField (k, v) (Data d) = Data $ HM.insert k (AS.toJSON v) d
 
 (.>) :: forall a. AS.ToJSON a => (Key, a) -> Data -> Data
 (.>) = setField
@@ -30,7 +53,7 @@ infixr 7 .>
 
 -- get data field of specified type
 getField :: forall a. AS.FromJSON a => Key -> Data -> Maybe a
-getField k d = case fmap AS.fromJSON $ HM.lookup k d of
+getField k (Data d) = case fmap AS.fromJSON $ HM.lookup k d of
         Just (AS.Success v) -> Just v
         _ -> Nothing
 
@@ -77,10 +100,16 @@ instance Default Data where
 -- NOTE: the path Data -> InRule -> HashMap -> JSON causes Data to end up as a JSON string inside the JSON object.
 -- TODO: use InObject or update InRules to accomodate Data.
 instance IR.ToInRule Data where
-    toInRule d = IR.toInRule $ packData d 
+    toInRule d = IR.toInRule $ packData (unData d) 
 instance IR.FromInRule Data where
-    fromInRule (IR.InByteString s) = maybe (error "FromInRule to Data conversion failed") id $ unpackData s
+    fromInRule (IR.InByteString s) = Data $ maybe (error "FromInRule to Data conversion failed") id $ unpackData s
     fromInRule _ = error "You gave not a ByteString"
+
+instance AS.FromJSON Data where 
+        parseJSON xs = fmap Data $ AS.parseJSON xs 
+
+instance AS.ToJSON Data where 
+        toJSON (Data a) =  AS.toJSON a
 
 -- Data Monad
 
