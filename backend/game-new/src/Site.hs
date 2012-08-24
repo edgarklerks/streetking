@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns #-}
+--}
 
 ------------------------------------------------------------------------------
 -- | This module is where all the routes and handlers are defined for your
@@ -91,7 +92,7 @@ import qualified Model.Support as SUP
 import qualified Data.HashMap.Strict as HM
 import           Control.Monad.Trans
 import           Application
-import           Model.General (Mapable(..), Default(..), Database(..))
+import           Model.General (Mapable(..), Default(..), Database(..), aload, adeny, aget, agetlist)
 import           Data.Convertible
 import           Data.Time.Clock 
 import           Data.Time.Clock.POSIX
@@ -1466,37 +1467,6 @@ testWrite = do
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
 
-{-
- - Asserted record fetching tools; move to some appropriate location later
- -}
-
--- load a record or run f if not found
-aload :: Database Connection a => Integer -> SqlTransaction Connection () -> SqlTransaction Connection a
-aload n f = do
-    s <- load n
-    when (isNothing s) f
-    return $ fromJust s
-
--- get one record or run f if none found
-aget :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection a
-aget cs f = do
-    ss <- search cs [] 1 0
-    unless (not $ null ss) f
-    return $ head ss
-
--- get list of records or run f if none found
-agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection () -> SqlTransaction Connection [a]
-agetlist cs os l o f = do
-    ss <- search cs os l o 
-    unless (not $ null ss) f
-    return ss
-
--- run f if any records found. note: return is necessary in order to infer search type.
-adeny :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection [a]
-adeny cs f = do
-    ss <- search cs [] 1 0
-    unless (null ss) f
-    return ss
 
 raceChallenge :: Application ()
 raceChallenge = raceChallengeWith 2 
@@ -1648,7 +1618,7 @@ processRace t ps tid = do
 
         let winner_id = rp_account_id $ fst $ head rs
 
-        forM_ rs $ \(p,r) -> do
+        parN $ flip fmap rs $ \(p,r) -> do
             
                 let uid = rp_account_id p
                 let ft = fin r

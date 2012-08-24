@@ -26,7 +26,7 @@ setField (k, v) d = HM.insert k (AS.toJSON v) d
 
 (.>) :: forall a. AS.ToJSON a => (Key, a) -> Data -> Data
 (.>) = setField
-infixr 4 .>
+infixr 7 .>
 
 -- get data field of specified type
 getField :: forall a. AS.FromJSON a => Key -> Data -> Maybe a
@@ -36,7 +36,7 @@ getField k d = case fmap AS.fromJSON $ HM.lookup k d of
 
 (.<) :: forall a. AS.FromJSON a => Key -> Data -> Maybe a
 (.<) = getField
-infixr 4 .<
+infixr 7 .<
 
 -- get data field with default
 getFieldWithDefault :: forall a. AS.FromJSON a => a -> Key -> Data -> a 
@@ -55,7 +55,7 @@ getm k d = case get k d of
 
 (.<<) :: forall a. AS.FromJSON a => Key -> Data -> a
 (.<<) = getFieldForced
-infixr 4 .<<
+infixr 7 .<<
 
 -- pack data
 packData :: forall a. AS.ToJSON a => a -> Pack 

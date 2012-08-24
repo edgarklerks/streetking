@@ -26,5 +26,6 @@ $(genAll "Tournament" "tournament" [
     ("costs", ''Integer),
     ("minlevel", ''Integer),
     ("maxlevel", ''Integer),
-    ("rewards", ''RaceRewards) 
+    ("rewards", ''RaceRewards),
+    ("track_id", ''Integer)
     ])

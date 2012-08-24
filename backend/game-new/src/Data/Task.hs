@@ -31,7 +31,7 @@ import qualified Model.Garage as G
 import qualified Model.CarInstance as CI
 import qualified Model.Part as PM
 import qualified Model.PartInstance as PI
-import Data.TaskRevised 
+import           Data.Chain
 
 -- TODO: static tasks
 -- -> have start time, updated time, end time; field "static" boolean
@@ -337,10 +337,6 @@ instance Execute Zero where
 
 process :: TK.Task -> SqlTransaction Connection Bool 
 process = executeTask (undefined :: Zero) 
-
-instance Execute One where 
-        executeTask f d = error "asdads"
-
 {-
  - Error handling
  -

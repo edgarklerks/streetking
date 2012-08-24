@@ -9,6 +9,7 @@ import Data.Ratio
 
 import Data.InRules
 
+import Data.Hashable 
 import Data.Object
 import Control.Monad
 import qualified Data.Aeson as A
@@ -35,6 +36,7 @@ import Data.Time.LocalTime
 import Data.Fixed
 --import Codec.Compression.GZip
 import Data.ByteString.Base64
+import Data.Default 
 
 
 
@@ -365,3 +367,30 @@ prop_find_all' x xs = lhs x xs  ==  rhs x xs
               rhs x xs = fmap convert (fromList xs .>> x)
 
 
+{-- More general instance --}
+
+instance (ToInRule k, ToInRule v) => ToInRule (Map.HashMap k v) where 
+                toInRule = toInRule . fmap (\(k,v) -> (toInRule k, toInRule v)) . Map.toList 
+
+instance (Eq k, Hashable k, FromInRule k, FromInRule v) => FromInRule (Map.HashMap k v) where 
+                fromInRule (InArray xs) = Map.fromList $ fmap (\(InArray [k,v]) -> (fromInRule k, fromInRule v)) xs
+
+instance (A.ToJSON v, A.ToJSON k) => A.ToJSON (Map.HashMap k v) where 
+            
+            toJSON xs = A.Array $ V.fromList $ fmap A.toJSON $ Map.toList xs 
+
+
+instance (Hashable k, Eq k, A.FromJSON v, A.FromJSON k) => A.FromJSON (Map.HashMap k v) where 
+            parseJSON value = case value of 
+                                    A.Array xs -> do 
+                                                     xs <- forM (fmap A.fromJSON $ V.toList xs) $ \i -> do 
+                                                                        case i of 
+                                                                            A.Success a -> return a
+                                                                            A.Error s -> fail s 
+                                                     return $ Map.fromList xs  
+
+
+
+
+instance Default (Map.HashMap k v) where 
+            def = Map.empty 
