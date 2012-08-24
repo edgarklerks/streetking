@@ -16,7 +16,7 @@ import           Model.TH
 import           Prelude hiding (id)
 
 import qualified Data.Aeson as AS
-import Data.InRules
+import Data.Conversion
 
 import qualified Model.AccountProfileMin as APM
 import qualified Model.CarMinimal as CMI

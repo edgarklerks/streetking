@@ -6,7 +6,7 @@ import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.ByteString.Lazy.Char8 as LBC
 import qualified Data.Aeson as AS
-import qualified Data.InRules as IR
+import qualified Data.Conversion as IR 
 import           Control.Monad.Error
 import           Data.HashMap.Strict as HM
 import           Data.Maybe

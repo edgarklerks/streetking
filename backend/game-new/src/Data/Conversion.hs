@@ -1,5 +1,51 @@
 {-# Language TypeSynonymInstances, FlexibleInstances, IncoherentInstances, ViewPatterns #-}
-module Data.Conversion where
+module Data.Conversion (
+       (.>),
+       (.>>),
+       (Data.InRules.==>),
+       (..>),
+       hmapKeys,
+       hmapWithKey,
+       InRule(..),
+       Readable(..),
+       InKey(..),
+       IdentityMonoid(..),
+       PathState(..),
+       PathStep(..),
+       PathAcceptor(..),
+       accept,
+       reject,
+       acceptor,
+       continue,
+       alter,
+       apoint,
+       runPath,
+       KindView(..),
+       viewKind,
+       kmap,
+       pmap,
+       pfold,
+       kfold,
+       readable,
+       viaReadable,
+       asReadable,
+       ToInRule(..),
+       FromInRule(..),
+       validObject,
+       emptyObj,
+       singleObj,
+       fromList,
+       toList,
+       toListString,
+       unionObj,
+       unionsObj,
+       toString,
+       pprint,
+       pprints
+
+
+
+    ) where
 
 -- Change: removed Json 
 
@@ -18,11 +64,11 @@ import qualified Data.Attoparsec.Number as A
 import Data.Attoparsec
 import qualified Data.Text as T 
 import qualified Data.Text.Encoding as T
-import qualified Data.Vector as V
 import Test.QuickCheck
 import Data.Convertible
 import Control.Monad.State
 import qualified Data.Serialize as S
+import Data.ConversionInstances 
 
 -- 
 import qualified Data.ByteString.Char8 as B
@@ -35,171 +81,12 @@ import Data.Time.Clock
 import Data.Time.LocalTime
 import Data.Fixed
 --import Codec.Compression.GZip
-import Data.ByteString.Base64
 import Data.Default 
 
 
-
-stringLike ::  String -> String
-stringLike text = "%" ++ text ++ "%" 
+{-- Main file for loading all the instances + inrule tool --}
 
 
---TODO: limit the hour, min & second to normal time +leap second/minute 
-
-timeStamp' :: Integer  -> Int -> Int -> Int -> Int -> Data.Fixed.Pico -> LocalTime
-timeStamp' y m d h min s = LocalTime (fromGregorian y m d) (TimeOfDay h min s )
-
-
-timeStamp :: Integer  -> Int -> Int -> Int -> Int -> Data.Fixed.Pico -> Integer
-timeStamp y m d h mi s = floor (localTimeToUnixTimeStamp (timeStamp' y m d h mi s))
-
--- | Renders InRule to String.
-instance ToInRule SqlValue where 
-    toInRule = convFromSql 
-instance FromInRule SqlValue where 
-    fromInRule = convSql
--- Instances for Aeson 
-instance ToInRule A.Value where 
-    toInRule (A.Object xs) = InObject $ fmap step $ hmapKeys T.unpack xs
-        where step a = toInRule a 
-    toInRule (A.Array xs) = InArray $  V.toList $ fmap toInRule xs 
-    toInRule (A.Bool a) = InBool a 
-    toInRule (A.Number (A.I a)) = InInteger a 
-    toInRule (A.Number (A.D a)) = InDouble a 
-    toInRule (A.Null) = InNull 
-    toInRule (A.String xs) = InByteString (B.pack $ T.unpack xs) 
-
-instance FromInRule A.Value where 
-    fromInRule (InObject xs) = A.Object $ fmap step $ hmapKeys T.pack xs 
-            where step = fromInRule  
-    fromInRule (InArray xs) = A.Array $ V.fromList $ fmap fromInRule xs
-    fromInRule (InBool a) = A.Bool a 
-    fromInRule (InInteger xs) = A.Number (A.I xs)
-    fromInRule (InDouble xs) = A.Number (A.D xs)
-    fromInRule (InNumber xs) = A.Number (A.D $ fromRational xs)
-    fromInRule (InNull) = A.Null
-    fromInRule (InString xs) = A.String $ T.pack xs 
-    fromInRule (InByteString xs) = A.String $ T.pack $ B.unpack xs
-
-
-startd :: Day
-startd = (fromGregorian 1970 1 1)
-
-daysecs :: Double
-daysecs = (24 * 60 * 60)
-
-days :: Day -> Double
-days x = daysecs * (fromInteger (diffDays x startd) )
-
-timywimy :: TimeOfDay -> Double
-timywimy y = daysecs * (fromRational $ timeOfDayToDayFraction y )
-
-localTimeToUnixTimeStamp :: LocalTime -> Double
-localTimeToUnixTimeStamp (LocalTime x y) = (days x) + (timywimy y)
-{--
-  
-   --}      
-    
-
-
-typedScalarMapping :: key -> val -> Object key val 
-typedScalarMapping k v = Mapping [(k, Scalar v)]
-
-typedMapping :: key -> Object key val -> Object key val 
-typedMapping k v = Mapping [(k, v)]
-
-
-
-convFromSql :: SqlValue -> InRule  
-convFromSql (SqlString s) = toInRule s
-convFromSql (SqlByteString  s) = case (S.decode <=< decode) s of 
-                                    Left _ -> InByteString s
-                                    Right a -> a
-convFromSql (SqlWord32  s) = toInRule s
-convFromSql (SqlWord64   s) = toInRule s
-convFromSql (SqlInt32  s) = toInRule s
-convFromSql (SqlInt64  s) = toInRule s
-convFromSql (SqlInteger   s) = toInRule s
-convFromSql (SqlChar  s) = toInRule s
-convFromSql (SqlBool  s) = toInRule s
-convFromSql (SqlDouble   s) = toInRule s
-convFromSql (SqlRational  s) = toInRule s
-convFromSql (SqlLocalDate  s) =  toInRule s
-convFromSql (SqlLocalTimeOfDay  s) = toInRule (s ::TimeOfDay )
-convFromSql (SqlLocalTime  s) =  toInRule ( s::LocalTime ) 
-convFromSql (SqlUTCTime  s) = toInRule s
-convFromSql SqlNull = InNull
-
-
-conv2Sql ::  InRule -> SqlValue
-conv2Sql (InNumber r) 
-    | denominator r == 1 = toSql (numerator r)
-    | otherwise          = toSql (fromRational r :: Double)
-conv2Sql (InDouble dd) =  toSql dd
-conv2Sql (InInteger dd) =  toSql  dd
-conv2Sql (InBool True) =  toSql  True
-conv2Sql (InBool False) = toSql  False
-conv2Sql InNull = SqlNull
-conv2Sql (InString s) =  toSql s
-conv2Sql (InByteString s) = toSql s
-conv2Sql r = SqlByteString (encode $ S.encode r)  
-
-
-convFromSqlA :: [SqlValue] -> InRule
-convFromSqlA xs = InArray (fmap convFromSql xs)
-
-convFromSqlAA :: [[SqlValue]] -> InRule
-convFromSqlAA xs = InArray (fmap convFromSqlA xs)
-  
-
-
-{-- --}
-convSql ::  InRule -> SqlValue
-convSql = conv2Sql
- 
-
-
-conv2SqlArray :: InRule -> [SqlValue]
-conv2SqlArray (InArray xs) = fmap conv2Sql xs 
-conv2SqlArray _ = error "conv2SqlArray: Not an array"  
-
--- optional trailing comma is allowed in SQL for hstores. (So no problem there)
-toHstoreString :: InRule -> String  
-toHstoreString (InObject xs) = Map.foldrWithKey step [] xs
-                where step k v z =  ( "\"" ++ k ++ "\"=>" ++ (show ( v) )) ++ " , "++ z 
-toHstoreString _ = error "Need an object to map to an hstore string"
- 
-
-
-
----------------Test ----------------------
-
- 
-testConv2SqlArray ::  [SqlValue]
-testConv2SqlArray = conv2SqlArray (InArray [ toInRule (timeStamp 2001 8 11 52 45 23), toInRule (timeStamp 2011 8 12 20 45 23)  ])
-
-
-
-testConv2 ::  FromInRule b => InRule -> ([String], [b])
-testConv2 (InObject xs) = unzip $ toList (InObject xs)
---                where step k v z =  (k, preConvYaml v):z
---                      stap 
-
-testConv3 (_,b) =  stap b 
-    where stap (y:m:d:h:mi:s:[]) = fromGregorian (fromInRule y) (fromInRule m) (fromInRule d)  
-
-
-p :: Object String Integer
-p = Mapping [("key1", 
-                Mapping [("key1a", Scalar 1)]
-                ), ("key2", Scalar 1)]
-
-test :: InRule 
-test = InObject (Map.fromList [("a", InInteger 1)])
-
-testConversion = do
-    let tijdTest = timeStamp 1983 03 31 01 00 00
-    print tijdTest 
 
 {-- 
  - Tests for some guarantees we want to make about the code.
@@ -369,28 +256,4 @@ prop_find_all' x xs = lhs x xs  ==  rhs x xs
 
 {-- More general instance --}
 
-instance (ToInRule k, ToInRule v) => ToInRule (Map.HashMap k v) where 
-                toInRule = toInRule . fmap (\(k,v) -> (toInRule k, toInRule v)) . Map.toList 
 
-instance (Eq k, Hashable k, FromInRule k, FromInRule v) => FromInRule (Map.HashMap k v) where 
-                fromInRule (InArray xs) = Map.fromList $ fmap (\(InArray [k,v]) -> (fromInRule k, fromInRule v)) xs
-
-instance (A.ToJSON v, A.ToJSON k) => A.ToJSON (Map.HashMap k v) where 
-            
-            toJSON xs = A.Array $ V.fromList $ fmap A.toJSON $ Map.toList xs 
-
-
-instance (Hashable k, Eq k, A.FromJSON v, A.FromJSON k) => A.FromJSON (Map.HashMap k v) where 
-            parseJSON value = case value of 
-                                    A.Array xs -> do 
-                                                     xs <- forM (fmap A.fromJSON $ V.toList xs) $ \i -> do 
-                                                                        case i of 
-                                                                            A.Success a -> return a
-                                                                            A.Error s -> fail s 
-                                                     return $ Map.fromList xs  
-
-
-
-
-instance Default (Map.HashMap k v) where 
-            def = Map.empty 
