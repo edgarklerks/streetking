@@ -1,7 +1,5 @@
-{-# LANGUAGE ViewPatterns, TypeSynonymInstances, FlexibleInstances, OverloadedStrings, RankNTypes, Arrows, TemplateHaskell #-}
-module Data.Tournament (
-        joinTournament                   
-    ) where 
+{-# LANGUAGE ViewPatterns, TypeSynonymInstances, FlexibleInstances, OverloadedStrings, RankNTypes, Arrows, TemplateHaskell , NoMonomorphismRestriction #-}
+module Data.Tournament where 
 
 import Model.TH
 import Model.TournamentPlayers as TP
@@ -29,6 +27,12 @@ import Data.Chain
 import qualified Data.HashMap.Strict as S 
 import qualified Model.Task as TK
 import Data.DataPack 
+import Debug.Trace 
+import GHC.Exts 
+import qualified Model.Account as A 
+import qualified Model.AccountProfileMin as AM 
+import qualified Model.CarInGarage as GC 
+import qualified Model.CarMinimal as CM 
 import qualified Model.Race as R 
 import qualified Model.TrackDetails as TD
 import qualified Model.TrackMaster as TT
@@ -50,6 +54,9 @@ data TournamentTask = RunTournament
 instance AS.FromJSON TournamentTask where 
         parseJSON = undefined   
 
+createTournament :: Tournament -> SqlTransaction Connection ()
+createTournament = undefined 
+
 
 joinTournament :: Integer -> Integer -> SqlTransaction Connection () 
 joinTournament n acid = do 
@@ -63,9 +70,9 @@ joinTournament n acid = do
                 addClownToTournament ac (fromJust $ trn)
 
                 return () 
-
-addClownToTournament :: Account -> Tournament -> SqlTransaction Connection ()
-addClownToTournament a t = do 
+    where 
+            addClownToTournament :: Account -> Tournament -> SqlTransaction Connection ()
+            addClownToTournament a t = do 
                         transactionMoney (fromJust $ A.id a) (def {
                                     amount = -(T.costs t),
                                     type_id = 10,
@@ -88,12 +95,25 @@ checkPrequisites a (Tournament id cid st cs mnl mxl rw tid ) = do
         when (A.level a < mnl) $ rollback "your level is not high enough"
 
 
-                           
+type Races = [R.Race]
+$(genMapableRecord "RoundResult" [
+                ("players_result", ''Races) 
+                ])
+type RoundResults = S.HashMap Int [RoundResult]
+
+type TournamentPlayers = [TournamentPlayer] 
+
+$(genMapableRecord "TournamentFullData" [
+            ("tournament",  ''Tournament),
+            ("roundresult", ''RoundResults),
+            ("tournamentPlayers", ''TournamentPlayers)
+        ])
+                          
 
 
 
 
--- divideClowns :: Tournament -> SqlTransaction Connection [(TP.TournamentPlayer, TP.TournamentPlayer)]
+divideClowns :: Tournament -> SqlTransaction Connection [[TP.TournamentPlayer]]
 divideClowns t = do 
                 xs <- search ["tournament_id" |== (toSql $ T.id t)] [] 10000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
                 return (divd xs) 
@@ -139,9 +159,20 @@ testpnotone = property test
           test [x] = True 
           test xs = minimum (fmap length $ twothree xs) > 1
 
+-- runs all the tournament rounds  
+runTournamentRounds :: TournamentFullData -> SqlTransaction Connection ()
+runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd 
+                              tid = T.id . tournament $ tfd
+                              plys = tournamentPlayers tfd
+                              carid = T.car_id . tournament $ tfd 
+                          in undefined {-- void $ forM plys $ \xs -> do
+0
+
+                                             processTournamentRace (fromJust tid) {-- xs --} undefined tr
+                            --}
+
 
 processTournamentRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)]) 
-
 processTournamentRace t ps tid = do
 
         let env = defaultEnvironment
@@ -154,7 +185,7 @@ processTournamentRace t ps tid = do
         -- current time, finishing times, race time (slowest finishing time) 
 --        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
         let fin r = (t+) $ ceiling $ raceTime r  
-        let te = (\(_,r) -> fin r) $ last rs
+        let te = fin . snd . last $ rs
 
         -- save race data
         rid <- save $ (def :: R.Race) {
@@ -205,19 +236,6 @@ instance Execute One where
                         | otherwise = executeTask (plus f) d 
 
 
-type Races = [R.Race]
-$(genMapableRecord "RoundResult" [
-                ("players_result", ''Races) 
-                ])
-type RoundResults = S.HashMap Int [RoundResult]
-
-type TournamentPlayers = [TournamentPlayer] 
-
-$(genMapableRecord "TournamentFullData" [
-            ("tournament",  ''Tournament),
-            ("roundresult", ''RoundResults),
-            ("tournamentPlayers", ''TournamentPlayers)
-        ])
 {--
 data TournamentFullData = TFD {
         tournament :: Tournament,
@@ -282,3 +300,90 @@ test = proc x -> do
 
 runCartesianMap :: CartesianMap a b -> a -> [b]
 runCartesianMap (CM xs) f = fmap ( $ f ) xs
+
+
+newtype ListArrow a b = LA {
+        unLA :: [a] -> [b]                  
+    }
+
+instance Functor (ListArrow a) where 
+        fmap f = LA . (fmap f.) . unLA 
+
+instance Category ListArrow where 
+        id = LA C.id 
+        (.) (LA f) (LA g) = LA $ \(~xs) -> f' (g' xs)
+                where g' (~xs) = g xs 
+                      f' (~xs) = f xs 
+
+instance Arrow ListArrow where 
+        arr f = LA $ \(~xs) -> lazy $ lfmap (\x -> lazy $ f (lazy x)) xs  
+        first (LA f) = LA $ \(~xs) -> lazy $ (lazy $ f $ fst `lfmap` xs) `lzip` (lazy $ snd `lfmap` xs)  
+        second (LA f) = LA $ \(~xs) -> (fst `lfmap` xs) `lzip` (lazy $ f $ lazy $  snd `lfmap` xs)
+
+
+lzip :: [a] -> [b] -> [(a,b)]
+lzip [] xs = [] 
+lzip ys [] = [] 
+lzip ~(~x:xs) ~(~y:ys) = lazy (lazy x, lazy y) : lazy (lzip xs ys)
+        
+lfmap f [] = [] 
+lfmap f ~(~x:xs) = lazy (f (lazy x)) : lfmap f xs 
+instance ArrowChoice ListArrow where 
+        left (LA f) = LA (lefts f)
+        right (LA f) = LA (rights f)
+
+instance ArrowZero ListArrow where 
+        zeroArrow = LA $ \_ -> []
+
+instance ArrowPlus ListArrow where 
+        (<+>) (LA f) (LA g) = LA $ \(~xs) -> f' xs ++ g' xs 
+                where f' (~xs) = f xs 
+                      g' (~xs) = g xs 
+
+instance ArrowLoop ListArrow where 
+        loop (LA f) = LA $ \xs -> let (unzip -> ~(~as,~b)) = trace "loop" $ f (xs `zip` b)
+                                  in as 
+
+
+rights :: ([a] -> [b]) -> [(Either d a)] -> [(Either d b)] 
+rights f xs = let ~(~a, ~d) = splitLR xs ([],[]) 
+             in  (Left `lfmap` a) ++ ( Right `lfmap` f d)
+    where   splitLR :: [(Either a d)] -> ([a],[d]) -> ([a],[d])
+            splitLR [] z = z 
+            splitLR ~(~x:xs) ~(~ls,~rs) = case lazy x of
+                                            Left a -> splitLR xs (a:ls,rs)
+                                            Right a -> splitLR xs (ls, a:rs)
+
+
+lefts :: ([a] -> [b]) -> [(Either a d)] -> [(Either b d)] 
+lefts f xs = let ~(~a,~d) = splitLR xs ([],[]) 
+             in  (Left `lfmap` f a) ++ ( Right `lfmap` d)
+    where splitLR :: [(Either a d)] -> ([a],[d]) -> ([a],[d])
+          splitLR [] z = z
+          splitLR ~(~x:xs) ~(~ls,~rs) = case x of
+                                            Left a -> splitLR xs (a:ls, rs)
+                                            Right a -> splitLR xs  (ls, a:rs)
+
+runListArrow :: ListArrow a b -> [a] -> [b] 
+runListArrow (LA f) ~(~xs)= f xs 
+
+
+test2 :: ListArrow Double Double 
+test2 = proc x -> do 
+            y <- arr (*2) -< x
+            z <- arr (*2.1) -< y
+            if z > 10 then returnA -< 0
+                      else returnA -< z
+
+testn :: ListArrow Int Int 
+testn = proc x -> do 
+            if x < 1 then returnA -< 1  
+                     else do 
+                        t1 <- arr pred -< x 
+                        t2 <- arr (pred.pred) -< x 
+                        y1 <- testn -< {-# CORE "second" #-} traceShow t1 $ t1
+                        y2 <- testn -< traceShow t2 $ t2
+                        returnA -< traceShow (y1 + y2) $ y1 + y2 
+
+
+main = print (runListArrow testn [1..10])

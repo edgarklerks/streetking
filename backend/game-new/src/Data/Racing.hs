@@ -13,7 +13,8 @@ import Model.TH
 import Model.General
 import Data.InRules
 import Data.Conversion
-import Database.HDBC
+import Database.HDBC hiding (rollback)
+import Database.HDBC.PostgreSQL 
 import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.Aeson as AS
@@ -26,6 +27,7 @@ import Control.Monad
 import Control.Applicative
 import Data.InRules
 import Data.Monoid 
+import Data.SqlTransaction
 
 import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
@@ -77,6 +79,9 @@ $(genMapableRecord "RaceResult"
             ("sectionResults", ''SectionResults)
         ])
 
+instance Ord RaceResult where 
+        compare (raceTime -> x) (raceTime -> y) = compare x y 
+
 type MInteger = Maybe Integer
 
 $(genMapableRecord "RaceParticipant"
@@ -87,12 +92,21 @@ $(genMapableRecord "RaceParticipant"
             ("rp_car_min", ''CMI.CarMinimal),
             ("rp_escrow_id", ''MInteger)
        ])
-
 rp_account_id :: RaceParticipant -> Integer
 rp_account_id = fromJust . A.id . rp_account
 
 rp_car_id :: RaceParticipant -> Integer
 rp_car_id = fromJust . CIG.id . rp_car
+
+-- | mkRaceParticipant accepts an car_instance_id account_id and a optional (Maybe Integer) and returns an RaceParticipant 
+mkRaceParticipant :: Integer -> Integer -> Maybe Integer ->  SqlTransaction Connection RaceParticipant  
+mkRaceParticipant cins_id account_id escrowid = do 
+                                    cig <- aload (cins_id) (rollback "cannot find car") :: SqlTransaction Connection CIG.CarInGarage
+                                    cmin <- aload (cins_id) (rollback "cannot find car") :: SqlTransaction Connection CMI.CarMinimal 
+                                    ac <- aload account_id (rollback "cannot find account") :: SqlTransaction Connection A.Account
+                                    acmin <- aload (account_id) (rollback "cannot find account") :: SqlTransaction Connection APM.AccountProfileMin 
+                                    return $ RaceParticipant ac acmin cig cmin escrowid 
+
 
 type PartsDetails = [PD.PartDetails]
 
