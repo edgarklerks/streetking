@@ -34,7 +34,6 @@ instance FromInRule Rational where
     fromInRule (InDouble i) =  toRational i
     fromInRule x = viaReadable x 
 
-
 instance (ToInRule a) => ToInRule (Map.HashMap String a) where
     toInRule = InObject .  Map.map toInRule
 instance (FromInRule a) => FromInRule (Map.HashMap String a) where
@@ -50,7 +49,6 @@ instance (ToInRule t1, ToInRule t2) => ToInRule (t1, t2) where
     toInRule (x1, x2) = InArray [toInRule x1, toInRule x2]
 instance (FromInRule t1, FromInRule t2) => FromInRule (t1, t2) where
     fromInRule (InArray [x, y]) = (fromInRule x, fromInRule y)
-
 
 instance (ToInRule t1, ToInRule t2, ToInRule t3) => ToInRule (t1, t2, t3) where
     toInRule (x1, x2, x3) = InArray [toInRule x1, toInRule x2, toInRule x3]
