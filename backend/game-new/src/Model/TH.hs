@@ -24,13 +24,14 @@ checkTables tbl ps@(fmap fst -> xs) = do
                 ns <- runIO $ (fmap.fmap) fst $ describeTable c tbl 
                 runIO $ putStrLn $ "Checking " ++ (show tbl) ++ "..."
                 when (not $ null (xs \\ ns)) $ error $ tbl ++ " is not correctly defined, clashing fields: " ++ (show $ xs \\ ns) 
+                {--
                 forM ps $ \(f,nm) -> do 
                             p <- isMaybe nm 
                             tl <- runIO (runSqlTransaction (isNullable tbl f) error c)
                             when tl $ do 
-                                when (not p) $ error (tbl ++ "." ++ f ++ " is not a maybe type, where it should be")
+                                when (not p) $ runIO $ putStrLn (tbl ++ "." ++ f ++ " is not a maybe type, where it should be")
 
-
+                --}
                 runIO $ disconnect c
                 return ()
 
