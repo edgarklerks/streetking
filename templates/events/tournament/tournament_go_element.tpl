@@ -1,0 +1,1 @@
+<div>tournament_go_element</div>
