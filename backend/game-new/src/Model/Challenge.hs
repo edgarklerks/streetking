@@ -16,7 +16,7 @@ import           Model.TH
 import           Prelude hiding (id)
 
 import qualified Data.Aeson as AS
-import           Data.InRules
+import           Data.Conversion
 
 import           Data.Maybe
 import qualified Model.Account as A

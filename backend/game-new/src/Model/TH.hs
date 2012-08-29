@@ -15,16 +15,33 @@ import qualified Data.Aeson as AS
 import Data.InRules
 import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString as B
+import Model.Ansi 
+import Data.SqlTransaction
 
-checkTables :: String -> [(String,a)] -> Q ()
-checkTables tbl (fmap fst -> xs) = runIO $ do 
-                c <- dbconn 
-                ns <- (fmap.fmap) fst $ describeTable c tbl 
-                putStrLn $ "Checking " ++ (show tbl) ++ "..."
+checkTables :: String -> [(String,Name)] -> Q ()
+checkTables tbl ps@(fmap fst -> xs) = do 
+                c <- runIO $ dbconn 
+                ns <- runIO $ (fmap.fmap) fst $ describeTable c tbl 
+                runIO $ putStrLn $ "Checking " ++ (show tbl) ++ "..."
                 when (not $ null (xs \\ ns)) $ error $ tbl ++ " is not correctly defined, clashing fields: " ++ (show $ xs \\ ns) 
-                disconnect c
+                {--
+                forM ps $ \(f,nm) -> do 
+                            p <- isMaybe nm 
+                            tl <- runIO (runSqlTransaction (isNullable tbl f) error c)
+                            when tl $ do 
+                                when (not p) $ runIO $ putStrLn (tbl ++ "." ++ f ++ " is not a maybe type, where it should be")
+
+                --}
+                runIO $ disconnect c
                 return ()
 
+isMaybe :: Name -> Q Bool 
+isMaybe nm = do
+                s <- reify nm
+                let nr = ''Maybe 
+                case s of 
+                    TyConI (TySynD nm [] (AppT (ConT c) _)) -> return (nameBase nr == nameBase c) 
+                    _ -> return False 
 {-- 
  -
  - And God saideth, let there be light. And I turneth the switch. 
