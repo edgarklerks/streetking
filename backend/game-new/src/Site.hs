@@ -1738,6 +1738,7 @@ viewTournament :: Application ()
 viewTournament = do
         uid <- getUserId 
         a <- runDb $ fromJust <$> (load uid :: SqlTransaction Connection (Maybe A.Account))
+        liftIO (print a)
         (((l, o), xs),od) <- getPagesWithDTDOrdered ["minlevel","maxlevel", "track_id", "costs", "car_id", "name", "id","players"] (
             "id" +== "id" +&& 
             "minlevel" +<=| (toSql $ A.level a) +&& 
@@ -1750,14 +1751,15 @@ viewTournament = do
             "players" +<= "maxplayers" 
 
             )
-        xs <- runDb $ search xs od l o :: Application [TR.Tournament]
-        writeMapables xs  
+        liftIO (print xs) 
+        ys <- runDb $ search xs od l o :: Application [TR.Tournament]
+        writeMapables ys  
 
 tournamentJoin :: Application ()
 tournamentJoin = do 
+    uid <- getUserId
     xs <- getJson >>= scheck ["car_instance_id", "tournament_id"] 
     let b = updateHashMap xs (def :: TP.TournamentPlayer) 
-    uid <- getUserId
     runDb $ joinTournament (fromJust $ TP.car_instance_id b) (fromJust $ TP.tournament_id b) uid 
     return ()
 
