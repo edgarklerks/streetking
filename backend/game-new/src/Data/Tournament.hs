@@ -87,7 +87,7 @@ joinTournament cinst n acid = do
             
                 when (isNothing trn) $ rollback "no such tournament"
                 
-                lock "tournament_players" Share $ do  
+                lock "tournament_players" RowShare $ do  
 
                     checkPrequisites ac (fromJust $ trn) cinst 
                     addClownToTournament ac (fromJust $ trn) cinst 
