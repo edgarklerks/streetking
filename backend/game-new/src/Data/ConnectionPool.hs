@@ -65,7 +65,9 @@ fillConnectionBucket (ConnectionPool (x,a)) i = do
                     x <- readArray a i
                     case x of 
                         (Empty c _) -> writeArray a i (Filled c)
-                        (Filled c) -> error "Filled connection bucket"
+                        (Filled c) -> writeArray a i (Filled c)
+
+--                        error "Filled connection bucket"
 
 reviveConnection :: ConnectionPool -> ConnectionContext -> IO ConnectionContext
 reviveConnection p t@(ConnectionContext (i, c)) = catchSql (commit c >> return t) $ \e -> do 

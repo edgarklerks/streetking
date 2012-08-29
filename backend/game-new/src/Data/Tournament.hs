@@ -3,9 +3,11 @@ module Data.Tournament (
         createTournament,
         joinTournament,
         Tournament,
-        runTournament
+        runTournament,
+        initTournament
     ) where 
 
+import Control.Monad.Trans 
 import Model.TH
 import Model.TournamentPlayers as TP
 import Model.Tournament as T
@@ -184,30 +186,32 @@ testpnotone = property test
           test [] = True 
           test [x] = True 
           test xs = minimum (fmap length $ twothree xs) > 1
-
 -- runs all the tournament rounds  
-runTournamentRounds :: TournamentFullData -> SqlTransaction Connection [(Integer, [(RaceParticipant, RaceResult)])]  
+runTournamentRounds :: TournamentFullData -> SqlTransaction Connection [[(Integer, [(RaceParticipant, RaceResult)])]]  
 runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd 
                               tid = T.id . tournament $ tfd
                               plys = tournamentPlayers tfd
-                              rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid)) = mkRaceParticipant cid aid Nothing 
+                              rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid)) =  mkRaceParticipant cid aid Nothing 
                               step xs = do 
                                 races <- forM xs $ \xs -> do
                                              processTournamentRace (fromJust tid) xs tr
                                 let ps = sortRounds races 
                                 if (one ps) 
-                                        then return races 
+                                        then return [races]
                                         else do rest <- step (twothree ps) 
-                                                return $ races ++ rest 
+                                                liftIO (print rest)
+                                                return $ races : rest 
                          in do 
-                               ys <- mapM rp plys
-                               step (twothree ys)
+                               flip catchSqlError error $ do 
+                                   ys <- mapM rp plys
+                                   step (twothree ys)
 
 
 
 one :: [a] -> Bool 
 one [x] = True 
 one _ = False 
+
 sortRounds :: [(Integer,[(RaceParticipant, RaceResult)])]  -> [RaceParticipant]
 sortRounds [] = [] 
 sortRounds ((rid,ys):xs) = (fst . head) (sortBy (\x y -> compare (snd x) (snd y)) ys) : sortRounds xs 
@@ -277,24 +281,33 @@ tournamentTrigger i = do
                 
 
 runTournament :: TK.Task -> SqlTransaction Connection Bool
-runTournament tk = return True <* (forkSqlTransaction $ do
+runTournament tk = return False <* (do
                 let id = "id" .<< (TK.data tk) ::  Integer
+                liftIO (print id)
                 tf <- loadTournamentFull id  
+                liftIO (print tf) 
                 xs <- runTournamentRounds tf  
+                liftIO (print xs)
                 saveResultTree id xs)
 
-saveResultTree :: Integer -> [(Integer, [(RaceParticipant, RaceResult)])] -> SqlTransaction Connection ()
-saveResultTree tid xs = forM_ xs $ \(i, [x,y]) -> do 
-                            save (def {
+saveResultTree :: Integer -> [[(Integer, [(RaceParticipant, RaceResult)])]] -> SqlTransaction Connection ()
+saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> 
+                            forM_ xs $ \(i, [x,y]) -> do 
+                                save (def {
                                     TR.tournament_id = Just tid,
                                     TR.race_id = Just i,
                                     TR.participant1_id = A.id $ rp_account $ fst x,
-                                    TR.participant2_id = A.id $ rp_account $ fst y
-                                        } :: TR.TournamentResult) 
+                                    TR.participant2_id = A.id $ rp_account $ fst y,
+                                    TR.round = r
+                                        } :: TR.TournamentResult)
 
-instance Execute One where 
-        executeTask f d | "action" .< (TK.data d) == Just RunTournament  = runTournament d *> return True  
-                        | otherwise = executeTask (plus f) d 
+initTournament = registerTask pred executeTask 
+          where pred t | "action" .< (TK.data t) == Just RunTournament = True
+                       | otherwise = False 
+    
+executeTask d | "action" .< (TK.data d) == Just RunTournament  = runTournament d *> liftIO (print "runtournament") *> return True  
+
+
 
 
 {--

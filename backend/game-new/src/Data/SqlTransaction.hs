@@ -53,7 +53,8 @@ module Data.SqlTransaction (
     fillFuture,
     lock,
     Lock(..),
-    runTestDb
+    runTestDb,
+    catchSqlError
 
 ) where 
 

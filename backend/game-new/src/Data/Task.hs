@@ -242,9 +242,12 @@ wait t tp sid = w 0 $ Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
             when b $ do
                 liftIO $ threadDelay $ 1000 * 50
                 w (n+1) test
+initTask = registerTask pred executeTask 
+        where pred d = case "action" .< (TK.data d) of 
+                            Just (x :: Action) -> True 
+                            _ -> False 
 
-instance Execute Zero where 
-    executeTask f t = let d = TK.data t in 
+executeTask t = let d = TK.data t in 
             case "action" .< d :: Maybe Action of
                 Just TrackTime -> do
                         save $ (def :: TTM.TrackTime) {
@@ -333,11 +336,10 @@ instance Execute Zero where
                         return True
 
                 Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
-                Nothing -> executeTask (plus f) t 
 
 
 process :: TK.Task -> SqlTransaction Connection Bool 
-process = executeTask (undefined :: Zero) 
+process = runTask -- executeTask (undefined :: Zero) 
 {-
  - Error handling
  -
@@ -350,7 +352,7 @@ processFail s e = return True
 
 -- fail during task run
 runFail :: Trigger -> Integer -> String -> SqlTransaction Connection ()
-runFail tp sid e = return ()
+runFail tp sid e =  return ()
 
 
 
