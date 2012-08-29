@@ -47,6 +47,7 @@ Executable game-new
     primitive,
     mwc-random,
     HDBC,
+    ghc-prim,
     HDBC-postgresql,
     convertible,
     hashable,
