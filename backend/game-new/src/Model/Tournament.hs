@@ -18,7 +18,7 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
-
+type MRaceReward = Maybe RaceRewards 
 $(genAll "Tournament" "tournament" [
     ("id", ''Id),
     ("car_id", ''Id),
@@ -26,7 +26,7 @@ $(genAll "Tournament" "tournament" [
     ("costs", ''Integer),
     ("minlevel", ''Integer),
     ("maxlevel", ''Integer),
-    ("rewards", ''RaceRewards),
+    ("rewards", ''MRaceReward),
     ("track_id", ''Integer),
     ("players", ''Integer),
     ("name", ''String)
