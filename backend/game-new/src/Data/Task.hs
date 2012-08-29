@@ -74,6 +74,7 @@ data Trigger =
     | User
     | Car
     | Part 
+    | Cron 
         deriving (Eq, Enum)
 
 
@@ -82,7 +83,7 @@ data Trigger =
  -}
 
 -- make a new task with time and data
-task :: Action -> Integer -> Data -> SqlTransaction Connection Integer 
+task :: (AS.ToJSON a) => a -> Integer -> Data -> SqlTransaction Connection Integer 
 task a t d = save $ (def :: TK.Task) { TK.time = t, TK.data = ("action", a) .> d, TK.deleted = False }
 
 -- make a new task trigger with subject type, subject ID and task ID

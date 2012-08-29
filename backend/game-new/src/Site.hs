@@ -82,6 +82,8 @@ import qualified Model.Report as RP
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
 import qualified Model.RaceReward as RWD
+import qualified Model.TournamentPlayers as TP 
+import qualified Model.Tournament as TR 
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -133,7 +135,6 @@ import           Data.Tiger
 import           Control.Arrow 
 import           Snap.Snaplet
 import           Data.Tournament 
-import           Model.Tournament 
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -1715,6 +1716,7 @@ userCurrentRace = do
                             return (r, td, ts) 
         writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
+
 searchRaceReward :: Application ()
 searchRaceReward = do
         t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
@@ -1731,6 +1733,33 @@ serverTime :: Application ()
 serverTime = do
         t <- liftIO (floor <$> (*1000) <$> getPOSIXTime :: IO Integer)
         writeResult t
+
+viewTournament :: Application ()
+viewTournament = do
+        uid <- getUserId 
+        a <- runDb $ fromJust <$> (load uid :: SqlTransaction Connection (Maybe A.Account))
+        (((l, o), xs),od) <- getPagesWithDTDOrdered ["minlevel","maxlevel", "track_id", "costs", "car_id", "name", "id","players"] (
+            "id" +== "id" +&& 
+            "minlevel" +<=| (toSql $ A.level a) +&& 
+            "maxlevel" +>=| (toSql $ A.level a) +&& 
+            "minlevel" +>= "minlevel" +&& 
+            "maxlevel" +>= "maxlevel" +&& 
+            "name" +%% "name" +&& 
+            "track_id" +== "track_id" +&& 
+            "players" +>= "minplayers" +&& 
+            "players" +<= "maxplayers" 
+
+            )
+        xs <- runDb $ search xs od l o :: Application [TR.Tournament]
+        writeMapables xs  
+
+tournamentJoin :: Application ()
+tournamentJoin = do 
+    xs <- getJson >>= scheck ["car_instance_id", "tournament_id"] 
+    let b = updateHashMap xs (def :: TP.TournamentPlayer) 
+    uid <- getUserId
+    runDb $ joinTournament (fromJust $ TP.car_instance_id b) (fromJust $ TP.tournament_id b) uid 
+    return ()
 
 {-- till here --}
 wrapErrors x = CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
@@ -1807,7 +1836,9 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/reward", searchRaceReward),
                 ("/Race/reports", searchReports RP.Race),
                 ("/Race/get", getRace),
-                ("/Time/get", serverTime)
+                ("/Time/get", serverTime),
+                ("/Tournament/get", viewTournament),
+                ("/Tournament/join", tournamentJoin)
           ]
 
 

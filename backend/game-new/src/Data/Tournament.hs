@@ -1,5 +1,10 @@
-{-# LANGUAGE ViewPatterns, TypeSynonymInstances, FlexibleInstances, OverloadedStrings, RankNTypes, Arrows, TemplateHaskell , NoMonomorphismRestriction #-}
-module Data.Tournament where 
+{-# LANGUAGE ViewPatterns, TypeSynonymInstances, FlexibleInstances, OverloadedStrings, RankNTypes, Arrows, TemplateHaskell , NoMonomorphismRestriction, DeriveGeneric, OverloadedStrings  #-}
+module Data.Tournament (
+        createTournament,
+        joinTournament,
+        Tournament,
+        runTournament
+    ) where 
 
 import Model.TH
 import Model.TournamentPlayers as TP
@@ -9,7 +14,9 @@ import Control.Arrow
 import Control.Category as C 
 import Data.Convertible 
 import Data.InRules 
+import Data.List 
 import qualified Data.Aeson as AS
+import qualified Data.Aeson.Parser as ASP 
 import Data.SqlTransaction
 import Model.Account as A 
 import Model.Transaction as TR  
@@ -46,33 +53,50 @@ import           Model.General
 import           Prelude hiding ((.),id)
 import           Data.Conversion 
 import           Data.Convertible 
+import qualified Model.TournamentResult as TR
+import           GHC.Generics 
+import           Data.Text (Text) 
 
 data TournamentTask = RunTournament
-            deriving (Eq, Show)
+            deriving (Eq, Show, Generic, Read)
 
+instance AS.ToJSON TournamentTask where 
+    toJSON a = AS.toJSON $ S.fromList [("RunTournament" :: Text, True)]
 
 instance AS.FromJSON TournamentTask where 
-        parseJSON = undefined   
+    parseJSON (AS.Object xs) = case S.lookup  "RunTournament" xs of 
+                                            Nothing -> mzero 
+                                            Just a -> return RunTournament
+    parseJSON _ = mzero 
 
-createTournament :: Tournament -> SqlTransaction Connection ()
-createTournament = undefined 
+-- number of players return total slots
+numberOfPlayers :: Integer -> SqlTransaction Connection (Integer, Integer)
+numberOfPlayers sid = do 
+                trn <- aload sid (rollback "can't find tournament") :: SqlTransaction Connection Tournament 
+                let total_sloth = T.players trn :: Integer 
+                xs <- search ["tournament_id" |== toSql sid] [] 10000 0 :: SqlTransaction Connection [TournamentPlayer]
+
+                return (fromIntegral $ length xs, total_sloth)
 
 
-joinTournament :: Integer -> Integer -> SqlTransaction Connection () 
-joinTournament n acid = do 
+joinTournament :: Integer -> Integer -> Integer -> SqlTransaction Connection () 
+joinTournament cinst n acid = do 
                 trn <- load n :: SqlTransaction Connection (Maybe Tournament)
                 ac <- fromJust <$> load acid
                 
             
                 when (isNothing trn) $ rollback "no such tournament"
                 
-                checkPrequisites ac (fromJust $ trn)
-                addClownToTournament ac (fromJust $ trn)
+                lock "tournament_players" Share $ do  
+
+                    checkPrequisites ac (fromJust $ trn) cinst 
+                    addClownToTournament ac (fromJust $ trn) cinst 
+
 
                 return () 
     where 
-            addClownToTournament :: Account -> Tournament -> SqlTransaction Connection ()
-            addClownToTournament a t = do 
+            addClownToTournament :: Account -> Tournament -> Integer -> SqlTransaction Connection ()
+            addClownToTournament a t cinst = do 
                         transactionMoney (fromJust $ A.id a) (def {
                                     amount = -(T.costs t),
                                     type_id = 10,
@@ -80,15 +104,18 @@ joinTournament n acid = do
                                 })
                               
                         save (def {
+                            TP.car_instance_id = Just cinst,
                             TP.account_id = A.id a, 
                             TP.tournament_id = T.id t 
                                     } :: TP.TournamentPlayer )
                         return ()
 -- | check car, enough money, time prequisites
-checkPrequisites :: Account -> Tournament -> SqlTransaction Connection () 
-checkPrequisites a (Tournament id cid st cs mnl mxl rw tid ) = do 
+checkPrequisites :: Account -> Tournament -> Integer -> SqlTransaction Connection () 
+checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm ) cinst = do 
+        (n,t) <- numberOfPlayers (fromJust id)
+        when (n >= t) $ rollback "cannot join tournament anymore"
         when (isJust cid) $ do 
-                    xs <- search ["car_id" |== (toSql $ cid) .&& "account_id" |== (toSql $ A.id a)] [] 1 0 :: SqlTransaction Connection [CarInGarage]
+                    xs <- search ["car_id" |== (toSql $ cid) .&& "id" |== (toSql cinst) .&& "account_id" |== (toSql $ A.id a)] [] 1 0 :: SqlTransaction Connection [CarInGarage]
                     when (null xs) $ rollback "doesn't own correct car"
         when ( A.money a < cs ) $ rollback "you do not have enough money" 
         when (A.level a > mxl) $ rollback "your level is too high"
@@ -105,7 +132,6 @@ type TournamentPlayers = [TournamentPlayer]
 
 $(genMapableRecord "TournamentFullData" [
             ("tournament",  ''Tournament),
-            ("roundresult", ''RoundResults),
             ("tournamentPlayers", ''TournamentPlayers)
         ])
                           
@@ -160,17 +186,31 @@ testpnotone = property test
           test xs = minimum (fmap length $ twothree xs) > 1
 
 -- runs all the tournament rounds  
-runTournamentRounds :: TournamentFullData -> SqlTransaction Connection ()
+runTournamentRounds :: TournamentFullData -> SqlTransaction Connection [(Integer, [(RaceParticipant, RaceResult)])]  
 runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd 
                               tid = T.id . tournament $ tfd
                               plys = tournamentPlayers tfd
-                              carid = T.car_id . tournament $ tfd 
-                          in undefined {-- void $ forM plys $ \xs -> do
-0
+                              rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid)) = mkRaceParticipant cid aid Nothing 
+                              step xs = do 
+                                races <- forM xs $ \xs -> do
+                                             processTournamentRace (fromJust tid) xs tr
+                                let ps = sortRounds races 
+                                if (one ps) 
+                                        then return races 
+                                        else do rest <- step (twothree ps) 
+                                                return $ races ++ rest 
+                         in do 
+                               ys <- mapM rp plys
+                               step (twothree ys)
 
-                                             processTournamentRace (fromJust tid) {-- xs --} undefined tr
-                            --}
 
+
+one :: [a] -> Bool 
+one [x] = True 
+one _ = False 
+sortRounds :: [(Integer,[(RaceParticipant, RaceResult)])]  -> [RaceParticipant]
+sortRounds [] = [] 
+sortRounds ((rid,ys):xs) = (fst . head) (sortBy (\x y -> compare (snd x) (snd y)) ys) : sortRounds xs 
 
 processTournamentRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)]) 
 processTournamentRace t ps tid = do
@@ -228,8 +268,29 @@ processTournamentRace t ps tid = do
         return (rid, rs)
 
 
-runTournament :: TK.Task -> SqlTransaction Connection ()
-runTournament tk = undefined  
+tournamentTrigger :: Integer -> SqlTransaction Connection () 
+tournamentTrigger i = do 
+                x <- loadTournament i
+                tid <- Task.task RunTournament (fromJust $ T.start_time x) $ mkData $ do 
+                        set "id" $ (T.id x)
+                void $ Task.trigger Task.Cron 0 tid  
+                
+
+runTournament :: TK.Task -> SqlTransaction Connection Bool
+runTournament tk = return True <* (forkSqlTransaction $ do
+                let id = "id" .<< (TK.data tk) ::  Integer
+                tf <- loadTournamentFull id  
+                xs <- runTournamentRounds tf  
+                saveResultTree id xs)
+
+saveResultTree :: Integer -> [(Integer, [(RaceParticipant, RaceResult)])] -> SqlTransaction Connection ()
+saveResultTree tid xs = forM_ xs $ \(i, [x,y]) -> do 
+                            save (def {
+                                    TR.tournament_id = Just tid,
+                                    TR.race_id = Just i,
+                                    TR.participant1_id = A.id $ rp_account $ fst x,
+                                    TR.participant2_id = A.id $ rp_account $ fst y
+                                        } :: TR.TournamentResult) 
 
 instance Execute One where 
         executeTask f d | "action" .< (TK.data d) == Just RunTournament  = runTournament d *> return True  
@@ -244,16 +305,14 @@ data TournamentFullData = TFD {
         }
 --}
 loadTournamentFull :: Integer -> SqlTransaction Connection TournamentFullData
-loadTournamentFull n = TournamentFullData <$> loadTournament n <*> loadResults n <*> loadPlayers n 
+loadTournamentFull n = TournamentFullData <$> loadTournament n <*> loadPlayers n 
 
 loadTournament :: Integer -> SqlTransaction Connection Tournament 
 loadTournament = load >=> \x -> when (isNothing x) (rollback "no such tournament") >> return (fromJust x)
 
-loadResults :: Integer -> SqlTransaction Connection (S.HashMap Int [RoundResult])
-loadResults n = undefined  
 
 loadPlayers :: Integer -> SqlTransaction Connection [TournamentPlayer] 
-loadPlayers = undefined 
+loadPlayers i = search ["tournament_id" |== (toSql i)] [] 1000000 0 
 
 newtype CartesianMap a b = CM {
         runCM :: [a -> b] 
@@ -387,3 +446,10 @@ testn = proc x -> do
 
 
 main = print (runListArrow testn [1..10])
+
+createTournament :: Tournament -> SqlTransaction Connection ()
+createTournament tr = do 
+                tid <- save tr  
+                void $ tournamentTrigger tid 
+
+
