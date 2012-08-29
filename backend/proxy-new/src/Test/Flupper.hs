@@ -10,9 +10,21 @@ import Control.Concurrent
 
 
 testServer = TS "r2.graffity.me" 9003
+bareServer = TS "127.0.0.1" 9123 
 
 main = do xs <- runTests test testServer 
           print xs 
+
+bareTests = do xs <- runTests testt bareServer 
+               print xs
+
+testt = setMethod "POST" *>
+       setName "tournament get test" *>
+       setQuery [("userid", "34")] *>
+       setResource "Tournament" *>
+       setAction "get" *>
+       setArguments [] *>
+       initRequest (\r -> liftIO (print r) *> setSucceed True )
 
 
 application_token = setMethod "POST" *>
