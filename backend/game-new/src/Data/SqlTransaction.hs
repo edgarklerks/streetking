@@ -52,7 +52,8 @@ module Data.SqlTransaction (
     parSafe,
     fillFuture,
     lock,
-    Lock(..)
+    Lock(..),
+    runTestDb
 
 ) where 
 
