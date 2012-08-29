@@ -1,5 +1,8 @@
 {-# LANGUAGE MultiParamTypeClasses, TypeFamilies, RankNTypes, NoMonomorphismRestriction, GADTs, DeriveDataTypeable, OverloadedStrings, TemplateHaskell, TypeSynonymInstances, FlexibleInstances, OverlappingInstances, UndecidableInstances, TypeOperators  #-}
-module Data.Chain where 
+module Data.Chain (
+        registerTask,
+        runTask 
+    ) where 
 
 import Data.Typeable 
 import Data.DataPack
@@ -9,13 +12,33 @@ import qualified Data.Aeson as AS
 import qualified Model.Task as TK
 import Data.SqlTransaction
 import Database.HDBC.PostgreSQL
+import System.IO.Unsafe 
+import Data.IORef 
+import qualified Data.HashMap.Strict as S 
+import Control.Monad.Trans 
+import Debug.Trace 
 
+{-# NOINLINE lolwut #-}
+lolwut :: IORef [(TK.Task -> Bool, TK.Task -> SqlTransaction Connection Bool)]
+lolwut = unsafePerformIO $ newIORef []  
+
+
+registerTask :: (TK.Task -> Bool) -> (TK.Task -> SqlTransaction Connection Bool) -> IO ()
+registerTask f x = atomicModifyIORef lolwut (\xs -> ((f,x) : xs, ()))
+
+runTask :: TK.Task -> SqlTransaction Connection Bool 
+runTask t = do 
+             fs <- liftIO $ readIORef lolwut 
+             let stepM [] = error "last shit not found"
+                 stepM ((pred,f):fs) | pred t = traceShow t $ f t
+                                     | otherwise = stepM fs 
+             stepM fs 
+{--
 class Execute f  where 
     executeTask :: f -> TK.Task -> SqlTransaction Connection Bool 
 
-instance Execute (Succ a) where 
+instance Execute Zero where 
     executeTask f d = rollback "no task handler"
-
 data Zero
 
 data Succ  a  
@@ -112,4 +135,4 @@ minus :: Succ a -> a
 minus = undefined 
 
 
-
+--}

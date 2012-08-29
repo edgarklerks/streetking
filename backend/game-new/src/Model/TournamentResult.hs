@@ -17,7 +17,7 @@ import qualified Data.HashMap.Strict as HM
 import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
-import           Prelude hiding (id)
+import           Prelude hiding (id, round)
 
 $(genAll "TournamentResult" "tournament_result" 
     [
@@ -25,5 +25,6 @@ $(genAll "TournamentResult" "tournament_result"
         ("tournament_id", ''Id),
         ("race_id", ''Id),
         ("participant1_id", ''Id),
-        ("participant2_id", ''Id)
+        ("participant2_id", ''Id),
+        ("round", ''Integer)
     ])

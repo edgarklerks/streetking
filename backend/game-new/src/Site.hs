@@ -1843,6 +1843,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/Tournament/join", tournamentJoin)
           ]
 
+initAll = Task.initTask *> initTournament 
 
 ------------------------------------------------------------------------------
 -- | The application initializer.
@@ -1853,5 +1854,6 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     rnd <- nestSnaplet "random" rnd $ initRandomSnaplet l32 
     addRoutes routes
     dst <- nestSnaplet "nde" nde $ initDHTConfig "resources/server.ini"
+    liftIO $ initAll 
     return $ App db c rnd dst
 
