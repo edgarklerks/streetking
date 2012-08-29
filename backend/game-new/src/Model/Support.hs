@@ -12,7 +12,7 @@ import qualified Data.Map as M
 import Model.TH 
 import Prelude hiding (id)
 import qualified Data.Aeson as AS 
-import Data.InRules 
+import Data.Conversion 
 
 
 $(genAll "Support" "support" [

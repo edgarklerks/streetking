@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns #-}
+--}
 
 ------------------------------------------------------------------------------
 -- | This module is where all the routes and handlers are defined for your
@@ -81,6 +82,8 @@ import qualified Model.Report as RP
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
 import qualified Model.RaceReward as RWD
+import qualified Model.TournamentPlayers as TP 
+import qualified Model.Tournament as TR 
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -91,7 +94,7 @@ import qualified Model.Support as SUP
 import qualified Data.HashMap.Strict as HM
 import           Control.Monad.Trans
 import           Application
-import           Model.General (Mapable(..), Default(..), Database(..))
+import           Model.General (Mapable(..), Default(..), Database(..), aload, adeny, aget, agetlist)
 import           Data.Convertible
 import           Data.Time.Clock 
 import           Data.Time.Clock.POSIX
@@ -131,6 +134,7 @@ import           NodeSnaplet
 import           Data.Tiger
 import           Control.Arrow 
 import           Snap.Snaplet
+import           Data.Tournament 
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -1330,27 +1334,23 @@ garageReports = do
             search xs [Order ("time",[]) False] l o 
         writeMapables (ns :: [GRP.GarageReport])
 
-   
 travelReports :: Application ()
 travelReports = do 
     uid <- getUserId 
     ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
     ns <- runDb (search xs [] l o) :: Application [TR.TravelReport]
     writeMapables ns 
-
-uploadCarImage :: Application ()
-uploadCarImage = do 
-    uid <- getUserId
-    xs <- getJson >>= scheck ["car_instance_id"]
-    let ns = updateHashMap xs (def :: PI.PartInstance)
-    handleFileUploads "resources/static/carimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
-        when (null xs)  $ internalError "no file uploaded"
-        case snd $ head xs of 
-            Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
-            Right e -> do 
-                    liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
-                    return ()
-  
+    
+searchReports :: RP.Type -> Application ()
+searchReports t = do
+        uid <- getUserId
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid) +&& "type" +==| (toSql t))
+        ns :: [RP.Report] <- runDb $ do
+            userActions uid
+            search xs [Order ("time",[]) False] l o 
+--        writeMapables ns -- toInRule wraps Data in ByteString so it ends up as a JSON string
+        writeResult' ns
+ 
 downloadCarImage :: Application ()
 downloadCarImage = do
     uid <- getUserId
@@ -1391,7 +1391,20 @@ carSetOptions = do
 unixtime :: IO Integer
 unixtime = floor <$> getPOSIXTime
 
-{-
+
+uploadCarImage :: Application ()
+uploadCarImage = do 
+    uid <- getUserId
+    xs <- getJson >>= scheck ["car_instance_id"]
+    let ns = updateHashMap xs (def :: PI.PartInstance)
+    handleFileUploads "resources/static/carimages" (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do 
+        when (null xs)  $ internalError "no file uploaded"
+        case snd $ head xs of 
+            Left x -> internalError (T.unpack $ policyViolationExceptionReason x)
+            Right e -> do 
+                    liftIO $ renameFile e (show (PI.car_instance_id ns)  ++ ".jpg")
+                    return ()
+ {-
  - Actions: transactions to be taken before selecting data
  -}
 
@@ -1455,37 +1468,6 @@ testWrite = do
         writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
 
 
-{-
- - Asserted record fetching tools; move to some appropriate location later
- -}
-
--- load a record or run f if not found
-aload :: Database Connection a => Integer -> SqlTransaction Connection () -> SqlTransaction Connection a
-aload n f = do
-    s <- load n
-    when (isNothing s) f
-    return $ fromJust s
-
--- get one record or run f if none found
-aget :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection a
-aget cs f = do
-    ss <- search cs [] 1 0
-    unless (not $ null ss) f
-    return $ head ss
-
--- get list of records or run f if none found
-agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection () -> SqlTransaction Connection [a]
-agetlist cs os l o f = do
-    ss <- search cs os l o 
-    unless (not $ null ss) f
-    return ss
-
--- run f if any records found. note: return is necessary in order to infer search type.
-adeny :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection [a]
-adeny cs f = do
-    ss <- search cs [] 1 0
-    unless (null ss) f
-    return ss
 
 raceChallenge :: Application ()
 raceChallenge = raceChallengeWith 2 
@@ -1618,6 +1600,7 @@ processRace t ps tid = do
         tdt <- aget ["track_id" |== toSql tid] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
  
           -- race participants
+--        let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
         let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
 
         -- current time, finishing times, race time (slowest finishing time) 
@@ -1636,7 +1619,7 @@ processRace t ps tid = do
 
         let winner_id = rp_account_id $ fst $ head rs
 
-        forM_ rs $ \(p,r) -> do
+        parN $ flip fmap rs $ \(p,r) -> do
             
                 let uid = rp_account_id p
                 let ft = fin r
@@ -1733,6 +1716,7 @@ userCurrentRace = do
                             return (r, td, ts) 
         writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
+
 searchRaceReward :: Application ()
 searchRaceReward = do
         t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
@@ -1749,6 +1733,33 @@ serverTime :: Application ()
 serverTime = do
         t <- liftIO (floor <$> (*1000) <$> getPOSIXTime :: IO Integer)
         writeResult t
+
+viewTournament :: Application ()
+viewTournament = do
+        uid <- getUserId 
+        a <- runDb $ fromJust <$> (load uid :: SqlTransaction Connection (Maybe A.Account))
+        (((l, o), xs),od) <- getPagesWithDTDOrdered ["minlevel","maxlevel", "track_id", "costs", "car_id", "name", "id","players"] (
+            "id" +== "id" +&& 
+            "minlevel" +<=| (toSql $ A.level a) +&& 
+            "maxlevel" +>=| (toSql $ A.level a) +&& 
+            "minlevel" +>= "minlevel" +&& 
+            "maxlevel" +>= "maxlevel" +&& 
+            "name" +%% "name" +&& 
+            "track_id" +== "track_id" +&& 
+            "players" +>= "minplayers" +&& 
+            "players" +<= "maxplayers" 
+
+            )
+        xs <- runDb $ search xs od l o :: Application [TR.Tournament]
+        writeMapables xs  
+
+tournamentJoin :: Application ()
+tournamentJoin = do 
+    xs <- getJson >>= scheck ["car_instance_id", "tournament_id"] 
+    let b = updateHashMap xs (def :: TP.TournamentPlayer) 
+    uid <- getUserId
+    runDb $ joinTournament (fromJust $ TP.car_instance_id b) (fromJust $ TP.tournament_id b) uid 
+    return ()
 
 {-- till here --}
 wrapErrors x = CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
@@ -1823,8 +1834,11 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/practice", racePractice),
                 ("/Race/reward", searchRaceReward),
+                ("/Race/reports", searchReports RP.Race),
                 ("/Race/get", getRace),
-                ("/Time/get", serverTime)
+                ("/Time/get", serverTime),
+                ("/Tournament/get", viewTournament),
+                ("/Tournament/join", tournamentJoin)
           ]
 
 

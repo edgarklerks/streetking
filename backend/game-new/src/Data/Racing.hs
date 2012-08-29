@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings, ViewPatterns, FlexibleContexts #-}
 
 module Data.Racing where
 
@@ -13,7 +13,8 @@ import Model.TH
 import Model.General
 import Data.InRules
 import Data.Conversion
-import Database.HDBC
+import Database.HDBC hiding (rollback)
+import Database.HDBC.PostgreSQL 
 import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.Aeson as AS
@@ -25,6 +26,8 @@ import Control.Monad.Writer
 import Control.Monad
 import Control.Applicative
 import Data.InRules
+import Data.Monoid 
+import Data.SqlTransaction
 
 import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
@@ -33,6 +36,7 @@ import qualified Model.CarMinimal as CMI
 import qualified Model.TrackDetails as TD
 import qualified Model.Part as Part
 import qualified Model.PartDetails as PD
+import Data.Char 
 
 type Path = Double
 type Speed = Double
@@ -75,6 +79,9 @@ $(genMapableRecord "RaceResult"
             ("sectionResults", ''SectionResults)
         ])
 
+instance Ord RaceResult where 
+        compare (raceTime -> x) (raceTime -> y) = compare x y 
+
 type MInteger = Maybe Integer
 
 $(genMapableRecord "RaceParticipant"
@@ -85,12 +92,21 @@ $(genMapableRecord "RaceParticipant"
             ("rp_car_min", ''CMI.CarMinimal),
             ("rp_escrow_id", ''MInteger)
        ])
-
 rp_account_id :: RaceParticipant -> Integer
 rp_account_id = fromJust . A.id . rp_account
 
 rp_car_id :: RaceParticipant -> Integer
 rp_car_id = fromJust . CIG.id . rp_car
+
+-- | mkRaceParticipant accepts an car_instance_id account_id and a optional (Maybe Integer) and returns an RaceParticipant 
+mkRaceParticipant :: Integer -> Integer -> Maybe Integer ->  SqlTransaction Connection RaceParticipant  
+mkRaceParticipant cins_id account_id escrowid = do 
+                                    cig <- aload (cins_id) (rollback "cannot find car") :: SqlTransaction Connection CIG.CarInGarage
+                                    cmin <- aload (cins_id) (rollback "cannot find car") :: SqlTransaction Connection CMI.CarMinimal 
+                                    ac <- aload account_id (rollback "cannot find account") :: SqlTransaction Connection A.Account
+                                    acmin <- aload (account_id) (rollback "cannot find account") :: SqlTransaction Connection APM.AccountProfileMin 
+                                    return $ RaceParticipant ac acmin cig cmin escrowid 
+
 
 type PartsDetails = [PD.PartDetails]
 
@@ -105,8 +121,17 @@ $(genMapableRecord "RaceRewards"
 emptyRaceRewards :: RaceRewards
 emptyRaceRewards = RaceRewards 0 0 []
 
+instance Monoid RaceRewards where 
+        mempty = emptyRaceRewards 
+        mappend (RaceRewards a b c)  (RaceRewards a' b' c') = RaceRewards (a + a') (b + b') (c <> c')
+
 instance Num RaceRewards where
-    (+) r1 r2 = RaceRewards ((money r1) + (money r2)) ((respect r1) + (respect r2)) ((parts r1) ++ (parts r2))
+    (+) = (<>) 
+    fromInteger n = RaceRewards n 0 []
+    abs n = n 
+    signum _ = 1
+    (*) = error "race rewards didn't implement times"
+
 
 $(genMapableRecord "RaceData"
     [
@@ -410,5 +435,25 @@ drand m = do
         case n > m of
             False -> return $ sqrt $ n * m
             True -> return $ (1 -) $ sqrt $ (m-1) *  (n-1)
+
+
+newtype StrangeFunctor f a b = HF {
+                    unHF :: f a (StrangeFunctor f a (a -> f a b))
+                }
+
+newtype WarpedFunctor f a b = WP {
+                    unWP :: f a (a -> f a (WarpedFunctor f a b -> b))    
+            }
+
+
+imap f h = WP . (fmap . fmap . fmap) (\g -> f . g . (WP . (fmap . fmap . fmap) (\g ->  h . g . (imap f h) ) . unWP)) . unWP  
+
+cst p = WP (return (const (return (const p))))  
+
+test212 :: WarpedFunctor Either String Int 
+test212 = imap (ord) (chr) (cst 'a') 
+
+instance Functor (f a) => Functor (StrangeFunctor f a) where 
+        fmap f = HF . fmap ((fmap.fmap.fmap) f)  . unHF 
 
 

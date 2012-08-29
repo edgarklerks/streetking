@@ -38,6 +38,7 @@ module Data.SqlTransaction (
     sqlGetAllAssoc,
     sqlExecute,
 	quickInsert,
+    forkSqlTransaction,
     Connection,
     withEncoding,
     newFuture,
@@ -49,7 +50,9 @@ module Data.SqlTransaction (
     par4,
     parN,
     parSafe,
-    fillFuture 
+    fillFuture,
+    lock,
+    Lock(..)
 
 ) where 
 
@@ -388,6 +391,12 @@ waitWhen m = do
 waitUnless :: SqlTransaction Connection Bool -> SqlTransaction Connection () 
 waitUnless = waitWhen . fmap not 
 
+testLock = atomical $ do 
+                    lock "account" RowExclusive $ do  
+                        liftIO $ threadDelay 100000
+                        xs <- quickQuery "select * from account" [] 
+                        liftIO $ print xs 
+                        return ()
 
 testcon = connectPostgreSQL "host=db.graffity.me password=#*rl& user=deosx dbname=streetking_dev"
 
@@ -396,3 +405,25 @@ runTestDb m = do
             a <- runSqlTransaction m (\x -> print x >> return undefined ) c
             H.disconnect c 
             return a
+
+data Lock = AccessShare 
+          | RowShare 
+          | RowExclusive 
+          | ShareUpdateExclusive 
+          | Share 
+          | ShareRowExclusive 
+          | AccessExclusive 
+
+instance Show Lock where 
+    show AccessShare = "ACCESS SHARE"
+    show RowShare = "ROW SHARE"
+    show RowExclusive = "ROW EXCLUSIVE"
+    show ShareUpdateExclusive = "SHARE UPDATE EXCLUSIVE"
+    show Share = "SHARE"
+    show ShareRowExclusive = "SHARE ROW EXCLUSIVE"
+    show AccessExclusive = "ACCESS EXCLUSIVE"
+
+lock :: String -> Lock -> SqlTransaction Connection a -> SqlTransaction Connection a 
+lock table n s = atomical $  
+                    sqlExecute ("LOCK TABLE " <> table <> " IN " <> (show n) <> " MODE") [] *> 
+                    s  

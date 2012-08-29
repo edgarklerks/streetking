@@ -15,7 +15,11 @@ module Model.General
         mco,
         mfp,
         nhead,
-        sempty
+        sempty,
+        aget,
+        agetlist,
+        aload,
+        adeny
 
     )
 
@@ -84,4 +88,35 @@ mco = (fmap) thsql
 
 mfp = (fmap catMaybes) . (fmap.fmap) fromHashMap
 
+{-
+ - Asserted record fetching tools; move to some appropriate location later
+ -}
+
+-- load a record or run f if not found
+aload :: Database Connection a => Integer -> SqlTransaction Connection () -> SqlTransaction Connection a
+aload n f = do
+    s <- load n
+    when (isNothing s) f
+    return $ fromJust s
+
+-- get one record or run f if none found
+aget :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection a
+aget cs f = do
+    ss <- search cs [] 1 0
+    unless (not $ null ss) f
+    return $ head ss
+
+-- get list of records or run f if none found
+agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection () -> SqlTransaction Connection [a]
+agetlist cs os l o f = do
+    ss <- search cs os l o 
+    unless (not $ null ss) f
+    return ss
+
+-- run f if any records found. note: return is necessary in order to infer search type.
+adeny :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection [a]
+adeny cs f = do
+    ss <- search cs [] 1 0
+    unless (null ss) f
+    return ss
 
