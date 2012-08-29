@@ -32,8 +32,8 @@ constants = p [
         ("mu0", 0.75),                      -- car traction coefficient base
         ("muR", 0.75),                      -- car traction coefficient range
 
-        ("cdai0", 1.33),                    -- inverse car drag coefficient base
-        ("cdaiR", 0.67),                    -- inverse car drag coefficient range
+        ("cda0", 0.75),                     -- inverse car drag coefficient base
+        ("cdaR", -0.5),                     -- inverse car drag coefficient range
 
         ("df0", 0),                         -- car downforce base
         ("dfR", 3),                         -- car downforce range
