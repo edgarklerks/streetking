@@ -84,6 +84,7 @@ import qualified Model.RaceDetails as RAD
 import qualified Model.RaceReward as RWD
 import qualified Model.TournamentPlayers as TP 
 import qualified Model.Tournament as TR 
+import qualified Model.Tournament as TRM 
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1717,6 +1718,22 @@ userCurrentRace = do
         writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
 
+searchTournamentCar :: Application ()
+searchTournamentCar = do 
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["tournament_id"]  
+        ts <- runDb $ do 
+                let ts = updateHashMap xs (def :: TP.TournamentPlayer)
+                trn <- load (fromJust $ TP.tournament_id ts)  :: SqlTransaction Connection (Maybe Tournament)
+                when (isNothing trn) $ rollback "no such tournament"
+
+                let car_id = TR.car_id $ fromJust trn 
+                case car_id of 
+                    Nothing -> search ["account_id" |== (toSql uid)] [] 100 0 ::  SqlTransaction Connection [CIG.CarInGarage]
+                    Just x -> search ["account_id" |== (toSql uid) .&& "car_id" |== (toSql x)] [] 100 0 :: SqlTransaction Connection [CIG.CarInGarage]
+        writeMapables ts 
+
+
 searchRaceReward :: Application ()
 searchRaceReward = do
         t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
@@ -1840,7 +1857,8 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/get", getRace),
                 ("/Time/get", serverTime),
                 ("/Tournament/get", viewTournament),
-                ("/Tournament/join", tournamentJoin)
+                ("/Tournament/join", tournamentJoin),
+                ("/Tournament/car", searchTournamentCar)
           ]
 
 initAll = Task.initTask *> initTournament 
