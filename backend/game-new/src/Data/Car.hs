@@ -71,7 +71,7 @@ brf = ((constant "bf0") +) . ((constant "bfR") *) . braking
 
 -- some properties can run into negatives and must be normalized to avoid weird values
 propertyCushionFactor :: Double
-propertyCushionFactor = 0.25 -- normalize to 0-1: np (1/cf) = 0.5
+propertyCushionFactor = 0.25 -- normalize to 0-1: np cf = 0.5
 
 normalizeProperty :: Double -> Double
 normalizeProperty = (1-) . (1/) . (1+) . (/propertyCushionFactor)

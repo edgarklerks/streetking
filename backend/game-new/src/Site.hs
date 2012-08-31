@@ -1456,7 +1456,7 @@ racePractice = do
 --                                False -> return ()
             
             let y = RaceParticipant a am c cm Nothing
-
+            
             t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
             void $ processRace t [y] tid 
             
@@ -1620,7 +1620,8 @@ processRace t ps tid = do
 
         let winner_id = rp_account_id $ fst $ head rs
 
-        parN $ flip fmap rs $ \(p,r) -> do
+--        parN $ flip fmap rs $ \(p,r) -> do
+        forM_ rs $ \(p,r) -> do
             
                 let uid = rp_account_id p
                 let ft = fin r
