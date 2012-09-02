@@ -849,10 +849,10 @@ garageCar = do
             (ns :: [CIG.CarInGarage]) <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
-        writeMapables (props <$> ns)
-    where
-        props :: CIG.CarInGarage -> CIG.CarInGarage
-        props c = c {
+        writeMapables (garageCarProps <$> ns)
+
+garageCarProps :: CIG.CarInGarage -> CIG.CarInGarage
+garageCarProps c = c {
                 CIG.acceleration = todbi $ acceleration car defaultEnvironment,
                 CIG.top_speed = todbi $ topspeed car defaultEnvironment,
                 CIG.cornering = todbi $ cornering car defaultEnvironment,
@@ -878,7 +878,7 @@ garageActiveCar = do
             ns <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
-        writeMapables ns 
+        writeMapables (garageCarProps <$> ns)
 
 
 loadModel :: Application ()
