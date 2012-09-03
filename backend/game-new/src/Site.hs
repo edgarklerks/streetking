@@ -1775,7 +1775,7 @@ tournamentJoined :: Application ()
 tournamentJoined = do 
                     uid <- getUserId 
                     ps <- runDb $ do 
-                        xs <- search ["account_id" |== toSql uid] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer] 
+                        xs <- search ["account_id" |== toSql uid .&& "deleted" |== (toSql False)] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer] 
                         ss <- forM xs $ \(TP.tournament_id -> i) -> load (fromJust i) :: SqlTransaction Connection (Maybe TRM.Tournament) 
                         return (catMaybes ss)
                     writeMapables ps 

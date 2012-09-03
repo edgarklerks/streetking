@@ -123,7 +123,7 @@ checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm dn) cinst = d
         when ( A.money a < cs ) $ rollback "you do not have enough money" 
         when (A.level a > mxl) $ rollback "your level is too high"
         when (A.level a < mnl) $ rollback "your level is not high enough"
-        xs <- search ["tournament_id" |== (toSql $ id ) .&& "account_id" |== (toSql $ A.id a) "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [TournamentPlayer] 
+        xs <- search ["tournament_id" |== (toSql $ id ) .&& "account_id" |== (toSql $ A.id a) .&& "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [TournamentPlayer] 
         when (not . null $ xs) $ rollback "you are already in the tournament" 
 
 
@@ -331,7 +331,7 @@ loadTournament = load >=> \x -> when (isNothing x) (rollback "no such tournament
 
 
 loadPlayers :: Integer -> SqlTransaction Connection [TournamentPlayer] 
-loadPlayers i = search ["tournament_id" |== (toSql i)] [] 1000000 0 
+loadPlayers i = search ["tournament_id" |== (toSql i) .&& "deleted" |== (toSql False)] [] 1000000 0 
 
 newtype CartesianMap a b = CM {
         runCM :: [a -> b] 
