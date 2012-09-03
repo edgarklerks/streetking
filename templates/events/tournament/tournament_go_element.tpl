@@ -1,11 +1,11 @@
 <div>
-	<div>ar_id: [:car_id]</div>
+	<div>car_id: [:car_id]</div>
 	<div>cost: [:costs]</div>
 	<div>name: [:name]</div>
 	<div>level from: [:minlevel]</div>
 	<div>level to: [:maxlevel]</div>
 	<div>players: [:current_players]/[:players]</div>
-	<div>time left: <div class="tournament_timer_[:id]"></div></div>
+	<div>time left: <span class="tournament_timer_[:id]"></span></div>
 <!--	<div><a href="#Tournament/join?tournament_id=[:id]" class="button" module="TOURNAMENT_GO_SELECT_CAR">select car and join</a></div> -->
 	[:when (done == false)]{
 		[:when (joined == false)]{<div><a href="#Tournament/join?tournament_id=[:id]" class="button" module="TOURNAMENT_GO_SELECT_CAR">select car and join</a></div>}
