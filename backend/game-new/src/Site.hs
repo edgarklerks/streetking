@@ -1797,7 +1797,7 @@ tournamentJoin = do
     writeResult (1 :: Int)
 
 {-- till here --}
-wrapErrors x = CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
+wrapErrors x = runDb (forkSqlTransaction $ Task.run Task.Cron 0) >>  CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
