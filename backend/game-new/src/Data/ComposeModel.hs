@@ -8,7 +8,8 @@ module Data.ComposeModel(
         runComposeMonad,
         ComposeMonad,
         deep,
-        abort 
+        abort,
+        liftDb
     )where 
 
 import Data.SqlTransaction 
@@ -121,8 +122,11 @@ shift m = CM $ do
 liftDb :: SqlTransaction  c a -> ComposeMonad r c a 
 liftDb = CM . lift . lift  . lift 
 
-action :: (ToInRule a) => String -> SqlTransaction c a -> ComposeMonad r c ()
-action x s = label x =<< liftDb s  
+action :: (ToInRule a) => String -> SqlTransaction c a -> ComposeMonad r c a 
+action x s = do 
+                s' <- liftDb s 
+                label x s' 
+                return s'
 
 label :: (ToInRule a) => String -> a -> ComposeMonad r c ()
 label s x =  tell . ComposeMap . H.fromList $ [(s,Box x)]
