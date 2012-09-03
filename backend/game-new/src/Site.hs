@@ -289,7 +289,7 @@ marketBuy :: Application ()
 marketBuy = do 
     uid <- getUserId 
     xs <- getJson 
-    tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+    tpsx <- liftIO milliTime 
     
     runDb $ do 
         let item' = updateHashMap xs (def :: Part.Part)        
@@ -754,7 +754,7 @@ marketTrash = do
         uid <- getUserId
         xs <- getJson >>= scheck ["part_instance_id"]
         let d = updateHashMap xs (def :: GPT.GaragePart)
-        tpsx <- liftIO (floor <$> getPOSIXTime :: IO Integer )
+        tpsx <- liftIO milliTime 
         pts uid d tpsx 
         writeResult True 
     where pts uid d tpsx = runDb $ do 
@@ -1375,9 +1375,6 @@ carSetOptions = do
                                 
         writeResult (1 :: Integer)
 
-unixtime :: IO Integer
-unixtime = floor <$> getPOSIXTime
-
 
 uploadCarImage :: Application ()
 uploadCarImage = do 
@@ -1402,7 +1399,7 @@ userActions uid = do
         Task.run Task.User uid
         DBF.garage_actions_account uid
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-        t <- liftIO unixtime
+        t <- liftIO milliTime 
         let u = A.busy_until a
         when (u > 0 && u <= t) $ do
 --            save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
@@ -1421,7 +1418,7 @@ racePractice = do
         xs <- getJson >>= scheck ["track_id"]
         let tid = extract "track_id" xs :: Integer
 
-        _ <- runDb $ do
+        runDb $ do
 
             userActions uid
 
@@ -1443,7 +1440,7 @@ racePractice = do
             
             let y = RaceParticipant a am c cm Nothing
             
-            t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+            t <- liftIO milliTime 
             void $ processRace t [y] tid 
             
         -- write results
@@ -1510,7 +1507,7 @@ raceChallengeAccept = do
 
         let cid = extract "challenge_id" xs :: Integer 
 
-        _ <- runDb $ do
+        runDb $ do
 
             -- retrieve challenge
             chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
@@ -1550,7 +1547,7 @@ raceChallengeAccept = do
             save $ chg { Chg.deleted = True }
             
             -- process race
-            t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+            t <- liftIO milliTime 
             (rid, rs) <- processRace t ps (Chg.track_id chg)
 
             let fin r = (t+) $ ceiling $ raceTime r 
@@ -1587,12 +1584,10 @@ processRace t ps tid = do
         tdt <- aget ["track_id" |== toSql tid] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
  
           -- race participants
---        let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
         let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
 
         -- current time, finishing times, race time (slowest finishing time) 
---        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
-        let fin r = (t+) $ ceiling $ raceTime r  
+        let fin r = (t+) $ ceiling $ (1000 *) $ raceTime r  
         let te = (\(_,r) -> fin r) $ last rs
 
         -- save race data
@@ -1614,8 +1609,6 @@ processRace t ps tid = do
                 let isWinner = uid == winner_id
 
                 -- set account busy until user finish
---                a  <- aload (rp_account_id p) (rollback $ "account not found for id " ++ (show $ rp_account_id p)) :: SqlTransaction Connection A.Account
---                save (a { A.busy_type = 2, A.busy_subject_id = rid, A.busy_until = fin r })
                 update "account" ["id" |== toSql uid] [] [("busy_until", toSql ft), ("busy_subject_id", toSql rid), ("busy_type", SqlInteger 2)]
 
                 -- task: update race time on user finish
@@ -1723,7 +1716,7 @@ searchTournamentCar = do
 
 searchRaceReward :: Application ()
 searchRaceReward = do
-        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+        t <- liftIO milliTime
         uid <- getUserId
         ((l,o), xs) <- getPagesWithDTD (
                     "time" +<=| (SqlInteger t)
@@ -1733,9 +1726,12 @@ searchRaceReward = do
         rs <- runDb $ search xs [] l o :: Application [RWD.RaceReward]
         writeMapables rs
 
+milliTime :: IO Integer
+milliTime = floor <$> (*1000) <$> getPOSIXTime :: IO Integer
+
 serverTime :: Application ()
 serverTime = do
-        t <- liftIO (floor <$> (*1000) <$> getPOSIXTime :: IO Integer)
+        t <- liftIO milliTime
         writeResult t
 
 viewTournament :: Application ()
