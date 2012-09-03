@@ -1792,7 +1792,7 @@ tournamentJoin = do
     xs <- getJson >>= scheck ["car_instance_id", "tournament_id"] 
     let b = updateHashMap xs (def :: TP.TournamentPlayer) 
     runDb $ joinTournament (fromJust $ TP.car_instance_id b) (fromJust $ TP.tournament_id b) uid 
-    return ()
+    writeResult (1 :: Int)
 
 {-- till here --}
 wrapErrors x = CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
