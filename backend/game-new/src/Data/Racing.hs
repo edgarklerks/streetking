@@ -457,3 +457,32 @@ instance Functor (f a) => Functor (StrangeFunctor f a) where
         fmap f = HF . fmap ((fmap.fmap.fmap) f)  . unHF 
 
 
+
+garageCarProps :: CIG.CarInGarage -> CIG.CarInGarage
+garageCarProps c = c {
+                CIG.acceleration = todbi $ acceleration car defaultEnvironment,
+                CIG.top_speed = todbi $ topspeed car defaultEnvironment,
+                CIG.cornering = todbi $ cornering car defaultEnvironment,
+                CIG.stopping = todbi $ stopping car defaultEnvironment,
+                CIG.nitrous = todbi $ nitrous car defaultEnvironment
+            }
+                where
+                    car = Car (fromInteger $ CIG.weight c) (fromdbi $ CIG.power c) (fromdbi $ CIG.traction c) (fromdbi $ CIG.handling c) (fromdbi $ CIG.braking c) (fromdbi $ CIG.aero c) (fromdbi $ CIG.nos c)
+
+minimalCarProps :: CMI.CarMinimal -> CMI.CarMinimal
+minimalCarProps c = c {
+                CMI.acceleration = todbi $ acceleration car defaultEnvironment,
+                CMI.top_speed = todbi $ topspeed car defaultEnvironment,
+                CMI.cornering = todbi $ cornering car defaultEnvironment,
+                CMI.stopping = todbi $ stopping car defaultEnvironment,
+                CMI.nitrous = todbi $ nitrous car defaultEnvironment
+            }
+                where
+                    car = Car (fromInteger $ CMI.weight c) (fromdbi $ CMI.power c) (fromdbi $ CMI.traction c) (fromdbi $ CMI.handling c) (fromdbi $ CMI.braking c) (fromdbi $ CMI.aero c) (fromdbi $ CMI.nos c)
+
+todbi :: Double -> Integer
+todbi = floor . (10000 *)
+fromdbi :: Integer -> Double
+fromdbi = (/ 10000) . fromInteger
+
+
