@@ -24,5 +24,6 @@ $(genAll "TournamentPlayer" "tournament_players"
         ("id", ''Id),
         ("account_id", ''Id),
         ("tournament_id", ''Id),
-        ("car_instance_id", ''Id)
+        ("car_instance_id", ''Id),
+        ("deleted", ''Bool)
     ])

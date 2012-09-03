@@ -194,7 +194,7 @@ runTournamentRounds :: TournamentFullData -> SqlTransaction Connection [[(Intege
 runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd 
                               tid = T.id . tournament $ tfd
                               plys = tournamentPlayers tfd
-                              rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid)) =  mkRaceParticipant cid aid Nothing 
+                              rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid) _) =  mkRaceParticipant cid aid Nothing 
                               step xs = do 
                                 races <- forM xs $ \xs -> do
                                              processTournamentRace (fromJust tid) xs tr
