@@ -1761,7 +1761,7 @@ cancelTournamentJoin = do
                     uid <- getUserId 
                     xs <- getJson >>= scheck ["tournament_id"] 
                     runDb $ do 
-                        xs <- search ["account_id" |== (toSql uid) .&& "tournament_id" |== (toSql $ HM.lookup "tournament_id" xs)] [] 1 0 :: SqlTransaction Connection [TP.TournamentPlayer]
+                        xs <- search ["deleted" |== (toSql False) .&& "account_id" |== (toSql uid) .&& "tournament_id" |== (toSql $ HM.lookup "tournament_id" xs)] [] 1 0 :: SqlTransaction Connection [TP.TournamentPlayer]
                         case xs of 
                             [a] -> void $ save (a {TP.deleted = True})
                             [] -> return () 
