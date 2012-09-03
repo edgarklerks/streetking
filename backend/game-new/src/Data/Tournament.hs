@@ -76,7 +76,7 @@ numberOfPlayers :: Integer -> SqlTransaction Connection (Integer, Integer)
 numberOfPlayers sid = do 
                 trn <- aload sid (rollback "can't find tournament") :: SqlTransaction Connection Tournament 
                 let total_sloth = T.players trn :: Integer 
-                xs <- search ["tournament_id" |== toSql sid] [] 10000 0 :: SqlTransaction Connection [TournamentPlayer]
+                xs <- search ["deleted" |== (toSql False) .&& "tournament_id" |== toSql sid] [] 10000 0 :: SqlTransaction Connection [TournamentPlayer]
 
                 return (fromIntegral $ length xs, total_sloth)
 
