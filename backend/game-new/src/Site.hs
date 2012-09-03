@@ -1709,8 +1709,8 @@ searchTournamentCar = do
 
                 let car_id = TR.car_id $ fromJust trn 
                 case car_id of 
-                    Nothing -> search ["ready" |== (SqlBool True) .&& "account_id" |== (toSql uid)] [] 100 0 ::  SqlTransaction Connection [CIG.CarInGarage]
-                    Just x -> search ["account_id" |== (toSql uid) .&& "ready" |== (SqlBool True) .&& "car_id" |== (toSql x)] [] 100 0 :: SqlTransaction Connection [CIG.CarInGarage]
+                    Nothing -> fmap (map garageCarProps) $ search ["account_id" |== (toSql uid)] [] 100 0 ::  SqlTransaction Connection [CIG.CarInGarage]
+                    Just x -> fmap (map garageCarProps) $ search ["account_id" |== (toSql uid) .&& "car_id" |== (toSql x)] [] 100 0 :: SqlTransaction Connection [CIG.CarInGarage]
         writeMapables ts 
 
 
