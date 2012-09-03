@@ -8,7 +8,7 @@
 				<div>Year:&nbsp;<span>[:year]</span></div>
 				<div>Level:&nbsp;<span>[:level]</span></div>
 				<div class="part-element-info-data-box-absolute">
-					<a href="#Tournament/join?tournament_id=[:requestParams.tid]&car_instance_id=[:id]" class="button car-info-button" module="TOURNAMENT_GO_JOIN">join</a>
+					<a href="#Tournament/join?tournament_id=[:requestParams.tournament_id]&car_instance_id=[:id]" class="button car-info-button" module="TOURNAMENT_GO_JOIN">join</a>
 				</div>
 			</div>
 			<div class="tournament-car-element-vertical-line"></div>
