@@ -85,6 +85,7 @@ import qualified Model.RaceReward as RWD
 import qualified Model.TournamentPlayers as TP 
 import qualified Model.Tournament as TR 
 import qualified Model.Tournament as TRM 
+import qualified Model.TournamentResult as TMR 
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
@@ -1771,6 +1772,16 @@ viewTournament = do
         liftIO (print xs) 
         ys <- runDb $ search xs od l o :: Application [TR.Tournament]
         writeMapables ys  
+
+
+tournamentResults :: Application ()
+tournamentResults = do 
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["tournament_id"] 
+        let b = updateHashMap xs (def :: TP.TournamentPlayer) 
+        let c  = search ["tournament_id" |== (toSql $ TP.tournament_id b)] [] 1000 0 :: SqlTransaction Connection [TMR.TournamentResult]
+        ys <- runDb c 
+        writeMapables ys 
 
 tournamentJoin :: Application ()
 tournamentJoin = do 
