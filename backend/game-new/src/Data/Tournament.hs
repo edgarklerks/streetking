@@ -122,6 +122,8 @@ checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm ) cinst = do
         when ( A.money a < cs ) $ rollback "you do not have enough money" 
         when (A.level a > mxl) $ rollback "your level is too high"
         when (A.level a < mnl) $ rollback "your level is not high enough"
+        xs <- search ["tournament_id" |== (toSql $ id ) .&& "account_id" |== (toSql $ A.id a)] [] 1 0 :: SqlTransaction Connection [TournamentPlayer] 
+        when (not . null $ xs) $ rollback "you are already in the tournament" 
 
 
 type Races = [R.Race]
@@ -308,6 +310,9 @@ initTournament = registerTask pred executeTask
 executeTask d | "action" .< (TK.data d) == Just RunTournament  = runTournament d *> liftIO (print "runtournament") *> return True  
 
 
+taskRewards :: Integer -> Integer -> RaceRewards -> Integer -> SqlTransaction Connection () 
+taskRewards = undefined  
+--            unless ((==0) $ respect r) $ Task.giveRespect t u (
 
 
 {--
