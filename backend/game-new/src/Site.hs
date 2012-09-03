@@ -85,6 +85,7 @@ import qualified Model.RaceReward as RWD
 import qualified Model.TournamentPlayers as TP 
 import qualified Model.Tournament as TR 
 import qualified Model.Tournament as TRM 
+import qualified Model.TournamentExtended as TRMEx
 import qualified Model.TournamentResult as TMR 
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
@@ -1771,7 +1772,8 @@ viewTournament = do
 
             )
         liftIO (print xs) 
-        ys <- runDb $ search xs od l o :: Application [TR.Tournament]
+        ys <- runDb $ search xs od l o :: Application [TRMEx.TournamentExtended]
+
         writeMapables ys  
 
 
@@ -1870,7 +1872,8 @@ routes = fmap (second wrapErrors) $ [
                 ("/Time/get", serverTime),
                 ("/Tournament/get", viewTournament),
                 ("/Tournament/join", tournamentJoin),
-                ("/Tournament/car", searchTournamentCar)
+                ("/Tournament/car", searchTournamentCar),
+                ("/Tournament/result", tournamentResults) 
           ]
 
 initAll = Task.initTask *> initTournament 
