@@ -29,5 +29,6 @@ $(genAll "Tournament" "tournament" [
     ("rewards", ''MRaceReward),
     ("track_id", ''Integer),
     ("players", ''Integer),
-    ("name", ''String)
+    ("name", ''String),
+    ("done", ''Bool)
     ])

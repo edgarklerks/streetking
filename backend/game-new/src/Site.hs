@@ -1776,6 +1776,20 @@ viewTournament = do
 
         writeMapables ys  
 
+cancelTournamentJoin :: Application ()
+cancelTournamentJoin = undefined 
+
+tournamentJoined :: Application ()
+tournamentJoined = do 
+                    uid <- getUserId 
+                    ps <- runDb $ do 
+                        xs <- search ["account_id" |== toSql uid] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer] 
+                        ss <- forM xs $ \(TP.tournament_id -> i) -> load (fromJust i) :: SqlTransaction Connection (Maybe TRM.Tournament) 
+                        return (catMaybes ss)
+                    writeMapables ps 
+
+                                
+
 
 tournamentResults :: Application ()
 tournamentResults = do 
@@ -1873,7 +1887,8 @@ routes = fmap (second wrapErrors) $ [
                 ("/Tournament/get", viewTournament),
                 ("/Tournament/join", tournamentJoin),
                 ("/Tournament/car", searchTournamentCar),
-                ("/Tournament/result", tournamentResults) 
+                ("/Tournament/result", tournamentResults),
+                ("/Tournament/joined", tournamentJoined)
           ]
 
 initAll = Task.initTask *> initTournament 
