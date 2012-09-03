@@ -116,7 +116,7 @@ checkPrequisites :: Account -> Tournament -> Integer -> SqlTransaction Connectio
 checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm dn) cinst = do 
         (n,t) <- numberOfPlayers (fromJust id)
         when dn $ rollback "this tournament is already runned" 
-        when (n >= t) $ rollback "cannot join tournament anymore"
+        when (n >= t) $ rollback "cannot join tournament anymore: too much players"
         when (isJust cid) $ do 
                     xs <- search ["car_id" |== (toSql $ cid) .&& "id" |== (toSql cinst) .&& "account_id" |== (toSql $ A.id a)] [] 1 0 :: SqlTransaction Connection [CarInGarage]
                     when (null xs) $ rollback "doesn't own correct car"
