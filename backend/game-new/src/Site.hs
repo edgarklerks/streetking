@@ -853,22 +853,6 @@ garageCar = do
         ns <- p :: Application [CIG.CarInGarage]
         writeMapables (garageCarProps <$> ns)
 
-garageCarProps :: CIG.CarInGarage -> CIG.CarInGarage
-garageCarProps c = c {
-                CIG.acceleration = todbi $ acceleration car defaultEnvironment,
-                CIG.top_speed = todbi $ topspeed car defaultEnvironment,
-                CIG.cornering = todbi $ cornering car defaultEnvironment,
-                CIG.stopping = todbi $ stopping car defaultEnvironment,
-                CIG.nitrous = todbi $ nitrous car defaultEnvironment
-            }
-                where
-                    car = Car (fromInteger $ CIG.weight c) (fromdbi $ CIG.power c) (fromdbi $ CIG.traction c) (fromdbi $ CIG.handling c) (fromdbi $ CIG.braking c) (fromdbi $ CIG.aero c) (fromdbi $ CIG.nos c)
-
-
-todbi :: Double -> Integer
-todbi = floor . (10000 *)
-fromdbi :: Integer -> Double
-fromdbi = (/ 10000) . fromInteger
 
 
 garageActiveCar :: Application ()
@@ -1449,8 +1433,8 @@ racePractice = do
 
             -- get active car
             g <-  aget ["account_id" |== toSql uid] (rollback "garage not found") :: SqlTransaction Connection G.Garage 
-            c <-  aget ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            cm <- aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            c <-  fmap garageCarProps $ aget ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            cm <- fmap minimalCarProps $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
 
 --            ry <- DBF.garage_active_car_ready (fromJust $ G.id g)
 --                            case length ry > 0 of
@@ -1493,8 +1477,8 @@ raceChallengeWith p = do
             Task.run Task.User uid
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             am <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
-            c  <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            cm <- aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            c  <- fmap garageCarProps $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            cm <- fmap minimalCarProps $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
             t  <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _  <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
@@ -1549,8 +1533,8 @@ raceChallengeAccept = do
              
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            c  <- aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            cm <- aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            c  <- fmap garageCarProps $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            cm <- fmap minimalCarProps $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
             
             let y = RaceParticipant a am c cm me
 
