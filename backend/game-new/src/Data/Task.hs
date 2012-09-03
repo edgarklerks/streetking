@@ -204,7 +204,7 @@ runAll tp = Data.Task.run tp 0
 run :: Trigger -> Integer -> SqlTransaction Connection ()
 run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 
-        t <- liftIO $ floor <$> getPOSIXTime
+        t <- liftIO $ floor <$> (1000 *) <$> getPOSIXTime
         
         cleanup $ t - 24 * 3600
 
