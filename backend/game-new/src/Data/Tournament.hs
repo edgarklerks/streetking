@@ -61,6 +61,7 @@ import           Data.Convertible
 import qualified Model.TournamentResult as TR
 import           GHC.Generics 
 import           Data.Text (Text) 
+import           Test.QuickCheck 
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -154,6 +155,11 @@ sameLength (_:xs) (_:ys) = sameLength xs ys
 sameLength [] [] = True 
 sameLength _ _ = False 
 
+test_samelength_prop = property testSamelength 
+    where   testSamelength :: [Int] -> [Char] -> Bool 
+            testSamelength xs ys = (length xs == length ys) == (sameLength xs ys) && 
+                            (sameLength xs xs == sameLength ys ys)
+
 getResults :: Integer -> SqlTransaction Connection [TR.TournamentResult] 
 getResults mid = do
                 tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament
@@ -167,7 +173,7 @@ getResults mid = do
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
               step mt (TR.TournamentResult tid rid _ _ _ _ ) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
-                                                return (R.start_time r < mid)
+                                                return (R.start_time r < mt)
                 
 
 
