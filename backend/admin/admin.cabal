@@ -64,7 +64,10 @@ Executable admin
     data-object,
     base64-bytestring,
     cereal,
-    blaze-svg
+    blaze-svg,
+    ghc-prim,
+    MonadRandom,
+    binary
 
   if flag(development)
     build-depends:

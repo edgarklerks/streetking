@@ -31,5 +31,6 @@ $(genAll "TournamentExtended" "tournament_extended" [
     ("players", ''Integer),
     ("name", ''String),
     ("current_players", ''Integer),
-    ("done", ''Bool)
+    ("done", ''Bool),
+    ("running", ''Bool)
     ])
