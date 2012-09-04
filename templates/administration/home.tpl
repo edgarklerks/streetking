@@ -30,6 +30,7 @@
 	<div><a href="#challenge_type/get" class="button" module="CHALLENGE_TYPE_LIST">challenge types</a></div>
 	<div><a href="#transaction/get" class="button" module="TRANSACTION_LIST">transactions</a></div>
 	<div><a href="#config/get" class="button" module="CONFIG_LIST">config</a></div>
+	<div><a href="#tournament/get" class="button" module="TOURNAMENT_LIST">tournament</a></div>
 	<!-- not finished -->
 	<!--<div><a href="#challenge_accept/get" class="button" module="CHALLENGE_ACCEPT_LIST">challenge accept</a></div>-->
 	<!--<div><a href="#challenge/get" class="button" module="CHALLENGE_LIST">challenges</a></div>-->
