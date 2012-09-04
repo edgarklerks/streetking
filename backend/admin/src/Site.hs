@@ -58,6 +58,8 @@ import           Database.HDBC.PostgreSQL (Connection)
 import qualified Data.ModelToSVG as SB  
 import           Data.ModelToSVG hiding (def, render, lines)
 import           Data.InRules 
+import qualified Model.Tournament as TRM 
+import qualified Data.Tournament as TRM 
 import           Data.Conversion 
 
 
@@ -170,6 +172,8 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/personnel_instance/put", putModel (def :: PI.PersonnelInstance))
          , ("/part_type/get", getModel (def :: PT.PartType))
          , ("/part_type/put", putModel (def :: PT.PartType))
+         , ("/tournament/get", getModel (def :: TRM.Tournament))
+         , ("/tournament/put", putTournament)
          , ("",          serveDirectory "static")
          ]
 
@@ -195,6 +199,14 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     addRoutes routes
     addAuthSplices auth
     return $ App h s a db
+
+
+putTournament :: Application () 
+putTournament = do 
+            xs <- getJson 
+            let p = updateHashMap xs def 
+            x <- runDb $ TRM.createTournament p  
+            writeResult x
 
 
 getModel :: (Database Connection a, Mapable a) => a -> Application ()
