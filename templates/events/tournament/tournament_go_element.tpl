@@ -11,13 +11,18 @@
 			<div>Registered players:&nbsp;<span id="tournament_[:id]">[:current_players]</span> out of <span>[:players]</span></div>
 		</div>
 		<div class="tournament-go-and-race-element-buttons-container">
-			[:when (done == false)]{
-				<a href="#Tournament/info?tournament_id=[:id]" class="button" module="TOURNAMENT_GO_INFO">info</a>
-				[:when (joined == false)]{<a href="#Tournament/join?tournament_id=[:id]" class="button" module="TOURNAMENT_GO_SELECT_CAR">select car and join</a>}
-				[:when (joined == true)]{<a href="#Tournament/cancel?tournament_id=[:id]" class="button red-text" module="TOURNAMENT_GO_CANCEL">cancel</a>}
+			[:when (running == false)]{
+				[:when (done == false)]{
+					<a href="#Tournament/info?tournament_id=[:id]" class="button" module="TOURNAMENT_GO_INFO">info</a>
+					[:when (joined == false)]{<a href="#Tournament/join?tournament_id=[:id]" class="button" module="TOURNAMENT_GO_SELECT_CAR">select car and join</a>}
+					[:when (joined == true)]{<a href="#Tournament/cancel?tournament_id=[:id]" class="button red-text" module="TOURNAMENT_GO_CANCEL">cancel</a>}
+				}
+				[:when (done == true)]{
+					<a href="#Tournament/result?tournament_id=[:id]" class="button green-text" module="TOURNAMENT_GO_RESULT">result</a>
+				}
 			}
-			[:when (done == true)]{
-				<a href="#Tournament/result?tournament_id=[:id]" class="button green-text" module="TOURNAMENT_GO_RESULT">result</a>
+			[:when (running == true)]{
+				<a href="#Tournament/result?tournament_id=[:id]" class="button green-text" module="TOURNAMENT_GO_RESULT">running</a>
 			}
 		</div>
 	</div>
