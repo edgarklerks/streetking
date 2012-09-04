@@ -16,18 +16,20 @@ import           Prelude hiding (id)
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
-import Data.InRules
+import Data.Conversion
 
+type MString = Maybe String 
+type MInteger = Maybe Integer 
 
 $(genAll "AccountProfile" "account_profile" [             
                     ("id", ''Id),
-                    ("firstname", ''String),
-                    ("lastname", ''String),
-                    ("nickname", ''String),
-                    ("picture_small", ''String),
-                    ("picture_medium", ''String),
-                    ("picture_large", ''String),
-                    ("level", ''Integer),
+                    ("firstname", ''MString),
+                    ("lastname", ''MString),
+                    ("nickname", ''MString),
+                    ("picture_small", ''MString),
+                    ("picture_medium", ''MString),
+                    ("picture_large", ''MString),
+                    ("level", ''MInteger),
                     ("skill_acceleration", ''Integer),
                     ("skill_braking", ''Integer),
                     ("skill_control", ''Integer),

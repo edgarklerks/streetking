@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
 module Model.Support where 
 
 import Data.SqlTransaction
@@ -11,6 +11,8 @@ import Control.Applicative
 import qualified Data.Map as M 
 import Model.TH 
 import Prelude hiding (id)
+import qualified Data.Aeson as AS 
+import Data.Conversion 
 
 
 $(genAll "Support" "support" [

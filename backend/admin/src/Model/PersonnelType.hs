@@ -7,7 +7,7 @@ import           Database.HDBC
 import           Data.Convertible
 import           Model.General
 import           Data.Database 
-import           Data.InRules
+import           Data.Conversion
 import           Control.Monad
 
 import           Control.Applicative

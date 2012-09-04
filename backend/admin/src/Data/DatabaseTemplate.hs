@@ -1,3 +1,4 @@
+{-# LANGUAGE ViewPatterns #-}
 module Data.DatabaseTemplate where 
 
 import qualified Data.Database as D 
@@ -6,7 +7,6 @@ import Data.SqlTransaction
 import Data.Maybe  
 import Database.HDBC.Types
 import Data.SortOrder 
-import Data.Function 
 
 data DTD = Con D.ConOp String DTD 
         | And DTD DTD  
@@ -16,7 +16,6 @@ data DTD = Con D.ConOp String DTD
         | If String (String -> Bool) DTD DTD
         | OrderedBy DTD [String]
         | Nop
-    deriving Show 
 
 orderedBy = OrderedBy 
 

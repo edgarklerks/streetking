@@ -58,7 +58,7 @@ hlm = ((constant "he0") +) . ((constant "heR") *) . handling
 
 -- drag coefficient
 cda :: Car -> Double
-cda = (1.0 / ) . ((constant "cdai0") -) . ((constant "cdaiR") *) . aero
+cda = ((constant "cda0") +) . ((constant "cdaR") *) . normalizeProperty . aero
 
 -- downforce per square m/s
 dnf :: Car -> Double
@@ -67,5 +67,13 @@ dnf = ((constant "df0") +) . ((constant "dfR") *) . aero
 -- braking force
 brf :: Car -> Double
 brf = ((constant "bf0") +) . ((constant "bfR") *) . braking
+
+
+-- some properties can run into negatives and must be normalized to avoid weird values
+propertyCushionFactor :: Double
+propertyCushionFactor = 0.25 -- normalize to 0-1: np cf = 0.5
+
+normalizeProperty :: Double -> Double
+normalizeProperty = (1-) . (1/) . (1+) . (/propertyCushionFactor)
 
 

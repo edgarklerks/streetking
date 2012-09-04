@@ -8,20 +8,21 @@ import           Model.General
 import           Data.Database 
 import           Control.Monad
 import qualified Data.Aeson as AS
-import Data.InRules
+import Data.Conversion
 
 import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+type MString = Maybe String 
 $(genAll "Account" "account" [             
                     ("id", ''Id),
-                    ("firstname", ''String),
-                    ("lastname", ''String),
+                    ("firstname", ''MString),
+                    ("lastname", ''MString),
                     ("nickname", ''String),
-                    ("picture_small", ''String),
-                    ("picture_medium", ''String),
-                    ("picture_large", ''String),
+                    ("picture_small", ''MString),
+                    ("picture_medium", ''MString),
+                    ("picture_large", ''MString),
                     ("level", ''Integer),
                     ("skill_acceleration", ''Integer),
                     ("skill_braking", ''Integer),
