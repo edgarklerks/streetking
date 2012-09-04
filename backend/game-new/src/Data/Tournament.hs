@@ -1,10 +1,11 @@
-{-# LANGUAGE ViewPatterns, TypeSynonymInstances, FlexibleInstances, OverloadedStrings, RankNTypes, Arrows, TemplateHaskell , NoMonomorphismRestriction, DeriveGeneric, OverloadedStrings  #-}
+{-# LANGUAGE ViewPatterns, TypeSynonymInstances, FlexibleInstances, OverloadedStrings, RankNTypes, Arrows, TemplateHaskell , NoMonomorphismRestriction, DeriveGeneric, OverloadedStrings, TupleSections  #-}
 module Data.Tournament (
         createTournament,
         joinTournament,
         Tournament,
         runTournament,
-        initTournament
+        initTournament,
+        getResults 
     ) where 
 
 import Control.Monad.Trans 
@@ -13,6 +14,8 @@ import Model.TournamentPlayers as TP
 import Model.Tournament as T
 import Model.General 
 import Control.Arrow 
+import           Data.Time.Clock 
+import           Data.Time.Clock.POSIX
 import Control.Category as C 
 import Data.Convertible 
 import Data.InRules 
@@ -142,6 +145,31 @@ $(genMapableRecord "TournamentFullData" [
         ])
                           
 
+milliTime :: IO Integer
+milliTime = floor <$> (*1000) <$> getPOSIXTime :: IO Integer
+
+
+sameLength :: [a] -> [b] -> Bool 
+sameLength (_:xs) (_:ys) = sameLength xs ys
+sameLength [] [] = True 
+sameLength _ _ = False 
+
+getResults :: Integer -> SqlTransaction Connection [TR.TournamentResult] 
+getResults mid = do
+                tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament
+                mt <- liftIO milliTime
+                rs <- search [] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
+                if (T.done tr) then return rs 
+                               else do 
+                                ss <- filterM (step mt) rs 
+                                when (ss `sameLength` rs) $ save (tr { T.running = False, T.done = True}) >> return ()  
+                                return ss 
+        where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
+              step mt (TR.TournamentResult tid rid _ _ _ _ ) = do 
+                                                r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
+                                                return (R.start_time r < mid)
+                
+
 
 
 
@@ -196,19 +224,22 @@ runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd
                               tid = T.id . tournament $ tfd
                               plys = tournamentPlayers tfd
                               rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid) _) =  mkRaceParticipant cid aid Nothing 
-                              step xs = do 
+                              step tdif xs = do 
                                 races <- forM xs $ \xs -> do
-                                             processTournamentRace (fromJust tid) xs tr
-                                let ps = sortRounds races 
+                                             processTournamentRace (fromJust tid + tdif) xs tr
+                                let (ps', ts) = split3 races 
+                                let ps = sortRounds ps'
+                                let tmax = maximum ts  
                                 if (one ps) 
                                         then return [races]
-                                        else do rest <- step (twothree ps) 
+                                        else do rest <- step (tdif + tmax) (twothree ps) 
                                                 liftIO (print rest)
-                                                return $ races : rest 
+                                                return $ races : rest
                          in do 
                                flip catchSqlError error $ do 
                                    ys <- mapM rp plys
-                                   step (twothree ys)
+                                   xs <- step 0 (twothree ys)
+                                   return $ fmap (fst . split3) $ xs 
 
 
 
@@ -216,11 +247,16 @@ one :: [a] -> Bool
 one [x] = True 
 one _ = False 
 
+split3 :: [(a,b,c)] -> ([(a,b)], [c])
+split3  = foldr step ([], [])
+    where step (a,b,c) (ls,rs) = ((a,b):ls,c:rs)
+
+
 sortRounds :: [(Integer,[(RaceParticipant, RaceResult)])]  -> [RaceParticipant]
 sortRounds [] = [] 
 sortRounds ((rid,ys):xs) = (fst . head) (sortBy (\x y -> compare (snd x) (snd y)) ys) : sortRounds xs 
 
-processTournamentRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)]) 
+processTournamentRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)], Integer) 
 processTournamentRace t ps tid = do
 
         let env = defaultEnvironment
@@ -273,7 +309,7 @@ processTournamentRace t ps tid = do
                     set "result" r
 
         -- return race id
-        return (rid, rs)
+        return (rid, rs,te - t)
 
 
 tournamentTrigger :: Integer -> SqlTransaction Connection () 
@@ -283,7 +319,6 @@ tournamentTrigger i = do
                         set "id" $ (T.id x)
                 void $ Task.trigger Task.Cron 0 tid  
                 
-
 runTournament :: TK.Task -> SqlTransaction Connection Bool
 runTournament tk = return False <* (do
                 let id = "id" .<< (TK.data tk) ::  Integer
@@ -309,7 +344,6 @@ saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) ->
 initTournament = registerTask pred executeTask 
           where pred t | "action" .< (TK.data t) == Just RunTournament = True
                        | otherwise = False 
-    
 executeTask d | "action" .< (TK.data d) == Just RunTournament  = runTournament d *> liftIO (print "runtournament") *> return True  
 
 
@@ -565,3 +599,20 @@ testll = runMultiState $ proc x -> do
                              else do 
                                     y <- store -< (s * a)
                                     returnA -< a
+
+
+unroll :: ((a -> b) -> b) -> a -> b -> b
+unroll f a b = f (const b)  
+
+roll :: (a -> b -> b) -> (a -> b) -> b
+roll f g = g undefined  
+
+
+swap :: ((a -> b) -> b) -> b -> a -> b
+swap f b _ = f (const b)
+
+unswap :: (b -> (a -> b)) -> (a -> b) -> b 
+unswap f g = g undefined 
+
+ids :: (b -> a -> b) -> (b -> a -> b) 
+ids = swap . unswap  
