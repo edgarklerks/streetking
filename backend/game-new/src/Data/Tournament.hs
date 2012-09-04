@@ -263,7 +263,7 @@ sortRounds [] = []
 sortRounds ((rid,ys):xs) = (fst . head) (sortBy (\x y -> compare (snd x) (snd y)) ys) : sortRounds xs 
 
 processTournamentRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)], Integer) 
-processTournamentRace t ps tid = do
+processTournamentRace t' ps tid = do
 
         let env = defaultEnvironment
         trk <- trackDetailsTrack <$> (agetlist ["track_id" |== toSql tid] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails])
@@ -273,7 +273,7 @@ processTournamentRace t ps tid = do
         let rs = L.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
 
         -- current time, finishing times, race time (slowest finishing time) 
---        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
+        t <- (+t') <$> liftIO (floor <$> getPOSIXTime :: IO Integer)
         let fin r = (t+) $ ceiling $ raceTime r  
         let te = fin . snd . last $ rs
 
