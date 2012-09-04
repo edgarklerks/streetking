@@ -226,7 +226,7 @@ runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd
                               rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid) _) =  mkRaceParticipant cid aid Nothing 
                               step tdif xs = do 
                                 races <- forM xs $ \xs -> do
-                                             processTournamentRace (fromJust tid + tdif) xs tr
+                                             processTournamentRace (tdif) xs tr
                                 let (ps', ts) = split3 races 
                                 let ps = sortRounds ps'
                                 let tmax = maximum ts  
@@ -238,7 +238,7 @@ runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd
                          in do 
                                flip catchSqlError error $ do 
                                    ys <- mapM rp plys
-                                   xs <- step 0 (twothree ys)
+                                   xs <- step (fromJust tid) (twothree ys)
                                    return $ fmap (fst . split3) $ xs 
 
 
