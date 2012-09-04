@@ -1784,8 +1784,7 @@ tournamentResults = do
         uid <- getUserId 
         xs <- getJson >>= scheck ["tournament_id"] 
         let b = updateHashMap xs (def :: TP.TournamentPlayer) 
-        let c  = search ["tournament_id" |== (toSql $ TP.tournament_id b)] [] 1000 0 :: SqlTransaction Connection [TMR.TournamentResult]
-        ys <- runDb c 
+        ys <- runDb $ getResults (fromJust $ TP.tournament_id b)  
         writeMapables ys 
 
 tournamentJoin :: Application ()
