@@ -30,5 +30,7 @@ $(genAll "Tournament" "tournament" [
     ("track_id", ''Integer),
     ("players", ''Integer),
     ("name", ''String),
-    ("done", ''Bool)
+    ("done", ''Bool),
+    ("running", ''Bool),
+    ("image", ''String)
     ])

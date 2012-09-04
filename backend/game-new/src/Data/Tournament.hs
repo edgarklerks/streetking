@@ -113,9 +113,10 @@ joinTournament cinst n acid = do
                         return ()
 -- | check car, enough money, time prequisites
 checkPrequisites :: Account -> Tournament -> Integer -> SqlTransaction Connection () 
-checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm dn) cinst = do 
+checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm dn rn im) cinst = do 
         (n,t) <- numberOfPlayers (fromJust id)
-        when dn $ rollback "this tournament is already runned" 
+        when dn $ rollback "this tournament is already done" 
+        when rn $ rollback "tournament is already running"
         when (n >= t) $ rollback "cannot join tournament anymore: too much players"
         when (isJust cid) $ do 
                     xs <- search ["car_id" |== (toSql $ cid) .&& "id" |== (toSql cinst) .&& "account_id" |== (toSql $ A.id a)] [] 1 0 :: SqlTransaction Connection [CarInGarage]
@@ -288,6 +289,7 @@ runTournament tk = return False <* (do
                 let id = "id" .<< (TK.data tk) ::  Integer
                 liftIO (print id)
                 tf <- loadTournamentFull id  
+                save ( (tournament tf) { running = True })
                 liftIO (print tf) 
                 xs <- runTournamentRounds tf  
                 liftIO (print xs)
@@ -472,3 +474,94 @@ createTournament tr = do
                 void $ tournamentTrigger tid 
 
 
+newtype MultiState s a b = MS {
+            runMS :: [(s,a)] -> [(s,b)] 
+        }
+
+instance Functor (MultiState s a) where 
+        fmap f = MS . (fmap (second f) .) . runMS 
+
+instance Category (MultiState s) where 
+        id = MS $ \xs -> xs  
+        (.) f g = MS $ runMS f . runMS g  
+
+instance Arrow (MultiState s) where 
+        arr f = MS $ \xs -> fmap (second f) xs 
+        first  = MS . transform  . runMS 
+        second = MS . transform' . runMS 
+
+instance ArrowChoice (MultiState s) where 
+       left = MS . transformLeft . runMS  
+       right = MS . transformRight . runMS 
+       (+++) (MS f) (MS g) = MS (f `transformPlus` g)
+       (|||) (MS f) (MS g) = MS (f `transformSum`  g)
+
+transformSum :: ([(s,a)] -> [(s,d)]) -> ([(s,a')] -> [(s,d)]) -> [(s, Either a a')] -> [(s, d)]
+transformSum f g xs = let (sa,sa') = unzip3Either xs 
+                      in f sa ++ g sa' 
+
+transformLeft :: ([(s,a)] -> [(s,b)]) -> [(s,Either a d)] -> [(s, Either b d)]
+transformLeft f xs =  let (sa,sd) = unzip3Either xs
+                      in zip3Either (f sa) sd
+
+transformRight :: ([(s,a)] -> [(s,b)]) -> [(s, Either d a)] -> [(s, Either d b)] 
+transformRight f xs = let (sd, sa) = unzip3Either xs 
+                      in zip3Either sd (f sa)
+
+transformPlus :: ([(s,a)] -> [(s,b)]) -> ([(s,a')] -> [(s,b')]) -> [(s, Either a a')] -> [(s, Either b b')]
+transformPlus f g xs = let (sa,sa') = unzip3Either xs 
+                       in zip3Either (f sa) (g sa')
+
+zip3Either :: [(s,a)] -> [(s,d)] -> [(s, Either a d)] 
+zip3Either sa sd = fmap (second Left) sa ++ fmap (second Right) sd 
+
+unzip3Either :: [(s,Either a d)] -> ([(s,a)], [(s,d)])
+unzip3Either xs = foldr step ([], []) xs 
+        where step (s,Left a) (ls,xs) = ((s,a):ls,xs)
+              step (s, Right a) (ls, xs) = (ls, (s,a):xs) 
+            
+
+transform :: ([(s,a)] -> [(s,b)]) -> [(s, (a,d))] -> [(s,(b,d))]
+transform f xs = let (asss, ds) = unzip3' xs 
+                 in zip3' (f asss) ds 
+transform' :: ([(s,a)] -> [(s,b)]) -> [(s,(d,a))] -> [(s,(d,b))] 
+transform' f xs = let (asss, ds) = unzip3'' xs 
+                  in zip3'' (f asss) ds 
+zip3' :: [(s,a)] -> [d] -> [(s,(a,d))] 
+zip3' = zipWith (\(s,a) d -> (s, (a,d))) 
+
+zip3'' :: [(s,a)] -> [d] -> [(s, (d,a))]
+zip3'' = zipWith (\(s,a) d -> (s, (d, a)))
+
+
+unzipWith :: (d -> (a,b)) -> [d] -> ([a],[b])
+unzipWith f xs = foldr step ([], []) xs 
+    where step x (ls,rs) = let ab = f x in (fst ab : ls, snd ab : rs)  
+
+unzip3' :: [(s,(a,d))] -> ([(s,a)], [d])
+unzip3' = unzipWith (\(s,(a,d)) -> ((s,a), d))
+
+unzip3'' :: [(s, (d, a))] -> ([(s,a)], [d])
+unzip3'' = unzipWith (\(s,(d,a)) -> ((s,a),d))
+
+
+
+fetch :: MultiState s a (s,a) 
+fetch = MS $ fmap (\(s,a) -> (s, (s, a)))
+
+store :: MultiState s s () 
+store = MS $ fmap (\(_,s) -> (s,()))
+
+
+runMultiState :: MultiState s a b -> [(s,a)] -> [(s, b)] 
+runMultiState (MS f) xs = f xs 
+
+
+testll = runMultiState $ proc x -> do 
+                    (s,a) <- fetch -< x
+                    if s > a then do 
+                                    y <-  store -< (s / a)
+                                    returnA -< a 
+                             else do 
+                                    y <- store -< (s * a)
+                                    returnA -< a
