@@ -302,7 +302,7 @@ processTournamentRace t' ps tid = do
         let rs = L.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
 
         -- current time, finishing times, race time (slowest finishing time) 
-        t <- (+t') <$> liftIO (floor <$> getPOSIXTime :: IO Integer)
+        t <- (+t') <$> liftIO (milliTime)
         let fin r = (t+) $ ceiling $ raceTime r  
         let te = fin . snd . last $ rs
 
