@@ -1682,12 +1682,12 @@ raceSearch = do
         writeMapables rs
 
 
-raceDetails :: Integer -> SqlTransaction Connection (RAD.RaceDetails, TT.TrackMaster, [TD.TrackDetails])
+raceDetails :: Integer -> SqlTransaction Connection (RAD.RaceDetails, [TD.TrackDetails], TT.TrackMaster)
 raceDetails rid = do
         r <- aget ["race_id" |== toSql rid] (rollback "race not found") :: SqlTransaction Connection RAD.RaceDetails 
         Task.run Task.Track $ RAD.track_id r
-        ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
-        td <- aget ["track_id" |== (SqlInteger $ RAD.track_id r)] (rollback "track data not found for race") :: SqlTransaction Connection TT.TrackMaster 
+        td <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
+        ts <- aget ["track_id" |== (SqlInteger $ RAD.track_id r)] (rollback "track data not found for race") :: SqlTransaction Connection TT.TrackMaster 
         return (r, td, ts) 
  
 getRaceDetails :: Application ()
