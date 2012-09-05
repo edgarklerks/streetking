@@ -1418,7 +1418,7 @@ racePractice = do
         xs <- getJson >>= scheck ["track_id"]
         let tid = extract "track_id" xs :: Integer
 
-        runDb $ do
+        rid <- runDb $ do
 
             userActions uid
 
@@ -1441,10 +1441,12 @@ racePractice = do
             let y = RaceParticipant a am c cm Nothing
             
             t <- liftIO milliTime 
-            void $ processRace t [y] tid 
+            (rid, _) <- processRace t [y] tid 
             
+            return rid
+
         -- write results
-        writeResult True
+        writeResult rid
 
 testWrite :: Application ()
 testWrite = do
@@ -1507,7 +1509,7 @@ raceChallengeAccept = do
 
         let cid = extract "challenge_id" xs :: Integer 
 
-        runDb $ do
+        rid <- runDb $ do
 
             -- retrieve challenge
             chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
@@ -1573,7 +1575,9 @@ raceChallengeAccept = do
                             False -> Task.transferCar t1 (rp_account_id p) winner_id (rp_car_id p)
                     otherwise -> rollback $ "challenge type not supported: " ++ chgt
 
-        writeResult True
+            return rid
+
+        writeResult rid
 
 
 processRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)]) 
@@ -1674,8 +1678,12 @@ searchRaceChallenge = do
 getRace :: Application ()
 getRace = do
         ((l,o),xs) <- getPagesWithDTD ("id" +== "race_id")
-        rs <- runDb (search xs [] l o) :: Application [R.Race]
+        rs <- runDb $ (search xs [] l o) :: Application [R.Race]
         writeMapables rs
+
+-- getRaceDetails :: Application ()
+-- getRaceDetails = do
+        
 
 userCurrentRace :: Application ()
 userCurrentRace = do
