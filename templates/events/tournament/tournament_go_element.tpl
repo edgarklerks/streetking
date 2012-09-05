@@ -18,11 +18,11 @@
 					[:when (joined == true)]{<a href="#Tournament/cancel?tournament_id=[:id]" class="button red-text" module="TOURNAMENT_GO_CANCEL">cancel</a>}
 				}
 				[:when (done == true)]{
-					<a href="#Tournament/result?tournament_id=[:id]" class="button green-text" module="TOURNAMENT_GO_RESULT">result</a>
+					<a href="#Tournament/idk?tournament_id=[:id]" class="button green-text" module="TOURNAMENT_GO_RESULT">result</a>
 				}
 			}
 			[:when (running == true)]{
-				<a href="#Tournament/result?tournament_id=[:id]" class="button green-text" module="TOURNAMENT_GO_RESULT">running</a>
+				<a href="#Tournament/idk?tournament_id=[:id]" class="button green-text" module="TOURNAMENT_GO_RESULT">running</a>
 			}
 		</div>
 	</div>
