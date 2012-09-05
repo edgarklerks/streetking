@@ -63,6 +63,7 @@ import qualified Model.TournamentResult as TR
 import           GHC.Generics 
 import           Data.Text (Text) 
 import           Test.QuickCheck 
+import           System.Random 
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -173,7 +174,7 @@ getPlayers mid = do
     where 
           
           step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
-          step mt (TR.TournamentResult tid rid _ _ _ _ ) = do 
+          step mt (TR.TournamentResult tid rid _ _ _ _ _ _) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
                                                 return (R.start_time r < mt)
 
@@ -200,7 +201,7 @@ getResults mid = do
                                 when (ss `sameLength` rs) $ save (tr { T.running = False, T.done = True}) >> return ()  
                                 return ss 
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
-              step mt (TR.TournamentResult tid rid _ _ _ _ ) = do 
+              step mt (TR.TournamentResult tid rid _ _ _ _ _ _) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
                                                 return (R.end_time r < mt)
                 
@@ -253,6 +254,16 @@ testpnotone = property test
           test [] = True 
           test [x] = True 
           test xs = minimum (fmap length $ twothree xs) > 1
+
+
+unsort :: [a] -> IO [a] 
+unsort = foldM (\z x -> uninsert x z) []  
+        where uninsert a [] = return [a]
+              uninsert a ts@(x:xs) = do
+                        s <- randomIO 
+                        if s then return (a:ts)
+                             else uninsert a xs >>= \xs -> return (x:xs)
+
 -- runs all the tournament rounds  
 runTournamentRounds :: TournamentFullData -> SqlTransaction Connection [[(Integer, [(RaceParticipant, RaceResult)])]]  
 runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd 
@@ -272,8 +283,8 @@ runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd
                                                 return $ races : rest
                          in do 
                                flip catchSqlError error $ do 
-                                   ys <- mapM rp plys
-                                   xs <- step (fromJust tid) (twothree ys)
+                                   ys <- mapM rp plys >>= liftIO . unsort 
+                                   xs <- step (fromJust tid) (twothree (ys))
                                    return $ fmap (fst . split3) $ xs 
 
 
@@ -373,7 +384,9 @@ saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) ->
                                     TR.race_id = Just i,
                                     TR.participant1_id = A.id $ rp_account $ fst x,
                                     TR.participant2_id = A.id $ rp_account $ fst y,
-                                    TR.round = r
+                                    TR.round = r,
+                                    TR.raceresult1 = Just x,
+                                    TR.raceresult2 = Just y
 
                                         } :: TR.TournamentResult)
 
