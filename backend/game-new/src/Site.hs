@@ -1674,7 +1674,7 @@ searchRaceChallenge = do
 getRace :: Application ()
 getRace = do
         ((l,o),xs) <- getPagesWithDTD ("id" +== "race_id")
-        rs <- runDb (search xs [] l o) :: Application [R.Race]
+        rs <- runDb $ (search xs [] l o) :: Application [R.Race]
         writeMapables rs
 
 userCurrentRace :: Application ()
