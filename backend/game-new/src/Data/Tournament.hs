@@ -5,7 +5,8 @@ module Data.Tournament (
         Tournament,
         runTournament,
         initTournament,
-        getResults 
+        getResults,
+        getPlayers 
     ) where 
 
 import Control.Monad.Trans 
@@ -160,6 +161,34 @@ test_samelength_prop = property testSamelength
             testSamelength xs ys = (length xs == length ys) == (sameLength xs ys) && 
                             (sameLength xs xs == sameLength ys ys)
 
+getPlayers :: Integer -> SqlTransaction Connection [[(Account,Account, Id)]]
+getPlayers mid = do 
+            tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament 
+            mt <- liftIO milliTime 
+            rs <- search ["tournament_id" |== (toSql mid)] [] 1000 0 :: SqlTransaction Connection [TR.TournamentResult]
+            -- fugly waterfall structure 
+            if (T.done tr) then returnAll rs 
+                           else returnSince mt rs  
+
+    where 
+          
+          step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
+          step mt (TR.TournamentResult tid rid _ _ _ _ ) = do 
+                                                r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
+                                                return (R.start_time r < mt)
+
+          returnAll = retrieveAccounts 
+          returnStart = return []  
+          returnSince mt rs = filterM (step mt) rs >>= retrieveAccounts 
+
+          retrieveAccounts :: [TR.TournamentResult] -> SqlTransaction Connection [[(Account, Account, Id)]]
+          retrieveAccounts  xs = forM (groupByRound xs) $ \rs -> do 
+                                                    forM rs $ \r -> (,,) <$> aload (fromJust $ TR.participant1_id r) (rollback "fuckfuckfuck i hate this world") <*> aload (fromJust $ TR.participant2_id r) (rollback "lololi") <*> pure (TR.race_id r)  
+                                                            
+          groupByRound :: [TR.TournamentResult] -> [[TR.TournamentResult]]
+          groupByRound = groupBy (\x y -> TR.round x == TR.round y)
+
+
 getResults :: Integer -> SqlTransaction Connection [TR.TournamentResult] 
 getResults mid = do
                 tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament
@@ -173,7 +202,7 @@ getResults mid = do
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
               step mt (TR.TournamentResult tid rid _ _ _ _ ) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
-                                                return (R.start_time r < mt)
+                                                return (R.end_time r < mt)
                 
 
 
@@ -338,13 +367,14 @@ runTournament tk = return False <* (do
 
 saveResultTree :: Integer -> [[(Integer, [(RaceParticipant, RaceResult)])]] -> SqlTransaction Connection ()
 saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> 
-                            forM_ xs $ \(i, [x,y]) -> do 
+                            forM_ xs $ \(i, sortBy (\x y -> compare (snd x) (snd y)) -> [x,y]) -> do 
                                 save (def {
                                     TR.tournament_id = Just tid,
                                     TR.race_id = Just i,
                                     TR.participant1_id = A.id $ rp_account $ fst x,
                                     TR.participant2_id = A.id $ rp_account $ fst y,
                                     TR.round = r
+
                                         } :: TR.TournamentResult)
 
 initTournament = registerTask pred executeTask 

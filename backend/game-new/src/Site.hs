@@ -1787,6 +1787,14 @@ tournamentResults = do
         ys <- runDb $ getResults (fromJust $ TP.tournament_id b)  
         writeMapables ys 
 
+tournamentPlayers :: Application () 
+tournamentPlayers = do 
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["tournament_id"] 
+        let b = updateHashMap xs (def :: TP.TournamentPlayer)
+        ys <- runDb $ getPlayers (fromJust $ TP.tournament_id b )
+        writeResult ys 
+
 tournamentJoin :: Application ()
 tournamentJoin = do 
     uid <- getUserId
@@ -1876,7 +1884,8 @@ routes = fmap (second wrapErrors) $ [
                 ("/Tournament/car", searchTournamentCar),
                 ("/Tournament/result", tournamentResults),
                 ("/Tournament/joined", tournamentJoined),
-                ("/Tournament/cancel", cancelTournamentJoin)
+                ("/Tournament/cancel", cancelTournamentJoin),
+                ("/Tournament/idk", tournamentPlayers)
           ]
 
 initAll = Task.initTask *> initTournament 
