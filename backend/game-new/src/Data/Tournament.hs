@@ -314,7 +314,7 @@ processTournamentRace t' ps tid = do
 
         -- current time, finishing times, race time (slowest finishing time) 
         t <- (+t') <$> liftIO (milliTime)
-        let fin r = (t+) $ ceiling $ raceTime r  
+        let fin r = (t+) $ ceiling $ (*1000) $ raceTime r  
         let te = fin . snd . last $ rs
 
         -- save race data
