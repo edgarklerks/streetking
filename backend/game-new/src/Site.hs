@@ -1179,7 +1179,7 @@ cancelTaskPersonnel = do
                             r <- DBF.personnel_cancel_task $ extract "personnel_instance_id" xs
                             return r
 
-
+-- TODO: fromSql <$> HM.lookup k xs --> Maybe Value
 extract k xs = fromSql . fromJust $ HM.lookup k xs
 
 -- dextract :: (Ord k, Convertible SqlValue a) => a -> k -> HM.HashMap k SqlValue -> a
@@ -1675,24 +1675,37 @@ searchRaceChallenge = do
         cs <- runDb $ search xs [] l o :: Application [ChgE.ChallengeExtended]
         writeMapables cs
 
-getRace :: Application ()
-getRace = do
+raceSearch :: Application ()
+raceSearch = do
         ((l,o),xs) <- getPagesWithDTD ("id" +== "race_id")
         rs <- runDb $ (search xs [] l o) :: Application [R.Race]
         writeMapables rs
 
--- getRaceDetails :: Application ()
--- getRaceDetails = do
-        
+
+raceDetails :: Integer -> SqlTransaction Connection (RAD.RaceDetails, TT.TrackMaster, [TD.TrackDetails])
+raceDetails rid = do
+        r <- aget ["race_id" |== toSql rid] (rollback "race not found") :: SqlTransaction Connection RAD.RaceDetails 
+        Task.run Task.Track $ RAD.track_id r
+        ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
+        td <- aget ["track_id" |== (SqlInteger $ RAD.track_id r)] (rollback "track data not found for race") :: SqlTransaction Connection TT.TrackMaster 
+        return (r, td, ts) 
+ 
+getRaceDetails :: Application ()
+getRaceDetails = do
+        xs <- getJson
+        rid :: Integer <- rextract "race_id" xs
+        (dat, ts, td) <- runDb $ raceDetails rid
+        writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
 userCurrentRace :: Application ()
 userCurrentRace = do
         uid <- getUserId
-        (dat, td, ts) <- runDb $ do
-            as <- search ["id" |== toSql uid] [] 1 0 :: SqlTransaction Connection [A.Account]
-            case length as > 0 of
+        (r, td, ts) <- runDb $ do
+            a <- aget ["id" |== toSql uid] (rollback "you dont exist, go away") :: SqlTransaction Connection A.Account
+            raceDetails $ A.busy_subject_id a
+{-            case length as > 0 of
                 False -> rollback "you dont exist, go away."
-                True -> do
+                    True -> do
                     rs <- search ["race_id" |== (toSql $ A.busy_subject_id (head as))] [] 1 0 :: SqlTransaction Connection [RAD.RaceDetails]
                     case length rs > 0 of
                         False -> rollback "race not found"
@@ -1703,7 +1716,8 @@ userCurrentRace = do
                             ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
                             td <- head <$> (search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster])
                             return (r, td, ts) 
-        writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON dat), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
+-}
+        writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON r), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
 
 searchTournamentCar :: Application ()
@@ -1877,7 +1891,8 @@ routes = fmap (second wrapErrors) $ [
                 ("/Race/practice", racePractice),
                 ("/Race/reward", searchRaceReward),
                 ("/Race/reports", searchReports RP.Race),
-                ("/Race/get", getRace),
+                ("/Race/details", getRaceDetails),
+                ("/Race/search", raceSearch),
                 ("/Time/get", serverTime),
                 ("/Tournament/get", viewTournament),
                 ("/Tournament/join", tournamentJoin),
