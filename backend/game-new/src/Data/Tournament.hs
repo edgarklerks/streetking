@@ -64,6 +64,7 @@ import           GHC.Generics
 import           Data.Text (Text) 
 import           Test.QuickCheck 
 import           System.Random 
+import           Data.Monoid 
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -271,20 +272,26 @@ runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd
                               plys = tournamentPlayers tfd
                               rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid) _) =  mkRaceParticipant cid aid Nothing 
                               step tdif xs = do 
+                                liftIO (print "time diff in tournamentRounds:") 
+                                liftIO (print tdif)
                                 races <- forM xs $ \xs -> do
                                              processTournamentRace (tdif) xs tr
                                 let (ps', ts) = split3 races 
                                 let ps = sortRounds ps'
                                 let tmax = maximum ts  
+                                liftIO (print "new time difference")
+                                liftIO (print tmax)
+                                liftIO (print "tdif + tmax")
+                                liftIO $ print (tmax + tdif)
+
                                 if (one ps) 
                                         then return [races]
                                         else do rest <- step (tdif + tmax) (twothree ps) 
-                                                liftIO (print rest)
                                                 return $ races : rest
                          in do 
                                flip catchSqlError error $ do 
                                    ys <- mapM rp plys >>= liftIO . unsort 
-                                   xs <- step (fromJust tid) (twothree (ys))
+                                   xs <- step 0 (twothree (ys))
                                    return $ fmap (fst . split3) $ xs 
 
 
@@ -313,7 +320,10 @@ processTournamentRace t' ps tid = do
         let rs = L.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
 
         -- current time, finishing times, race time (slowest finishing time) 
-        t <- (+t') <$> liftIO (milliTime)
+        t <- (+t') <$> liftIO milliTime
+        ct <- liftIO milliTime 
+        liftIO $ print "in process tournament" *> print ("start time: " <> show t <>  " current time " <> show ct <> " difference " <> show t') 
+            
         let fin r = (t+) $ ceiling $ (*1000) $ raceTime r  
         let te = fin . snd . last $ rs
 
@@ -368,12 +378,9 @@ tournamentTrigger i = do
 runTournament :: TK.Task -> SqlTransaction Connection Bool
 runTournament tk = return False <* (do
                 let id = "id" .<< (TK.data tk) ::  Integer
-                liftIO (print id)
                 tf <- loadTournamentFull id  
                 save ( (tournament tf) { running = True })
-                liftIO (print tf) 
                 xs <- runTournamentRounds tf  
-                liftIO (print xs)
                 saveResultTree id xs)
 
 saveResultTree :: Integer -> [[(Integer, [(RaceParticipant, RaceResult)])]] -> SqlTransaction Connection ()
@@ -665,3 +672,5 @@ unswap f g = g undefined
 
 ids :: (b -> a -> b) -> (b -> a -> b) 
 ids = swap . unswap  
+
+
