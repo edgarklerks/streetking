@@ -65,11 +65,14 @@ instance HasRandom RoleSnaplet where
 may rs rr = do 
     ct <- getCookie "user_token"
     at <- getCookie "application_token"
+    st <- getCookie "server_token" 
     ct' <- getParam "user_token"
     at' <- getParam "application_token"
+    st' <- getParam "server_token"
+
     xs <- gets runRS
-    let ls = cookieValue <$> catMaybes [ct, at]
-    let ls' = catMaybes [ct', at']
+    let ls = cookieValue <$> catMaybes [ct, at,st]
+    let ls' = catMaybes [ct', at',st']
     ts <- foldM (getRoles xs) [R.All] (ls ++ ls')
     b <- foldM (getPerms xs rr rs) False ts 
     return b
