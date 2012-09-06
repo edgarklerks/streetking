@@ -1762,7 +1762,7 @@ viewTournament = do
         a <- runDb $ fromJust <$> (load uid :: SqlTransaction Connection (Maybe A.Account))
         liftIO (print a)
         (((l, o), xs),od) <- getPagesWithDTDOrdered ["minlevel","maxlevel", "track_id", "costs", "car_id", "name", "id","players"] (
-            "id" +== "id" +&& 
+            "id" +== "tournament_id" +&& 
             "minlevel" +<=| (toSql $ A.level a) +&& 
             "maxlevel" +>=| (toSql $ A.level a) +&& 
             "minlevel" +>= "minlevel" +&& 
