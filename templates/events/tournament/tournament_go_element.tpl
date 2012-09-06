@@ -5,7 +5,7 @@
 		<div class="tournament-go-and-race-element-info-container">
 			<div>Tournament:&nbsp;<span>[:name]</span></div>
 			<div>Location:&nbsp;<span>[:track_id]</span></div>
-			<div>Time:&nbsp;<span>[:eval TIMESTAMPTODATE(start_time)]</span></div>
+			<div>Time:&nbsp;<span>[:eval TIMESTAMPTODATE(start_time)]</span> in (<span id="tournament_time_left_[:id]">[:start_time]</span>)</div>
 			<div>Amount of money (fee):&nbsp;<span>SK$&nbsp;[:costs]</span></div>
 			<div>Level:&nbsp;<span>[:minlevel] - [:maxlevel]</span></div>
 			<div>Registered players:&nbsp;<span id="tournament_[:id]">[:current_players]</span> out of <span>[:players]</span></div>

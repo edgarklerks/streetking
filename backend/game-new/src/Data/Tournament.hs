@@ -205,7 +205,7 @@ getResults mid = do
               step mt (TR.TournamentResult _ tid rid _ _ _ _ _) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
                                                 liftIO (print "Get results")
-                                                liftIO (print R.end_time r)
+                                                liftIO (print $ R.end_time r)
                                                 return (R.end_time r < mt)
                 
 
