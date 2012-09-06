@@ -52,15 +52,22 @@ internalError = terminateConnection . UE
 ------------------------------------------------------------------------------
 -- | Render login form
 
-handleUpload = with img $ I.uploadImage internalError (\sd fp mt -> liftIO $ step sd fp mt)
+
+handleUpload pred subpath = do 
+                b <- pred undefined  
+                when (not b) $ internalError "Not allowed"
+                with img $ I.uploadImage internalError (\sd fp mt -> liftIO $ step sd (joinPath [fp,subpath]) mt)
     where step sd fp mt  =  case mt of 
             "image/png" -> renameFile fp (joinPath [sd, addExtension (takeBaseName fp) ".png"])
             "image/jpg" -> renameFile fp (joinPath [sd,addExtension (takeBaseName fp) ".jpg"])
             "image/jpeg" -> renameFile fp (joinPath [sd, addExtension (takeBaseName fp) ".jpeg"])
+            otherwise -> internalError "not allowed"
+
 
 
 serveImage = with img $ I.serveImage internalError $ do 
-                x <- getParam "id"
+                image <- fromJust $ getParam "image"
+                dir <- fromJust $ getParam "dir"  
                 case x of 
                     Nothing -> internalError "no id specified"
                     Just a -> return (B.unpack a)
@@ -68,14 +75,20 @@ serveImage = with img $ I.serveImage internalError $ do
 
 {-- routes  --}
 
-
-
+constM :: Monad m => a -> b -> m a  
+constM a _ = return a 
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = let ?proxyTransform = id in [ 
-          ("/upload", handleUpload)
-         , ("/show", serveImage) 
+           ("/upload/parts", handleUpload (constM True) "parts")
+         , ("/upload/car", handleUpload (constM True) "car")
+         , ("/upload/dump", handleUpload (constM True) "dump")
+         , ("/user/car", handleUpload (constM True) "user_car")
+         , ("/user/parts", handleUpload (constM True) "user_parts")
+         , ("/user/image", handleUpload (constM True) "user_image")
+         , ("/image/:dir/:image", serveImage) 
+         , ("/", internalError "not allowed")
          ]
 
 

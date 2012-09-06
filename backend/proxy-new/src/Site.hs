@@ -117,12 +117,17 @@ getDeveloperId  = foldr step []
     where step (Developer (Just x)) z = ("devid", Just $ B.pack $ show x) : z
           step _ z = z
 
+getServerId  = foldr step [] 
+    where step (Server (Just x)) z = ("srvid", Just $ B.pack $ show x) : z
+          step _ z = z
+
 
 transparent = do
         withRequest $ \req ->  checkPerm req *> do 
                                                   ns <- with roles $ getRoles "user_token"
                                                   ps <- with roles $ getRoles "application_token"
-                                                  with proxy (runProxy $ (getUserId ns) ++ (getDeveloperId ps))
+                                                  ss <- with roles $ getRoles "server_token" 
+                                                  with proxy (runProxy $ (getUserId ns) ++ (getDeveloperId ps) ++ (getServerId ss))
 
 ($>) a f = f a
 
