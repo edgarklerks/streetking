@@ -175,7 +175,7 @@ getPlayers mid = do
     where 
           
           step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
-          step mt (TR.TournamentResult tid rid _ _ _ _ _ _) = do 
+          step mt (TR.TournamentResult _ tid rid _ _ _ _ _ ) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
                                                 return (R.start_time r < mt)
 
@@ -202,7 +202,7 @@ getResults mid = do
                                 when (ss `sameLength` rs) $ save (tr { T.running = False, T.done = True}) >> return ()  
                                 return ss 
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
-              step mt (TR.TournamentResult tid rid _ _ _ _ _ _) = do 
+              step mt (TR.TournamentResult _ tid rid _ _ _ _ _) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
                                                 liftIO (print "Get results")
                                                 liftIO (print R.end_time r)
