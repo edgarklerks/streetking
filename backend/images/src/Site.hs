@@ -52,7 +52,13 @@ internalError = terminateConnection . UE
 ------------------------------------------------------------------------------
 -- | Render login form
 
-handleUpload = with img $ I.uploadImage internalError (\sd fp mt -> liftIO $ step sd fp mt)
+handleUploadWithName subpath = with img $ I.uploadImage internalError (\sd fp mt -> liftIO $ step sd (joinPath [fp,subpath]) mt)
+    where step sd fp mt  =  case mt of 
+            "image/png" -> renameFile fp (joinPath [sd, addExtension (takeBaseName fp) ".png"])
+            "image/jpg" -> renameFile fp (joinPath [sd,addExtension (takeBaseName fp) ".jpg"])
+            "image/jpeg" -> renameFile fp (joinPath [sd, addExtension (takeBaseName fp) ".jpeg"])
+
+handleUpload subpath = with img $ I.uploadImage internalError (\sd fp mt -> liftIO $ step sd (joinPath [fp,subpath]) mt)
     where step sd fp mt  =  case mt of 
             "image/png" -> renameFile fp (joinPath [sd, addExtension (takeBaseName fp) ".png"])
             "image/jpg" -> renameFile fp (joinPath [sd,addExtension (takeBaseName fp) ".jpg"])
@@ -74,7 +80,11 @@ serveImage = with img $ I.serveImage internalError $ do
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = let ?proxyTransform = id in [ 
-          ("/upload", handleUpload)
+           ("/upload/parts", handleUploadWithName "parts")
+         , ("/upload/car", handleUploadWithName "car")
+         , ("/user/car", handleUploadWithName "user/car")
+         , ("/user/parts", handleUploadWithName "user/parts")
+         , ("/user/image", handleUploadWithName "user/image")
          , ("/show", serveImage) 
          ]
 
