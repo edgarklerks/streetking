@@ -1,4 +1,4 @@
-{-# LANGUAGE ViewPatterns, BangPatterns, DoAndIfThenElse #-}
+{-# LANGUAGE ViewPatterns, BangPatterns #-}
 module Data.Role where 
    
 import qualified Data.TimedMap as T 
