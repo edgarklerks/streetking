@@ -150,7 +150,6 @@ allowAll = allowCredentials *> allowOrigin *> allowMethods *> allowHeaders
 allowOrigin :: Application ()
 allowOrigin = do 
             g <- getRequest
-            liftIO (print g)
             modifyResponse (addHeader "Content-Type" "text/plain")
             modifyResponse (\x -> 
                case getHeader "Origin" g of 
