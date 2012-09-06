@@ -39,6 +39,7 @@ import Database.HDBC.SqlValue
 import qualified Model.Application as A
 import  Control.Arrow (second)
 import Debug.Trace 
+import Data.List (tails, intercalate) 
 ------------------------------------------------------------------------------
 import           Application
 
@@ -68,7 +69,6 @@ routes = let ?proxyTransform = id in fmap (second enroute) $ [
           ,("/Role/application", roleApp)
           , ("/Role/user", roleUser)
           , ("/crossdomain.xml", crossDomain)
- 
          , ("/", transparent)
          ]
 
@@ -94,9 +94,21 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     return $ App prx dht p rnd ps 
 
 
+split :: Eq a => a -> [a] -> [[a]]
+split c xs = foldr step [] xs
+    where step x z@(y:ys) | x == c = [] : z 
+                          | otherwise = ((x:y):ys)
+          step x [] = [[x]]
+
+checkAny method b = worker (tails $ split '/' b)
+    where worker (uri:xs) = do 
+                    s <- with roles $ may (intercalate "/" uri) method 
+                    if s then return True else worker xs 
+          worker [] = return False   
+
 internalError = terminateConnection . UserErrorE . C.pack  
 
-checkPerm req = (with roles $ may uri method) >>= \x -> unless x (internalError "You are not allowed to access the resource")
+checkPerm req = (checkAny method uri) >>= \x -> unless x (internalError "You are not allowed to access the resource")
     where uri = stripSL $ B.unpack $ ?proxyTransform $ B.tail  (req $> rqContextPath) `B.append` (req $> rqPathInfo) 
           method = frm $ req $> rqMethod 
           frm :: Method -> RestRight 
