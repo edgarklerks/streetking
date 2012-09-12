@@ -50,29 +50,39 @@ uploadImage e h = do
     dd <- gets _dumpdir
     sd <- gets _servdir
     m <- gets _magicctx
-    handleFileUploads dd (setMaximumFormInputSize (1024 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200)) $ \xs -> do
+    liftIO (print "uploading file")
+    handleFileUploads dd (setMaximumFormInputSize (1024 * 200 * 200 * 200) $ defaultUploadPolicy) (const $ allowWithMaximumSize (1024 * 200 * 200)) $ \xs -> do
+        liftIO (print xs)
         when (null xs) $ e "no file uploaded"
         case snd $ head xs of 
-            Left x -> e (T.unpack $ policyViolationExceptionReason x)
+            Left x -> liftIO (print "policy violation") *> e (T.unpack $ policyViolationExceptionReason x)
             Right f -> do 
+                liftIO (print "Right shit")
                 mt <- liftIO $ magicFile m f
+                liftIO (print mt)
                 when (not $ anyAllowed mt at) $ e "wrong mimetype"
+                liftIO (print f)
                 h sd f mt  
                 
-    return undefined 
+    writeText "{\"result\": true}"
 
 anyAllowed mt = or . foldr step [] 
-    where step x z = x `isInfixOf` mt : z
+    where step x z = x `isPrefixOf` mt : z
 
 serveImage e h = do 
     sd <- gets _servdir 
     at <- gets _allowedTypes
     fp <- h
     m <- gets _magicctx
+    liftIO (print $ joinPath [sd,fp])
     b <- liftIO $ doesFileExist (joinPath [sd,fp])
     when (not b) $ e "file doesn't exist"
     mt <- liftIO $ magicFile m (joinPath [sd, fp])
     liftIO $ print (head at)
+    liftIO $ print "mimetypes"
+    liftIO $ print at 
+    liftIO $ print "detected type"
+    liftIO $ print mt 
     when (not $ anyAllowed mt at) $ e $ "wrong mimetype" ++ (show mt)
     serveFile (joinPath [sd,fp])
 

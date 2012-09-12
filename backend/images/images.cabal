@@ -60,7 +60,14 @@ Executable images
     data-default,
     template-haskell,
     haskell-src,
-    aeson
+    aeson,
+    cond,
+    cereal,
+    vector,
+    base64-bytestring,
+    attoparsec,
+    QuickCheck,
+    data-object
 
   if flag(development)
     build-depends:
