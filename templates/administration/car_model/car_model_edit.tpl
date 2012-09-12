@@ -15,4 +15,6 @@
 <div><label>year:</label><input type="text" name="year" value="[:0.year]"/></div>
 	
 	<input type="button" value="save" id="save" module="SAVE">
+	<input type="button" value="Upload image" module="CAR_SELECT_MODEL_IMAGE">
+	
 </form>
