@@ -41,7 +41,7 @@
 			<li><a href="#transaction/get" class="button" module="TRANSACTION_LIST">Transactions</a></li>
 			<li><a href="#config/get" class="button" module="CONFIG_LIST">Config</a></li>
 			<li><a href="#tournament/get" class="button" module="TOURNAMENT_LIST">tournament</a></li>
-			<li><a href="#tournament/get" class="button" module="DUMP_IMAGE_LIST">dump image</a></li>
+			<li><a href="#image/listing" class="button" module="DUMP_IMAGE_LIST">dump image</a></li>
 		</ul>
 	</li>	
 </ul>
