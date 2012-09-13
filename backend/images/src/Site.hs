@@ -28,19 +28,25 @@ import qualified SqlTransactionSnaplet as S (runDb)
 import          SqlTransactionSnaplet hiding (runDb)
 import qualified ImageSnapLet as I (uploadImage, serveImage)
 import           ImageSnapLet hiding (uploadImage, serveImage)
+import          Control.Monad.State hiding (when,forM_) 
 import          Control.Arrow hiding (app)
 import          Data.Monoid 
 import          Control.Monad.Trans
 import          System.FilePath.Posix
+import          System.Posix.Files 
 import          System.Directory
 import          Data.Typeable
 import          Data.String 
 import qualified Control.Monad.CatchIO as CIO
 import qualified Model.Application as A
 import           Control.Conditional
+import qualified Model.CarInstance as CI 
+import qualified Data.HashMap.Strict as S 
 ------------------------------------------------------------------------------
 import           Application
 import           Data.And 
+import           Data.SqlTransaction 
+import           Data.Aeson 
 import Model.General
 import qualified SqlTransactionSnaplet as S
 import Database.HDBC.SqlValue
@@ -93,7 +99,7 @@ handleUpload pred subpath = do
 
 
 
-serveImage = with img $ I.serveImage internalError $ do 
+serveImage = with img $ I.serveImage (const $ redirect "/image/dump/notfound.jpeg") $ do 
                 image <- fromJust <$> getParam "image"
                 dir <- fromJust <$> getParam "dir"  
 
@@ -115,7 +121,7 @@ partModel = getParamAnd "part_id"
 fileName = getParamAnd "filename" 
 carInstance = getParamAnd "car_instance_id"
 partInstance = getParamAnd "part_instance_id"
-userExist = getParamAnd "userid"
+userExist = return (One "34") -- getParamAnd "userid"
 trackId = getParamAnd "track_id"
 
 
@@ -126,11 +132,39 @@ enroute x = do
         g <- rqMethod <$> getRequest 
         case g of 
             OPTIONS -> allowAll 
-            otherwise -> allowAll *> CIO.catch x (\(UE e) -> writeBS $ B.pack $  "{\"error\":\"" <> e <> "\"}")
+            otherwise -> allowAll *> CIO.catch x (\(UE e) -> 
+                          writeLBS (encode $ S.fromList [("error" :: String,  e)])
+                    )
+
+ls [x,y] = x 
+ls [x] = error "not found"
+ls [] = error "not found"
+ls (x:xs) = ls xs 
 
 
 
-------------------------------------------------------------------------------
+deleteFile = do 
+            s <- B.unpack . fromJust <$> getParam "file"
+            let dir = ls $ splitDirectories s 
+            let nm = takeBaseName s 
+            let ext = takeExtension s
+            let fs = joinPath [dir, addExtension nm ext]
+            p <- with img $ getServDir
+            let fp = joinPath [p, "quarantine"]
+            let path = joinPath [p, fs]
+            let replace b s (x:xs) | b == x = s : replace b s xs 
+                                   | otherwise = x : replace b s xs 
+                replace b s [] = [] 
+            let ps = (joinPath [fp, replace '/' '-' fs])
+            liftIO $ print path 
+ 
+            b <- liftIO $ fileExist path  
+            when b $ do 
+                   liftIO $ print "asdsadsad"
+                   liftIO $ renameFile path ps  
+            when (not b) $ internalError "file does not exists" 
+            writeLBS (encode $ S.fromList [("result" :: String, ps)])
+
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = fmap (second enroute) $ [ 
@@ -138,13 +172,52 @@ routes = fmap (second enroute) $ [
          , ("/upload/car", handleUpload carModel "car")
          , ("/upload/dump", handleUpload fileName "dump")
          , ("/upload/track", handleUpload trackId "track")
-         , ("/user/car", handleUpload ((<>) <$> userExist <*> carInstance) "user_car")
-         , ("/user/parts", handleUpload ((<>) <$> userExist <*> partInstance) "user_parts")
+         , ("/user/car", handleUpload (carInstance) "user_car")
+         , ("/user/parts", handleUpload (partInstance) "user_parts")
          , ("/user/image", handleUpload (userExist) "user_image")
          , ("/crossdomain.xml", crossDomain)
+         , ("/delete", deleteFile)
+         , ("/image/user_car/:image", serveCar)
          , ("/image/:dir/:image", serveImage) 
---          , ("/", internalError "not allowed top")
-         ]
+         , ("/image/listing/:dir", dumpListing)
+         , ("/", internalError "not allowed top")
+        ]
+
+dumpListing = do 
+        dir <- B.unpack . fromJust <$> getParam "dir"
+        sd <- with img $ getServDir
+        xs <- liftIO $ getDirectoryContents (joinPath [sd,dir])
+        writeLBS (encode $ S.fromList [("result" :: String, xs)])  
+
+serveCar = do 
+    image <- fromJust <$> getParam "image" 
+    let idi = read $ takeBaseName (B.unpack image) :: Integer
+    let dir = "user_car" 
+    s <- with img $ getServDir 
+    fe <- liftIO $ fileExist (joinPath [s, "user_car", B.unpack image]) 
+    when (not fe) $ do 
+                ci <- runDb $ (load idi :: SqlTransaction Connection (Maybe CI.CarInstance))
+                case ci of 
+                    Nothing -> error "no car_id"
+                    Just ci -> do 
+                           redirect ("/image/car/" <> (B.pack $ show $ CI.car_id ci) <> ".jpeg")
+{--                        liftIO $ createSymbolicLink 
+                                (joinPath ["..",  "car", addExtension (show $ CI.car_id ci) ".jpeg" ])
+                                (joinPath [s, "user_car", addExtension (show idi) ".jpeg"]) 
+                        return () --}
+
+
+
+    with img $ I.serveImage internalError $ do 
+                let b = joinPath [takeBaseName (B.unpack dir), addExtension (takeBaseName (B.unpack image)) (takeExtension $ B.unpack image)]
+                return b 
+                        
+                    
+
+
+
+    
+
 crossDomain :: Application()
 crossDomain = do
     modifyResponse (addHeader "Content-Type" "text/xml")
