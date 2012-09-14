@@ -1645,7 +1645,7 @@ processRace t ps tid = do
 -- TODO: this function is not finished.
 getReward :: Bool -> SqlTransaction Connection RaceRewards
 getReward w = do
-        pt <- aload 59075 (rollback "reward part details not found") :: SqlTransaction Connection PD.PartDetails
+        pt <- aload 58345 (rollback "reward part details not found") :: SqlTransaction Connection PD.PartDetails
         let wr = RaceRewards 0 20 [pt] 
         let br = RaceRewards 0 5 []
         case w of
@@ -1703,20 +1703,6 @@ userCurrentRace = do
         (r, td, ts) <- runDb $ do
             a <- aget ["id" |== toSql uid] (rollback "you dont exist, go away") :: SqlTransaction Connection A.Account
             raceDetails $ A.busy_subject_id a
-{-            case length as > 0 of
-                False -> rollback "you dont exist, go away."
-                    True -> do
-                    rs <- search ["race_id" |== (toSql $ A.busy_subject_id (head as))] [] 1 0 :: SqlTransaction Connection [RAD.RaceDetails]
-                    case length rs > 0 of
-                        False -> rollback "race not found"
-                        True -> do
-                            let r = head rs
-                            Task.run Task.User uid
-                            Task.run Task.Track $ RAD.track_id r
-                            ts <- search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1000 0 :: SqlTransaction Connection [TD.TrackDetails]
-                            td <- head <$> (search ["track_id" |== (SqlInteger $ RAD.track_id r)] [] 1 0 :: SqlTransaction Connection [TT.TrackMaster])
-                            return (r, td, ts) 
--}
         writeResult' $ AS.toJSON $ HM.fromList [("race" :: LB.ByteString, AS.toJSON r), ("track_sections", AS.toJSON ts), ("track_data", AS.toJSON td)]
 
 
