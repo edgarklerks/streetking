@@ -18,5 +18,7 @@
 <div><label>weight:</label><input type="text" name="weight" value="[:0.weight]"/></div>
 
 	<input type="button" value="save" id="save" module="SAVE">
+	<input type="button" value="Upload image" module="PART_SELECT_MODEL_IMAGE">
 </form>
+
 <div>[:0.visual]</div>
