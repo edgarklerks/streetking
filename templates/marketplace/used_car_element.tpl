@@ -1,5 +1,6 @@
 <div class="car-element-container backgound-darkgray">
-	<div class="car-element-image-container car-element-image-container-image" style="background-image:url(test_store/car_[:car_instance_id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
+	<!--<div class="car-element-image-container car-element-image-container-image" style="background-image:url(test_store/car_[:car_instance_id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>-->
+	<div class="car-element-image-container car-element-image-container-image" style='background-image:url([:eval IMAGESERVER("user_car")][:car_instance_id].jpeg)'>&nbsp;</div>
 	<div class="car-element-data-container">
 		<div class="car-element-info-container">
 			<div class="car-element-infotext-container">
