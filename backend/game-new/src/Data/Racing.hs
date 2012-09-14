@@ -115,7 +115,6 @@ $(genMapableRecord "RaceRewards"
             ("money", ''Integer),
             ("respect", ''Integer),
             ("parts", ''PartsDetails)
---            ("parts", ''Parts)
        ])
 
 emptyRaceRewards :: RaceRewards
