@@ -90,11 +90,10 @@ handleUpload pred subpath = do
                                     [x] -> x 
                                     (x:xs) -> foldl' (\z x -> z ++ "_" ++ x) x xs 
 
-                with img $ I.uploadImage (\x -> cons "wop" *> internalError x) (\sd fp mt -> liftIO $ do 
-                                                    print fp 
+                with img $ I.uploadImage (\x -> internalError x) (\sd fp mt -> liftIO $ do 
                                                     step sd fp (fp_new') subpath mt)
     where step sd fp fp_new sp mt | "image/png" `isPrefixOf` mt = renameFile fp (joinPath [sd, sp, addExtension fp_new ".png"])
-                        | "image/jpg" `isPrefixOf` mt || "image/jpeg" `isPrefixOf` mt = liftIO (print $ "blub: " ++  joinPath [sd, sp, addExtension fp_new ".jpeg"]) *> renameFile fp (joinPath [sd, sp, addExtension fp_new ".jpeg"])
+                        | "image/jpg" `isPrefixOf` mt || "image/jpeg" `isPrefixOf` mt =  renameFile fp (joinPath [sd, sp, addExtension fp_new ".jpeg"])
                         | otherwise = internalError ("not allowed by mimetype: " ++ mt)
 
 
@@ -104,7 +103,6 @@ serveImage = with img $ I.serveImage (const $ redirect "/image/dump/notfound.jpe
                 dir <- fromJust <$> getParam "dir"  
 
                 let b = joinPath [takeBaseName (B.unpack dir), addExtension (takeBaseName (B.unpack image)) (takeExtension $ B.unpack image)]
-                liftIO (print b)
                 return b 
 
 
@@ -156,11 +154,9 @@ deleteFile = do
                                    | otherwise = x : replace b s xs 
                 replace b s [] = [] 
             let ps = (joinPath [fp, replace '/' '-' fs])
-            liftIO $ print path 
  
             b <- liftIO $ fileExist path  
             when b $ do 
-                   liftIO $ print "asdsadsad"
                    liftIO $ renameFile path ps  
             when (not b) $ internalError "file does not exists" 
             writeLBS (encode $ S.fromList [("result" :: String, ps)])
