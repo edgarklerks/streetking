@@ -170,7 +170,7 @@ allowOrigin = do
             modifyResponse (addHeader "Content-Type" "text/plain")
             modifyResponse (\x -> 
                case getHeader "Origin" g of 
-                    Nothing -> traceShow x $ addHeader "Access-Control-Allow-Origin" "http://192.168.1.99" x
+                    Nothing -> traceShow x $ addHeader "Access-Control-Allow-Origin" "*" x
                     Just n -> traceShow n $  addHeader "Access-Control-Allow-Origin" n x
                 )
 -- Access-Control-Allow-Credentials: true  
