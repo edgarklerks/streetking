@@ -16,11 +16,14 @@ type Type = String
 
 data Behaviour where 
     Max :: Behaviour 
+    Min :: Behaviour
     MinMax :: Behaviour 
     Equal :: Behaviour 
     Like :: Behaviour 
     Ignore :: Behaviour 
+ deriving Eq
 
+defaultBehaviours :: Behaviours
 defaultBehaviours = [
             ("Integer", MinMax),
             ("Int", MinMax),
@@ -28,6 +31,7 @@ defaultBehaviours = [
             ("String", Like),
             ("Bool", Equal),
             ("Id", Equal),
+            ("Id", MinMax),
             ("Char", Equal)
         ]
 
@@ -48,13 +52,21 @@ build bs a ex =  (foldr (\(t,f) z -> fromJust (action t f) +&& z) ("1" +== "1") 
     where fds = fields a
           action t f = custom f t <|> pure (standard f t)
           custom t f = findException f t ex 
-          standard (lkb -> t) f =  case t of 
-                                    Equal -> f +== f
-                                    Max -> f +<= (f ++ "-max") 
-                                    MinMax -> f +>= (f ++ "-min") +&& f +<= (f ++ "-max")
-                                    Like -> f +%% f 
-                                    Ignore -> "1" +== "1"
-          lkb t = case lookup t bs of
-                        Nothing -> Equal 
-                        Just a -> a 
+          standard (lkb -> ts) f = foldr step ("1" +== "1") ts 
+                where step t z = case t of 
+                                    Equal -> f +== f +&& z
+                                    Max -> f +<= (f ++ "-max") +&& z 
+                                    Min -> f +>= (f ++ "-min") +&& z 
+                                    MinMax -> f +>= (f ++ "-min") +&& f +<= (f ++ "-max") +&& z 
+                                    Like -> f +%% f +&& z 
+                                    Ignore -> "1" +== "1" +&& z 
+          lkb t = case lookupMany t bs of
+                        [] -> [Equal]
+                        xs -> xs 
+
+
+lookupMany :: Eq a => a -> [(a,b)] -> [b] 
+lookupMany a [] = [] 
+lookupMany a ((s,x):xs) | s == a = x : lookupMany a xs 
+                        | otherwise = lookupMany a xs 
 
