@@ -67,7 +67,8 @@ Executable images
     base64-bytestring,
     attoparsec,
     QuickCheck,
-    data-object
+    data-object,
+    unix
 
   if flag(development)
     build-depends:

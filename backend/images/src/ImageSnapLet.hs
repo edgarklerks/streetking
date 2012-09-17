@@ -7,7 +7,8 @@ module ImageSnapLet (
     allowedTypes,
     uploadImage,
     serveImage, 
-    initImage
+    initImage,
+    getServDir 
 
 ) where 
 
@@ -44,6 +45,8 @@ class HasImageSnapLet b where
 makeLenses [''ImageConfig]
 
 testConfig = IC "swup" "fnuk" ["test","test22"] 
+
+getServDir = gets _servdir 
 
 uploadImage e h = do 
     at <- gets _allowedTypes 
