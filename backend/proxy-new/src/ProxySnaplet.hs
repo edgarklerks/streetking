@@ -219,8 +219,9 @@ runProxy prs = do
     let  uri = req $> rqURI
     let  resource = req $> rqContextPath 
     let  subresource = req $> rqPathInfo 
+    let  (Just ct) = getHeader "Content-Type" req 
     let  params = fmap (second (Just . Prelude.head)) $ M.toList $ req $> rqParams 
-    let  request = HE.def {HE.method = C.pack . show $ method, HE.path = (?proxyTransform $ resource `B.append` subresource), HE.host = host, HE.port = port, HE.queryString = params ++ prs}  
+    let  request = HE.def {HE.method = C.pack . show $ method, HE.path = (?proxyTransform $ resource `B.append` subresource), HE.host = host, HE.port = port, HE.queryString = params ++ prs, HE.requestHeaders = [("Content-Type", ct)] }  
     sendAbroad req request 
     return ()
 
