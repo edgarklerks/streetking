@@ -12,8 +12,11 @@ import Snap.Snaplet.Heist
 import Snap.Snaplet.Auth
 import Snap.Snaplet.Session
 import ConfigSnaplet
-import SqlTransactionSnaplet
+import SqlTransactionSnaplet hiding (runDb)
+import qualified SqlTransactionSnaplet as ST 
 import ImageSnapLet
+import Control.Monad.State  
+
 
 ------------------------------------------------------------------------------
 data App = App
@@ -24,6 +27,9 @@ data App = App
     }
 
 makeLens ''App
+
+runDb a = with sql $ ST.runDb error a
+
 
 instance HasHeist App where
     heistLens = subSnaplet heist
