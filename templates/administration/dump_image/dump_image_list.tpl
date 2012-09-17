@@ -1,2 +1,2 @@
-<div><a href="#[:name]" class="button" module="DUMP_IMAGE_EDIT">upload new image</a></div>
+<div><input type="button" value="upload new image" id="upload" module="DUMP_IMAGE_EDIT"></div>
 <div id="list"></div>
