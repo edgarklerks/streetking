@@ -19,13 +19,13 @@
 <div><label>weight:</label><input type="text" name="weight" value="[:0.weight]"/></div>
 
 	<input type="button" value="save" id="save" module="SAVE">
-	<input type="button" value="Upload image" module="PART_SELECT_MODEL_IMAGE">
+	<!--<input type="button" value="Upload image" module="PART_SELECT_MODEL_IMAGE">-->
 </form>
 </div>
 <div>
-	<img src="http://r2.graffity.me:9012/image/parts/[:0.id].jpeg"  style="width:400px; height:250px">
-	<div id="selectedImage"></div>
+	<img src='[:eval IMAGESERVER("[\"part\","+0.id+"]")]'  style="width:400px; height:250px">
 	<input id="fileupload" type="file" name="files" data-url="">
+	<div id="selectedImage"></div>
 </div>
 
 <div>[:0.visual]</div>
