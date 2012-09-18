@@ -1,5 +1,6 @@
 <div class="part-element-container backgound-darkgray">
-	<div class="part-element-image-container black-icons-100 [:when (name == "engine")]{part-element-[:name]-black}[:when (name != "engine")]{part-element-image-container-image}" [:when (name != "engine")]{style="background-image:url(test_store/[:requestParams.part_type]/[:name]_[:d3d_model_id].jpg?t=[:eval TIMESTAMP(id)])"}>[:when (name != "engine")]{<div class="part-element-image-zoom element-image-zoom">&nbsp;</div>}</div>
+	<!--<div class="part-element-image-container black-icons-100 [:when (name == "engine")]{part-element-[:name]-black}[:when (name != "engine")]{part-element-image-container-image}" [:when (name != "engine")]{style="background-image:url(test_store/[:requestParams.part_type]/[:name]_[:d3d_model_id].jpg?t=[:eval TIMESTAMP(id)])"}>[:when (name != "engine")]{<div class="part-element-image-zoom element-image-zoom">&nbsp;</div>}</div>-->
+	<div class="part-element-image-container black-icons-100  part-element-image-container-image" style='background-image:url([:eval IMAGESERVER("[\"part\","+id+",\""+name+"\"]")])'><div class="part-element-image-zoom element-image-zoom">&nbsp;</div></div>
 	<div class="part-element-data-container">
 		<div class="part-element-info-container">
 			<div class="part-element-infotext-container">
