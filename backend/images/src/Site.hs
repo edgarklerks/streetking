@@ -130,8 +130,14 @@ enroute x = do
         g <- rqMethod <$> getRequest 
         case g of 
             OPTIONS -> allowAll 
-            otherwise -> allowAll *> CIO.catch x (\(UE e) -> 
-                          writeLBS (encode $ S.fromList [("error" :: String,  e)])
+            otherwise -> allowAll *> CIO.catch x (\(UE e) -> do
+                            xs <- getParam "default"
+                            p <- with img $ getServDir
+                            case xs of 
+                                Just rs -> redirect ("dump/" <> rs)
+                                Nothing -> redirect ("dump/notfound.jpeg") 
+                                -- writeLBS (encode $ S.fromList [("error" :: String,  e)])
+--
                     )
 
 ls [x,y] = x 
