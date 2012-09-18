@@ -1,6 +1,6 @@
 <div class="car-info-box-container" mtitle="[:0.manufacturer_name] [:0.name] [:0.year] at level [:0.level]">
 	<!--<div class="car-info-image-container" style="background-image:url(test_store/car_[:0.id].jpg?t=[:eval TIMESTAMP(0.id)])">-->
-	<div class="car-info-image-container" style='background-image:url([:eval IMAGESERVER("user_car")][:0.id].jpeg)'>
+	<div class="car-info-image-container" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+0.id+",\"car\"]")])'>
 		<div class="car-info-container backgound-transparent">
 			<div class="car-info-data-container">
 				<div>Manufacturer:&nbsp;<span>[:0.manufacturer_name]</span></div>
