@@ -2,8 +2,7 @@
 	<div class="garage-car-setup-part-element-inner-container">
 		<div class="garage-car-setup-part-element-image-box">
 <!--			<div class="garage-car-setup-part-element-image-container [:when (improvement > 0 & unique == false)]{garage-car-setup-part-element-image-container-improved}[:when (unique)]{garage-car-setup-part-element-image-container-unique} black-icons-100 [:when (name == "engine")]{car-info-part-element-[:name]-black}[:when (name != "engine")]{garage-car-setup-part-element-image-container-image}" [:when (name != "engine")]{style="background-image:url(test_store/[:name]/[:name]_[:d3d_model_id].jpg?t=[:eval TIMESTAMP(id)])"}>&nbsp;</div>-->
-			<div class="garage-car-setup-part-element-image-container [:when (improvement > 0 & unique == false)]{garage-car-setup-part-element-image-container-improved}[:when (unique)]{garage-car-setup-part-element-image-container-unique} black-icons-100 [:when (name == "engine")]{car-info-part-element-[:name]-black}[:when (name != "engine")]{garage-car-setup-part-element-image-container-image}" [:when (name != "engine")]{style='background-image:url([:eval IMAGESERVER("part")][:id].jpeg)'}>&nbsp;</div>
-			<div class="garage-car-setup-part-element-level">Level:&nbsp;<span>[:level]</span></div>
+			<div class="garage-car-setup-part-element-image-container [:when (improvement > 0 & unique == false)]{garage-car-setup-part-element-image-container-improved}[:when (unique)]{garage-car-setup-part-element-image-container-unique} black-icons-100 garage-car-setup-part-element-image-container-image" style='background-image:url([:eval IMAGESERVER("[\"part\","+id+",\""+name+"\"]")])'>&nbsp;</div>			<div class="garage-car-setup-part-element-level">Level:&nbsp;<span>[:level]</span></div>
 		</div>
 		<div class="garage-car-setup-part-element-data-container">
 			<div class="garage-car-setup-part-element-info-container">
