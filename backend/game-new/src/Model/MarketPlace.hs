@@ -41,7 +41,8 @@ $(genAll "MarketPlace" "market_place" [
     ("unique", ''Bool),
     ("improvement", ''Integer),
     ("wear", ''Integer),
-    ("account_id", ''Integer)
+    ("account_id", ''Integer),
+    ("part_id", ''Integer)
  ])
 
 

@@ -42,6 +42,7 @@ import qualified Model.Application as A
 import           Control.Conditional
 import qualified Model.CarInstance as CI 
 import qualified Data.HashMap.Strict as S 
+import qualified Model.ParameterTable as PT 
 ------------------------------------------------------------------------------
 import           Application
 import           Data.And 
