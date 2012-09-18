@@ -23,8 +23,9 @@
 </form>
 </div>
 <div>
-	<img src="http://r2.graffity.me:9012/image/parts/[:0.id].jpeg" style="width:500px; height:300px">
-	<input id="fileupload" type="file" name="files" data-url="" multiple>
+	<img src="http://r2.graffity.me:9012/image/parts/[:0.id].jpeg"  style="width:400px; height:250px">
+	<div id="selectedImage"></div>
+	<input id="fileupload" type="file" name="files" data-url="">
 </div>
 
 <div>[:0.visual]</div>
