@@ -127,8 +127,8 @@ failImage = do
                             xs <- getParam "default"
                             p <- getServDir
                             case xs of 
-                                Just rs -> redirect ("/dump/" <> rs)
-                                Nothing -> redirect ("/dump/notfound.jpeg") 
+                                Just rs -> redirect ("/image/dump/" <> rs)
+                                Nothing -> redirect ("/image/dump/notfound.jpeg") 
 
 
 enroute x = do 
