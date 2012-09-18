@@ -2,7 +2,7 @@
 	<div class="error">&nbsp;</div>
 	<input type="hidden" name="id" value="[:0.id]"/>
 	
-<div><label>car_id:</label><input type="text" name="car_id" value="[:0.car_id]"/></div>
+<div><label>car_id:</label><input type="text" name="car_id" list="car_model" value="[:0.car_id]"/></div>
 <div><label>d3d_model_id:</label><input type="text" name="d3d_model_id" value="[:0.d3d_model_id]"/></div>
 <div><label>level:</label><input type="text" name="level" value="[:0.level]"/></div>
 <div><label>parameter1:</label><input type="text" name="parameter1" value="[:0.parameter1]"/></div>
