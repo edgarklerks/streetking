@@ -42,6 +42,7 @@ import qualified Model.Config as CO
 import qualified Model.Garage as G 
 import qualified Model.Personnel as P
 import qualified Model.PersonnelInstance as PI
+import qualified Model.ParameterTable as PT 
 import           Snap.Util.FileServe
 import           Text.Templating.Heist 
 import           SqlTransactionSnaplet hiding (runDb)
@@ -100,27 +101,29 @@ handleNewUser = method GET handleForm <|> method POST handleFormSubmit
     handleForm = H.render "new_user"
     handleFormSubmit = registerUser "login" "password" >> redirect "/"
 
-
 visualPartModel = do 
             xs <- getJson 
             let c = updateHashMap xs (def :: P.Part) 
-            s <- runDb $ loadPartModel (fromJust (PP.id c))
-            writeSVG s
+            case PP.id c of 
+                Just a -> writeSVG =<< runDb (loadPartModel a)
+                Nothing -> writeAeson $ S.fromList [("result" :: String, "" :: String)] 
 
 visualCarInstance = do 
             xs <- getJson 
             let c = updateHashMap xs (def :: CI.CarInstance)
-            s <- runDb $ loadCarInstance (fromJust (CI.id c)) 
-            writeSVG s
+            case CI.id c of 
+                Just a -> writeSVG =<< runDb (loadCarInstance a)
+                Nothing -> writeAeson $ S.fromList [("result" :: String, "" :: String )] 
+
 
 visualPartInstance = do 
             xs <- getJson 
             let c = updateHashMap xs (def :: PI.PartInstance)
-            s <- runDb $ loadPartInstance (fromJust (PIn.id c))
-            writeSVG s 
+            case PIn.id c of 
+                Just a -> writeSVG =<< runDb (loadPartInstance a) 
+                Nothing -> writeAeson $ S.fromList [("result" :: String, "" :: String)] 
 
-writeSVG s = do 
-    writeAeson $ S.fromList  [("result" :: String, unlines $ drop 4 $ lines $ SB.render s)]
+writeSVG s = writeAeson $ S.fromList  [("result" :: String, unlines $ drop 4 $ lines $ SB.render s)]
 
 
 ------------------------------------------------------------------------------
@@ -131,6 +134,8 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/new_user", with auth handleNewUser)
          , ("/car_model/get", getModel (def :: C.Car)) 
          , ("/car_model/put", putModel (def :: C.Car))
+         , ("/parameter/get", getModel (def :: PT.ParameterTable))
+         , ("/parameter/put", putModel (def :: PT.ParameterTable))
          , ("/car_instance/get", getModel (def :: CI.CarInstance))
          , ("/car_instance/put", putModel (def :: CI.CarInstance))
          , ("/car_instance/visual", visualCarInstance) 
