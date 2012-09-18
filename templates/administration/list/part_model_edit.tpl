@@ -1,1 +1,1 @@
-<div>[:id], [:name]</div>
+<div>[:id], [:name] <input type="button" value="+" id="[id]" /></div>
