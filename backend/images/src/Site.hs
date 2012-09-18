@@ -98,7 +98,7 @@ handleUpload pred subpath = do
 
 
 
-serveImage = with img $ I.serveImage (const $ redirect "/image/dump/notfound.jpeg") $ do 
+serveImage = with img $ I.serveImage (const failImage) $ do 
                 image <- fromJust <$> getParam "image"
                 dir <- fromJust <$> getParam "dir"  
 
@@ -123,6 +123,12 @@ userExist = return (One "34") -- getParamAnd "userid"
 trackId = getParamAnd "track_id"
 
 
+failImage = do
+                            xs <- getParam "default"
+                            p <- getServDir
+                            case xs of 
+                                Just rs -> redirect ("/dump/" <> rs)
+                                Nothing -> redirect ("/dump/notfound.jpeg") 
 
 
 enroute x = do 
@@ -131,14 +137,8 @@ enroute x = do
         case g of 
             OPTIONS -> allowAll 
             otherwise -> allowAll *> CIO.catch x (\(UE e) -> do
-                            xs <- getParam "default"
-                            p <- with img $ getServDir
-                            case xs of 
-                                Just rs -> redirect ("dump/" <> rs)
-                                Nothing -> redirect ("dump/notfound.jpeg") 
-                                -- writeLBS (encode $ S.fromList [("error" :: String,  e)])
+                                writeLBS (encode $ S.fromList [("error" :: String,  e)]))
 --
-                    )
 
 ls [x,y] = x 
 ls [x] = error "not found"
