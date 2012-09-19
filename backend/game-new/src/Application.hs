@@ -71,6 +71,10 @@ getUniqueKey = with rnd $ R.getUniqueKey
 runDb a = with db $ ST.runDb error a
 
 sendLetter uid letter = with notf $ N.sendLetter uid letter 
+
+setRead uid letter = with notf $ N.setRead uid letter 
+
+setArchive uid letter = with notf $ N.setArchive uid letter
 checkMailBox uid = with notf $ N.checkMailBox uid 
 instance HasDHT App where 
     dhtLens = subSnaplet nde 

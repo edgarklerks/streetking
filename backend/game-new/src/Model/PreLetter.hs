@@ -12,7 +12,7 @@ import           Data.Conversion
 import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
-import           Prelude hiding (id)
+import           Prelude hiding (id, read)
 
 type MInteger = Maybe Integer 
 
@@ -23,5 +23,7 @@ $(genAll "PreLetter" "letters" [
     ("title",''String),
     ("sendat", ''Integer),
     ("to", ''Integer),
-    ("from", ''MInteger) 
+    ("from", ''MInteger),
+    ("read", ''Bool),
+    ("archive", ''Bool)
     ])
