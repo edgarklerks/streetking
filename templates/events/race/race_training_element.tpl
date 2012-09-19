@@ -1,6 +1,6 @@
 <div class="race-traning-element-container backgound-darkgray">
 	<div class="race-traning-element-image-container backgound-blue">
-		<div class="race-traning-element-image-container-image" style="background-image:url(images/tracks/track_[:track_id]w.png?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
+		<div class="race-traning-element-image-container-image" style='background-image:url([:eval IMAGESERVER("[\"track\",\""+track_id+"\",\"track\"]")])'>&nbsp;</div>
 	</div>
 	<div class="race-traning-element-data-container">
 		<div class="race-traning-element-info-container">
