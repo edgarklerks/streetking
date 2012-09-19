@@ -1,5 +1,5 @@
 <div class="race-car-opponent-element-container backgound-darkgray">
-	<div class="race-car-opponent-element-car-image-container race-car-opponent-element-car-image" style="background-image:url(test_store/car_[:car_instance_id].jpg?t=1343309601111)">&nbsp;</div>
+	<div class="race-car-opponent-element-car-image-container race-car-opponent-element-car-image" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+car_instance_id+",\"car\"]")])'>&nbsp;</div>
 	<div class="race-car-opponent-element-user-info-container">
 		<div class="race-car-opponent-element-user-container">
 			<div class="race-car-opponent-element-user-image-container backgound-blue">
