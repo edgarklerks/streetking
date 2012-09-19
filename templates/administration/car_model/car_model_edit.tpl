@@ -18,3 +18,4 @@
 	<input type="button" value="Upload image" module="CAR_SELECT_MODEL_IMAGE">
 	
 </form>
+<a href="#part_model/get?car_id=[:0.id]" class="button" module="PART_MODEL_LIST">car parts</a>
