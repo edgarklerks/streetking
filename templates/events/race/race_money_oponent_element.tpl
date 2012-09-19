@@ -1,5 +1,5 @@
 <div class="race-money-opponent-element-container backgound-darkgray">
-	<div class="race-money-opponent-element-car-image-container race-money-opponent-element-car-image" style="background-image:url(test_store/car_[:car.id].jpg)">&nbsp;</div>
+	<div class="race-money-opponent-element-car-image-container race-money-opponent-element-car-image" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+car.id+",\"car\"]")])'>&nbsp;</div>
 	<div class="race-money-opponent-element-user-info-container">
 		<div class="race-money-opponent-element-user-container">
 			<div class="race-money-opponent-element-user-image-container backgound-blue">
@@ -19,7 +19,7 @@
 	</div>
 	<div class="race-money-opponent-element-vertical-line"></div>
 	<div class="race-money-opponent-element-track-image-container backgound-blue">
-		<div class="race-money-opponent-element-track-image" style="background-image:url(images/tracks/track_[:track_id].png?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
+		<div class="race-money-opponent-element-track-image" style='background-image:url([:eval IMAGESERVER("[\"track\",\""+track_id+"\",\"track\"]")])'>&nbsp;</div>
 	</div>
 	<div class="race-money-opponent-element-track-info-container">
 		<div>Track:&nbsp;<span>[:eval RETURNINFO(track_name)]</span></div>

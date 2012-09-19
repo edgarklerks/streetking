@@ -7,7 +7,7 @@
 			</div>
 			<div class="clearfix"></div>
 		</div>
-		<div class="track-info-track-image"><img src="images/tracks/track_[:track_data.track_id].png?t=[:eval TIMESTAMP(id)]" alt="" border="0" width="330" height="330" /></div>
+		<div class="track-info-track-image"><img src='[:eval IMAGESERVER("[\"track\",\""+track_data.track_id+"\",\"track\"]")]' alt="" border="0" width="330" height="330" /></div>
 		<div class="track-info-track-data">
 			<div>Track:&nbsp;<span>[:track_data.track_name]</span></div>
 			<div>Track length:&nbsp;<span>[:eval track_data.length/1000]</span> km.</div>

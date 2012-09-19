@@ -1,4 +1,4 @@
-<div class="declare-your-own-race-car-element-image-container declare-your-own-race-car-element-image-container-image" style="background-image:url(test_store/car_[:0.id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
+<div class="declare-your-own-race-car-element-image-container declare-your-own-race-car-element-image-container-image" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+0.id+",\"car\"]")])'>&nbsp;</div>
 <div class="declare-your-own-race-car-element-data-container">
 	<div class="declare-your-own-race-car-element-info-container">
 		<div class="declare-your-own-race-car-element-infotext-container">
