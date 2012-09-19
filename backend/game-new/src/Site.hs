@@ -1645,7 +1645,7 @@ processRace t ps tid = do
 -- TODO: this function is not finished.
 getReward :: Bool -> SqlTransaction Connection RaceRewards
 getReward w = do
-        pt <- aload 58345 (rollback "reward part details not found") :: SqlTransaction Connection PD.PartDetails
+        pt <- aget [] (rollback "reward part details not found") :: SqlTransaction Connection PD.PartDetails
         let wr = RaceRewards 0 20 [pt] 
         let br = RaceRewards 0 5 []
         case w of
