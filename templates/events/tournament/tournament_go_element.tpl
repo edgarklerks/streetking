@@ -1,5 +1,5 @@
 <div class="tournament-go-and-race-element-container backgound-darkgray">
-	<div class="tournament-go-and-race-element-image-container backgound-blue"><div class="tournament-go-and-race-element-image-container-image " style="background-image:url(images/no_tournament_image.png)">&nbsp;</div></div>
+	<div class="tournament-go-and-race-element-image-container backgound-blue"><div class="tournament-go-and-race-element-image-container-image " style='background-image:url([:eval IMAGESERVER("[\"tournament\",\""+id+"\",\"tournament\"]")])'>&nbsp;</div></div>
 	<div class="tournament-go-and-race-element-vertical-line"></div>
 	<div class="tournament-go-and-race-element-data-container">
 		<div class="tournament-go-and-race-element-info-container">
