@@ -40,6 +40,43 @@ newtype UserBoxes = UB {
         }
 
 
+readPostSorter :: PostOffice -> STM (IM.IntMap Letter)
+readPostSorter (PO (_, ps, _)) = readTVar (runPostSorter ps)
+
+modifyPostSorter :: PostOffice -> (IM.IntMap Letter -> IM.IntMap Letter) -> STM ()
+modifyPostSorter (PO (_, ps,_)) f = modifyTVar (runPostSorter ps) f
+
+writePostSorter :: PostOffice -> IM.IntMap Letter -> STM ()
+writePostSorter (PO (_,ps,_)) = writeTVar (runPostSorter ps) 
+
+readUserBoxes :: PostOffice -> STM (IM.IntMap (TVar (LL.LimitList Int)))
+readUserBoxes (PO (_,_,x)) = readTVar (runUserBoxes x)
+
+modifyUserBoxes :: PostOffice -> (IM.IntMap (TVar (LL.LimitList Int)) -> IM.IntMap (TVar (LL.LimitList Int))) -> STM () 
+modifyUserBoxes (PO (_,_,x)) = modifyTVar (runUserBoxes x)
+
+writeUserBoxes :: PostOffice -> IM.IntMap (TVar (LL.LimitList Int)) -> STM ()
+writeUserBoxes (PO (_,_,x)) = writeTVar (runUserBoxes x) 
+
+readPrioService :: PostOffice -> STM (PQ.Prio Time Int)
+readPrioService (PO (x,_,_)) = readTVar (runPrioService x)
+
+modifyPrioService :: PostOffice -> (PQ.Prio Time Int -> PQ.Prio Time Int) -> STM ()
+modifyPrioService (PO (x, _, _)) = modifyTVar (runPrioService x) 
+
+
+writePrioService :: PostOffice -> PQ.Prio Time Int -> STM ()
+writePrioService (PO (x,_,_)) = writeTVar (runPrioService x) 
+
+
+modifyLetter :: PostOffice -> Int -> (Letter -> Letter) -> STM ()
+modifyLetter po i f = modifyPostSorter po $ IM.update (Just . f) i   
+
+deleteLetter :: PostOffice -> Int -> STM ()
+deleteLetter po i = modifyPostSorter po $ IM.delete i   
+
+
+
 type UserId = Integer 
 
 getId :: Letter -> Int 
@@ -56,25 +93,25 @@ newtype PostOffice = PO {
         -- | close the post office 
         closePostOffice ::  (PrioService,PostSorter,UserBoxes) 
     }
+
 sendLocal :: PostOffice -> UserId -> Letter -> IO ()
 sendLocal po uid it = do 
-            let (runPrioService -> ps,  runPostSorter -> pos, runUserBoxes -> ub) = closePostOffice po 
             atomically $ do 
-                ubl <- readTVar  ub 
+                ubl <-   readUserBoxes po 
                 -- Add it to the user box of a user 
                 case IM.lookup (fromEnum uid) ubl of 
                     Nothing -> do 
                             tv <- newTVar $ LL.insert (getId it) (LL.new 100) 
-                            writeTVar ub (IM.insert (fromEnum uid) tv ubl)    
+                            writeUserBoxes po (IM.insert (fromEnum uid) tv ubl)    
                     Just tv -> do 
                         modifyTVar tv (\z -> (getId it) LL.|> z)
                 -- throw it in the postsorter  
-                modifyTVar pos (\z -> IM.insert (getId it) it z) 
+                modifyPostSorter po (\z -> IM.insert (getId it) it z) 
                 
                 -- Add the priority of the message 
                 
                 withPriority it $ \prio -> do 
-                            modifyTVar ps $ \z -> PQ.insert prio (getId it) z  
+                            modifyPrioService po $ \z -> PQ.insert prio (getId it) z  
 
 
 
@@ -103,20 +140,39 @@ sendLetter po uid lt = sendCentral po uid lt >>= liftIO . sendLocal po uid
 sendCentral :: PostOffice -> UserId -> Letter -> SqlTransaction Connection Letter 
 sendCentral po uid it = do 
                     a <- liftIO $ milliTime  
-                    let prit = P.PreLetter Nothing (P.ttl it) (P.message it) (P.title it) (a) (uid) (P.from it)  
+                    let prit = P.PreLetter Nothing (P.ttl it) (P.message it) (P.title it) (a) (uid) (P.from it) False False  
                     id <- save  prit 
                     return (prit { P.id = Just id}) 
 
 
+setRead :: PostOffice -> UserId -> Integer -> SqlTransaction Connection () 
+setRead po uid id = do 
+                   liftIO $ atomically $ modifyLetter po (fromInteger id) (\x -> x { P.read = True })
+                   x <- aget ["id"  |== (toSql id) .&& "to" |== (toSql uid)] (rollback "no such letter")  :: SqlTransaction Connection Letter 
+                   save (x { P.read = True } :: Letter) :: SqlTransaction Connection Integer 
+                   return ()
+
+
+setArchive :: PostOffice -> UserId -> Integer -> SqlTransaction Connection ()
+setArchive po uid id = do 
+                   liftIO $ atomically $ modifyLetter po (fromInteger id) (\x -> x { P.archive = True })
+                   x <- aget ["id"  |== (toSql id) .&& "to" |== (toSql uid)] (rollback "no such letter")  :: SqlTransaction Connection Letter 
+                   save (x { P.archive = True } :: Letter) :: SqlTransaction Connection Integer 
+                   return ()
+
+
+
+        
+
 -- | receive your messages 
 checkMailBox :: PostOffice -> UserId -> SqlTransaction Connection Letters
-checkMailBox p@(PO (_,ps,ub)) u@(fromEnum -> uid) = do 
-                ub' <- liftIO $ readTVarIO (runUserBoxes ub )
+checkMailBox po u@(fromEnum -> uid) = do 
+                ub' <- liftIO $ atomically $ readUserBoxes po 
                 case IM.lookup uid ub' of 
                         Just us -> do 
                                 xs <- liftIO $ readTVarIO us 
-                                ps' <- liftIO $ readTVarIO (runPostSorter ps)
-                                forkSqlTransaction (haulPost p u) 
+                                ps' <- liftIO $ atomically $ readPostSorter po  
+                                forkSqlTransaction (haulPost po u) 
                                 return $ toList $ LL.catMaybes $  (\i -> IM.lookup i ps') <$> xs 
 
                         Nothing -> return [] 
@@ -129,47 +185,46 @@ flushBoxes po = do
 --}
 -- | Get post from the regional office (database)
 haulPost :: PostOffice -> UserId -> SqlTransaction Connection ()
-haulPost (PO (prios, ps, ub)) uid = do 
+haulPost po uid = do 
             t <- liftIO $ milliTime 
-            xs <- search ["to" |== (toSql $ fromEnum uid) .&& "ttl" |>= (toSql t)] [] 100 0 :: SqlTransaction Connection [Letter]
+            xs <- search ["archive" |== (toSql False) .&& "read" |== (toSql False) .&& "to" |== (toSql $ fromEnum uid) .&& "ttl" |>= (toSql t)] [] 100 0 :: SqlTransaction Connection [Letter]
             forM_ xs $ \it -> liftIO $ atomically $ do 
 
                         -- check if message exists 
-                        ps' <- readTVar (runPostSorter ps)
+                        ps' <- readPostSorter po 
                         when (not $ IM.member (getId it) ps') $ do   
-                            ubl <- readTVar  (runUserBoxes ub)
+                            ubl <- readUserBoxes po 
                             case IM.lookup (fromEnum uid) ubl of 
                             -- Add it to the user box of a user 
                                 Nothing -> do 
                                     tv <- newTVar (LL.insert (getId it) $ LL.new 100)
-                                    writeTVar (runUserBoxes ub) (IM.insert (fromEnum uid) tv ubl)    
+                                    writeUserBoxes po (IM.insert (fromEnum uid) tv ubl)    
                                 Just tv -> do 
                                     modifyTVar tv (\z -> (getId it) LL.|> z)
                                    -- throw it in the postsorter  
-                                    modifyTVar (runPostSorter ps) (\z -> IM.insert (getId it) it z) 
+                                    modifyPostSorter po (\z -> IM.insert (getId it) it z) 
                     
                               -- Add the priority of the message 
                     
                             withPriority it $ \prio -> do 
-                                   modifyTVar (runPrioService prios) $ \z -> PQ.insert prio (getId it) z  
+                                   modifyPrioService po $ \z -> PQ.insert prio (getId it) z  
 
 
 
 extractSince :: Time -> PostOffice -> STM [Int]
-extractSince t (PO (runPrioService -> prio,_,_)) = do 
-                        xs <- readTVar prio 
+extractSince t po = do 
+                        xs <- readPrioService po
                         let (bs, ts) = (PQ.extractTill t xs) 
-                        writeTVar prio ts 
+                        writePrioService po ts 
                         return bs 
 
 -- | clean up that postoffice a bit 
 goin'Postal :: PostOffice -> IO ()
 goin'Postal po = do 
             t <- liftIO $ milliTime 
-            let (prio, runPostSorter -> ps, runUserBoxes -> ub) = closePostOffice po 
             liftIO $ atomically $ do 
                     ms <- extractSince t po 
-                    modifyTVar ps $ \z -> foldr (\x z -> IM.delete x z) z ms 
+                    modifyPostSorter po $ \z -> foldr (\x z -> IM.delete x z) z ms 
 
 
 -- | Sending bulk mail to everybody 

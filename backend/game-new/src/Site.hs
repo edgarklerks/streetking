@@ -1831,6 +1831,47 @@ testNotification = do
                         Not.message = "Hello user",
                         Not.title = "I am a faggot"
                                 })
+
+
+archiveNotification :: Application ()
+archiveNotification = do 
+            uid <- getUserId 
+            xs <- getJson 
+            let ps = updateHashMap xs (def :: Not.PreLetter)
+            case Not.id ps of 
+                Nothing -> internalError "no such notification"
+                Just a -> setArchive  uid a *> writeResult True  
+
+readNotification :: Application ()
+readNotification = do 
+            uid <- getUserId 
+            xs <- getJson 
+            let ps = updateHashMap xs (def :: Not.PreLetter)
+            case Not.id ps of 
+                Nothing -> internalError "no such notification"
+                Just a -> setRead  uid a *> writeResult True  
+
+readArchive :: Application ()
+readArchive = do 
+        uid <- getUserId 
+        (((l,o), xs),od) <- getPagesWithDTDOrdered ["sendat", "title", "id", "read", "archive"] (
+                    "message" +%% "message" +&&
+                    "title" +%% "title" +&& 
+                    "sendat" +>= "sendat-min" +&& 
+                    "sendat" +<= "sendat-max" +&&
+                    "id" +== "id" +&&
+                    "from" +== "from" +&& 
+                    "archive" +== "archive" +&& 
+                    "read" +== "read" +&& 
+                    "to" +==| (toSql uid)
+                    )
+
+        ys <- runDb $ search xs od l o :: Application [Not.PreLetter]
+        writeMapables ys 
+
+
+
+
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(C.ByteString, Handler App App ())]
@@ -1841,6 +1882,9 @@ routes = fmap (second wrapErrors) $ [
                 ("/User/data", userData),
                 ("/User/me", userMe),
                 ("/User/notification", userNotification),
+                ("/User/readNotification", readNotification), 
+                ("/User/archiveNotification", archiveNotification), 
+                ("/User/searchNotification", readArchive),
                 ("/User/testNotification", testNotification),
                 ("/User/currentRace", userCurrentRace),
                 ("/User/addSkill", userAddSkill),
