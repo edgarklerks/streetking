@@ -176,7 +176,7 @@ routes = fmap (second enroute) $ [
          , ("/upload/car", handleUpload carModel "car")
          , ("/upload/dump", handleUpload fileName "dump")
          , ("/upload/track", handleUpload trackId "track")
-         , ("/upload/tournament", handleUpload "tournament") 
+         , ("/upload/tournament", handleUpload tournamentId "tournament") 
          , ("/user/car", handleUpload (carInstance) "user_car")
          , ("/user/parts", handleUpload (partInstance) "user_parts")
          , ("/user/image", handleUpload (userExist) "user_image")
