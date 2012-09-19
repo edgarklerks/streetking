@@ -1,7 +1,9 @@
 {-# LANGUAGE TemplateHaskell, OverloadedStrings, FlexibleContexts, FlexibleInstances, DeriveDataTypeable, NoMonomorphismRestriction #-}
 module NotificationSnaplet ( 
         sendLetter, 
-        checkMailBox, 
+        checkMailBox,
+        setArchive, 
+        setRead,
         initNotificationSnaplet,
         NotificationConfig,
         NotificationError(..)
@@ -62,4 +64,13 @@ initNotificationSnaplet s = makeSnaplet "NotificationSnaplet"
                                                     return (NC s po)
 
 
-        
+setRead  uid id = do 
+        po <- gets _po
+        runDb $ N.setRead po uid id 
+
+
+setArchive uid id = do 
+        po <- gets _po 
+        runDb $ N.setArchive po uid id 
+
+
