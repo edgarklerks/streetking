@@ -39,6 +39,10 @@ import qualified Data.Binary as BI
 import Proto 
 import Data.MemState 
 import Data.ComposeModel  
+import NotificationSnaplet as N  
+
+
+
 
 
 data ApplicationException = UserErrorE B.ByteString 
@@ -56,6 +60,7 @@ data App = App
     , _config :: Snaplet ConfigSnaplet 
     , _rnd :: Snaplet RandomConfig 
     , _nde :: Snaplet DHTConfig 
+    , _notf :: Snaplet N.NotificationConfig
     }
 
 makeLens ''App
@@ -65,6 +70,8 @@ getUniqueKey = with rnd $ R.getUniqueKey
 
 runDb a = with db $ ST.runDb error a
 
+sendLetter uid letter = with notf $ N.sendLetter uid letter 
+checkMailBox uid = with notf $ N.checkMailBox uid 
 instance HasDHT App where 
     dhtLens = subSnaplet nde 
 

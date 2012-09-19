@@ -129,8 +129,10 @@ import           Data.Car
 import           Data.ComposeModel
 import qualified Data.Task as Task
 import           Data.DataPack
+import qualified Model.PreLetter as Not 
 
 import           SqlTransactionSnaplet (initSqlTransactionSnaplet)
+import           NotificationSnaplet (initNotificationSnaplet)
 import           ConfigSnaplet 
 import           RandomSnaplet (l32, initRandomSnaplet)
 import           NodeSnaplet 
@@ -1814,6 +1816,21 @@ tournamentJoin = do
 {-- till here --}
 wrapErrors x = runDb (forkSqlTransaction $ forkSqlTransaction $  Task.run Task.Cron 0 >> liftIO (print "done") >> return ()) >>  CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
+
+userNotification :: Application ()
+userNotification = do 
+                uid <- getUserId 
+                xs <- checkMailBox uid 
+                writeMapables xs 
+
+testNotification :: Application ()
+testNotification = do 
+            uid <- getUserId 
+            sendLetter uid (def {
+                        Not.ttl = Just 100000,
+                        Not.message = "Hello user",
+                        Not.title = "I am a faggot"
+                                })
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(C.ByteString, Handler App App ())]
@@ -1823,6 +1840,8 @@ routes = fmap (second wrapErrors) $ [
                 ("/User/register", userRegister),
                 ("/User/data", userData),
                 ("/User/me", userMe),
+                ("/User/notification", userNotification),
+                ("/User/testNotification", testNotification),
                 ("/User/currentRace", userCurrentRace),
                 ("/User/addSkill", userAddSkill),
                 ("/Market/manufacturer", marketManufacturer),
@@ -1908,6 +1927,7 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     rnd <- nestSnaplet "random" rnd $ initRandomSnaplet l32 
     addRoutes routes
     dst <- nestSnaplet "nde" nde $ initDHTConfig "resources/server.ini"
+    notfs <- nestSnaplet "notf" notf $ initNotificationSnaplet db  
     liftIO $ initAll 
-    return $ App db c rnd dst
+    return $ App db c rnd dst notfs 
 
