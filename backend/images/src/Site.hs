@@ -122,6 +122,7 @@ carInstance = getParamAnd "car_instance_id"
 partInstance = getParamAnd "part_instance_id"
 userExist = return (One "34") -- getParamAnd "userid"
 trackId = getParamAnd "track_id"
+tournamentId = getParamAnd "tournament_id"
 
 
 failImage = do
@@ -175,6 +176,7 @@ routes = fmap (second enroute) $ [
          , ("/upload/car", handleUpload carModel "car")
          , ("/upload/dump", handleUpload fileName "dump")
          , ("/upload/track", handleUpload trackId "track")
+         , ("/upload/tournament", handleUpload "tournament") 
          , ("/user/car", handleUpload (carInstance) "user_car")
          , ("/user/parts", handleUpload (partInstance) "user_parts")
          , ("/user/image", handleUpload (userExist) "user_image")
