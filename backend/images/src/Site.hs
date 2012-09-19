@@ -192,14 +192,19 @@ dumpListing = do
         xs <- liftIO $ getDirectoryContents (joinPath [sd,dir])
         writeLBS (encode $ S.fromList [("result" :: String, xs)])  
 
+readMaybe x = case reads x of 
+                    ((x,a):xs) -> Just x
+                    [] -> Nothing 
+
 serveCar = do 
     image <- fromJust <$> getParam "image" 
-    let idi = read $ takeBaseName (B.unpack image) :: Integer
+    let idi = readMaybe $ takeBaseName (B.unpack image) :: Maybe Integer
+    when (isNothing idi) $ redirect "/image/car/0.jpeg"
     let dir = "user_car" 
     s <- with img $ getServDir 
     fe <- liftIO $ fileExist (joinPath [s, "user_car", B.unpack image]) 
     when (not fe) $ do 
-                ci <- runDb $ (load idi :: SqlTransaction Connection (Maybe CI.CarInstance))
+                ci <- runDb $ (load (fromJust idi) :: SqlTransaction Connection (Maybe CI.CarInstance))
                 case ci of 
                     Nothing -> error "no car_id"
                     Just ci -> do 
