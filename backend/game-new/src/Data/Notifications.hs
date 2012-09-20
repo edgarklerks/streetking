@@ -140,7 +140,7 @@ sendLetter po uid lt = sendCentral po uid lt >>= liftIO . sendLocal po uid
 sendCentral :: PostOffice -> UserId -> Letter -> SqlTransaction Connection Letter 
 sendCentral po uid it = do 
                     a <- liftIO $ milliTime  
-                    let prit = P.PreLetter Nothing (P.ttl it + P.sendat it) (P.message it) (P.title it) (a) (uid) (P.from it) False False  
+                    let prit = P.PreLetter Nothing ((+) <$> P.ttl it <*> pure (P.sendat it)) (P.message it) (P.title it) (a) (uid) (P.from it) False False  
                     id <- save  prit 
                     return (prit { P.id = Just id}) 
 
