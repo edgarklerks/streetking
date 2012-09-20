@@ -462,8 +462,8 @@ carMarketBuy = do
         let d = updateHashMap xs (def :: MI.MarketItem)
         s <- p uid d 
         sendLetter (MI.account_id s) (def {
-                    Not.title = "car sold on marker",
-                    Not.message = "your car is sold"
+                            Not.title = "your car is sold",
+                            Not.message = "your car is sold on the market"
                 })
         writeResult ("Your bought a car on the market" :: String)
     where  p uid d = runDb $ do 
