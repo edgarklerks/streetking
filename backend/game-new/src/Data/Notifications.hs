@@ -101,7 +101,7 @@ sendLocal po uid it = do
                 -- Add it to the user box of a user 
                 case IM.lookup (fromEnum uid) ubl of 
                     Nothing -> do 
-                            tv <- newTVar $ LL.insert (getId it) (LL.new 100) 
+                            tv <- newTVar $ LL.insert (getId it) (LL.new 10) 
                             writeUserBoxes po (IM.insert (fromEnum uid) tv ubl)    
                     Just tv -> do 
                         modifyTVar tv (\z -> (getId it) LL.|> z)
@@ -189,7 +189,7 @@ flushBoxes po = do
 haulPost :: PostOffice -> UserId -> SqlTransaction Connection ()
 haulPost po uid = do 
             t <- liftIO $ milliTime 
-            xs <- search ["archive" |== (toSql False) .&& "read" |== (toSql False) .&& "to" |== (toSql $ fromEnum uid) .&& "ttl" |>= (toSql t)] [] 100 0 :: SqlTransaction Connection [Letter]
+            xs <- search ["archive" |== (toSql False) .&& "read" |== (toSql False) .&& "to" |== (toSql $ fromEnum uid) .&& "ttl" |>= (toSql t)] [] 10 0 :: SqlTransaction Connection [Letter]
             forM_ xs $ \it -> liftIO $ atomically $ do 
 
                         -- check if message exists 
@@ -199,7 +199,7 @@ haulPost po uid = do
                             case IM.lookup (fromEnum uid) ubl of 
                             -- Add it to the user box of a user 
                                 Nothing -> do 
-                                    tv <- newTVar (LL.insert (getId it) $ LL.new 100)
+                                    tv <- newTVar (LL.insert (getId it) $ LL.new 10)
                                     writeUserBoxes po (IM.insert (fromEnum uid) tv ubl)    
                                 Just tv -> do 
                                     modifyTVar tv (\z -> (getId it) LL.|> z)
