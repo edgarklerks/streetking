@@ -675,7 +675,10 @@ marketPlaceBuy = do
                                 SR.amount = abs (MP.price p),
                                 SR.report_descriptor = "market_part_sell"
                             })
-
+                        sendLetter (MP.account_id id) (def {
+                                                NOT.title = "your part is sold",
+                                                NOT.message = "your part is sold from the market"
+                                            })
                         transactionMoney (MP.account_id p) (def {
                                 Transaction.amount = abs(MP.price p),
                                 Transaction.type = "market_place_sell",
