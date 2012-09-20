@@ -675,10 +675,6 @@ marketPlaceBuy = do
                                 SR.amount = abs (MP.price p),
                                 SR.report_descriptor = "market_part_sell"
                             })
-                        sendLetter (MP.account_id id) (def {
-                                                NOT.title = "your part is sold",
-                                                NOT.message = "your part is sold from the market"
-                                            })
                         transactionMoney (MP.account_id p) (def {
                                 Transaction.amount = abs(MP.price p),
                                 Transaction.type = "market_place_sell",
@@ -695,7 +691,12 @@ marketPlaceBuy = do
 
                         pi <- fromJust <$> load (fromJust $ MP.id d) :: SqlTransaction Connection PI.PartInstance
                         save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
-            p 
+                        return p
+            mp <- p 
+            sendLetter (MP.account_id mp) (def {
+                                                Not.title = "your part is sold",
+                                                Not.message = "your part is sold from the market"
+                                            })
 
             writeResult ("You bought the part" :: String) 
 
