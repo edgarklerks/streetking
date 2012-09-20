@@ -126,13 +126,14 @@ import           Data.Section
 import           Data.Track
 import           Data.Driver
 import           Data.Car
+import           Control.Concurrent 
 import           Data.ComposeModel
 import qualified Data.Task as Task
 import           Data.DataPack
 import qualified Model.PreLetter as Not 
 
 import           SqlTransactionSnaplet (initSqlTransactionSnaplet)
-import           NotificationSnaplet (initNotificationSnaplet)
+import           NotificationSnaplet (initNotificationSnaplet, getPostOffice)
 import           ConfigSnaplet 
 import           RandomSnaplet (l32, initRandomSnaplet)
 import           NodeSnaplet 
@@ -1960,7 +1961,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/Tournament/idk", tournamentPlayers)
           ]
 
-initAll = Task.initTask *> initTournament 
+initAll po = Task.initTask *> initTournament po  
 
 ------------------------------------------------------------------------------
 -- | The application initializer.
@@ -1971,7 +1972,9 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     rnd <- nestSnaplet "random" rnd $ initRandomSnaplet l32 
     addRoutes routes
     dst <- nestSnaplet "nde" nde $ initDHTConfig "resources/server.ini"
-    notfs <- nestSnaplet "notf" notf $ initNotificationSnaplet db  
-    liftIO $ initAll 
+    s <- liftIO $ newEmptyMVar 
+    notfs <- nestSnaplet "notf" notf $ initNotificationSnaplet db (Just s) 
+    p <- liftIO $ takeMVar s 
+    liftIO $ initAll p 
     return $ App db c rnd dst notfs 
 
