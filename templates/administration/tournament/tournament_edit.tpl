@@ -22,6 +22,8 @@
 </div>
 <div>
 	<img src='[:eval IMAGESERVER("[\"tournament\",\""+0.id+"\",\"tournament\"]")]'  style="width:400px; height:250px">
-	<input id="fileupload" type="file" name="files" data-url="">
-	<div id="selectedImage"></div>
+	[:when (0.id > 0)]{
+		<input id="fileupload" type="file" name="files" data-url="">
+		<div id="selectedImage"></div>
+	}
 </div>
