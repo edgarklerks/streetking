@@ -6,7 +6,9 @@ module NotificationSnaplet (
         setRead,
         initNotificationSnaplet,
         NotificationConfig,
-        NotificationError(..)
+        NotificationError(..),
+        getPostOffice,
+        _po 
     ) where 
 
 import qualified Data.Notifications as N  
@@ -37,6 +39,8 @@ data NotificationConfig = NC {
     }
 $(makeLenses [''NotificationConfig])
 
+getPostOffice = gets _po 
+
 class HasNotifications b where 
     notificationLens :: Lens (Snaplet b) (Snaplet NotificationConfig) 
 
@@ -57,10 +61,13 @@ checkMailBox uid = do
                 runDb $ N.checkMailBox po uid 
 
 
-initNotificationSnaplet s = makeSnaplet "NotificationSnaplet" 
+initNotificationSnaplet s x = makeSnaplet "NotificationSnaplet" 
                                         "notification manager" Nothing $ do 
                                                     po <- openPostOffice 
                                                     liftIO $ forkIO $ forever $ N.goin'Postal po >> threadDelay 10000000 
+                                                    case x of 
+                                                        Just a -> liftIO $ putMVar a po 
+                                                        Nothing -> return ()
                                                     return (NC s po)
 
 
