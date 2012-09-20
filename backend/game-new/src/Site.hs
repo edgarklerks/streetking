@@ -460,7 +460,11 @@ carMarketBuy = do
         uid <- getUserId 
         xs <- getJson >>= scheck ["car_instance_id"]
         let d = updateHashMap xs (def :: MI.MarketItem)
-        p uid d 
+        s <- p uid d 
+        sendLetter (MI.account_id s) (def {
+                    Not.title = "car sold on marker",
+                    Not.message = "your car is sold"
+                })
         writeResult ("Your bought a car on the market" :: String)
     where  p uid d = runDb $ do 
             {-- 
@@ -501,6 +505,7 @@ carMarketBuy = do
                     c <- fromJust <$> load (fromJust $ MI.car_instance_id d) :: SqlTransaction Connection (CarInstance.CarInstance)
                     g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage
                     save (c { CarInstance.garage_id = G.id g })
+                    return car 
 
 
 
