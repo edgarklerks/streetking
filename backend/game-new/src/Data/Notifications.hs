@@ -149,7 +149,7 @@ setRead :: PostOffice -> UserId -> Integer -> SqlTransaction Connection ()
 setRead po uid id = do 
                    liftIO $ atomically $ modifyLetter po (fromInteger id) (\x -> x { P.read = True })
                    x <- aget ["id"  |== (toSql id) .&& "to" |== (toSql uid)] (rollback "no such letter")  :: SqlTransaction Connection Letter 
-                   liftIO $ atomically $ deleteLetter po id 
+                   liftIO $ atomically $ deleteLetter po (fromIntegral id)
                    save (x { P.read = True } :: Letter) :: SqlTransaction Connection Integer 
                    return ()
 
@@ -158,7 +158,7 @@ setArchive :: PostOffice -> UserId -> Integer -> SqlTransaction Connection ()
 setArchive po uid id = do 
                    liftIO $ atomically $ modifyLetter po (fromInteger id) (\x -> x { P.archive = True })
                    x <- aget ["id"  |== (toSql id) .&& "to" |== (toSql uid)] (rollback "no such letter")  :: SqlTransaction Connection Letter 
-                   liftIO $ atomically $ deleteLetter po id 
+                   liftIO $ atomically $ deleteLetter po (fromIntegral id)
                    save (x { P.archive = True } :: Letter) :: SqlTransaction Connection Integer 
                    return ()
 
