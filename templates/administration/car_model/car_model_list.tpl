@@ -3,6 +3,7 @@
 	<div><label>id:</label><input type="text" name="id" value=""/></div>
 	<div><label>name:</label><input type="text" name="name" value=""/></div>
 	<input type="submit" value="Sort" id="sort" module="CAR_MODEL_LIST">
+	<a href="#car_model/get?id=0" class="button" module="CAR_MODEL_EDIT">new</a>
 </form>
 
 <div id="list"></div>
