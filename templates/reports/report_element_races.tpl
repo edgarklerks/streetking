@@ -1,1 +1,3 @@
-report_element_races
+<div>
+	<input type="button" value="more" rid="[:id]">
+</div>
