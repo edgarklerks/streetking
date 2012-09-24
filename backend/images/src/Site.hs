@@ -208,7 +208,7 @@ serveCar = do
     when (not fe) $ do 
                 ci <- runDb $ (load (fromJust idi) :: SqlTransaction Connection (Maybe CI.CarInstance))
                 case ci of 
-                    Nothing -> error "no car_id"
+                    Nothing -> redirect ("/image/dump/notfound.jpeg") -- with image failImage 
                     Just ci -> do 
                            redirect ("/image/car/" <> (B.pack $ show $ CI.car_id ci) <> ".jpeg")
 {--                        liftIO $ createSymbolicLink 
