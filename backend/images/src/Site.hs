@@ -211,10 +211,6 @@ serveCar = do
                     Nothing -> redirect ("/image/dump/notfound.jpeg") -- with image failImage 
                     Just ci -> do 
                            redirect ("/image/car/" <> (B.pack $ show $ CI.car_id ci) <> ".jpeg")
-{--                        liftIO $ createSymbolicLink 
-                                (joinPath ["..",  "car", addExtension (show $ CI.car_id ci) ".jpeg" ])
-                                (joinPath [s, "user_car", addExtension (show idi) ".jpeg"]) 
-                        return () --}
 
 
 
