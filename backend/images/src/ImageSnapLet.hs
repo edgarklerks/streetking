@@ -103,7 +103,7 @@ serveImage e h = do
         Nothing -> serveFile' sd fp 
         Just e -> do 
                 etag <- liftIO $ C.pack <$> getEtag (joinPath [sd,fp])
-                if (etag == e) then modifyResponse (\r -> setResponseCode 304 $ r)
+                if (etag == e) then modifyResponse (\r -> setResponseStatus 304 "Not Modified" $ r)
                                else serveFile' sd fp 
 
 
