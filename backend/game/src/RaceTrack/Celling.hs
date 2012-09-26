@@ -19,7 +19,7 @@ main = do
     B.writeFile "cells.bin" (encode xs)
 
 instance Show Cell where 
-    show (Cell b e c r a) = "\n[\nbounds: \n" ++ (pmatrix b ++ "\n" ++ pmatrix e) ++ "\ncurvature: " ++ (show c) ++ "\narclength: " ++ (show a) ++ "\nradius:" ++ (show r) ++ "\n]"
+    show (Cell b e xs c r a) = "\n[\nbounds: \n" ++ (pmatrix b ++ "\n" ++ pmatrix e) ++ "\ncurvature: " ++ (show c) ++ "\narclength: " ++ (show a) ++ "\nradius:" ++ (show r) ++ "\n]"
 
 arc :: Cell -> Double
 arc c = f (radius c) (arclength c)
@@ -39,7 +39,7 @@ calcArcLengths xs = fmap (\x -> arcLength x) xs
 
 
 getCellParameters :: [[Vector Double]] -> [Cell] 
-getCellParameters xs = zipWith5 Cell begins  ends  curv ((fmap.fmap) (1/) curv)  arcl
+getCellParameters xs = zipWith6 Cell begins  ends xs  curv ((fmap.fmap) (1/) curv)  arcl
         where arcl = calcArcLengths  xs
               curv = calcCurvatures  xs
               begins = head <$> xs 

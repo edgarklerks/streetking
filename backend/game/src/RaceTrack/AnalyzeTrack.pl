@@ -144,7 +144,7 @@ exit;
 sub Optimize {
     print $fh "\n\n=============Database==================\n\n";
     consoleInfo "Running Optimizer"; 
-    my $out = `./Optimize cells.bin $minlen`;
+    my $out = `Optimize cells.bin $minlen`;
     print $fh $out;
     consoleOk "Optimizer runned";
 }
@@ -152,7 +152,7 @@ sub Optimize {
 sub Database {
     print $fh "\n\n=============Database==================\n\n";
     consoleInfo "Running DatabasePump"; 
-    my $out = `./DatabasePump $dist dump.bin segments.bin cells.bin $tid`;
+    my $out = `DatabasePump $dist dump.bin segments.bin cells.bin $tid`;
     print $fh $out;
     consoleOk "Saved to database";
 
@@ -163,7 +163,7 @@ sub ImageGrouping {
     print $fh "\n\n=============ImageGrouping==================\n\n";
     consoleInfo "Running ImageGrouping";
 
-    my $out = `./ImageGrouping $dir \"$pos\" $img`;
+    my $out = `ImageGrouping $dir \"$pos\" $img`;
     print $fh $out;
 
     unless(-e "dump.bin"){
@@ -182,7 +182,7 @@ sub ImageGrouping {
 sub Segmenting {
     consoleInfo "Running Segmenting";
 
-    my $out = `./Segmenting $img +RTS -K128M`;
+    my $out = `Segmenting $img +RTS -K128M`;
     print $fh "\n\n=============SEGMENTING==================\n\n";
     print $fh $out;
 
@@ -207,7 +207,7 @@ sub Celling {
 
     print $fh "\n\n=============CELLING==================\n\n";
 
-    my $out = `./Celling`;
+    my $out = `Celling`;
 
     print $fh $out;
 

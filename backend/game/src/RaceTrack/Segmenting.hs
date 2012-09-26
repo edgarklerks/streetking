@@ -224,7 +224,7 @@ takeThirdDifferenceRate p = do
 takeThirdDifferenceVector :: Int -> SegmentMonad (Maybe (Vector Double))
 takeThirdDifferenceVector p = do 
         ps <- takeAround p 3 
-        return (thirdStepDifferenceVector ps)
+        return (normalize <$> thirdStepDifferenceVector ps)
 
 {-- Specialized monad, plumbing ahead! --}
 
@@ -296,16 +296,5 @@ labeledVectorToImage f p xs im@(Vector m n _) = addImage im np
                                 Nothing -> return ()
                         return a
                             
-{--
-pathToImage' :: Path -> Vector Word32 
-pathToImage' p = Vector (1,1) e $ runSTArray $ do 
-        xs <- newArray ((1,1),e) 0 :: ST s (STArray s (Int,Int) Word32)
-        forM_ (elems $ path p) $ \j -> do 
-                let x = getX j
-                let y = getY j 
-                writeArray xs (x,y) 255 
-        return xs 
-    where (b,e) = getBoundingBox p 
---}
         
 
