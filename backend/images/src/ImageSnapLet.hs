@@ -34,8 +34,6 @@ import Data.List
 import qualified SqlTransactionSnaplet as S
 import System.Posix.Files 
 import System.Posix.Types 
-import Data.Digest.Murmur32
-import Data.ByteString.Base64
 import Data.Word
 import Data.Bits 
 import Data.Array 
