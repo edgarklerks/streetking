@@ -95,6 +95,7 @@ serveImage e h = do
     liftIO $ print "detected type"
     liftIO $ print mt 
     when (not $ anyAllowed mt at) $ e $ "wrong mimetype" ++ (show mt)
+    modifyResponse (\r -> addHeader "Cache-Control" "must-revalidate" r)
     r <- getResponse 
     let s = getHeader "If-None-Match" r  
     case s of 
