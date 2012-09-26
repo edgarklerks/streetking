@@ -1,7 +1,7 @@
 <div class="track-info-box-container corner-box">
 	<div id="track-info-box" class="ui-dialog-content track-info-box-content">
 		<div class="track-info-time-container">
-			<div class="track-info-time-container-left track-info-time-race-timer">00:00:000</div>
+			<div class="track-info-time-container-left track-info-time-race-timer race-timer">00:00:000</div>
 			<div class="track-info-time-container-right">
 			<a href="#Race/finish?" class="button ui-state-gray buy-button" module="GARAGE_USE_DAIMONDS" icon="ui-icon-diamond">end immediately</a>
 			</div>
