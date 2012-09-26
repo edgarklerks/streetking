@@ -10,7 +10,7 @@
 		<div class="track-info-track-image"><img src='[:eval IMAGESERVER("[\"track\",\""+track_data.track_id+"\",\"track\"]")]' alt="" border="0" width="330" height="330" /></div>
 		<div class="track-info-track-data">
 			<div>Track:&nbsp;<span>[:track_data.track_name]</span></div>
-			<div>Track length:&nbsp;<span>[:eval track_data.length/1000]</span> km.</div>
+			<div>Track length:&nbsp;<span>[:eval floor(track_data.length)/1000]</span> km.</div>
 			<div>Track record:&nbsp;<span>[:eval SECONDSTOTIME(track_data.top_time)]</span> by:  <a href="#User/data?id=[:track_data.top_time_id]" module="PROFILE_VIEW"><span>[:track_data.top_time_name]</span></a></div>
 			<div>Personal record:&nbsp;<span>[:eval SECONDSTOTIME(0)]</span></div>
 			<div id="track-info-refresh-race"></div>
