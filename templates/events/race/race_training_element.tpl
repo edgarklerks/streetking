@@ -6,7 +6,7 @@
 		<div class="race-traning-element-info-container">
 			<div>Track:&nbsp;<span>[:track_name]</span></div>
 			<div>Track level:&nbsp;<span>[:track_level]</span></div>
-			<div>Track length:&nbsp;<span>[:eval length/1000]</span> km.</div>
+			<div>Track length:&nbsp;<span>[:eval floor(length)/1000]</span> km.</div>
 			<div>Track record:&nbsp;<span>[:eval SECONDSTOTIME(top_time)]</span></div>
 			<div>Record owner:&nbsp;
 				[:when (top_time_exists == true)]{
