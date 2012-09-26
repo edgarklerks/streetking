@@ -116,7 +116,7 @@
 				<div class="clearfix"></div>
 			</div>
 			<div class="report-element-additional-info-box">
-				<div>Time:&nbsp;<span>[:eval TIMESTAMPTODATE(time)]</span></div>
+				<div>Time:&nbsp;<span>[:eval TIMESTAMPTODATE(time*1000)]</span></div>
 			</div>
 		</div>
 		<div class="clearfix"></div>
