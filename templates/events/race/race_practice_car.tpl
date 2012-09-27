@@ -39,13 +39,13 @@
 					<div class="race-car-element-vertical-line"></div>
 					<div class="race-car-element-infobar-container">
 						<div class="race-car-element-info-data-box">
-							<div class="race-car-element-info-data-name">Top speed <span>[:race.data.0.rd_car.top_speed]</span> km/h</div>
+							<div class="race-car-element-info-data-name">Top speed <span>[:eval round(race.data.0.rd_car.top_speed/10000)]</span> km/h</div>
 							<div class="race-car-element-progress-bar-box ui-corner-all-1px">
 								<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((0.top_speed/100)*100)]%"></div>
 							</div>
 						</div>
 						<div class="race-car-element-info-data-box">
-							<div class="race-car-element-info-data-name">Acceleration <span>[:race.data.0.rd_car.acceleration]</span> s</div>
+							<div class="race-car-element-info-data-name">Acceleration <span>[:eval round(race.data.0.rd_car.acceleration/1000)/10]</span> s</div>
 							<div class="race-car-element-progress-bar-box ui-corner-all-1px">
 								<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((0.acceleration/100)*100)]%"></div>
 							</div>

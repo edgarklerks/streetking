@@ -10,13 +10,13 @@
 			</div>
 			<div class="car-showroom-element-data-info-box">
 				<div class="car-showroom-element-info-data-box">
-					<div class="car-showroom-element-info-data-name">Top speed <span>[:top_speed]</span> <b>km/h</b></div>
+					<div class="car-showroom-element-info-data-name">Top speed <span>[:eval floor(top_speed/10000)]</span> <b>km/h</b></div>
 					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
 						<div class="car-showroom-element-progress-bar ui-corner-all-1px" style="width:[:eval ((top_speed/100)*100)]%"></div>
 					</div>
 				</div>
 				<div class="car-showroom-element-info-data-box">
-					<div class="car-showroom-element-info-data-name">Acceleration <span>[:acceleration]</span> <b>s</b></div>
+					<div class="car-showroom-element-info-data-name">Acceleration <span>[:eval floor(acceleration/1000)/10]</span> <b>s</b></div>
 					<div class="car-showroom-element-progress-bar-box ui-corner-all-1px">
 						<div class="car-showroom-element-progress-bar ui-corner-all-1px" style="width:[:eval ((acceleration/100)*100)]%"></div>
 					</div>
