@@ -1620,6 +1620,7 @@ raceChallengeAccept = do
 
 
             forM_ rs $ \(p,r) -> do
+                cons "form" 
 
                 let isWinner = (rp_account_id p) == winner_id
  
