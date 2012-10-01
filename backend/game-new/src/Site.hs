@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns #-}
---}
 
 ------------------------------------------------------------------------------
 -- | This module is where all the routes and handlers are defined for your
@@ -1517,6 +1516,10 @@ raceChallengeWith p = do
             return True
         writeResult i
 
+
+cons f = liftIO $ print f *> print "---"
+
+
 raceChallengeAccept :: Application ()
 raceChallengeAccept = do
 
@@ -1528,11 +1531,18 @@ raceChallengeAccept = do
         -- Change, had to break up to be able to send to the user. 
         -- This should be ok, it are only get actions 
 
-            -- retrieve challenge
+        -- retrieve challenge
         chg <- runDb $ (aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge)
         chgt <- runDb $ do
                     c <- (aget ["id" |== (toSql $ Chg.type chg)] (rollback $ "challenge type not found for id " ++ (show $ Chg.type chg)) :: SqlTransaction Connection ChgT.ChallengeType)
                     return $ ChgT.name c
+
+        -- TODO: check user busy
+        cons chgt
+        cons chg 
+
+        cons uid
+        cons "uid ok"
 
             -- TODO: check user busy
         liftIO $ print chgt *> print chg 
@@ -1541,13 +1551,22 @@ raceChallengeAccept = do
                     N.race_id = cid  
 
                 }
+        cons "raceStart made"
+        cons t
+
+
         N.sendNotification uid t
-        liftIO $ print t 
+
+        cons "notif sent"
+
         N.sendNotification (rp_account_id $ Chg.challenger chg) t 
+        cons "notif sent again"
+
         liftIO $ print t
         liftIO $ print "notifications sit"
         rid <- runDb $ do
             -- TODO: get / search functions for track, user, car with task triggering
+            
             userActions uid
             userActions $ rp_account_id $ Chg.challenger chg
             Task.run Task.User uid
@@ -1556,14 +1575,28 @@ raceChallengeAccept = do
             -- pay race dues to escrow 
             me <- case (Chg.amount chg) > 0 of
                     True -> fmap Just $ Escrow.deposit uid $ Chg.amount chg
-                    False -> return Nothing
-             
+                    False -> return Nothing 
+
+            cons "wunk"
+            cons (me :: Maybe Integer)
+
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-            am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            c  <- fmap garageCarProps $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            cm <- fmap minimalCarProps $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
-            
+--            am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
+            let am = def :: APM.AccountProfileMin
+--            c  <- fmap garageCarProps $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+            let c = def :: CIG.CarInGarage
+--            cm <- fmap minimalCarProps $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            let cm = def :: CMI.CarMinimal
+
+            cons a
+            cons am
+            cons c
+            cons cm
+
             let y = RaceParticipant a am c cm me
+          
+            cons "wghr"
+            cons y
 
             -- TODO: add user to accepts list
             -- when count(accepts) >= participants, start race
@@ -1572,13 +1605,18 @@ raceChallengeAccept = do
 
             -- get participants
             let ps = [y, Chg.challenger chg]
-
+            cons ps 
             -- delete challenge
-            save $ chg { Chg.deleted = True }
+            foo <- save $ chg { Chg.deleted = True }
+            cons "kwun: " 
+            cons foo
             
             -- process race
             t <- liftIO milliTime 
             (rid, rs) <- processRace t ps (Chg.track_id chg)
+
+            cons "iwunk: " 
+            cons rid
 
             let fin r = (t+) $ ceiling $ raceTime r 
             let t1 = (\(_,r) -> fin r) $ head rs
@@ -1586,6 +1624,7 @@ raceChallengeAccept = do
 
 
             forM_ rs $ \(p,r) -> do
+                cons "form" 
 
                 let isWinner = (rp_account_id p) == winner_id
  
@@ -1615,9 +1654,13 @@ processRace t ps tid = do
         let env = defaultEnvironment
         trk <- trackDetailsTrack <$> (agetlist ["track_id" |== toSql tid] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails])
         tdt <- aget ["track_id" |== toSql tid] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
- 
-          -- race participants
+
+        cons "pral"
+
+         -- race participants
         let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
+
+        cons rs
 
         -- current time, finishing times, race time (slowest finishing time) 
         let fin r = (t+) $ ceiling $ (1000 *) $ raceTime r  
