@@ -72,8 +72,8 @@ data NotificationParam where
         TournamentStart :: {tournament_id :: Integer}
                         -> NotificationParam 
 
-        CarMarket :: {car_id :: Integer, car_money :: Integer} -> NotificationParam 
-        PartMarket :: {part_id :: Integer, part_money :: Integer} -> NotificationParam 
+        CarMarket :: {car_id :: Integer, money :: Integer} -> NotificationParam 
+        PartMarket :: {part_id :: Integer, money :: Integer} -> NotificationParam 
         ReturnCar :: {car_id :: Integer}
                   -> NotificationParam 
         ReturnPart :: {part_id :: Integer}
@@ -144,12 +144,12 @@ partRepair = PartRepair {
 carMarket :: NotificationParam 
 carMarket = CarMarket {
                 car_id = 0,
-                car_money = 0
+                money = 0
             }
 partMarket :: NotificationParam 
 partMarket = PartMarket {
                 part_id = 0,
-                part_money = 0
+                money = 0
             }
 carRepair :: NotificationParam 
 carRepair = CarRepair {
@@ -251,10 +251,12 @@ instance ToInRule NotificationParam where
                                                        , ("diamonds",l diamonds d)
                                                     ]
                                        | isPartMarket d = InObject $ asInRule [
-                                                                ("part_instance_id", l part_id d)
+                                                                ("part_instance_id", l part_id d),
+                                                                ("money", l money d)
                                                             ]
                                        | isCarMarket d = InObject $ asInRule [
-                                                                ("car_instance_id", l car_id d)
+                                                                ("car_instance_id", l car_id d),
+                                                                ("money", l money d)
                                                             ]
                                        | isReturnPart d = InObject $ asInRule [
                                                                 ("part_instance_id", l part_id d)
