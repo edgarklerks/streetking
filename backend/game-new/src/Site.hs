@@ -1536,7 +1536,6 @@ raceChallengeAccept = do
 
             -- TODO: check user busy
         liftIO $ print chgt *> print chg 
-{--
         let t = N.raceStart {
                     N.race_type = read $ chgt,
                     N.race_id = cid  
@@ -1546,7 +1545,7 @@ raceChallengeAccept = do
         liftIO $ print t 
         N.sendNotification (rp_account_id $ Chg.challenger chg) t 
         liftIO $ print t
-    --}
+        liftIO $ print "notifications sit"
         rid <- runDb $ do
             -- TODO: get / search functions for track, user, car with task triggering
             userActions uid
