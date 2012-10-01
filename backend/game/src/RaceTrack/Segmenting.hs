@@ -21,12 +21,9 @@ import qualified Data.Foldable as F
 import Data.Complex
 import Debug.Trace 
 import Data.List (groupBy)
+import Path 
 
 
-data Path = Path {
-        start :: Vector Double,
-        path :: Array Int (Vector Double) 
-    } deriving Show 
 
 {-- Dump segmentation --}
 
@@ -130,7 +127,7 @@ writeThirdStepDifferenceRate = do
                            | x == 2 = mk41 (0,0,255,0)
                            | x == 3 = mk41 (255,0,255,0)
                            | otherwise = mk41 (255,255,0,mkPolar x 0)
-    let weigh = reverse . weightedAverage (replicate 4 0.25) . reverse 
+    let weigh = reverse . weightedAverage (replicate 2 0.5) . reverse 
     let bs = liftSnd (fmap (fromIntegral . round) .  weigh) b  
     let v' = labeledVectorToImage colorf p bs v 
     let r' = labeledVectorToImage colorf p ((liftSnd stepDetect) bs) v
@@ -224,7 +221,7 @@ takeThirdDifferenceRate p = do
 takeThirdDifferenceVector :: Int -> SegmentMonad (Maybe (Vector Double))
 takeThirdDifferenceVector p = do 
         ps <- takeAround p 3 
-        return (thirdStepDifferenceVector ps)
+        return (normalize <$> thirdStepDifferenceVector ps)
 
 {-- Specialized monad, plumbing ahead! --}
 
@@ -286,26 +283,15 @@ labeledVectorToImage :: (b -> Vector (Complex Double)) -> Path -> [(Vector Doubl
 labeledVectorToImage f p xs im@(Vector m n _) = addImage im np 
     where t = path p  
           np = Vector m n $ runSTArray $ do 
-                        a <- newArray ((1,1),(m,n)) (mk41 (0,0,0,0))
+                        a <- newArray ((1,1),(n,m)) (mk41 (0,0,0,0))
                         forM_ (elems t) $ \e -> do
                             let b = lookup e xs 
                             let x = truncate $ getX e 
                             let y = truncate $ getY e
                             case b of 
-                                Just b -> writeArray a (y,x) (f b)
+                                Just b -> writeArray a (x,y) (f b)
                                 Nothing -> return ()
                         return a
                             
-{--
-pathToImage' :: Path -> Vector Word32 
-pathToImage' p = Vector (1,1) e $ runSTArray $ do 
-        xs <- newArray ((1,1),e) 0 :: ST s (STArray s (Int,Int) Word32)
-        forM_ (elems $ path p) $ \j -> do 
-                let x = getX j
-                let y = getY j 
-                writeArray xs (x,y) 255 
-        return xs 
-    where (b,e) = getBoundingBox p 
---}
         
 

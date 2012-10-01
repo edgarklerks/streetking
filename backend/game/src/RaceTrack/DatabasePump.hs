@@ -47,7 +47,7 @@ dumpDatabase (fromIntegral -> dst) dsb seg cel cid = do
                                   std <- prepare c "delete from track_section where track_id = ?"
                                   execute std [toSql cid]
                                   stm <- prepare c "insert into track_section (track_id, radius,length,segment) values (?,?,?,?)" 
-                                  forM_ xs $ \(c, ps) -> do 
+                                  forM_ (reverse xs) $ \(c, ps) -> do 
                                                 let r = fromMaybe 0 (radius c)
                                                 execute stm [toSql cid, toSql (r * dst), toSql (arclength c * dst), toSql (jsonArray ps)] 
                                   commit c
@@ -57,8 +57,6 @@ dumpDatabase (fromIntegral -> dst) dsb seg cel cid = do
 
 getData :: [Cell] -> [(Int,Int)] -> [(Cell, [(Int,Int)])]
 getData c xs = foldr step [] c  
-        where step x z = (x, takeWhile (/=e') . dropWhile (/=b') $ xs) : z
-                where b = begin x
-                      e = end x 
-                      b' = (truncate $ getY b, truncate $ getX b) 
-                      e' = (truncate $ getY e, truncate $ getX e)
+    where 
+        step x z = (x, reverse $ toXY <$> path x) : z 
+            where toXY p = (round $ getX p, round $ getY p) 
