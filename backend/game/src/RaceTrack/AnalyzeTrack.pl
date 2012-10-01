@@ -64,8 +64,13 @@ my $pos = $ini->{setup}->{pos};
 my $img = $ini->{setup}->{img}; 
 my $dist = $ini->{distance}->{pixeldist};
 my $tid = $ini->{track}->{track_id};
-my $passes = $ini->{optimizer}->{passes} || 2;
+my $passes = $ini->{optimizer}->{passes} || 0;
 my $minlen = $ini->{optimizer}->{minlen} || 2;
+my $mergelen = $ini->{optimizer}->{mergelen} || 2;
+my $animate = $ini->{setup}->{animate} || 0;
+my $verbose = $ini->{setup}->{verbose} || 1;
+my $segmenter = $ini->{setup}->{segmenter} || "fixed";
+my $groupsize = $ini->{segmenter}->{groupsize} || 20;
 
 consoleInfo "Check prequisities";
 unless(-d $config){
@@ -91,10 +96,21 @@ unless($dist =~  /^[0-9]+$/){
     consoleError "pixeldist should be an integer";
 }
 unless($minlen =~ /^[0-9]+$/){
-    consoleError "minlen should be initeger";
+    consoleError "minlen should be integer";
+}
+unless ($mergelen =~ /^[0-9]+$/){
+    consoleError "mergelen should be integer";
 }
 unless ($passes =~ /^[0-9]+$/){
     consoleError "passes should be an integer";
+}
+
+unless($segmenter eq "fixed" || $segmenter eq "dynamic"){
+    consoleError "segmenter should be dynamic or fixed";
+}
+
+unless($groupsize =~ /^[0-9]+$/){
+    consoleError "groupsize should be integer";
 }
 
 my ($filename, $directory, $suffix) = fileparse($img);
@@ -105,6 +121,11 @@ consoleInfo "Adding info to ini";
 $ini->{optimizer}->{minlen} = $minlen;
 
 $ini->{optimizer}->{passes} = $passes;
+$ini->{optimizer}->{mergelen} = $mergelen;
+$ini->{setup}->{animate} = $animate;
+$ini->{setup}->{verbose} = $verbose;
+$ini->{setup}->{segmenter} = $segmenter;
+$ini->{segmenter}->{groupsize} = $groupsize;
 
 my $datadir = $config . $tdir;
 consoleInfo "Saving ini to $datadir";
@@ -124,7 +145,13 @@ mkdir($datadir);
 
 consoleInfo "Opening log file";
 
-open my $fh, ">$datadir/racetrack.log";
+my $fh;
+
+if(!$verbose){
+    open $fh, ">$datadir/racetrack.log";
+} else {
+    open $fh, ">&STDOUT";
+}
 
 ImageGrouping();
 Segmenting();
@@ -144,15 +171,15 @@ exit;
 sub Optimize {
     print $fh "\n\n=============Database==================\n\n";
     consoleInfo "Running Optimizer"; 
-    my $out = `./Optimize cells.bin $minlen`;
+    my $out = `Optimize cells.bin $minlen $mergelen`;
     print $fh $out;
-    consoleOk "Optimizer runned";
+    consoleOk "Optimizer ran";
 }
 
 sub Database {
     print $fh "\n\n=============Database==================\n\n";
     consoleInfo "Running DatabasePump"; 
-    my $out = `./DatabasePump $dist dump.bin segments.bin cells.bin $tid`;
+    my $out = `DatabasePump $dist dump.bin segments.bin cells.bin $tid`;
     print $fh $out;
     consoleOk "Saved to database";
 
@@ -163,7 +190,7 @@ sub ImageGrouping {
     print $fh "\n\n=============ImageGrouping==================\n\n";
     consoleInfo "Running ImageGrouping";
 
-    my $out = `./ImageGrouping $dir \"$pos\" $img`;
+    my $out = `ImageGrouping $dir \"$pos\" $img $animate`;
     print $fh $out;
 
     unless(-e "dump.bin"){
@@ -180,9 +207,14 @@ sub ImageGrouping {
 }
 
 sub Segmenting {
-    consoleInfo "Running Segmenting";
+    consoleInfo "Running $segmenter Segmenting";
+    my $out;
 
-    my $out = `./Segmenting $img +RTS -K128M`;
+    if($segmenter eq "fixed"){
+        $out = `SegmentingAlternative $img $groupsize +RTS -K128M`;
+    } else {
+        $out = `Segmenting $img +RTS -K128M`;
+    }
     print $fh "\n\n=============SEGMENTING==================\n\n";
     print $fh $out;
 
@@ -207,7 +239,7 @@ sub Celling {
 
     print $fh "\n\n=============CELLING==================\n\n";
 
-    my $out = `./Celling`;
+    my $out = `Celling`;
 
     print $fh $out;
 
