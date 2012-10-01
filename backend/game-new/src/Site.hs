@@ -142,6 +142,8 @@ import           Control.Arrow
 import           Snap.Snaplet
 import           Data.Tournament 
 
+import qualified Notifications as N 
+
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
 --
@@ -461,10 +463,10 @@ carMarketBuy = do
         xs <- getJson >>= scheck ["car_instance_id"]
         let d = updateHashMap xs (def :: MI.MarketItem)
         s <- p uid d 
-        sendLetter (MI.account_id s) (def {
-                            Not.title = "your car is sold",
-                            Not.message = "your car is sold on the market"
-                })
+        N.sendNotification (MI.account_id s) (N.carMarket {
+                                        N.car_id = fromJust $ MI.car_instance_id d
+                    })
+
         writeResult ("Your bought a car on the market" :: String)
     where  p uid d = runDb $ do 
             {-- 
@@ -698,9 +700,9 @@ marketPlaceBuy = do
                         save (pi {PI.garage_id =  G.id a, PI.car_instance_id = Nothing, PI.account_id = uid})
                         return p
             mp <- p 
-            sendLetter (MP.account_id mp) (def {
-                                                Not.title = "your part is sold",
-                                                Not.message = "your part is sold from the market"
+            
+            N.sendNotification (MP.account_id mp) (N.partMarket {
+                                                                                                N.part_id = fromJust $ MP.id mp  
                                             })
 
             writeResult ("You bought the part" :: String) 
@@ -1520,17 +1522,24 @@ raceChallengeAccept = do
         xs <- getJson >>= scheck ["challenge_id"]
 
         let cid = extract "challenge_id" xs :: Integer 
-
-        rid <- runDb $ do
+        -- Change, had to break up to be able to send to the user. 
+        -- This should be ok, it are only get actions 
 
             -- retrieve challenge
-            chg <- aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge
-            chgt <- do
-                    c <- aget ["id" |== (toSql $ Chg.type chg)] (rollback $ "challenge type not found for id " ++ (show $ Chg.type chg)) :: SqlTransaction Connection ChgT.ChallengeType
+        chg <- runDb $ (aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge)
+        chgt <- runDb $ do
+                    c <- (aget ["id" |== (toSql $ Chg.type chg)] (rollback $ "challenge type not found for id " ++ (show $ Chg.type chg)) :: SqlTransaction Connection ChgT.ChallengeType)
                     return $ ChgT.name c
 
             -- TODO: check user busy
 
+
+        N.sendBulk [uid, rp_account_id $ Chg.challenger chg] (N.raceStart {
+                                                                        N.race_type = read $ chgt,
+                                                                        N.race_id = cid  
+                                                                              })
+
+        rid <- runDb $ do
             -- TODO: get / search functions for track, user, car with task triggering
             userActions uid
             userActions $ rp_account_id $ Chg.challenger chg
@@ -1567,6 +1576,7 @@ raceChallengeAccept = do
             let fin r = (t+) $ ceiling $ raceTime r 
             let t1 = (\(_,r) -> fin r) $ head rs
             let winner_id = rp_account_id $ fst $ head rs
+
 
             forM_ rs $ \(p,r) -> do
 

@@ -130,17 +130,17 @@ openPostOffice = do
 
 -- | send a message to that users 
 sendLetter :: PostOffice -> UserId -> Letter -> SqlTransaction Connection () 
-sendLetter po uid lt = sendCentral po uid lt >>= liftIO . sendLocal po uid 
+sendLetter po uid lt = sendCentral uid lt >>= liftIO . sendLocal po uid 
 
 
                          
                          
                          -- undefined 
 
-sendCentral :: PostOffice -> UserId -> Letter -> SqlTransaction Connection Letter 
-sendCentral po uid it = do 
+sendCentral ::  UserId -> Letter -> SqlTransaction Connection Letter 
+sendCentral uid it = do 
                     a <- liftIO $ milliTime  
-                    let prit = P.PreLetter Nothing ((+) <$> P.ttl it <*> pure (P.sendat it)) (P.message it) (P.title it) (a) (uid) (P.from it) False False  
+                    let prit = P.PreLetter Nothing ((+) <$> P.ttl it <*> pure (P.sendat it)) (P.message it) (P.title it) (a) (uid) (P.from it) False False (P.data it) (P.type it) 
                     id <- save  prit 
                     return (prit { P.id = Just id}) 
 
