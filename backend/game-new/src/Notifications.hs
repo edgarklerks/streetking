@@ -32,17 +32,25 @@ import Data.Database hiding (Value)
 import Data.Aeson 
 import qualified Data.ByteString.Lazy as L 
 import qualified Data.Notifications as N 
+import GHC.Read 
+import qualified Text.Read.Lex as L 
 
 
-data RaceType = Money | Car 
+data RaceType = Money | Car | Custom String 
 
 instance Show RaceType where 
     show Money = "money"
     show Car = "car"
+    show (Custom s) = s 
 
 instance Read RaceType where 
-    readList "money" = [([Money],"")]
-    readList "car" = [([Car], "")]
+    readPrec = parens $ do
+                L.Ident s <- lexP 
+                case s of 
+                    "money" -> return Money
+                    "car" -> return Car  
+                    otherwise -> return (Custom s)
+
 
 data NotificationParam where 
 
@@ -225,6 +233,7 @@ isReturnCar _ = False
 instance ToInRule RaceType where 
         toInRule Money = InString "Money"
         toInRule Car = InString "Car"
+        toInRule (Custom s) = InString s 
 
 instance ToInRule NotificationParam where 
         toInRule d                     | isPartRepair d = InObject $ asInRule [
