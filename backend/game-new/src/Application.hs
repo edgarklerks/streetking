@@ -194,4 +194,3 @@ runCompose m = with db $ withConnection $ \c -> do
                 frp <- runComposeMonad m error c
                 frp `seq` return frp 
 
-

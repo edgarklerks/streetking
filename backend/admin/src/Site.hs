@@ -40,6 +40,7 @@ import qualified Model.City as CIT
 import qualified Model.Continent as CON 
 import qualified Model.Config as CO  
 import qualified Model.Garage as G 
+import qualified Model.Notifications as NT 
 import qualified Model.Personnel as P
 import qualified Model.PersonnelInstance as PI
 import qualified Model.ParameterTable as PT 
@@ -182,6 +183,8 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/part_type/put", putModel (def :: PT.PartType))
          , ("/tournament/get", getModel (def :: TRM.Tournament))
          , ("/tournament/put", putTournament)
+         , ("/notification/get", getModel (def :: NT.Notification))
+         , ("/notification/put", putModel (def :: NT.Notification))
          , ("",          serveDirectory "static")
          ]
 

@@ -13,8 +13,12 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id, read)
+import qualified Data.ByteString.Lazy as B 
 
 type MInteger = Maybe Integer 
+type BString = Maybe B.ByteString 
+
+type MString = Maybe String 
 
 $(genAll "PreLetter" "letters" [
     ("id", ''Id),
@@ -25,5 +29,7 @@ $(genAll "PreLetter" "letters" [
     ("to", ''Integer),
     ("from", ''MInteger),
     ("read", ''Bool),
-    ("archive", ''Bool)
+    ("archive", ''Bool),
+    ("data", ''BString),
+    ("type", ''MString)
     ])
