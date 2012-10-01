@@ -57,7 +57,7 @@ arcl (x1:x2:x3:x4:x5:x6:x7:xs) = ((fromScalar . magnitude) <$> thirdStepDifferen
 arcl xs = replicate (length xs) Nothing 
 
 -- curvatures :: [Vector Double] -> [Maybe Double]
-curvatures (x1:x2:x3:x4:x5:xs) = (fromScalar . magnitude <$> secondStepDifferenceVector ([x1,x2,x3,x4,x5]))  : curvatures (x2:x3:x4:x5:xs)
+curvatures (x1:x2:x3:x4:x5:x6:x7:xs) = ((1/) <$> firstStepDifferenceRate ([x1,x2,x3,x4,x5,x6,x7]))  : curvatures (x2:x3:x4:x5:x6:x7:xs)
 curvatures xs = replicate (length xs) Nothing
 
 arcLength :: [Vector Double] -> Double 

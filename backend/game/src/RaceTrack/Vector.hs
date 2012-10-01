@@ -161,9 +161,13 @@ secondCentralDifference (x1:x2:x3:x4:x5:xs) = Just $ (getY x5 - getY x3) / (hf *
     where hf = getX x5 - getX x3
           hc = getX x4 - getX x2 
           hb = getX x3 - getX x1
-firstStepDifferenceVector :: (Floating a, Eq a, Show a) => [Vector a] -> Maybe (Vector a)
+firstStepDifferenceVector :: (Floating a, Num a, Eq a, Show a) => [Vector a] -> Maybe (Vector a)
 firstStepDifferenceVector (x1:x2:x3:xs) = Just $ (x3 - x1) `scalarDiv` 2
 firstStepDifferenceVector otherwise = Nothing  
+
+firstStepDifferenceRate :: (RealFloat a, Num a, Show a) => [Vector a] -> Maybe a 
+firstStepDifferenceRate  = fmap (fromScalar . magnitude) . firstStepDifferenceVector
+
 
 
 -- Five points 

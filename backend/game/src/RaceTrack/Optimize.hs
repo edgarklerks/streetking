@@ -23,12 +23,20 @@ main = do
         let ml = read (xs !! 1) :: Double
         let rl = read (xs !! 2) :: Double 
         let cell = decode (B.fromChunks [ss]) 
+        putStrLn $ "Incoming cells: " ++ show (length cell)
         let ps = mergeCells ml rl $ mergeCells ml rl cell 
+        putStrLn $ "Outgoing cells: " ++ show (length ps) 
         encodeFile (xs !! 0) ps  
 
 
 mergeCells :: Double -> Double -> [Cell] -> [Cell] 
-mergeCells ml rl xs = (sconcat . N.fromList) <$> groupCells xs  
+mergeCells ml rl xs = mergeSmall rl $ (sconcat . N.fromList) <$> groupCells xs  
+
+mergeSmall :: Double -> [Cell] -> [Cell]
+mergeSmall rl [] = [] 
+mergeSmall rl [x] = [x] 
+mergeSmall rl (x:y:xs) | arclength x < rl = (x <> y) : mergeSmall rl xs 
+                       | otherwise = x : mergeSmall rl (y : xs)
 
 removeSmall :: Double -> [Cell] -> [Cell]
 removeSmall ml = filter (\c -> arclength c > ml && (fromMaybe 0 $ radius c) /= 0) 

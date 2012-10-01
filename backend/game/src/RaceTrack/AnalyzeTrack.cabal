@@ -34,6 +34,16 @@ executable ImageGrouping
        vector,
        mtl
 
+executable SegmentingAlternative 
+    main-is: SegmentingAlternative.hs
+    extensions: ViewPatterns 
+    ghc-options: -rtsopts -O2
+    build-depends: 
+        binary,
+        bytestring,
+        array
+        
+
 executable Segmenting
     main-is: Segmenting.hs 
     extensions: ViewPatterns
