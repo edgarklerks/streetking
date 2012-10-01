@@ -30,7 +30,7 @@
 			</div>
 			<div class="car-info-parameters-container-left">
 				<div class="car-info-data-element-data-box">
-					<div class="car-info-data-element-data-name">Acceleration <span>[:eval floor((0.acceleration/10000))]</span> s</div>
+					<div class="car-info-data-element-data-name">Acceleration <span>[:eval floor((0.acceleration/1000))/10]</span> s</div>
 					<div class="car-info-data-element-progress-bar-box ui-corner-all-1px">
 						<div class="car-info-data-element-progress-bar ui-corner-all-1px" style="width:[:eval ((0.acceleration/10000)*100)]%"></div>
 					</div>
