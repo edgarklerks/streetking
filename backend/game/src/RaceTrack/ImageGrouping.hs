@@ -585,12 +585,12 @@ main :: IO ()
 main = do 
     c <- getArgs     
     case c of 
-        [d,sp,f] -> analyzeImage (Prelude.read d) (Prelude.read sp) f 
-        otherwise -> putStrLn "usage: prog <Direction> (X,Y) file"
+        [d,sp,f, a] -> analyzeImage (Prelude.read d) (Prelude.read sp) f (Prelude.read a) 
+        otherwise -> putStrLn "usage: prog <Direction> (X,Y) file animate<1|0>"
 
 
-analyzeImage :: Direction -> (Int, Int) -> FilePath -> IO ()
-analyzeImage sd sp fp = do 
+analyzeImage :: Direction -> (Int, Int) -> FilePath -> Int -> IO ()
+analyzeImage sd sp fp an = do 
     ilInit
     xs <- loadImage fp
     putStrLn "Tracing path..."
@@ -618,14 +618,15 @@ analyzeImage sd sp fp = do
     writeImage (f "path") $ flipVertImage (drawColorPoints path' (255,255,0) [fromPoint $ head path])
 
     system("rm -f gif/*.bmp")
-    putStrLn "animations.."
-    forM_ (mkGif (fromPoint <$> path) (255,0,0) xs) $ \(k,i) -> do 
-        let file = "gif/path_" ++ (show i) ++ ".bmp"
-        sb <- doesFileExist file
-        when sb $ removeFile file 
-        writeImage file (flipVertImage k)
-    system("cd gif/; perl animate.pl")
-    system("rm -f gif/*.bmp");
+    when (an == 1) $ do 
+        putStrLn "animations.."
+        forM_ (mkGif (fromPoint <$> path) (255,0,0) xs) $ \(k,i) -> do 
+            let file = "gif/path_" ++ (show i) ++ ".bmp"
+            sb <- doesFileExist file
+            when sb $ removeFile file 
+            writeImage file (flipVertImage k)
+        system("cd gif/; perl animate.pl")
+        void $ system("rm -f gif/*.bmp");
     return ()
 
 
