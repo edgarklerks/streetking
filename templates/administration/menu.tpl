@@ -42,6 +42,7 @@
 			<li><a href="#config/get" class="button" module="CONFIG_LIST">Config</a></li>
 			<li><a href="#tournament/get" class="button" module="TOURNAMENT_LIST">tournament</a></li>
 			<li><a href="#image/listing" class="button" module="DUMP_IMAGE_LIST">dump image</a></li>
+			<div><a href="#notification/get" class="button" module="NOTIFICATION_LIST">Notification</a></div>
 		</ul>
 	</li>	
 </ul>
