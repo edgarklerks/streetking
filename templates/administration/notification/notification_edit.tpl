@@ -1,7 +1,9 @@
 <form id="edit_form" action="notification/put" method="post">
 	<div class="error">&nbsp;</div>
 	<input type="hidden" name="id" value="[:0.id]"/>
-<div><label>body:</label><input type="text" name="body" value="[:0.body]"/></div>
+	
+	<label>body:</label>
+	<textarea id="code_josn" name="body">[:0.body]</textarea>
 
 <div><label>language:</label><input type="text" name="language" value="[:0.language]"/></div>
 <div><label>name:</label><input type="text" name="name" value="[:0.name]"/></div>
