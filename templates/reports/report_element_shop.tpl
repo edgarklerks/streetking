@@ -12,7 +12,8 @@
 		[:when (report_descriptor == "car_trashed")]{Car sold to a scrap}
 	</div>
 	<div class="report-element-container-inner">
-		<div class="report-element-image-container [:when (improvement > 0 & unique == false)]{report-element-image-container-improved}[:when (unique)]{report-element-image-container-unique} black-icons-100 [:when (part_type == "engine")]{report-element-[:part_type]-black}[:when (part_type != "engine")]{report-element-image-container-image}" [:when (part_type != "engine")]{style="background-image:url(test_store/[:part_type]/[:part_type]_[:picture].jpg?t=[:eval TIMESTAMP(id)])"}>[:when (part_type != "engine")]{<div class="report-element-image-zoom element-image-zoom">&nbsp;</div>}</div>
+<!--		<div class="report-element-image-container [:when (improvement > 0 & unique == false)]{report-element-image-container-improved}[:when (unique)]{report-element-image-container-unique} black-icons-100 [:when (part_type == "engine")]{report-element-[:part_type]-black}[:when (part_type != "engine")]{report-element-image-container-image}" [:when (part_type != "engine")]{style="background-image:url(test_store/[:part_type]/[:part_type]_[:picture].jpg?t=[:eval TIMESTAMP(id)])"}>[:when (part_type != "engine")]{<div class="report-element-image-zoom element-image-zoom">&nbsp;</div>}</div> -->
+<div class="report-element-image-container [:when (improvement > 0 & unique == false)]{report-element-image-container-improved}[:when (unique)]{report-element-image-container-unique} report-element-image-container-image" style='background-image:url([:when (part_type != null)]{ [:eval IMAGESERVER("[\"part\","+part_id+",\"" + part_type + "\"]")] } [:when (part_type == null)]{ [:eval IMAGESERVER("[\"user_car\","+car_instance_id+",\"car\"]")] })'><div class="report-element-image-zoom element-image-zoom">&nbsp;</div></div>
 		<div class="report-element-data-container">
 			<div class="report-element-info-container">
 				<div class="report-element-infotext-container">
@@ -115,7 +116,7 @@
 				<div class="clearfix"></div>
 			</div>
 			<div class="report-element-additional-info-box">
-				<div>Time:&nbsp;<span>[:eval TIMESTAMPTODATE(time)]</span></div>
+				<div>Time:&nbsp;<span>[:eval TIMESTAMPTODATE(time*1000)]</span></div>
 			</div>
 		</div>
 		<div class="clearfix"></div>

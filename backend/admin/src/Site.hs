@@ -40,9 +40,11 @@ import qualified Model.City as CIT
 import qualified Model.Continent as CON 
 import qualified Model.Config as CO  
 import qualified Model.Garage as G 
+import qualified Model.Notifications as NT 
 import qualified Model.Personnel as P
 import qualified Model.PersonnelInstance as PI
 import qualified Model.ParameterTable as PT 
+import qualified Model.Notifications as NN 
 import           Snap.Util.FileServe
 import           Text.Templating.Heist 
 import           SqlTransactionSnaplet hiding (runDb)
@@ -150,6 +152,8 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/part_modifier/put", putModel (def :: PM.PartModifier))
          , ("/part_instance/get", getModel (def :: PI.PartInstance))
          , ("/part_instance/put", putModel (def :: PI.PartInstance))
+         , ("/notification/put", putModel (def :: NN.Notification))
+         , ("/notification/get", getModel (def :: NN.Notification))
          , ("/part_instance/visual", visualPartInstance) 
          , ("/city/get", getModel (def :: CIT.City))
          , ("/city/put", putModel (def :: CIT.City))
@@ -179,6 +183,8 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/part_type/put", putModel (def :: PT.PartType))
          , ("/tournament/get", getModel (def :: TRM.Tournament))
          , ("/tournament/put", putTournament)
+         , ("/notification/get", getModel (def :: NT.Notification))
+         , ("/notification/put", putModel (def :: NT.Notification))
          , ("",          serveDirectory "static")
          ]
 

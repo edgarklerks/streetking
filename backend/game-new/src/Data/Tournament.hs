@@ -65,8 +65,7 @@ import           Data.Text (Text)
 import           Test.QuickCheck 
 import           System.Random 
 import           Data.Monoid 
-import           Data.Notifications hiding (milliTime) 
-import           Model.PreLetter (message, title)
+import qualified Notifications as N 
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -270,7 +269,7 @@ unsort = foldM (\z x -> uninsert x z) []
                              else uninsert a xs >>= \xs -> return (x:xs)
 
 -- runs all the tournament rounds  
-runTournamentRounds :: PostOffice -> TournamentFullData -> SqlTransaction Connection [[(Integer, [(RaceParticipant, RaceResult)])]]  
+runTournamentRounds :: t -> TournamentFullData -> SqlTransaction Connection [[(Integer, [(RaceParticipant, RaceResult)])]]  
 runTournamentRounds po tfd = 
                           let tr = T.track_id . tournament $ tfd 
                               tid = T.id . tournament $ tfd
@@ -294,10 +293,11 @@ runTournamentRounds po tfd =
                                         else do rest <- step (tdif + tmax) (twothree ps) 
                                                 return $ races : rest
                          in do 
-                               forM_ plys $ \(TP.account_id -> pl) -> sendLetter po (fromJust pl) (def {
-                                                                                            title = "tournament started",
-                                                                                            message = "the tournament has started"
-                                                                                    })
+                               forM_ plys $ \(TP.account_id -> pl) -> N.sendCentralNotification (fromJust $ pl) (
+                                                                                        N.tournamentStart {
+                                    N.tournament_id = fromJust $ tid 
+                                                                                                })
+
                                flip catchSqlError error $ do 
                                    ys <- mapM rp plys >>= liftIO . unsort 
                                    xs <- step 0 (twothree (ys))
@@ -384,7 +384,7 @@ tournamentTrigger i = do
                         set "id" $ (T.id x)
                 void $ Task.trigger Task.Cron 0 tid  
                 
-runTournament :: TK.Task -> PostOffice -> SqlTransaction Connection Bool
+runTournament :: TK.Task -> t -> SqlTransaction Connection Bool
 runTournament tk po = return False <* (do
                 let id = "id" .<< (TK.data tk) ::  Integer
                 tf <- loadTournamentFull id  

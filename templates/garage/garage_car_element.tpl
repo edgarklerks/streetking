@@ -21,9 +21,9 @@
 					</div>
 				</div>
 				<div class="garage-car-element-info-data-box">
-					<div class="garage-car-element-info-data-name">Acceleration <span>[:eval floor((acceleration/10000))]</span> s</div>
+					<div class="garage-car-element-info-data-name">Acceleration <span>[:eval floor(acceleration/1000)/10]</span> s</div>
 					<div class="garage-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((acceleration/10000)*100)]%"></div>
+						<div class="garage-car-element-progress-bar ui-corner-all-1px" style="width:[:eval (acceleration/10000)]%"></div>
 					</div>
 				</div>
 				<div class="garage-car-element-info-data-box">
@@ -39,7 +39,7 @@
 					</div>
 				</div>
 				<div class="garage-car-element-info-data-box">
-					<div class="garage-car-element-info-data-name">Weight <span>[:eval floor((weight/10000))]</span> kg</div>
+					<div class="garage-car-element-info-data-name">Weight <span>[:weight]</span> kg</div>
 					<div class="garage-car-element-progress-bar-box ui-corner-all-1px">
 						<div class="garage-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/10000)*100)]%"></div>
 					</div>

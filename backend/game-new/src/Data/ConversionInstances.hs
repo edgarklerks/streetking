@@ -8,6 +8,7 @@ import qualified Data.Attoparsec.Number as A
 import qualified Data.Text as T 
 import qualified Data.Text.Encoding as T
 import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Lazy.Char8 as L 
 import Database.HDBC.SqlValue 
 import qualified Data.Serialize as S
 import Control.Monad 
@@ -138,6 +139,13 @@ instance FromInRule String where
     fromInRule (InByteString x) = B.unpack x
     fromInRule x = viaReadable x
 
+instance ToInRule L.ByteString where 
+    toInRule x = InByteString $ B.concat $ L.toChunks x
+
+instance FromInRule L.ByteString where 
+    fromInRule (InByteString x) = L.fromChunks [x]
+    fromInRule (InString x) = L.pack x 
+    fromInRule x = viaReadable x 
 
 instance ToInRule B.ByteString where
     toInRule x = InByteString x
