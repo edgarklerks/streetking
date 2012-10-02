@@ -1,0 +1,261 @@
+{-# LANGUAGE OverloadedStrings #-}
+
+{-|
+
+This is where all the routes and handlers are defined for your site. The
+'site' function combines everything together and is exported by this module.
+
+-}
+
+module Site
+  ( site
+  ) where
+
+import           Control.Applicative
+import           Control.Monad
+import           Control.Monad.Trans
+import           Data.Maybe
+import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Lazy.Char8 as BL
+import qualified Data.Text.Encoding as T
+--import           Snap.Extension.Decoder
+import           Snap.Util.FileServe
+import           Snap.Types
+import qualified Snap.Iteratee as SI
+import qualified Data.Map as M
+import           Text.Templating.Heist
+import qualified Text.XmlHtml as X
+import           Application
+import qualified Data.Enumerator as E 
+import qualified Data.Enumerator.List as EL
+import qualified Network.Socket.Enumerator as ES
+import qualified Network.Socket.ByteString as NB
+import qualified Network.Socket as NS 
+import           Foreign.C.Types (CInt)
+import           Data.Monoid
+import           Control.Arrow 
+import qualified Network.HTTP.Enumerator as HE
+import           Control.Monad.Identity
+import           Control.Monad.Cont
+import           Data.SqlTransaction
+import           Database.AppToken
+import           Database.User
+import           Blaze.ByteString.Builder
+import qualified Network.HTTP.Types as T
+import qualified Control.Monad.CatchIO as CIO
+import qualified Data.Aeson as A
+
+
+
+-- | Passes requests to another server if constraints are met  
+proxy :: Application ()
+proxy = transparent <|> wall  
+
+-- | Reverse application, gives an object oriented feel to record types
+($>):: a -> (a -> b) -> b
+($>) o a = a o 
+
+
+-- snap to http-enumerator 
+-- type Enumerator a m b = Step a m b -> Iteratee a m b 
+-- type Iteratee a m b =  m (Step a m b)
+-- type Step = Continue (Stream a -> Iteratee a m b)
+--           | Yield b (Stream a)
+--           | Error SomeException 
+--
+
+runHttp :: HE.Request t -> HE.Manager -> Application (Int, T.ResponseHeaders, B.ByteString)   
+runHttp he m = do 
+    bdy <- getRequestBody
+    x <- E.run $ runHttp' he step m bdy 
+    case x of 
+        Left e -> internalError (show e)
+        Right x -> return x
+    where 
+        runHttp' he f m bdy = HE.http (he {HE.requestBody = HE.RequestBodyLBS bdy }) (\s p -> f (T.statusCode s) p) m
+        step s p =  E.continue $ iter s p B.empty
+        iter s p z E.EOF = do 
+                    E.yield (s, p, z) E.EOF
+        iter s p z (E.Chunks xs) = E.continue (iter s p (z `B.append` (B.concat xs))) 
+-- Step a m b -> Iteratee a m b 
+goHttp :: Enumerator Builder IO a 
+goHttp s = E.returnI s
+
+-- | Actions, which will send the request to an backend server 
+sendAbroad :: Request -> Application () 
+sendAbroad req =
+            let  accept = fromMaybe "application/json" $ getHeader "Accept" req
+                 method = req $> rqMethod
+                 uri = req $> rqURI
+                 resource = req $> rqContextPath 
+                 subresource = req $> rqPathInfo 
+                 params = req $> rqParams 
+                 request = HE.def {HE.method = B.pack . show $ method, HE.path = (resource `B.append` subresource)}  
+            in do 
+               (host, port) <- getServer  
+               userid <- getRoles "user_token"
+               devid <- getRoles "application_token"
+               let prs = fmap (second (Just . head)) $ (M.toList params ++ (getUserId userid) ++ (getDeveloperId devid))
+               m <- liftIO $  HE.newManager 
+               (s,hp,bs) <- runHttp (request {HE.host = host, HE.port = port, HE.queryString = prs}) m   
+               writeBS bs 
+               liftIO $ HE.closeManager m
+               modifyResponse (setResponseCode s)
+               modifyResponse (findHeaderContentType hp . findHeaderLocation hp)
+
+findHeaderLocation ps r = case lookup "Location" ps of 
+    Just x -> addHeader "Location" x r
+    Nothing -> r
+
+findHeaderContentType ps r = case lookup "Content-Type" ps of 
+    Just x -> addHeader "Content-Type" x r
+    Nothing -> r
+
+getUserId :: [Role] -> [(B.ByteString, [B.ByteString])]
+getUserId = foldr step []
+        where step (User (Just x)) z = ("userid",[B.pack $ show x]) : z
+              step _ z = z
+
+getDeveloperId :: [Role] -> [(B.ByteString, [B.ByteString])] 
+getDeveloperId  = foldr step [] 
+    where step (Developer (Just x)) z = ("devid", [B.pack $ show x]) : z
+          step _ z = z
+
+getDevId :: Application Integer 
+getDevId = do 
+        x <- getParam "devid" 
+        case x of 
+            Just y -> return (read $ B.unpack y)
+            Nothing -> internalError "No devid"
+
+-- | Be transparent
+transparent :: Application ()
+transparent = withRequest $ \req -> checkPerm req *> sendAbroad req
+
+-- | Or run into the wall
+wall :: Application ()
+wall = modifyResponse (setResponseCode 403) *> writeBS "{\"error\":\"You don't have permission to access this resource\"}" *> (finishWith =<< getResponse)
+
+internalError :: String -> Application a 
+internalError x = modifyResponse (setResponseCode 500) *> (CIO.throw $ UserErrorE (B.pack x))
+
+-- | Check permissions against cookie. Everybody has the all roll 
+checkPerm :: Request -> Application ()
+checkPerm req = may uri method >>= guard  
+        where uri = stripSl $ tail $ B.unpack $ (req $> rqContextPath) `B.append`  (req $> rqPathInfo)
+              method = frm $ req $> rqMethod 
+              frm :: Method -> RestRight 
+              frm POST = Post 
+              frm GET = Get 
+              frm DELETE = Delete 
+              frm PUT = Put 
+              frm _ = error "Fali"
+              stripSl ['/'] = []
+              stripSl [] = []
+              stripSl (x:xs) = x : stripSl xs
+
+-- | Identify the user and sets a cookie with a developer Role if the token is correct
+-- 6 ^ 6 ^ 6 children is my eternal goal. 
+-- For this I need a bank, 
+-- 36 generations of 6,
+-- be remembered 648 years,
+-- and live 18 years without a soul. 
+checkPerm' :: Application ()
+checkPerm' = withRequest checkPerm  <|> wall
+
+identify :: Application ()
+identify = withConnection $ \c -> do 
+    b <- getOpParam "token"
+    u <- runSqlTransaction ( loginApp (B.unpack b)) internalError c  
+    addRole "application_token" (Developer (Just . fromInteger $ u)) 
+
+-- | Debug function to dump the current RoleState 
+inspect :: Application ()
+inspect = do 
+        writeBS "Inspect" -- *> (writeBS . B.pack =<< withRoleState dumpAll)
+        withRoleState $ \x -> do 
+            y <- dumpAll x
+            writeBS $ B.pack y
+            z <- getRoles "user_token"
+            x <- getRoles "application_token"
+            writeBS $ B.pack $ show (z,x)
+
+login :: Application ()
+login = checkPerm' *> withConnection login''
+        where login'' db = do 
+                e <- B.unpack <$> getOpParam "email"
+                p <- B.unpack <$> getOpParam "password"
+                u <- runSqlTransaction (loginUser e p) internalError db
+                addRole "user_token" (User (Just . fromInteger $ u))
+
+logout :: Application ()
+logout = checkPerm'  *> dropRoles "user_token" *> writeLBS "{\"result\":1}"
+
+                
+
+ 
+-- test Roles
+roleApp :: Application()
+roleApp = (not.null) <$>  getRoles "application_token" >>= writeLBS .  ("{\"result\":" `BL.append`) . (`BL.append` "}") . A.encode 
+
+roleUser :: Application()
+roleUser = do 
+        xs <- getRoles "user_token"
+        case xs of 
+            [] -> writeLBS "{\"result\":0}" 
+            [User (Just x)] -> writeLBS "{\"result\":1}" 
+            [User (Nothing)] -> writeLBS "{\"result\":0}" 
+
+
+--    (not.null) <$>  getRoles "user_token" >>= writeLBS .  ("{\"result\":" `BL.append` ) . (`BL.append` "}") . A.encode
+
+
+-- cross domain shizzle for unity
+crossDomain :: Application()
+crossDomain = do
+    modifyResponse (addHeader "Content-Type" "text/xml")
+    writeBS $ B.pack $ ("<?xml version=\"1.0\"?><cross-domain-policy><allow-access-from domain=\"*\"/></cross-domain-policy>" :: String)
+
+
+------------------------------------------------------------------------------
+-- | The main entry point handler.
+site :: Application ()
+site = do 
+    g <- rqMethod <$> getRequest 
+    case g of 
+        OPTIONS -> allowAll 
+        otherwise -> allowAll *> (CIO.catch (route [  
+            ("/Application/identify", identify),
+            ("/Application/inspect", inspect),
+            ("/User/logout", logout),
+            ("/Role/application", roleApp),
+            ("/Role/user", roleUser),
+            ("/crossdomain.xml", crossDomain),
+            ("/", proxy) ] ) $ \(UserErrorE e) -> 
+                writeBS $ "{\"error\":\"" `B.append` e `B.append` "\"}" )
+
+allowAll = allowCredentials *> allowOrigin *> allowMethods *> allowHeaders
+        
+-- -Access-Control-Allow-Origin: * 
+
+allowOrigin :: Application ()
+allowOrigin = do 
+            g <- getRequest
+            modifyResponse (addHeader "Content-Type" "text/plain")
+            modifyResponse (\x -> 
+               case getHeader "Origin" g <|> getHeader "Referer" g of 
+                    Nothing -> addHeader "Access-Control-Allow-Origin" "*" x
+                    Just n -> addHeader "Access-Control-Allow-Origin" n x
+                )
+-- Access-Control-Allow-Credentials: true  
+
+allowCredentials :: Application () 
+allowCredentials = modifyResponse (addHeader "Access-Control-Allow-Credentials" "true")
+
+allowMethods :: Application ()
+allowMethods = modifyResponse (addHeader "Access-Control-Allow-Methods" "POST, GET, OPTIONS, PUT")
+
+allowHeaders :: Application ()
+allowHeaders = modifyResponse (addHeader "Access-Control-Allow-Headers" "origin, content-type, accept, cookie");
+
+
