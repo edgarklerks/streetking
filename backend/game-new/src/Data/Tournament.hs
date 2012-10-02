@@ -70,6 +70,7 @@ import qualified Notifications as N
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
 
+
 instance AS.ToJSON TournamentTask where 
     toJSON a = AS.toJSON $ S.fromList [("RunTournament" :: Text, True)]
 

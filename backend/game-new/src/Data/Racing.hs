@@ -1,6 +1,18 @@
-{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings, ViewPatterns, FlexibleContexts #-}
+{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings, ViewPatterns, FlexibleContexts, BangPatterns #-}
 
-module Data.Racing where
+module Data.Racing where {-- (
+        runRaceWithParticipant,
+        RaceParticipant(..),
+        RaceDatas,
+        RaceData(..),
+        raceResult2FE,
+        RaceRewards,
+        RaceResult(..),
+        raceData,
+        rp_account_id,
+        mkRaceParticipant
+
+) where --}
 
 import Data.Constants
 import Data.Car
@@ -28,6 +40,7 @@ import Control.Applicative
 import Data.InRules
 import Data.Monoid 
 import Data.SqlTransaction
+import qualified Data.List as L 
 
 import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
@@ -37,6 +50,7 @@ import qualified Model.TrackDetails as TD
 import qualified Model.Part as Part
 import qualified Model.PartDetails as PD
 import Data.Char 
+import Debug.Trace
 
 type Path = Double
 type Speed = Double
@@ -283,38 +297,38 @@ runRace (Track i ss) d c e = res $ runRace' ss' d c e
        
 -- (section, path, speed): for each section, the path has been determined. the speed is the maximum entry speed for the next section.
 runRace' :: [(Section, Path, Speed)] -> Driver -> Car -> Environment -> [SectionResult]
-runRace' sps d c e = fst $ foldl step ([], 0) sps
+runRace' sps d c e = {-# SCC runRace' #-} fst $ L.foldr (\x z -> {-# SCC innerLoop #-} step z x) ([], 0) sps
     where
         step :: ([SectionResult], Speed) -> (Section, Path, Speed) -> ([SectionResult], Speed)
         step (rs, vin) (s, p, vnx) = (rs ++ [res], sectionSpeedOut res)
             where
-                res = runSection s p vin vnx d c e
+                res = {-# SCC runSection #-} runSection s p vin vnx d c e
 
 -- integration state: current time, distance traveled, highest speed, current speed, currently braking
-data IState = IState Time' Length Speed Speed Bool Integer
+data IState = IState !Time' !Length !Speed !Speed !Bool !Integer
 
 -- runSection: integrate over section 
 runSection :: Section -> Path -> Speed -> Speed -> Driver -> Car -> Environment -> SectionResult
-runSection s@(Section i _ _) p vin vnext d c e = proc $ IState 0 0 vin vin False 0
+runSection s@(Section i _ _) p vin vnext d c e = {-# SCC procEntry #-} proc $ IState 0 0 vin vin False 0
     where
         s' = pathSection s p
-        l = arclength s'
+        l = arclength s' 
         vlim = topSpeed s' d c e
         proc :: IState -> SectionResult
         proc ist@(IState t x vm v b n) = case (x >= l) of
             True -> SectionResult i p (max v vm) (l/t) v t
-            False -> (tr t x vm v b n) $ proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b' (n+1)
+            False ->  (tr t x vm v b n) $ {-# SCC procInner #-} proc  $  IState ({-# SCC td #-} t + deltaTime) ({-# SCC dp #-} x + deltaTime * v) ({-# SCC vm #-} max v vm) v' b' (n+1)
                 where
                     -- determine distance needed to brake to vnext
                     -- TODO: driver always brakes too early: (l - x + err). err is reduced by driver skill.
                     -- TODO: speed reduction is based on braking only and should account for drag force, too.
-                    tr t x vm v b n = case (mod n 10) of
---                        0 -> traceShow ((show s) ++ " - #" ++ (show n) ++ " - " ++ (show t) ++ "s - " ++ (show x) ++ "m - " ++ (show v) ++ "m/s")
-                        _ -> id
-                    b' = (||) b $ (speedReductionDistance c e v vnext) >= (l-x)
+                    tr !t !x !vm !v !b !n  = case mod n 10 of
+                                          --      0 -> id -- traceShow ((show s) ++ " - #" ++ (show n) ++ " - " ++ (show t) ++ "s - " ++ (show x) ++ "m - " ++ (show v) ++ "m/s", show c) r 
+                                                otherwise -> id 
+                    b' = {-# SCC b' #-} (||) b $ (speedReductionDistance c e v vnext) >= (l-x)
                     v' = case b' of
-                        True -> max vnext $ v - deltaTime * ((brakingForce c e) + (dragForce c e v)) / (mass c)
-                        False -> min vlim $ v + deltaTime * ((accelerationForce c e v) - (dragForce c e v)) / (mass c)
+                        True -> {-# SCC vTrue #-} max vnext $ v - deltaTime * ((brakingForce c e) + (dragForce c e v)) / (mass c)
+                        False -> {-# SCC fTrue #-} min vlim $ v + deltaTime * ((accelerationForce c e v) - (dragForce c e v)) / (mass c)
 
 
 {-
@@ -385,13 +399,13 @@ corneringSpeed c e r = sqrt $ (r *) $ lateralAcceleration c e r
 
 -- drag force for car in environment at speed v
 dragForce :: Car -> Environment -> Speed -> Double
-dragForce c e v = v^2 * 0.5 * (rho e) * (cda c)
+dragForce c e v = {-# SCC dragForce #-} v^2 * 0.5 * (rho e) * (cda c)
 
 -- acceleration force for car in environment at speed v using continuous transmission approximation: torque T ~ P/v. at low speeds, T is limited by tyre traction.
 accelerationForce :: Car -> Environment -> Speed -> Double
-accelerationForce c e v = case (v <= tractionSpeedTreshold c e) of
-    True -> (mass c) * (tco c) * (mtraction e) * (constant "g")
-    False -> (pwr c) / v
+accelerationForce c e v = {-# SCC accelerationForce #-} case (v <= tractionSpeedTreshold c e) of
+    True -> {-# SCC aTrue #-}  (mass c) * (tco c) * (mtraction e) * (constant "g")
+    False -> {-# SCC aFalse #-} (pwr c) / v
 
 
 {-

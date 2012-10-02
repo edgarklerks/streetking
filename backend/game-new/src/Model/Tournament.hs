@@ -19,6 +19,7 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 type MRaceReward = Maybe RaceRewards 
+
 $(genAll "Tournament" "tournament" [
     ("id", ''Id),
     ("car_id", ''Id),

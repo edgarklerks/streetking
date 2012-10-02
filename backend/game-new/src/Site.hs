@@ -1581,12 +1581,12 @@ raceChallengeAccept = do
             cons (me :: Maybe Integer)
 
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
---            am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            let am = def :: APM.AccountProfileMin
---            c  <- fmap garageCarProps $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            let c = def :: CIG.CarInGarage
---            cm <- fmap minimalCarProps $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
-            let cm = def :: CMI.CarMinimal
+            am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
+--            let am = def :: APM.AccountProfileMin
+            c  <- fmap garageCarProps $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+--            let c = def :: CIG.CarInGarage
+            cm <- fmap minimalCarProps $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+--            let cm = def :: CMI.CarMinimal
 
             cons a
             cons am
