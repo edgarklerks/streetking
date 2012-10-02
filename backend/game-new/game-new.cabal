@@ -86,6 +86,7 @@ Executable game-new
     ghc-options: -threaded -w 
   else
     if impl(ghc >= 6.12.0)
+--      ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2 -auto-all -caf-all -auto 
       ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2 
                    -fno-warn-orphans -fno-warn-unused-do-bind -feager-blackholing -fliberate-case  
     else

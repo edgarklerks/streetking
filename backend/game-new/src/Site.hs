@@ -1541,25 +1541,31 @@ raceChallengeAccept = do
         cons chgt
         cons chg 
 
+<<<<<<< local
+=======
         cons uid
         cons "uid ok"
 
             -- TODO: check user busy
         liftIO $ print chgt *> print chg 
+>>>>>>> other
         let t = N.raceStart {
                     N.race_type = read $ chgt,
                     N.race_id = cid  
 
                 }
-        cons "raceStart made"
         cons t
-
 
         N.sendNotification uid t
 
-        cons "notif sent"
+        cons "a" 
 
         N.sendNotification (rp_account_id $ Chg.challenger chg) t 
+<<<<<<< local
+
+        cons "b"
+=======
+>>>>>>> other
 
         liftIO $ print t
         liftIO $ print "notifications sit"
@@ -1581,11 +1587,8 @@ raceChallengeAccept = do
 
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
---            let am = def :: APM.AccountProfileMin
             c  <- fmap garageCarProps $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
---            let c = def :: CIG.CarInGarage
             cm <- fmap minimalCarProps $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
---            let cm = def :: CMI.CarMinimal
 
             cons a
             cons am
@@ -1607,6 +1610,7 @@ raceChallengeAccept = do
             cons ps 
             -- delete challenge
             foo <- save $ chg { Chg.deleted = True }
+
             cons "kwun: " 
             cons foo
             
@@ -1658,6 +1662,7 @@ processRace t ps tid = do
 
          -- race participants
         let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
+        cons "laap"
 
         cons rs
 
