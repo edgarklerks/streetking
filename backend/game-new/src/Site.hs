@@ -1541,31 +1541,20 @@ raceChallengeAccept = do
         cons chgt
         cons chg 
 
-<<<<<<< local
-=======
         cons uid
         cons "uid ok"
 
-            -- TODO: check user busy
+        -- TODO: check user busy
         liftIO $ print chgt *> print chg 
->>>>>>> other
+
         let t = N.raceStart {
                     N.race_type = read $ chgt,
                     N.race_id = cid  
 
                 }
-        cons t
-
         N.sendNotification uid t
-
-        cons "a" 
-
         N.sendNotification (rp_account_id $ Chg.challenger chg) t 
-<<<<<<< local
 
-        cons "b"
-=======
->>>>>>> other
 
         liftIO $ print t
         liftIO $ print "notifications sit"
