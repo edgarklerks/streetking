@@ -1428,7 +1428,7 @@ userActions uid = do
 --
 
 personnelUpdate :: Integer -> SqlTransaction Connection ()
-personnelUpdate uid = do 
+personnelUpdate uid = forkSqlTransaction $ do 
             g <- aget ["account_id" |== (toSql uid)] (rollback "cannot find garage") :: SqlTransaction Connection G.Garage 
             p <- search ["garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
             case p of
