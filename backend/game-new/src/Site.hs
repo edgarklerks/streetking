@@ -1544,6 +1544,8 @@ raceChallengeAccept = do
         cons uid
         cons "uid ok"
 
+            -- TODO: check user busy
+        liftIO $ print chgt *> print chg 
         let t = N.raceStart {
                     N.race_type = read $ chgt,
                     N.race_id = cid  
@@ -1559,6 +1561,8 @@ raceChallengeAccept = do
 
         N.sendNotification (rp_account_id $ Chg.challenger chg) t 
 
+        liftIO $ print t
+        liftIO $ print "notifications sit"
         rid <- runDb $ do
             -- TODO: get / search functions for track, user, car with task triggering
             
@@ -1619,6 +1623,7 @@ raceChallengeAccept = do
 
 
             forM_ rs $ \(p,r) -> do
+                cons "form" 
 
                 let isWinner = (rp_account_id p) == winner_id
  
