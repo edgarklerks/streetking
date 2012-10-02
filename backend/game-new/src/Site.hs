@@ -849,7 +849,6 @@ garageParts = do
                 "account_id" +==| toSql uid
             )
         let p = runDb $ do
-            personnelUpdate uid  
             ns <- search xs od l o
             return ns 
         ns <- p :: Application [GPT.GaragePart]
@@ -862,7 +861,6 @@ garageCar = do
         (((l,o), xs),od) <- getPagesWithDTDOrdered ["active", "level"] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         let p = runDb $ do
-            personnelUpdate uid 
             (ns :: [CIG.CarInGarage]) <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
@@ -875,7 +873,6 @@ garageActiveCar = do
         uid <- getUserId 
         (((l,o), xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid) +&& "active" +==| SqlBool True) 
         let p = runDb $ do
---            personnelUpdate uid 
             ns <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
@@ -1013,7 +1010,6 @@ garagePersonnel = do
                     "salary" +<= "salarymax" 
             )
         let p = runDb $ do
-            personnelUpdate uid 
             g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
             ns <- search (xs ++ ["garage_id" |== (toSql $ G.id g) ]) [Order ("personnel_instance_id",[]) True]  l o
             return ns 
