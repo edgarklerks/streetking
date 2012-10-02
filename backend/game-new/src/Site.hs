@@ -1452,7 +1452,7 @@ partImprove uid pi = do
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "cannot find partinstance"
                         let p = fromJust p'             
-                        if PI.improvement p < 100000 
+                        if PI.improvement p < 100000 && PI.task_end pi < s 
                                 then void $ save (p {
                                         PI.improvement = min 100000 (PI.improvement p + sk * ut)
                                     })
@@ -1483,7 +1483,7 @@ partRepair uid pi = do
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "part instance not found"
                         let p = fromJust p' 
-                        if PI.wear p > 0 
+                        if PI.wear p > 0 && PI.task_end pi < s  
                             then 
                                 void $ save (p {
                                             PI.wear = max 0 (PI.wear p - sk * ut)
@@ -1520,7 +1520,7 @@ carRepair uid pi = do
                     g' <- load (CIP.part_instance_id c) :: SqlTransaction Connection (Maybe PI.PartInstance)
                     when (isNothing g') $ rollback "cannot find part instance"
                     let p = fromJust g'
-                    if (PI.wear p > 0) 
+                    if (PI.wear p > 0) && PI.task_end pi < s 
                             then 
                                 void $ save (p {
                                     PI.wear = max 0  (PI.wear p - sk * ut)
