@@ -860,6 +860,7 @@ garageCar = do
         uid <- getUserId 
         (((l,o), xs),od) <- getPagesWithDTDOrdered ["active", "level"] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
+--
         let p = runDb $ do
             (ns :: [CIG.CarInGarage]) <- search xs od l o
             return ns 
@@ -1424,7 +1425,7 @@ userActions uid = do
 --
 
 personnelUpdate :: Integer -> SqlTransaction Connection ()
-personnelUpdate uid = void $ forkSqlTransaction $ do 
+personnelUpdate uid = do 
             g <- aget ["account_id" |== (toSql uid)] (rollback "cannot find garage") :: SqlTransaction Connection G.Garage 
             p <- search ["garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
             case p of
