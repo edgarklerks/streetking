@@ -637,7 +637,7 @@ garageCarReady = do
     uid <- getUserId 
     xs <- getJson >>= scheck ["id"]
     s <-  prc uid xs 
-    updatePersonnel uid 
+    personnelUpdate uid 
     writeResult s
         where prc uid xs = runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
@@ -865,7 +865,7 @@ garageCar = do
             (ns :: [CIG.CarInGarage]) <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
-        updatePersonnel uid 
+        personnelUpdate uid 
         writeMapables (garageCarProps <$> ns)
 
 
@@ -878,7 +878,7 @@ garageActiveCar = do
             ns <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
-        updatePersonnel uid 
+        personnelUpdate uid 
         writeMapables (garageCarProps <$> ns)
 
 
