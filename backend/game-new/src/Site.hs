@@ -1408,7 +1408,7 @@ uploadCarImage = do
  -}
 
 -- time based actions for user account: update before any activity involving the account
--- TODO: all other time based actions, such as energy regeneration
+-- TODO: all Other time based actions, such as energy regeneration
 userActions :: Integer -> SqlTransaction Connection ()
 userActions uid = do
         Task.run Task.User uid
@@ -1560,7 +1560,6 @@ raceChallengeAccept = do
         cons "notif sent"
 
         N.sendNotification (rp_account_id $ Chg.challenger chg) t 
-        cons "notif sent again"
 
         liftIO $ print t
         liftIO $ print "notifications sit"
