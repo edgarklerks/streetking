@@ -1511,7 +1511,7 @@ partRepair uid pi = do
 carRepair ::  Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 carRepair uid pi = do  
             s <- DBF.unix_timestamp
-            let ut = s - (PLID.task_updated pi)
+            let ut = (min s $ PLID.task_end pi) - (PLID.task_updated pi)
             let sk = PLID.skill_repair pi 
             let sid = PLID.task_subject_id pi 
             atomical $ do 
@@ -1535,7 +1535,7 @@ carRepair uid pi = do
                                         PLI.task_end = 0 })
                                 void $ N.sendCentralNotification uid (N.carRepair {
                                                                     N.part_id = CIP.car_instance_id c,
-                                                                    N.repaired = PLI.wear p  
+                                                                    N.repaired = PI.wear p  
                                                                 })
  
                                                  
