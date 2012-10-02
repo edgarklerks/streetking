@@ -875,7 +875,7 @@ garageActiveCar = do
         uid <- getUserId 
         (((l,o), xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid) +&& "active" +==| SqlBool True) 
         let p = runDb $ do
-            personnelUpdate  uid 
+--            personnelUpdate uid 
             ns <- search xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
@@ -1466,7 +1466,7 @@ partImprove uid pi = do
                                                     PLI.task_end = 0 
                                                 })
                                         void $ N.sendCentralNotification uid (N.partImprove {
-                                                                    N.part_id = convert $PI.id p,
+                                                                    N.part_id = convert $ PI.part_id p,
                                                                     N.improved = 100000
                                                                 })
                                                     
@@ -1498,7 +1498,7 @@ partRepair uid pi = do
                                         PLI.task_end = 0 
                                     })
                                 void $ N.sendCentralNotification uid (N.partRepair {
-                                                                    N.part_id = convert $ PI.id p,
+                                                                    N.part_id = convert $ PI.part_id p,
                                                                     N.repaired = 100000
                                                                 })
  
