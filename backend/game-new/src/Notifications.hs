@@ -62,11 +62,11 @@ data NotificationParam where
                 -> NotificationParam 
 
         PartRepair  :: {part_id :: Integer
-                    , part_repaired :: Integer} 
+                    , repaired :: Integer} 
                     -> NotificationParam
 
         CarRepair :: {car_id :: Integer
-                   ,  car_repaired :: Integer } 
+                   ,  repaired :: Integer } 
                   ->  NotificationParam 
 
         PartImprove :: {part_id :: Integer
@@ -146,7 +146,7 @@ levelUp = LevelUp {
 partRepair :: NotificationParam 
 partRepair = PartRepair {
                 part_id = 0,
-                part_repaired = 0
+                repaired = 0
             }
 
 carMarket :: NotificationParam 
@@ -162,7 +162,7 @@ partMarket = PartMarket {
 carRepair :: NotificationParam 
 carRepair = CarRepair {
                 car_id = 0,
-                car_repaired = 0
+                repaired = 0
             }
 returnPart :: NotificationParam 
 returnPart = ReturnPart {
@@ -237,17 +237,20 @@ instance ToInRule RaceType where
 
 instance ToInRule NotificationParam where 
         toInRule d                     | isPartRepair d = InObject $ asInRule [
-                                                            ("part_instance_id", l part_id d)
+                                                            ("part_instance_id", l part_id d),
+                                                                ("repaired", l repaired d)
                                                             ]
                                        | isCarRepair d = InObject $ asInRule [
-                                                                ("car_instance_id", l car_id d)
+                                                                ("car_instance_id", l car_id d),
+                                                                ("repaired", l repaired d)
                                                             ]
                                        | isRaceStart d = InObject $ asInRule [
                                                                 ("race_type", l race_type d),
                                                                 ("race_id", l race_id d)
                                                             ]
                                        | isPartImprove d = InObject $ asInRule [
-                                                                ("part_instance_id", l part_id d)
+                                                                ("part_instance_id", l part_id d),
+                                                                ("improved" , l improved d)
                                                             ]
                                        | isTournamentStart d = InObject $ asInRule [
                                                                 ("tournament_id", l tournament_id d)
