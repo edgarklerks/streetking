@@ -47,6 +47,7 @@ sendQuery r = do
 
 $(makeLenses [''DHTConfig])
 
+initDHTConfig :: FilePath -> SnapletInit b DHTConfig
 initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnode" Nothing $ do 
         xs <- liftIO $ readConfig fp  
         let (Just (StringC ctr)) = lookupConfig "DHT" xs >>= lookupVar "ctrl"
@@ -74,8 +75,10 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
 
 
 -- addBinary :: Binary a => a -> IO ()
+insertBinary :: (MonadIO m, MonadState DHTConfig m, B.Binary a) => B.ByteString -> a -> m Proto
 insertBinary k s = sendQuery (insert k (fromLazy s))
 
+lookupBinary :: (MonadIO m, MonadState DHTConfig m, B.Binary a) => B.ByteString -> m (Maybe a)
 lookupBinary k = do 
             x <- sendQuery (Proto.query 2 k)
             case getResult x of 

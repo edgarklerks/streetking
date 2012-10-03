@@ -45,6 +45,7 @@ returnDatabase :: (MonadIO m, MonadState SqlTransactionConfig m) => DCP.Connecti
 returnDatabase x = gets _pool >>= \c -> liftIO (DCP.returnConnection c x) 
 
 -- runDb :: SqlTransaction Connection a ->
+runDb :: (Applicative m, CIO.MonadCatchIO m, MonadState SqlTransactionConfig m) => (String -> m a) -> SqlTransaction Connection a -> m a
 runDb e xs = withConnection $ \c -> do 
     frp <- runSqlTransaction xs e c 
     frp `seq` return frp
@@ -53,6 +54,7 @@ withConnection :: (MonadState SqlTransactionConfig m, CIO.MonadCatchIO m) => (DB
 withConnection f = CIO.bracket getDatabase returnDatabase (f . DCP.unwrapContext)
 
 -- initSqlTransactionSnaplet :: (MonadState ConfigSnaplet m, MonadIO m) => m SqlTransactionConfig  
+initSqlTransactionSnaplet :: FilePath -> SnapletInit b SqlTransactionConfig
 initSqlTransactionSnaplet fp = makeSnaplet "SqlTransaction manager" "sql manager" Nothing $ do 
         xs <- liftIO $ readConfig fp 
         let (Just ( StringC pdsn )) = lookupConfig "database" xs >>= lookupVar "dsn"

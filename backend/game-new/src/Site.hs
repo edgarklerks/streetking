@@ -8,6 +8,7 @@ module Site
   ( Site.app
   ) where
 
+
 ------------------------------------------------------------------------------
 import           Control.Applicative
 import           Data.Monoid
@@ -642,6 +643,7 @@ garageCarReady = do
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                 r <- DBF.garage_car_ready (fromJust $ G.id g) $ extract "id" xs
                 return r
+            
 
 garageActiveCarReady :: Application ()
 garageActiveCarReady = do 
