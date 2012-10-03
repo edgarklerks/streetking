@@ -1012,6 +1012,7 @@ garagePersonnel = do
                     "salary" +<= "salarymax" 
             )
         let p = runDb $ do
+            personnelUpdate uid 
             g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
             ns <- search (xs ++ ["garage_id" |== (toSql $ G.id g) ]) [Order ("personnel_instance_id",[]) True]  l o
             return ns 
