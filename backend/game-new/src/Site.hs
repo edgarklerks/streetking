@@ -1443,7 +1443,7 @@ personnelUpdate uid = do
 
 partImprove :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partImprove uid pi = do
-                s <- DBF.unix_timestamp
+                s <- liftIO $ milliTime
                 let ut = (min (PLID.task_end pi) s) - (PLID.task_updated pi)
                 let sk = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
@@ -1474,7 +1474,7 @@ partImprove uid pi = do
 
 partRepair :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partRepair uid pi = do 
-                s <- DBF.unix_timestamp  
+                s <- liftIO $ milliTime 
 
                 let ut = (min (PLID.task_end pi) s) - (PLID.task_updated pi)
                 let sk = PLID.skill_repair pi 
@@ -1509,7 +1509,7 @@ partRepair uid pi = do
 
 carRepair ::  Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 carRepair uid pi = do  
-            s <- DBF.unix_timestamp
+            s <- liftIO $ milliTime 
             let ut = (min s $ PLID.task_end pi) - (PLID.task_updated pi)
             let sk = PLID.skill_repair pi 
             let sid = PLID.task_subject_id pi 
