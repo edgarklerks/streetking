@@ -189,7 +189,7 @@ flushBoxes po = do
 haulPost :: PostOffice -> UserId -> SqlTransaction Connection ()
 haulPost po uid = do 
             t <- liftIO $ milliTime 
-            xs <- search ["archive" |== (toSql False) .&& "read" |== (toSql False) .&& "to" |== (toSql $ fromEnum uid) .&& "ttl" |>= (toSql t)] [] 10 0 :: SqlTransaction Connection [Letter]
+            xs <- search ["archive" |== (toSql False) .&& "read" |== (toSql False) .&& "to" |== (toSql $ fromEnum uid)] [] 10 0 :: SqlTransaction Connection [Letter]
             forM_ xs $ \it -> liftIO $ atomically $ do 
 
                         -- check if message exists 
