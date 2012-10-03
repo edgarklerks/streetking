@@ -2,6 +2,8 @@
 	<div style="text-align:left;">
 		<b>title:</b> [:title] 
 		[:when (read == false)] { <span style="color:#f00;font-size:8px;">new</span> }
+<!--		<div><b>time:</b> [:eval TIMESTAMPTODATE(sendat)]</div> -->
+		<div><b>time:</b> [:timeAgo]</div>
 	</div>
 	<div style="text-align:right;">
 <!--		[:data]	<b>message:</b> [:message] -->

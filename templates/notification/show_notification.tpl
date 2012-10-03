@@ -1,5 +1,6 @@
 <div style="padding-bottom:10px" >
 	<div><b>title:</b> [:title]</div>
+	<div><b>time:</b> [:eval TIMESTAMPTODATE(sendat)]</div>
 	<div>
 		<div><b>message:</b> [:message]  </div>
 		<a href="#User/notification" class="button" module="SHOW_NOTIFICATIONS">close</a> 
