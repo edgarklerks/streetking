@@ -1466,7 +1466,7 @@ partImprove uid pi = do
                                                 })
                                         void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.improved = PI.improvement p 
+                                                                    N.improved = sk * ut  
                                                                 })
                                                     
 
@@ -1499,7 +1499,7 @@ partRepair uid pi = do
                                     })
                                 void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.repaired = PI.wear p 
+                                                                    N.repaired = sk * ut  
                                                                 })
  
                                               
@@ -1535,7 +1535,7 @@ carRepair uid pi = do
                                         PLI.task_end = 0 })
                                 void $ N.sendCentralNotification uid (N.carRepair {
                                                                     N.part_id = CIP.car_instance_id c,
-                                                                    N.repaired = PI.wear p  
+                                                                    N.repaired = sk * ut  
                                                                 })
  
                                                  
