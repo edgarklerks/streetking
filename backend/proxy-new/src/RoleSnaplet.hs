@@ -115,6 +115,7 @@ initRoleSnaplet a s = makeSnaplet "RoleSnaplet" "User/Application role manager" 
   return (RoleSnaplet rso a s)
 
 
+
 getRoles' k = do 
         (x :: Maybe R.Role) <- with dht $ lookupBinary k   
         case x  of 

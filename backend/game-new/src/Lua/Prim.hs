@@ -49,6 +49,7 @@ instance Lua.StackValue LuaValue where
 loadIntoTable :: Lua.LuaState -> (LuaValue, LuaValue) -> IO ()
 loadIntoTable p (x@(LuaNum _), y) = setTable p x y (-3) 
 loadIntoTable p (x@(LuaString _), y) = setTable p x y (-3) 
+loadIntoTable p _ = error "can only load num or string into a table"
 
 setTable :: Lua.LuaState -> LuaValue -> LuaValue -> Int -> IO ()
 setTable p x y i = Lua.push p x *> Lua.push p y *> Lua.settable p i
