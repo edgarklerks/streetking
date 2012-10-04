@@ -1529,7 +1529,7 @@ partImprove uid pi = do
                                 PI.improvement = min 100000 $ (PI.improvement p + round (a * pr'))
                             })
 
-                        when (PLID.task_end pi > s) $ do 
+                        when (PLID.task_end pi < s) $ do 
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                             void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
@@ -1556,7 +1556,7 @@ partRepair uid pi = do
                         void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
                                         })
-                        when (PLID.task_end pi > s) $  do 
+                        when (PLID.task_end pi < s) $  do 
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                             void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
@@ -1587,7 +1587,7 @@ carRepair uid pi = do
                     void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
                                         })
-                    when (PLID.task_end pi > s) $  do 
+                    when (PLID.task_end pi < s) $  do 
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                             void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
