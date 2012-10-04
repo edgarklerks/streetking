@@ -1203,7 +1203,7 @@ stopTask pid uid = do
         -- stop task 
         save (def {
                 GRP.part_instance_id = PLI.task_subject_id pi,
-                GRP.personnel_instance_id = PLI.id pi 
+                GRP.personnel_instance_id = fromJust $ PLI.id pi 
             })
         save (pi {
                 PLI.task_id = 1,
