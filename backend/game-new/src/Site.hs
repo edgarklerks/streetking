@@ -1474,19 +1474,22 @@ partImprove uid pi = do
                 let sk = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
                 atomical $ do 
+                        pr <- aget ["key" |== SqlString "part_improve_rate"] (rollback "cannot find key part_improve_rate") :: SqlTransaction Connection CFG.Config  
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "cannot find partinstance"
                         let p = fromJust p'             
-                        if PI.improvement p < 100000 && PLID.task_end pi > s 
+                        let pr' = read $ CFG.value pr 
+                        if PLID.task_end pi > s 
                                 then void $ save (p {
-                                        PI.improvement = min 100000 (PI.improvement p + sk * ut)
+                                        PI.improvement = min 100000 (PI.improvement p + sk * ut * pr')
                                     })
                                 else do 
                                         x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
                                         stopTask uid (fromJust $ PLID.personnel_instance_id pi)
                                         void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.improved = sk * ut  
+                                                                    N.improved = sk * ut * pr'
+
                                                                 })
                                                     
 
@@ -1501,13 +1504,15 @@ partRepair uid pi = do
                 let sk = PLID.skill_repair pi 
                 let sid = PLID.task_subject_id pi 
                 atomical $ do 
+                        pr <- aget ["key" |== SqlString "part_repair_rate"] (rollback "cannot find key part_repair_rate") :: SqlTransaction Connection CFG.Config  
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "part instance not found"
                         let p = fromJust p' 
-                        if PI.wear p > 0 && PLID.task_end pi > s  
+                        let pr' = read $ CFG.value pr  
+                        if PLID.task_end pi > s  
                             then 
                                 void $ save (p {
-                                            PI.wear = max 0 (PI.wear p - sk * ut)
+                                            PI.wear = max 0 (PI.wear p - sk * ut * pr')
                                         })
                             else do 
                                 x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
@@ -1519,7 +1524,7 @@ partRepair uid pi = do
                                     })
                                 void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.repaired = sk * ut  
+                                                                    N.repaired = sk * ut * pr'  
                                                                 })
  
                                               
@@ -1531,6 +1536,7 @@ partRepair uid pi = do
 carRepair ::  Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 carRepair uid pi = do  
             s <- liftIO $ milliTime 
+            pr <- aget ["key" |== SqlString "car_repair_rate"] (rollback "cannot find key car_repair_rate") :: SqlTransaction Connection CFG.Config  
             let ut = (min s $ PLID.task_end pi) - (PLID.task_updated pi)
             let sk = PLID.skill_repair pi 
             let sid = PLID.task_subject_id pi 
@@ -1541,10 +1547,11 @@ carRepair uid pi = do
                     g' <- load (CIP.part_instance_id c) :: SqlTransaction Connection (Maybe PI.PartInstance)
                     when (isNothing g') $ rollback "cannot find part instance"
                     let p = fromJust g'
-                    if (PI.wear p > 0) && PLID.task_end pi > s 
+                    let pr' = read $ CFG.value pr
+                    if PLID.task_end pi > s 
                             then 
                                 void $ save (p {
-                                    PI.wear = max 0  (PI.wear p - sk * ut)
+                                    PI.wear = max 0  $ PI.wear p - sk * ut * pr' 
                                     })
                             else do 
                                 x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
@@ -1555,7 +1562,7 @@ carRepair uid pi = do
                                         PLI.task_end = 0 })
                                 void $ N.sendCentralNotification uid (N.carRepair {
                                                                     N.part_id = CIP.car_instance_id c,
-                                                                    N.repaired = sk * ut  
+                                                                    N.repaired = sk * ut * pr'  
                                                                 })
  
                                                  
