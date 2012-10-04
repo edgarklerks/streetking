@@ -73,6 +73,7 @@ import qualified Model.Personnel as PL
 import qualified Model.PersonnelDetails as PLD
 import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
+import qualified Model.PersonnelTaskType as PTT 
 import qualified Model.Challenge as Chg
 import qualified Model.ChallengeAccept as ChgA
 import qualified Model.ChallengeType as ChgT
@@ -159,6 +160,13 @@ loadConfig x = do
         case p of 
             [] -> internalError $ "No such config key: " ++ x
             [x] -> return (CFG.value x)
+
+loaddbConfig :: Read a => String -> SqlTransaction Connection a
+loaddbConfig x = do 
+            s <- search ["key" |== toSql x] [] 1 0 :: SqlTransaction Connection [CFG.Config]
+            case s of
+                [] -> rollback "no such key"
+                [x] -> return (read $ CFG.value x)
 
 index :: Application ()
 index = ifTop $ writeBS "go rape yourself" 
@@ -1177,8 +1185,46 @@ taskPersonnel = do
                                     GRP.task = fromSql $ fromJust $ HM.lookup "task" xs,
                                     GRP.report_descriptor = "personnel_task"
                                     })
-                            r <- DBF.personnel_start_task (extract "personnel_instance_id" xs) (extract "task" xs) (extract "subject_id" xs)
+                            r <- personnelStartTask (extract "personnel_instance_id" xs) (extract "task" xs) (extract "subject_id" xs)
                             return r
+
+personnelStartTask :: Integer -> String -> Integer -> SqlTransaction Connection Bool 
+personnelStartTask pid tsk sid = do 
+                        ptt' <- search ["name" |== (toSql tsk)] [] 1 0 :: SqlTransaction Connection [PTT.PersonnelTaskType] 
+                        assert (not . null $ ptt') "no such task" 
+                        let ptt = head ptt' 
+                        pid' <- search ["personnel_instance_id" |== (toSql pid)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
+                        assert (not . null $ pid') "no such personnel"
+                        let pid = head pid' 
+                        assert (not . (=="idle") .  PLID.task_name $ pid) "your personnel is busy"
+                        case tsk of 
+                            "repair_part" -> do 
+                                    pi <- search ["id" |== (toSql sid) .&& "garage_id" |== toSql (PLID.garage_id pid) .&& "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance] 
+                                    assert (not . null $ pi) "part doesn't exist"
+                            "improve_part" -> do
+                                    pi <- search ["garage_id" |== toSql (PLID.garage_id pid) .&& "id" |== toSql sid .&& "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance] 
+                                    assert (not . null $ pi) "part doesn't exist"
+                            "repair_car" -> do 
+                                    ci <- search ["garage_id" |== toSql (PLID.garage_id pid) .&& "id" |== toSql sid .&& "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [CarInstance.CarInstance]
+                                    assert (not . null $ ci) "car doesn't exist"
+                            otherwise -> rollback "no interpretation of task possible"
+                        td <- loaddbConfig "task_duration"
+                        now <- liftIO $ milliTime 
+                        p <- aload (fromJust $ PLID.personnel_instance_id pid) (rollback "cannot find personnel") :: SqlTransaction Connection PLI.PersonnelInstance 
+                        save (p {
+                             PLI.task_id = fromJust $ PTT.id ptt,
+                             PLI.task_subject_id = sid,
+                             PLI.task_started = now,
+                             PLI.task_updated = now,
+                             PLI.task_end = now + td
+ 
+                         })
+                        return True 
+
+
+
+
+
 
 
 cancelTaskPersonnel :: Application ()
@@ -1474,11 +1520,10 @@ partImprove uid pi = do
                 let sk = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
                 atomical $ do 
-                        pr <- aget ["key" |== SqlString "part_improve_rate"] (rollback "cannot find key part_improve_rate") :: SqlTransaction Connection CFG.Config  
+                        (pr' :: Double) <- loaddbConfig "part_improve_rate" 
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "cannot find partinstance"
                         let p = fromJust p'             
-                        let pr' = read $ CFG.value pr :: Double  
                         let a = fromIntegral (sk * ut)
                         void $ save (p {
                                 PI.improvement = min 100000 $ (PI.improvement p + round (a * pr'))
@@ -1503,11 +1548,10 @@ partRepair uid pi = do
                 let sk = PLID.skill_repair pi 
                 let sid = PLID.task_subject_id pi 
                 atomical $ do 
-                        pr <- aget ["key" |== SqlString "part_repair_rate"] (rollback "cannot find key part_repair_rate") :: SqlTransaction Connection CFG.Config  
+                        (pr' :: Double) <- loaddbConfig "part_repair_rate" 
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "part instance not found"
                         let p = fromJust p' 
-                        let pr' = read $ CFG.value pr :: Double  
                         let a = fromIntegral (sk * ut) 
                         void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
@@ -1528,7 +1572,7 @@ partRepair uid pi = do
 carRepair ::  Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 carRepair uid pi = do  
             s <- liftIO $ milliTime 
-            pr <- aget ["key" |== SqlString "car_repair_rate"] (rollback "cannot find key car_repair_rate") :: SqlTransaction Connection CFG.Config  
+            (pr' :: Double) <- loaddbConfig "car_repair_rate" 
             let ut = (min s $ PLID.task_end pi) - (PLID.task_updated pi)
             let sk = PLID.skill_repair pi 
             let sid = PLID.task_subject_id pi 
@@ -1539,7 +1583,6 @@ carRepair uid pi = do
                     g' <- load (CIP.part_instance_id c) :: SqlTransaction Connection (Maybe PI.PartInstance)
                     when (isNothing g') $ rollback "cannot find part instance"
                     let p = fromJust g'
-                    let pr' = read $ CFG.value pr :: Double 
                     let a = fromIntegral (sk * ut)
                     void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
