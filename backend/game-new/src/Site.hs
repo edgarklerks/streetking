@@ -1196,7 +1196,7 @@ personnelStartTask pid tsk sid = do
                         pid' <- search ["personnel_instance_id" |== (toSql pid)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
                         assert (not . null $ pid') "no such personnel"
                         let pid = head pid' 
-                        assert (not . (=="idle") .  PLID.task_name $ pid) "your personnel is busy"
+                        assert ((=="idle") .  PLID.task_name $ pid) "your personnel is busy"
                         case tsk of 
                             "repair_part" -> do 
                                     pi <- search ["id" |== (toSql sid) .&& "garage_id" |== toSql (PLID.garage_id pid) .&& "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance] 
