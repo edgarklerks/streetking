@@ -1478,10 +1478,11 @@ partImprove uid pi = do
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "cannot find partinstance"
                         let p = fromJust p'             
-                        let pr' = read $ CFG.value pr 
+                        let pr' = read $ CFG.value pr :: Double  
                         if PLID.task_end pi > s 
                                 then void $ save (p {
-                                        PI.improvement = min 100000 (PI.improvement p + sk * ut * pr')
+                                        PI.improvement = min 100000 $ let a = fromIntegral (sk * ut) 
+                                                                      in (PI.improvement p + round (a * pr'))
                                     })
                                 else do 
                                         x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
@@ -1508,11 +1509,12 @@ partRepair uid pi = do
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "part instance not found"
                         let p = fromJust p' 
-                        let pr' = read $ CFG.value pr  
+                        let pr' = read $ CFG.value pr :: Double  
                         if PLID.task_end pi > s  
                             then 
                                 void $ save (p {
-                                            PI.wear = max 0 (PI.wear p - sk * ut * pr')
+                                            PI.wear = max 0 $ let a = fromIntegral (sk * ut)
+                                                              in PI.wear p - round (a * pr') 
                                         })
                             else do 
                                 x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
@@ -1547,11 +1549,12 @@ carRepair uid pi = do
                     g' <- load (CIP.part_instance_id c) :: SqlTransaction Connection (Maybe PI.PartInstance)
                     when (isNothing g') $ rollback "cannot find part instance"
                     let p = fromJust g'
-                    let pr' = read $ CFG.value pr
+                    let pr' = read $ CFG.value pr :: Double 
                     if PLID.task_end pi > s 
                             then 
                                 void $ save (p {
-                                    PI.wear = max 0  $ PI.wear p - sk * ut * pr' 
+                                    PI.wear = max 0  $ let a = fromIntegral (sk * ut)
+                                                       in PI.wear p - round ( a * pr')
                                     })
                             else do 
                                 x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
