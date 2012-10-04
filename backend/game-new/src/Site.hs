@@ -860,6 +860,7 @@ garageParts = do
                 "account_id" +==| toSql uid
             )
         let p = runDb $ do
+            personnelUpdate uid 
             ns <- search xs od l o
             return ns 
         ns <- p :: Application [GPT.GaragePart]
