@@ -8,7 +8,6 @@ module Site
   ( Site.app
   ) where
 
-
 ------------------------------------------------------------------------------
 import           Control.Applicative
 import           Data.Monoid
@@ -90,6 +89,7 @@ import qualified Model.TournamentResult as TMR
 import qualified Model.GeneralReport as GR 
 import qualified Model.ShopReport as SR 
 import qualified Model.GarageReport as GRP
+import qualified Model.GarageReportInsert as GRPI
 import qualified Model.PersonnelReport as PR 
 import qualified Model.TravelReport as TR 
 import qualified Model.Functions as DBF
@@ -352,6 +352,7 @@ marketSell = do
             x <- evalLua prg [
                           ("price", LuaNum (fromIntegral $ MI.price d))
                           ]
+
             -- -5.6 -> -5
             -- floor -5.6 -> -6
             -- ceil -5.6 -> -5
@@ -1192,8 +1193,30 @@ cancelTaskPersonnel = do
                case cm of 
                         [] -> rollback "That is not your mechanic, friend"
                         [_] -> do
-                            r <- DBF.personnel_cancel_task $ extract "personnel_instance_id" xs
-                            return r
+                            personnelUpdate uid 
+                            stopTask (extract "personnel_instance_id" xs) uid  
+                            return ()
+
+stopTask :: Integer -> Integer -> SqlTransaction Connection () 
+stopTask pid uid = do 
+        pi <- aload pid $ rollback "personnel instance not found" :: SqlTransaction Connection PLI.PersonnelInstance
+        -- stop task 
+        save (pi {
+                PLI.task_id = 1,
+                PLI.task_subject_id = 0,
+                PLI.task_started = 0,
+                PLI.task_updated = 0,
+                PLI.task_end = 0
+            })
+        gr <- search ["personnel_instance_id" |== (toSql $ PLI.id pi) .&& "part_instance_id" |== (toSql $ PLI.task_subject_id pi)] [order "id" desc] 1 0 :: SqlTransaction Connection [GRPI.GarageReportInsert] 
+        case gr of 
+            [a] -> save (a { GRPI.ready = True})
+            [] -> rollback "garage report doesn't exist"
+        return ()
+
+
+
+        
 
 -- TODO: fromSql <$> HM.lookup k xs --> Maybe Value
 extract k xs = fromSql . fromJust $ HM.lookup k xs
@@ -1460,12 +1483,7 @@ partImprove uid pi = do
                                     })
                                 else do 
                                         x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
-                                        void $ save (x { 
-                                                    PLI.task_id = 1,
-                                                    PLI.task_subject_id = 0,
-                                                    PLI.task_started = 0,
-                                                    PLI.task_end = 0 
-                                                })
+                                        stopTask uid (PLID.personnel_instance_id pi)
                                         void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.improved = sk * ut  

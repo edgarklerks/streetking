@@ -244,6 +244,14 @@ instance Expression Orders where
 
 data Order = Order Selection Direction deriving Show
 
+order :: Sql -> Direction -> Order 
+order f g = Order (column f) g 
+
+asc :: Direction 
+asc = True  
+desc :: Direction 
+desc = False  
+
 instance Expression Order where
     sql (Order s b) = concat [sql s, " ", sql b]
     values (Order s _) = values s
@@ -266,6 +274,10 @@ instance Expression Limit where
     values _ = []
 
 {- Offset -}
+
+{-- offset :: Integer -> Offset 
+offset 0 = NullOffset
+offset n = Offset n --}
 
 data Offset = Offset Value | NullOffset deriving Show
 
@@ -355,6 +367,7 @@ orders m = ord $ lookup "sort_field" m
         ord Nothing = []
         bl (Just v) =  (fromSql v) `elem` ["true", "True", "1"]
         bl Nothing = False
+
 
 -- limit: provide map of optional arguments. if found, limit is used to generate limit
 limit :: [(Sql, Value)] -> Limit
