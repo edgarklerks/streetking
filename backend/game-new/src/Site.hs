@@ -1480,20 +1480,18 @@ partImprove uid pi = do
                         let p = fromJust p'             
                         let pr' = read $ CFG.value pr :: Double  
                         let a = fromIntegral (sk * ut)
-                        if PLID.task_end pi > s 
-                                then void $ save (p {
-                                        PI.improvement = min 100000 $ (PI.improvement p + round (a * pr'))
-                                    })
-                                else do 
-                                        x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
-                                        stopTask (fromJust $ PLID.personnel_instance_id pi) uid
-                                        void $ N.sendCentralNotification uid (N.partImprove {
+                        void $ save (p {
+                                PI.improvement = min 100000 $ (PI.improvement p + round (a * pr'))
+                            })
+
+                        when (PLID.task_end pi > s) $ do 
+                            stopTask (fromJust $ PLID.personnel_instance_id pi) uid
+                            void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.improved = round (a * pr')
 
                                                                 })
-                                                    
-
+                                        
 
 
 
@@ -1511,20 +1509,12 @@ partRepair uid pi = do
                         let p = fromJust p' 
                         let pr' = read $ CFG.value pr :: Double  
                         let a = fromIntegral (sk * ut) 
-                        if PLID.task_end pi > s  
-                            then 
-                                void $ save (p {
+                        void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
                                         })
-                            else do 
-                                x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
-                                void $ save (x { 
-                                        PLI.task_id = 1,
-                                        PLI.task_subject_id = 0,
-                                        PLI.task_started = 0,
-                                        PLI.task_end = 0 
-                                    })
-                                void $ N.sendCentralNotification uid (N.partRepair {
+                        when (PLID.task_end pi > s) $  do 
+                            stopTask (fromJust $ PLID.personnel_instance_id pi) uid
+                            void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.repaired = round (a * pr') 
                                                                 })
@@ -1551,23 +1541,15 @@ carRepair uid pi = do
                     let p = fromJust g'
                     let pr' = read $ CFG.value pr :: Double 
                     let a = fromIntegral (sk * ut)
-                    if PLID.task_end pi > s 
-                            then 
-                                void $ save (p {
-                                    PI.wear = max 0  $ PI.wear p - round ( a * pr')
-                                    })
-                            else do 
-                                x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
-                                void $ save (x { 
-                                        PLI.task_id = 1,
-                                        PLI.task_subject_id = 0,
-                                        PLI.task_started = 0,
-                                        PLI.task_end = 0 })
-                                void $ N.sendCentralNotification uid (N.carRepair {
-                                                                    N.part_id = CIP.car_instance_id c,
-                                                                    N.repaired = round (a * pr')
+                    void $ save (p {
+                                            PI.wear = max 0 $ PI.wear p - round (a * pr')
+                                        })
+                    when (PLID.task_end pi > s) $  do 
+                            stopTask (fromJust $ PLID.personnel_instance_id pi) uid
+                            void $ N.sendCentralNotification uid (N.partRepair {
+                                                                    N.part_id = convert $ PI.part_id p,
+                                                                    N.repaired = round (a * pr') 
                                                                 })
- 
                                                  
 
 
