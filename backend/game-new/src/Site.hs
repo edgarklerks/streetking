@@ -1201,6 +1201,10 @@ stopTask :: Integer -> Integer -> SqlTransaction Connection ()
 stopTask pid uid = do 
         pi <- aload pid $ rollback "personnel instance not found" :: SqlTransaction Connection PLI.PersonnelInstance
         -- stop task 
+        save (def {
+                GRP.part_instance_id = PLI.task_subject_id pi,
+                GRP.personnel_instance_id = PLI.id pi 
+            })
         save (pi {
                 PLI.task_id = 1,
                 PLI.task_subject_id = 0,
@@ -1208,11 +1212,6 @@ stopTask pid uid = do
                 PLI.task_updated = 0,
                 PLI.task_end = 0
             })
-        gr <- search ["account_id" |== (toSql uid ) .&& "part_instance_id" |== (toSql $ PLI.task_subject_id pi)] [order "id" desc] 1 0 :: SqlTransaction Connection [GRPI.GarageReportInsert] 
-        case gr of 
-            (a:as) -> void $ save (a { GRPI.ready = True})
-            [] -> rollback "garage report doesn't exist"
-        return ()
 
 
 
