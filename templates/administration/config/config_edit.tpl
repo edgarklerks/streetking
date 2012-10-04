@@ -1,6 +1,7 @@
 <form id="edit_form" action="config/put" method="post">
 	<div class="error">&nbsp;</div>
 	
+<input type="text" name="id" value="[:0.id]"/>
 <div><label>key:</label><input type="text" name="key" value="[:0.key]"/></div>
 <div>
 	<label>value:</label>
