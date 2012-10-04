@@ -1212,6 +1212,7 @@ stopTask pid uid = do
                 PLI.task_updated = 0,
                 PLI.task_end = 0
             })
+        return ()
 
 
 
