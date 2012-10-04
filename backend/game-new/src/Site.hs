@@ -1192,7 +1192,7 @@ cancelTaskPersonnel = do
                cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ HM.lookup "personnel_instance_id" xs), "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
                case cm of 
                         [] -> rollback "That is not your mechanic, friend"
-                        [_] -> do
+                        [xs] -> do
                             personnelUpdate uid 
                             stopTask (extract "personnel_instance_id" xs) uid  
                             return ()
