@@ -1210,7 +1210,7 @@ stopTask pid uid = do
             })
         gr <- search ["account_id" |== (toSql uid ) .&& "part_instance_id" |== (toSql $ PLI.task_subject_id pi)] [order "id" desc] 1 0 :: SqlTransaction Connection [GRPI.GarageReportInsert] 
         case gr of 
-            [a] -> void $ save (a { GRPI.ready = True})
+            (a:as) -> void $ save (a { GRPI.ready = True})
             [] -> rollback "garage report doesn't exist"
         return ()
 
