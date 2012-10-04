@@ -694,7 +694,7 @@ marketPlaceBuy = do
                         a <- head <$> search ["account_id" |== toSql uid]  []  1 0 :: SqlTransaction Connection G.Garage
 
                         -- remove market_part where part_instance_id =  part_instance_id 
-                        --
+
                         delete (undefined :: MI.MarketItem) ["part_instance_id" |== toSql (MP.id d)] 
 
                         -- reassign part_instance to new garage_id 
@@ -1483,7 +1483,7 @@ partImprove uid pi = do
                                     })
                                 else do 
                                         x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
-                                        stopTask uid (PLID.personnel_instance_id pi)
+                                        stopTask uid (fromJust $ PLID.personnel_instance_id pi)
                                         void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.improved = sk * ut  
