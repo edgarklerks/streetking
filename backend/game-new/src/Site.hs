@@ -1192,7 +1192,7 @@ cancelTaskPersonnel = do
                cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ HM.lookup "personnel_instance_id" xs), "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
                case cm of 
                         [] -> rollback "That is not your mechanic, friend"
-                        [xs] -> do
+                        [_] -> do
                             personnelUpdate uid 
                             stopTask (extract "personnel_instance_id" xs) uid  
                             return ()
@@ -1485,7 +1485,7 @@ partImprove uid pi = do
                                     })
                                 else do 
                                         x <- fromJust <$> load (convert $ PLID.personnel_instance_id pi) :: SqlTransaction Connection PLI.PersonnelInstance
-                                        stopTask uid (fromJust $ PLID.personnel_instance_id pi)
+                                        stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                                         void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.improved = sk * ut * pr'
