@@ -975,15 +975,12 @@ addPart = do
                         g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
                         -- get garage part instance record; garage_id not null is implied, so any parts in cars are not found
                         p <- aget ["part_instance_id" |== toSql pid] (rollback "No such part in garage") :: SqlTransaction Connection GPT.GaragePart
-                        -- get part type id
-                        let tid = GPT.part_type_id p
                         -- get car instance parts of the same type already assigned to the car
---                        ss <- search ["part_type_id" |== toSql (GPT.part_type_id p) .&& "car_instance_id" |== toSql (MI.car_instance_id d)] [] 1 0 :: SqlTransaction Connection [CIP.CarInstanceParts]
-                        -- remove each of these parts from the car
---                        forM_ ss $ \s -> do
+                        ss <- search ["part_type_id" |== toSql (GPT.part_type_id p) .&& "car_instance_id" |== toSql cid] [] 100 0 :: SqlTransaction Connection [CIP.CarInstanceParts]
+                        -- remove each of these parts from the car and add them to the user's garage
+                        forM_ ss $ \s -> do
+                            update "part_instance" ["id" |== toSql (CIP.part_instance_id s)] [] [("car_instance_id", SqlNull), ("garage_id", toSql $ G.id g)]
 --                               void $ update "part_instance" ["id" |== (toSql $ CIP.part_instance_id s)] [] [("car_instance_id", SqlNull), ("garage_id", toSql $ G.id g)]
-                        -- remove all parts of the same type from the car and assign them to the user's garage
-                        update "part_instance" ["car_instance_id" |== toSql cid, "part_type_id" |== toSql tid] [] [("car_instance_id", SqlNull), ("garage_id", toSql $ G.id g)]
                         -- add the requested part to the car and remove from garage
                         update "part_instance" ["id" |== toSql pid] [] [("car_instance_id", toSql cid), ("garage_id", SqlNull)]
 {--
