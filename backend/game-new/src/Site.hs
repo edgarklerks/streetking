@@ -2103,25 +2103,26 @@ userClaimFreeCar = do
         uid <- getUserId
         xs <- getJson >>= scheck ["car_model_id"]
         let mid = extract "car_model_id" xs
-        
-        runDb $ do
-            -- get account record and check for free car
-            a <- aget ["id" |== toSql uid, "free_car" |== toSql True] (rollback "you may not claim a free car") :: SqlTransaction Connection A.Account
-            -- get car model record; only allow level 1 cars
-            m <- aget ["id" |== toSql mid, "level" |== toSql (1 :: Integer)] (rollback "you may not claim this car") :: SqlTransaction Connection CM.CarMarket 
-            -- get user garage record
-            g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
 
-            -- set free_car to false on user
+        -- get user garage record
+        g <- runDb $ do
+            aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
+
+        -- get records and set free_car to false
+        m <- runDb $ do
+            m <- aget ["id" |== toSql mid, "level" |== toSql (1 :: Integer)] (rollback "car cannot be claimed") :: SqlTransaction Connection CM.CarMarket 
+            aget ["id" |== toSql uid, "free_car" |== toSql True] (rollback "you may not claim a free car") :: SqlTransaction Connection A.Account
             update "account" ["id" |== toSql uid] [] [("free_car", toSql False)]
+            return m
 
-            -- create car in user's garage
+        -- create car in user's garage; create stock parts in car
+        runDb $ do
+
             cid <- save ((def :: CarInstance.CarInstance) {
                     CarInstance.garage_id =  G.id g,
                     CarInstance.car_id = mid
                 }) :: SqlTransaction Connection Integer
                 
-            -- create stock parts in car 
             pts <- search ["car_id" |== toSql mid] [] 1000 0 :: SqlTransaction Connection [CSP.CarStockPart]
 
             let step z part = do 
