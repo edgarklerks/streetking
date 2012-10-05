@@ -392,11 +392,39 @@ marketSell = do
 
 carBuy :: Application ()
 carBuy = do 
-    uid <- getUserId 
-    xs <- getJson >>= scheck ["id"]
-    let car = updateHashMap xs ( def :: CM.CarMarket)
-    flup <- ps uid xs car 
-    writeResult ("You succesfully bought the car" :: String)
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["id"]
+--    let car = updateHashMap xs ( def :: CM.CarMarket)
+--    flup <- ps uid mid
+        let mid = extract "id" xs
+
+        cid <- runDb $ do
+
+            -- create car in user's garage
+            cid <- instantiateCar mid uid
+
+            -- get car model
+            car <- fromJust <$> load mid :: SqlTransaction Connection CM.CarMarket
+        
+            -- create shopping report
+            reportShopper uid (def {
+                    SR.amount = abs(CM.price car),
+                    SR.car_instance_id =  Just cid,
+                    SR.report_descriptor = "shop_car_buy"
+                })
+
+            -- make payment
+            transactionMoney uid (def {
+                    Transaction.amount = - abs(CM.price car),
+                    Transaction.type = "car_instance",
+                    Transaction.type_id = fromJust $ CM.id car
+                })
+
+            return cid
+
+        writeResult ("You succesfully bought the car" :: String)
+
+{-    
          where ps uid xs car =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                 cm <- load (fromJust $ CM.id car) :: SqlTransaction Connection (Maybe CM.CarMarket)
@@ -428,21 +456,7 @@ carBuy = do
                                     return ()
 
                             foldM_ step () pts  
-
-                            reportShopper uid (def {
-                                    SR.amount = abs(CM.price car),
-                                    SR.car_instance_id =  Just cid,
-                                    SR.report_descriptor = "shop_car_buy"
-                                })
-
-                                    -- pay shit
-                            transactionMoney uid (def {
-                                    Transaction.amount = - abs(CM.price car),
-                                    Transaction.type = "car_instance",
-                                    Transaction.type_id = fromJust $ CM.id car
-                                })
-                            return True
-
+-}
 
 carReturn :: Application ()
 carReturn = do 
