@@ -36,7 +36,7 @@ mkFunctions xs = sequence $ (sqlFunctionToSql . ftosql)  <$> step
 ftosql :: Function -> SqlFunction 
 ftosql (F t name xs ret) = SF name t (length xs) xs (mkFunc name xs) ret
     where mkFunc nm [] = "select " ++ n ++ " " ++ nm ++ "()" 
-            where    n = case t of
+            where n = case t of
                         Scalar -> ""
                         Row -> "* from" 
           mkFunc nm (x:xs) = "select " ++ n ++ " " ++ nm ++ "(" ++ "?" ++ foldr step "" xs ++ ")"
