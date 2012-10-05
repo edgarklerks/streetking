@@ -42,6 +42,7 @@ $(genAll "Account" "account" [
                     ("skill_unused", ''Integer),
                     ("city", ''Integer),
                     ("busy_type", ''Integer),
-                    ("busy_subject_id", ''Integer)
+                    ("busy_subject_id", ''Integer),
+                    ("free_car", ''Bool)
     ])
 

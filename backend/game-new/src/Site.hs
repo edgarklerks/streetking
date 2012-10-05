@@ -2098,6 +2098,9 @@ readArchive = do
 
 
 
+userClaimFreeCar :: Application ()
+userClaimFreeCar = undefined
+
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
@@ -2115,6 +2118,7 @@ routes = fmap (second wrapErrors) $ [
                 ("/User/testNotification", testNotification),
                 ("/User/currentRace", userCurrentRace),
                 ("/User/addSkill", userAddSkill),
+                ("/User/claimFreeCar", userClaimFreeCar),
                 ("/Market/manufacturer", marketManufacturer),
                 ("/Market/model", marketModel),
                 ("/Market/buy", marketBuy),

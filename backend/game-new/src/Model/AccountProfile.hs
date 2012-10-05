@@ -53,6 +53,7 @@ $(genAll "AccountProfile" "account_profile" [
                     ("skill_unused", ''Integer),
                     ("busy_subject_id", ''Integer),
                     ("busy_type", ''String),
-                    ("busy_timeleft", ''Integer)
+                    ("busy_timeleft", ''Integer),
+                    ("free_car", ''Bool)
         ])
      
