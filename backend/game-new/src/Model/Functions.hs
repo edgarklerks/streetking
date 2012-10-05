@@ -21,5 +21,5 @@ $(mkFunctions [
         ("garage_unset_active_car", [''Integer, ''Integer], ''Bool, Scalar),
         ("claim_tasks", [''Integer, ''Integer, ''Integer], ''TK.Task, Row),
         ("tasks_in_progress", [''Integer, ''Integer, ''Integer], ''Bool, Scalar)
---        , ("unix_timestamp", [], ''Integer, Scalar)
+        , ("unix_timestamp", [], ''Integer, Scalar)
     ])
