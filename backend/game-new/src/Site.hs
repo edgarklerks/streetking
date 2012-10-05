@@ -2099,7 +2099,44 @@ readArchive = do
 
 
 userClaimFreeCar :: Application ()
-userClaimFreeCar = undefined
+userClaimFreeCar = do
+        uid <- getUserId
+        xs <- getJson >>= scheck ["car_model_id"]
+        let mid = extract "car_model_id" xs
+        
+        runDb $ do
+            -- get account record and check for free car
+            a <- aget ["id" |== toSql uid, "free_car" |== toSql True] (rollback "you may not claim a free car") :: SqlTransaction Connection A.Account
+            -- get car model record; only allow level 1 cars
+            m <- aget ["id" |== toSql mid, "level" |== toSql (1 :: Integer)] (rollback "you may not claim this car") :: SqlTransaction Connection CM.CarMarket 
+            -- get user garage record
+            g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
+
+            -- set free_car to false on user
+            update "account" ["id" |== toSql uid] [] [("free_car", toSql uid)]
+
+            -- create car in user's garage
+            cid <- save ((def :: CarInstance.CarInstance) {
+                    CarInstance.garage_id =  G.id g,
+                    CarInstance.car_id = mid
+                }) :: SqlTransaction Connection Integer
+                
+            -- create stock parts in car 
+            pts <- search ["car_id" |== toSql mid] [] 1000 0 :: SqlTransaction Connection [CSP.CarStockPart]
+
+            let step z part = do 
+                save (def {
+                        PI.part_id = fromJust $ CSP.id part,
+                        PI.car_instance_id = Just cid,
+                        PI.account_id = uid,
+                        PI.deleted = False 
+                    })
+                return ()
+
+            foldM_ step () pts
+            
+        writeResult ("You have received a free car." :: String)
+
 
 
 ------------------------------------------------------------------------------
