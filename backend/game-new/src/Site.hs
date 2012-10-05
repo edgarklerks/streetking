@@ -960,43 +960,22 @@ addPart :: Application ()
 addPart = do 
         uid <- getUserId 
         xs <- getJson >>= scheck ["part_instance_id", "car_instance_id"]
---        let d = updateHashMap xs (def :: MI.MarketItem)
-        proc uid (extract "part_instance_id" xs) (extract "car_instance_id" xs) 
+        let pid = extract "part_instance_id" xs :: Integer
+        let cid = extract "car_instance_id" xs :: Integer
+
+        void $ runDb $ do
+                -- get garage record
+                g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
+                -- get garage part instance record; any parts in cars are not found
+                p <- aget ["part_instance_id" |== toSql pid] (rollback "No such part in garage") :: SqlTransaction Connection GPT.GaragePart
+                -- add part to car
+                update "part_instance" ["id" |== toSql pid] [] [("car_instance_id", toSql cid), ("garage_id", SqlNull)]
+                -- remove all other parts of the same type from the car
+                ss <- search ["part_instance_id" |<> toSql pid .&&  "part_type_id" |== toSql (GPT.part_type_id p) .&& "car_instance_id" |== toSql cid] [] 100 0 :: SqlTransaction Connection [CIP.CarInstanceParts]
+                forM_ ss $ \s -> do
+                        update "part_instance" ["id" |== toSql (CIP.part_instance_id s)] [] [("car_instance_id", SqlNull), ("garage_id", toSql $ G.id g)]
+ 
         writeResult ("The part was successfully installed" :: String)
-            where 
-                proc :: Integer -> Integer -> Integer -> Application () 
-                proc uid pid cid = runDb $ do
-        -- get part instance record
---        pl <- load (fromJust $ MI.part_instance_id d) :: SqlTransaction Connection (Maybe PI.PartInstance)
---        case pl of 
---            Nothing -> rollback "No such part"
---            Just x -> do 
-                        -- get garage record
-                        g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
-                        -- get garage part instance record; garage_id not null is implied, so any parts in cars are not found
-                        p <- aget ["part_instance_id" |== toSql pid] (rollback "No such part in garage") :: SqlTransaction Connection GPT.GaragePart
-                        -- get car instance parts of the same type already assigned to the car
-                        ss <- search ["part_type_id" |== toSql (GPT.part_type_id p) .&& "car_instance_id" |== toSql cid] [] 100 0 :: SqlTransaction Connection [CIP.CarInstanceParts]
-                        -- remove each of these parts from the car and add them to the user's garage
-                        forM_ ss $ \s -> do
-                            update "part_instance" ["id" |== toSql (CIP.part_instance_id s)] [] [("car_instance_id", SqlNull), ("garage_id", toSql $ G.id g)]
---                               void $ update "part_instance" ["id" |== (toSql $ CIP.part_instance_id s)] [] [("car_instance_id", SqlNull), ("garage_id", toSql $ G.id g)]
-                        -- add the requested part to the car and remove from garage
-                        update "part_instance" ["id" |== toSql pid] [] [("car_instance_id", toSql cid), ("garage_id", SqlNull)]
-{--
-                        case xs of 
-                            [] -> do  
-                                when (isJust (PI.car_instance_id x)) $ rollback "part already in car"
-                                save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
-                                return ()
-                            (s:_) -> do 
-                                pl <- fromJust <$> load (CIP.part_instance_id s) :: SqlTransaction Connection (PI.PartInstance)
-                                save (pl {PI.garage_id = G.id g, PI.car_instance_id = Nothing})
-                                save (x {PI.garage_id = Nothing, PI.car_instance_id = MI.car_instance_id d }) 
-                                return ()
---}
-
-
 
 
 marketPersonnel :: Application ()
