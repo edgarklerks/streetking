@@ -2097,16 +2097,45 @@ readArchive = do
         writeMapables ys 
 
 
+instantiateCar :: Integer -> Integer -> SqlTransaction Connection Integer
+instantiateCar mid uid = do
+
+        g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
+        m <- aget ["id" |== toSql mid] (rollback "car model not found") :: SqlTransaction Connection CM.CarMarket 
+                
+        -- if user has no active car, the new car will be active 
+        as <- search ["garage_id" |== toSql (G.id g), "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CarInstance.CarInstance]
+        let act = case as of
+                [] -> True
+                otherwise -> False
+
+        cid <- save ((def :: CarInstance.CarInstance) {
+                CarInstance.garage_id =  G.id g,
+                CarInstance.car_id = mid,
+                CarInstance.active = act 
+            }) :: SqlTransaction Connection Integer
+                
+        -- Part loader 
+        pts <- search ["car_id" |== (toSql $ CM.id m)] [] 1000 0 :: SqlTransaction Connection [CSP.CarStockPart]
+
+        let step z part = do 
+            save (def {
+                    PI.part_id = fromJust $ CSP.id part,
+                    PI.car_instance_id = Just cid,
+                    PI.account_id = uid,
+                    PI.deleted = False 
+                })
+            return ()
+
+        foldM_ step () pts
+
+        return cid
 
 userClaimFreeCar :: Application ()
 userClaimFreeCar = do
         uid <- getUserId
         xs <- getJson >>= scheck ["car_model_id"]
-        let mid = extract "car_model_id" xs
-
-        -- get user garage record
-        g <- runDb $ do
-            aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
+        let mid = extract "car_model_id" xs :: Integer
 
         -- get records and set free_car to false
         m <- runDb $ do
@@ -2114,7 +2143,11 @@ userClaimFreeCar = do
             aget ["id" |== toSql uid, "free_car" |== toSql True] (rollback "you may not claim a free car") :: SqlTransaction Connection A.Account
             update "account" ["id" |== toSql uid] [] [("free_car", toSql False)]
             return m
+        
+        -- create new car in user's garage
+        runDb $ instantiateCar mid uid
 
+{-
         -- create car in user's garage; create stock parts in car
         runDb $ do
 
@@ -2135,8 +2168,8 @@ userClaimFreeCar = do
                 return ()
 
             foldM_ step () pts
-            
-        writeResult ("You have received a free car." :: String)
+    -}        
+        writeResult ("You have received a free car" :: String)
 
 
 
