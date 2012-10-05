@@ -2113,7 +2113,7 @@ userClaimFreeCar = do
             g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
 
             -- set free_car to false on user
-            update "account" ["id" |== toSql uid] [] [("free_car", toSql uid)]
+            update "account" ["id" |== toSql uid] [] [("free_car", toSql False)]
 
             -- create car in user's garage
             cid <- save ((def :: CarInstance.CarInstance) {
