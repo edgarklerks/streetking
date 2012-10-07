@@ -2035,6 +2035,7 @@ tournamentResults = do
         uid <- getUserId 
         xs <- getJson >>= scheck ["tournament_id"] 
         let b = updateHashMap xs (def :: TP.TournamentPlayer) 
+        liftIO $ print (TP.tournament_id b)
         ys <- runDb $ getResults (fromJust $ TP.tournament_id b)  
         writeMapables ys 
 
