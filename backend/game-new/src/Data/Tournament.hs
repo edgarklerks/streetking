@@ -195,7 +195,9 @@ getPlayers mid = do
 
 getResults :: Integer -> SqlTransaction Connection [TR.TournamentResult] 
 getResults mid = do
+                liftIO $ print "mid"
                 tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament
+                liftIO $ print "found tournament"
                 mt <- liftIO milliTime
                 rs <- search ["tournament_id" |== (toSql mid)] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
                 if (T.done tr) then return rs 
