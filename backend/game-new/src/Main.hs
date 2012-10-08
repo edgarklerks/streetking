@@ -97,6 +97,6 @@ getConf = commandLineConfig defaultConfig
 getActions :: Config Snap AppConfig -> IO (Snap (), IO ())
 getActions conf = do
     (msgs, site, cleanup) <- runSnaplet
-        (appEnvironment =<< getOther conf) app
+        (appEnvironment =<< getOther conf) (app True)
     hPutStrLn stderr $ T.unpack msgs
     return (site, cleanup)

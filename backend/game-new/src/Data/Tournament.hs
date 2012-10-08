@@ -6,7 +6,11 @@ module Data.Tournament (
         runTournament,
         initTournament,
         getResults,
-        getPlayers 
+        getPlayers,
+        processTournamentRace,
+        runTournamentRounds, 
+        loadTournamentFull
+        
     ) where 
 
 import Control.Monad.Trans 
@@ -283,6 +287,7 @@ runTournamentRounds po tfd =
                                 liftIO (print tdif)
                                 races <- forM xs $ \xs -> do
                                              processTournamentRace (tdif) xs tr
+                                liftIO $ print races 
                                 let (ps', ts) = split3 races 
                                 let ps = sortRounds ps'
                                 let tmax = maximum ts  
@@ -385,7 +390,8 @@ tournamentTrigger i = do
                 x <- loadTournament i
                 tid <- Task.task RunTournament (fromJust $ T.start_time x) $ mkData $ do 
                         set "id" $ (T.id x)
-                void $ Task.trigger Task.Cron 0 tid  
+
+                void $ Task.trigger Task.Cron (fromJust $ T.id x) tid  
                 
 runTournament :: TK.Task -> t -> SqlTransaction Connection Bool
 runTournament tk po = return False <* (do
@@ -396,8 +402,9 @@ runTournament tk po = return False <* (do
                 saveResultTree id xs)
 
 saveResultTree :: Integer -> [[(Integer, [(RaceParticipant, RaceResult)])]] -> SqlTransaction Connection ()
-saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> 
-                            forM_ xs $ \(i, sortBy (\x y -> compare (snd x) (snd y)) -> [x,y]) -> do 
+saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> forM_ xs (lmb r)
+
+            where lmb r (i, sortBy (\x y -> compare (snd x) (snd y)) -> (x:y:_)) = do 
                                 save (def {
                                     TR.tournament_id = Just tid,
                                     TR.race_id = Just i,
@@ -408,6 +415,8 @@ saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) ->
                                     TR.raceresult2 = Just y
 
                                         } :: TR.TournamentResult)
+                  lmb r xs =  liftIO $ print xs >> return undefined 
+ 
 
 initTournament po = registerTask pred (executeTask po)
           where pred t | "action" .< (TK.data t) == Just RunTournament = True

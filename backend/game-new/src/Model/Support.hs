@@ -18,6 +18,6 @@ import Data.Conversion
 $(genAll "Support" "support" [
         ("id", ''Id),
         ("account_id", ''Integer),
-        ("subject", ''String),
-        ("message", ''String)
+        ("message", ''String),
+        ("data", ''String)
  ])

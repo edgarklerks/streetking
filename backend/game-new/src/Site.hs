@@ -2056,7 +2056,7 @@ tournamentJoin = do
     writeResult (1 :: Int)
 
 {-- till here --}
-wrapErrors x = runDb (forkSqlTransaction $ forkSqlTransaction $  Task.run Task.Cron 0 >> return ()) >>  CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
+wrapErrors g x = when g (void $ runDb (forkSqlTransaction $ Task.run Task.Cron 0 >> return ())) >>  CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
 
 userNotification :: Application ()
@@ -2187,11 +2187,17 @@ userClaimFreeCar = do
         writeResult ("You have received a free car" :: String)
 
 
+reportIssue :: Application ()
+reportIssue = do 
+        xs <- getJson 
+        uid <- getUserId 
+        let b = updateHashMap xs (def :: SUP.Support)
+        runDb $ save (b { SUP.account_id = uid })
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
-routes :: [(C.ByteString, Handler App App ())]
-routes = fmap (second wrapErrors) $ [ 
+routes :: Bool ->  [(C.ByteString, Handler App App ())]
+routes g = fmap (second (wrapErrors g)) $ [ 
                 ("/", index),
                 ("/User/login", userLogin),
                 ("/User/register", userRegister),
@@ -2274,19 +2280,20 @@ routes = fmap (second wrapErrors) $ [
                 ("/Tournament/result", tournamentResults),
                 ("/Tournament/joined", tournamentJoined),
                 ("/Tournament/cancel", cancelTournamentJoin),
-                ("/Tournament/idk", tournamentPlayers)
+                ("/Tournament/idk", tournamentPlayers),
+                ("Support/send", reportIssue) 
           ]
 
 initAll po = Task.initTask *> initTournament po  
 
 ------------------------------------------------------------------------------
 -- | The application initializer.
-app :: SnapletInit App App
-app = makeSnaplet "app" "An snaplet example application." Nothing $ do
+app :: Bool -> SnapletInit App App
+app g = makeSnaplet "app" "An snaplet example application." Nothing $ do
     c <- nestSnaplet "conf" config $ initConfig "resources/server.ini"
     db <- nestSnaplet "sql" db $ initSqlTransactionSnaplet "resources/server.ini"
     rnd <- nestSnaplet "random" rnd $ initRandomSnaplet l32 
-    addRoutes routes
+    addRoutes (routes g)
     dst <- nestSnaplet "nde" nde $ initDHTConfig "resources/server.ini"
     s <- liftIO $ newEmptyMVar 
     notfs <- nestSnaplet "notf" notf $ initNotificationSnaplet db (Just s) 
