@@ -2193,6 +2193,7 @@ reportIssue = do
         uid <- getUserId 
         let b = updateHashMap xs (def :: SUP.Support)
         runDb $ save (b { SUP.account_id = uid })
+        writeResult (1 :: Integer)
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
