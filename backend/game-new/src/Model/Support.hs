@@ -19,5 +19,7 @@ $(genAll "Support" "support" [
         ("id", ''Id),
         ("account_id", ''Integer),
         ("message", ''String),
-        ("data", ''String)
+        ("data", ''String),
+        ("processed", ''Bool),
+        ("created", ''String)
  ])
