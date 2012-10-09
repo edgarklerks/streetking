@@ -3,6 +3,7 @@
 module Bot.Util (
         runTest,
         runDb,
+        runDbRaw, 
         runSite,
         asInRule,
         RandomSeq(..),
@@ -16,7 +17,8 @@ module Bot.Util (
         testUser4,
         getCar, 
         randomsRange,
-        randomsSeq 
+        randomsSeq,
+        testcon 
 
 ) where 
 
@@ -47,15 +49,20 @@ import Database.HDBC.PostgreSQL
 import System.Random 
 import Control.Monad.State 
 import Test.HUnit 
+import Control.Monad.Reader 
 runTest :: Test -> RandomM g c Counts 
 runTest = liftIO . runTestTT 
 
 -- | Run a SqlTransaction in the RandomM monad 
-runDb m = liftIO $ do 
-            c <- testcon 
-            a <- runSqlTransaction (m <* liftIO (H.commit c)) (\x -> H.disconnect c >> print x >> return undefined ) c
-            H.disconnect c 
-            return a
+runDb m = ask >>= \c -> (liftIO $ do 
+            a <- runSqlTransaction m  (\x -> print x >> return undefined ) c
+            return a)
+
+
+runDbRaw c m = liftIO $ do 
+            runSqlTransaction m (\x -> print x >> return undefined) c 
+
+
 
 
 testcon = connectPostgreSQL "host=db.graffity.me password=#*rl& user=deosx dbname=streetking_dev"
@@ -100,7 +107,7 @@ testUser4 = 77
 testUsers = [testUser1, testUser2, testUser3, testUser4]
 
 -- | testCarUsers returns a (user, active_car) tuple
-testCarUsers :: RandomM g c [(Integer, Integer)]
+testCarUsers :: RandomM g Connection [(Integer, Integer)]
 testCarUsers = runDb $ do 
             r <- search ["active" |== (toSql True) .&& "ready" |== (toSql True) 
                          ] [] 100 0 :: SqlTransaction Connection [CIG.CarInGarage]
@@ -109,7 +116,7 @@ testCarUsers = runDb $ do
     where step x z = (CIG.account_id x, fromJust $ CIG.id x) : z
 
 -- | get a car from the user account
-getCar :: Integer -> RandomM g c Integer
+getCar :: Integer -> RandomM g Connection Integer
 getCar uid = runDb $ do 
             r <- sqlGetOne "select id from garage where account_id = ?" [toSql uid]
             s <- sqlGetOne "select id from car_instance where deleted = false and garage_id = ?" [r]

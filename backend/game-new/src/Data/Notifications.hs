@@ -130,13 +130,11 @@ openPostOffice = do
                     )
 
 -- | send a message to that users 
-sendLetter :: PostOffice -> UserId -> Letter -> SqlTransaction Connection () 
-sendLetter po uid lt = sendCentral uid lt >>= liftIO . sendLocal po uid 
+sendLetter :: PostOffice -> UserId -> Letter -> SqlTransaction Connection Letter
+sendLetter po uid lt = sendCentral uid lt >>= \c -> (liftIO . sendLocal po uid) c  >> return c
 
 
                          
-                         
-                         -- undefined 
 
 sendCentral ::  UserId -> Letter -> SqlTransaction Connection Letter 
 sendCentral uid it = do 
@@ -169,13 +167,12 @@ setArchive po uid id = do
 
 -- | receive your messages 
 checkMailBox :: PostOffice -> UserId -> SqlTransaction Connection Letters
-checkMailBox po u@(fromEnum -> uid) = do 
+checkMailBox po u@(fromEnum -> uid) = haulPost po u *> do 
                 ub' <- liftIO $ atomically $ readUserBoxes po 
                 case IM.lookup uid ub' of 
                         Just us -> do 
                                 xs <- liftIO $ readTVarIO us 
                                 ps' <- liftIO $ atomically $ readPostSorter po  
-                                forkSqlTransaction (haulPost po u) 
                                 return $ toList $ LL.catMaybes $  (\i -> IM.lookup i ps') <$> xs 
 
                         Nothing -> return [] 
@@ -186,6 +183,8 @@ flushBoxes po = do
             ts <- readTVar ub 
             undefined 
 --}
+
+
 -- | Get post from the regional office (database)
 haulPost :: PostOffice -> UserId -> SqlTransaction Connection ()
 haulPost po uid = do 

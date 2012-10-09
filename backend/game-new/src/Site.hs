@@ -2068,7 +2068,7 @@ userNotification = do
 testNotification :: Application ()
 testNotification = do 
             uid <- getUserId 
-            sendLetter uid (def {
+            void $ sendLetter uid (def {
                         Not.ttl = Just 100000,
                         Not.message = "Hello user",
                         Not.title = "I am a faggot"
