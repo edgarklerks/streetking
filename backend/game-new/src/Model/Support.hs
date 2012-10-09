@@ -21,5 +21,5 @@ $(genAll "Support" "support" [
         ("message", ''String),
         ("data", ''String),
         ("processed", ''Bool),
-        ("created", ''String)
+        ("created", ''Integer)
  ])
