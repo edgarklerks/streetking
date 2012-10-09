@@ -1,5 +1,24 @@
-{-# LANGUAGE ScopedTypeVariables, OverloadedStrings #-}
-module Bot.Util where 
+{-# LANGUAGE ScopedTypeVariables, OverloadedStrings, ViewPatterns,
+ MultiParamTypeClasses #-}
+module Bot.Util (
+        runTest,
+        runDb,
+        runSite,
+        asInRule,
+        RandomSeq(..),
+        testCarUsers,
+        humanString,
+        mkJsonPost,
+        testUsers,
+        testUser1,
+        testUser2,
+        testUser3,
+        testUser4,
+        getCar, 
+        randomsRange,
+        randomsSeq 
+
+) where 
 
 
 import Bot.Type 
@@ -25,6 +44,12 @@ import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.Monoid 
 import Site 
 import Database.HDBC.PostgreSQL
+import System.Random 
+import Control.Monad.State 
+import Test.HUnit 
+runTest :: Test -> RandomM g c Counts 
+runTest = liftIO . runTestTT 
+
 -- | Run a SqlTransaction in the RandomM monad 
 runDb m = liftIO $ do 
             c <- testcon 
@@ -89,4 +114,81 @@ getCar uid = runDb $ do
             r <- sqlGetOne "select id from garage where account_id = ?" [toSql uid]
             s <- sqlGetOne "select id from car_instance where deleted = false and garage_id = ?" [r]
             return (fromSql s :: Integer)
+
+class RandomSeq m c where 
+        randomSeq :: m c
+        randomRange :: Bounded c => (c,c) -> m c 
+
+instance RandomGen g => RandomSeq (RandomM g c) Int where 
+        randomSeq = do 
+                g <- get 
+                let (a, g1) = random g 
+                put g1
+                return a
+        randomRange (lb,ub) = do 
+                        g <- get 
+                        let (a, g1) = randomR (lb, ub) g 
+                        put g1
+                        return a
+
+instance RandomGen g => RandomSeq (RandomM g c) Integer where 
+        randomSeq = do 
+                g <- get 
+                let (a, g1) = random g 
+                put g1
+                return a
+        randomRange (lb,ub) = do 
+                        g <- get 
+                        let (a, g1) = randomR (lb, ub) g 
+                        put g1
+                        return a
+
+
+instance RandomGen g => RandomSeq (RandomM g c) Char where 
+        randomSeq = do 
+                g <- get 
+                let (a, g1) = random g 
+                put g1
+                return a
+        randomRange (lb,ub) = do 
+                        g <- get 
+                        let (a, g1) = randomR (lb, ub) g 
+                        put g1
+                        return a
+
+
+
+
+
+unfoldr :: (b -> (a, b)) -> b -> [a]
+unfoldr f b = let (a, c) = f b 
+              in a : unfoldr f c 
+
+randomsSeq :: (RandomGen g, Random a) =>  RandomM g c [a] 
+randomsSeq  = do 
+                 (split -> (g1, g2)) <- get
+                 put g2 
+                 return $ (unfoldr step g1)
+            where step g = random g 
+
+
+randomsRange :: (RandomGen g, Random a) => (a,a) -> RandomM g c [a]
+randomsRange (lb, ub) = do 
+                    (split -> (g1,g2)) <- get 
+                    put g2
+                    return $ unfoldr step g1
+           where step g = randomR (lb, ub) g
+
+
+humanString :: RandomGen g => RandomM g c String 
+humanString = do 
+        s <- randomsRange ('a','z')
+        t <- randomsRange ('A','Z')
+        return $ take 20 $ s `interleave` t
+
+
+interleave :: [a] -> [a] -> [a]  
+interleave (x:xs) (y:ys) = x : y : interleave xs ys 
+interleave xs [] =  xs 
+interleave [] ys = ys 
 

@@ -415,7 +415,7 @@ saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> forM_ xs (lmb r)
                                     TR.raceresult2 = Just y
 
                                         } :: TR.TournamentResult)
-                  lmb r xs =  liftIO $ print xs >> return undefined 
+                  lmb r xs =  liftIO $ print xs >> return 0 
  
 
 initTournament po = registerTask pred (executeTask po)

@@ -2282,7 +2282,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Tournament/joined", tournamentJoined),
                 ("/Tournament/cancel", cancelTournamentJoin),
                 ("/Tournament/idk", tournamentPlayers),
-                ("Support/send", reportIssue) 
+                ("/Support/send", reportIssue) 
           ]
 
 initAll po = Task.initTask *> initTournament po  
