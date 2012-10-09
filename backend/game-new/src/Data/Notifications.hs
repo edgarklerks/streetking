@@ -81,6 +81,7 @@ type UserId = Integer
 
 getId :: Letter -> Int 
 getId it = fromInteger $ fromJust $ P.id it 
+
 withPriority it f | (getPrio $ it)  == Nothing = return ()
                   | otherwise = f (fromJust $ getPrio it)
 
@@ -188,7 +189,6 @@ flushBoxes po = do
 -- | Get post from the regional office (database)
 haulPost :: PostOffice -> UserId -> SqlTransaction Connection ()
 haulPost po uid = do 
-            t <- liftIO $ milliTime 
             xs <- search ["archive" |== (toSql False) .&& "read" |== (toSql False) .&& "to" |== (toSql $ fromEnum uid)] [] 10 0 :: SqlTransaction Connection [Letter]
             forM_ xs $ \it -> liftIO $ atomically $ do 
 

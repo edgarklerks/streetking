@@ -1,5 +1,13 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Bot.Type where 
+module Bot.Type (
+        RandomM(..),
+        RandomRequest,
+        ParamMap,
+        -- | The route of the request 
+        Route,
+        runRandomIO,
+        runRandomM 
+    )where 
 
 import Control.Monad.State hiding (foldM_, foldM, forM_, forM) 
 import Control.Monad.Reader hiding (foldM, foldM_, forM, forM_) 
