@@ -6,7 +6,8 @@ module Bot.Type (
         -- | The route of the request 
         Route,
         runRandomIO,
-        runRandomM 
+        runRandomM,
+        AlphaNumeric(..)
     )where 
 
 import Control.Monad.State hiding (foldM_, foldM, forM_, forM) 
@@ -18,10 +19,30 @@ import Data.Conversion
 import qualified Snap.Test as S 
 import System.Random 
 import qualified Data.HashMap.Strict as S
+import Test.QuickCheck 
+import qualified Data.List as L 
 
 newtype RandomM g c a = RandomM {
                 unRandomM :: ReaderT c (StateT g IO) a 
             } deriving (Functor, Monad, MonadState g, MonadReader c, MonadIO, Applicative)
+
+newtype AlphaNumeric = AN {
+        unAN :: String 
+    }
+instance Arbitrary BL.ByteString where 
+        arbitrary = BL.pack <$> arbitrary 
+        shrink bs = BL.tails bs 
+
+instance Arbitrary B.ByteString where 
+        arbitrary = B.pack <$> arbitrary 
+        shrink bs = B.tails bs 
+
+instance Arbitrary AlphaNumeric where 
+        arbitrary = do 
+            xs <- listOf $ elements $ ['0'..'9'] ++ ['a'..'z'] ++ ['A'..'Z']
+
+            return $ AN xs 
+        shrink (AN xs) =  AN <$> L.tails xs 
 
 type RandomRequest g c = S.RequestBuilder (RandomM g c)
 type ParamMap = S.HashMap String InRule 
