@@ -62,6 +62,8 @@ notificationTests = do
 -- | Top level stuff 
 
 instance Arbitrary Letter where 
+    arbitrary = do 
+        return undefined 
 
 
  
