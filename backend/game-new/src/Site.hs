@@ -1989,7 +1989,7 @@ viewTournament :: Application ()
 viewTournament = do
         uid <- getUserId 
         a <- runDb $ fromJust <$> (load uid :: SqlTransaction Connection (Maybe A.Account))
-        liftIO (print a)
+
         (((l, o), xs),od) <- getPagesWithDTDOrdered ["minlevel","maxlevel", "track_id", "costs", "car_id", "name", "id","players"] (
             "id" +== "tournament_id" +&& 
             "minlevel" +<=| (toSql $ A.level a) +&& 
@@ -1999,10 +1999,11 @@ viewTournament = do
             "name" +%% "name" +&& 
             "track_id" +== "track_id" +&& 
             "players" +>= "minplayers" +&& 
-            "players" +<= "maxplayers" 
+            "players" +<= "maxplayers" +&&
+            "city" +==| (toSql $ A.city a) 
 
             )
-        liftIO (print xs) 
+
         ys <- runDb $ search xs od l o :: Application [TRMEx.TournamentExtended]
 
         writeMapables ys  
