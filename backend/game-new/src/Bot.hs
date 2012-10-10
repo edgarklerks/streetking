@@ -73,6 +73,11 @@ notificationTests = do
             quickCheck $ prop_read_write_notification_dbstm c po 
             print "Test postoffice, read write db"
             quickCheck $ prop_read_write_notification_db c po 
+            print "Test notification, search notifications"
+            runRandomIO c $ do 
+                            b <- test_search_notification 
+                            runTest $ TestLabel "search notification" $ TestCase $ assertBool "search notification is to big" (not . null $ b)
+
         return ()
 
 
@@ -153,7 +158,7 @@ test_search_notification = do
             xs <- asInRule $ do 
                 mkJsonPost "User/searchNotification" (S.fromList [("archive", InInteger 0), ("sql", InString "orderby id desc" )])
                 S.setQueryStringRaw "userid=36"                                                         
-            liftIO $ print xs
+            return (I.toList (fromJust $ xs .> "result") :: [(String, String)]) 
             -- return (not . null $ xs)
 
 -- | Instance to generate random letters 
