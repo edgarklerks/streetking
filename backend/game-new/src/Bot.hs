@@ -147,8 +147,14 @@ prop_read_write_notification_stm po = monadicIO $ do
                             Nothing -> return False 
 
 
--- | Top level stuff 
+-- | Hunit top level notification tests 
 
+test_search_notification = do 
+            xs <- asInRule $ do 
+                mkJsonPost "User/searchNotification" (S.fromList [("archive", InInteger 0), ("sql", InString "orderby id desc" )])
+                S.setQueryStringRaw "userid=36"                                                         
+            liftIO $ print xs
+            -- return (not . null $ xs)
 
 -- | Instance to generate random letters 
 

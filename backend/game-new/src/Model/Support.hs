@@ -14,6 +14,7 @@ import Prelude hiding (id)
 import qualified Data.Aeson as AS 
 import Data.Conversion 
 
+type AAS = AS.Value 
 
 $(genAll "Support" "support" [
         ("id", ''Id),
