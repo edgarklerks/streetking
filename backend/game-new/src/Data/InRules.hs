@@ -182,6 +182,18 @@ pfold f x z = pfold' f mempty x z
           pfold' f ks (InObject xs) z = Map.foldrWithKey step z xs 
               where step k x z = pfold' f (ks `mappend` point (Assoc k)) x z 
 
+-- | Example of the longest path in the inrule structure 
+longest_path :: InRule -> Int 
+longest_path xs = pfold step xs 0 
+    where step :: [InKey] -> InRule -> Int -> Int  
+          step xs@(ckey -> t) _ b | t > b = t 
+                                  | otherwise = b 
+ckey :: Num a => [InKey] -> a
+ckey (Index _:xs) = 1 + ckey xs 
+ckey (Assoc _:xs) = 1 + ckey xs 
+ckey (x:xs) = 0 + ckey xs 
+ckey _ = 0 
+
 -- | Fold through the structure 
 kfold :: (InKey -> InRule -> b -> b) -> InRule -> b -> b
 kfold f x z = pfold f' x z 
@@ -249,6 +261,12 @@ validObject _ = False
 
 emptyObj :: InRule
 emptyObj = InObject (Map.empty)
+
+object :: [(String, InRule)] -> InRule 
+object = InObject . Map.fromList 
+
+list :: [InRule] -> InRule 
+list xs = InArray xs 
 
 -- | Create single InRule object.
 singleObj :: ToInRule a => String -> a -> InRule
