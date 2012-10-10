@@ -21,7 +21,7 @@ import Data.Foldable
 import Prelude hiding (foldr, foldl)
 import Control.Monad.State hiding (foldM_, foldM, forM_, forM) 
 import Control.Monad.Reader hiding (foldM, foldM_, forM, forM_) 
-import Data.Aeson 
+import Data.Aeson hiding (object) 
 import Snap.Snaplet 
 import Snap.Snaplet.Config
 import Data.Conversion 
@@ -47,6 +47,7 @@ import qualified Data.IntMap as IM
 import Test.QuickCheck.Test 
 import Control.Monad.CatchIO 
 import Control.Concurrent 
+import qualified Data.InRules as I  
 
 
 {-- 
@@ -246,3 +247,27 @@ tournamentExist c nm =  TestCase $ runDbRaw c $ do
 
 
 
+test_pfold_longest_path = (==4) . I.longest_path $ inrules_test_obj 
+test_pmap_replace_length = pmap step $ inrules_test_obj
+        where step :: [InKey] -> InRule -> InRule 
+              step (I.ckey -> l :: Int) x = toInRule $ l 
+
+
+inrules_test_obj = object [
+                                    ("test", object [ 
+                                                ("bla", toInRule (1 :: Int)),
+                                                ("ble", toInRule (2 :: Int))
+                                ])
+                                ,   ("test2", object [
+                                                     ("blas", object [
+                                                                ("x", (
+                                                                    toInRule
+                                                                        [ toInRule 'c'
+                                                                        , toInRule ( "test" :: String)
+                                                                        ]
+                                                                    )
+                                                                )
+                                                            ]
+                                                        )
+                                                ])
+                                        ]
