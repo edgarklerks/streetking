@@ -220,7 +220,7 @@ newtype IsomorphT = IsomorphT {
  --
 smallArgs = Args {
         replay = Nothing,
-        maxSuccess = 100000,
+        maxSuccess = 10000,
         maxSize = 40,
         chatty = True,
         maxDiscardRatio = 10 

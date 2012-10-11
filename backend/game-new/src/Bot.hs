@@ -132,11 +132,20 @@ testHasCars = bracket testcon H.disconnect $ \c -> runRandomIO c $ do
                         ]
 
 
+
+
+
+
+
 {-- 
 -
 -               Unit tests for notifications 
 -
 --}
+
+
+
+
 
 -- | I use monadic quickcheck, because it is more general than HUnit
 
@@ -363,3 +372,54 @@ inrules_test_obj = object [
                                                         )
                                                 ])
                                         ]
+
+-- shape is a binary relationship. But now we pretend it gives back a property, 
+-- we can compare:
+-- (1)  shp (a `project` b) == shp b 
+-- (2)  a `project` (b `project` c) = (a `project` b) `project` c
+-- (3)  b `project` c = b, if shp c = shp b  
+-- 
+--  There is no identity 
+--
+--  a `project` e = a, b `project` e = b
+-- 
+-- (a `project` b) `shp` b == True 
+--
+--
+
+
+
+shp xs@(InObject ts) (InObject sp) | S.size  ts /= S.size sp = False 
+                                   | otherwise  = S.foldrWithKey step True sp 
+            where 
+                  step k _ False = False 
+                  step lbl y True = case xs .> lbl of 
+                                        Nothing -> False 
+                                        Just a -> shp a y  
+shp (InArray xs) (InArray sp) | length xs /= length sp = False 
+                              | otherwise = Prelude.and $ uncurry shp <$> (xs `zip` sp)
+shp a b = viewKind a == viewKind b 
+
+test_project = let f = quickCheckWith smallArgs 
+               in f prop_shp_eq >> f prop_project_left_cancelative >>  
+                  f prop_project_assoc >> 
+                  f prop_project_shape 
+
+prop_project_shape = property test
+        where test :: IsomorphT -> IsomorphT -> Bool 
+              test (IsomorphT b) (IsomorphT c')  = (b `project` c) == b 
+                
+                    where c = project c' b  
+                
+
+prop_shp_eq = property test 
+    where test :: IsomorphT -> Bool 
+          test (IsomorphT sh) = shp sh sh 
+
+prop_project_left_cancelative = property test 
+        where test :: IsomorphT -> IsomorphT -> Bool 
+              test (IsomorphT a) (IsomorphT b) = shp (a `project` b) b 
+
+prop_project_assoc  = property test 
+        where test :: IsomorphT -> IsomorphT -> IsomorphT -> Bool 
+              test (IsomorphT a) (IsomorphT b) (IsomorphT c) = (a `project` b) `project` c == a `project` (b `project` c) 
