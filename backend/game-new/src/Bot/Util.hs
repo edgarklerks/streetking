@@ -18,7 +18,9 @@ module Bot.Util (
         getCar, 
         randomsRange,
         randomsSeq,
-        testcon 
+        testcon,
+        IsomorphT(..),
+        smallArgs 
 
 ) where 
 
@@ -43,6 +45,7 @@ import Control.Applicative
 import Data.Conversion
 import Data.Aeson 
 import qualified Data.ByteString.Lazy.Char8 as BL 
+import qualified Data.ByteString.Char8 as B 
 import Data.Monoid 
 import Site 
 import Database.HDBC.PostgreSQL
@@ -50,6 +53,7 @@ import System.Random
 import Control.Monad.State 
 import Test.HUnit 
 import Control.Monad.Reader 
+import Test.QuickCheck 
 runTest :: Test -> RandomM g c Counts 
 runTest = liftIO . runTestTT 
 
@@ -199,3 +203,39 @@ interleave (x:xs) (y:ys) = x : y : interleave xs ys
 interleave xs [] =  xs 
 interleave [] ys = ys 
 
+newtype IsomorphT = IsomorphT {
+        unIsomorphT :: InRule 
+    } deriving Show
+{-- 
+ - The bijective map  of a subset of InRule with Value is: 
+ - InInteger Integer            <->      Number (I Integer)
+ - InDouble  Double             <->      Number (D Double)
+ - InByteString B.ByteString    <->      String (Text) 
+ - InArray  [InRule]            <->      Array (Vector Value)  
+ - InObject M.Map String InRule <->      Object M.Map Text Value  
+ - InBool Bool                  <->      Bool Bool
+ - InNull                       <->      Null
+ -
+ ---}
+ --
+smallArgs = Args {
+        replay = Nothing,
+        maxSuccess = 100000,
+        maxSize = 40,
+        chatty = True,
+        maxDiscardRatio = 10 
+    }
+
+instance Arbitrary IsomorphT where 
+    arbitrary = do 
+        let int = arbitrary :: Gen Integer
+        let dbl = arbitrary :: Gen Double 
+        let str = arbitrary :: Gen String
+        let arr = listOf arbitrary :: Gen [IsomorphT]
+        let obj = listOf arbitrary :: Gen [(String, IsomorphT)]
+        let bl = arbitrary :: Gen Bool 
+        let ps = [(1900,fmap InDouble dbl), (1900, fmap InInteger int), (1900, fmap (InByteString . B.pack) $ str), (250, fmap (InObject . S.fromList . fmap (\(x,y) -> (x,unIsomorphT y))) obj), (250, fmap (InArray . fmap unIsomorphT) arr), (1900, fmap InBool bl), (1900,return InNull)]
+        fmap IsomorphT $ frequency ps
+
+instance Arbitrary Value where 
+    arbitrary = fromInRule . unIsomorphT <$> (arbitrary :: Gen IsomorphT)
