@@ -49,6 +49,88 @@ import Control.Monad.CatchIO
 import Control.Concurrent 
 import qualified Data.InRules as I  
 
+{-- Quickcheck is useful for finding corner cases in 
+-   functions. You setup a 'law' for your function and
+-   then define a property based on that law. 
+-
+-   QuickCheck will then try to find a fail case 
+-   for you. 
+-
+-   HUnit is useful to test expected behaviour of 
+-   functions. This is less strong than a property,
+-   but more useful for complex interfaces. 
+--}
+
+{-- how to write a test with quickCheck  
+-
+-   Say I want to show emperical that:
+-   
+-   (a * b) `mod` c = (a `mod` c) * (b `mod` c)
+-   
+-   for (a,b,c) e N 
+-
+-  which is bullshit ofcourse. 
+-  
+-  I first define a property. 
+-
+-  If you start it with 
+-  prop_ we can automagicly run all the tests in this module  
+
+--}
+
+prop_dist_mul_mod = property work
+    -- Positive a create only positive Num a  
+    where work :: Positive Int -> Positive Int -> Positive Int -> Bool 
+          work x y z  = (x * y) `mod` z == (x `mod` z) * (y `mod` z) 
+
+
+{-- 
+- Now I can run the property with:
+- --} 
+
+test_dist_mul_mod = quickCheck prop_dist_mul_mod
+
+
+{-- 
+- how to write a Test with HUnit. 
+-
+- For HUnit we use the 
+- RandomM monad, which has in its state/reader context 
+- a fresh db connection and a seed of a random generator.
+-
+- Let's say we want to test if user 36 has cars at all. 
+- --}
+
+test_has_cars = do 
+                    -- asInRule runs the request in the snap monad embedded
+                    -- in RandomM 
+                    -- asInRule :: RequestBuilder (RandomM c) () -> RandomM c InRule 
+                    a <- asInRule $ do 
+                            -- mkJsonPost creates an request out of a route
+                            -- and arguments  
+                            mkJsonPost "Garage/car" (S.fromList [])
+                            -- directly manipulate the query string 
+                            S.setQueryStringRaw "userid=36"
+                    return (fromInRule (fromJust $ a .> "result") :: [InRule])
+
+
+{-- Now we defined the actual tests and cases --}
+
+-- bracket takes three computation. The initial comp to 
+-- obtain resources ,
+-- the final comp, to release resource and the computation,
+-- that does something with the resource. 
+-- bracket :: m a -> (a -> m c) -> (a -> m b) -> m b 
+
+
+testHasCars = bracket testcon H.disconnect $ \c -> runRandomIO c $ do 
+                    c <- test_has_cars  
+                    runTest $ TestList [
+                            TestLabel "test_user_has_car" $ 
+                                    TestCase $ assertBool "no car for user" (not . null $ c) 
+
+                        ]
+
 
 {-- 
 -
@@ -167,10 +249,10 @@ test_search_notification = do
 instance Arbitrary Letter where 
     arbitrary = do 
         (AN ti) <- arbitrary
-        (AN msg) <- arbitrary
+        (AN msg) <- arbitrary 
         to <- arbitrary `suchThat` (>0)
         frm <- arbitrary `suchThat` (>0) 
-        (AN (BL.pack -> xs)) <- arbitrary 
+        (encode -> xs) <- arbitrary :: Gen Value  
         id <- arbitrary `suchThat` (>0) 
 
         return (def {
@@ -203,7 +285,6 @@ testTournament = do
 joinTournament id = do 
             xs <- take 4 <$> testCarUsers 
             forM_ xs $ \(i,d) -> do  
-                    liftIO $ print (i,d)
                     s <- asInRule $ do 
                         mkJsonPost "Tournament/join" (S.fromList [("tournament_id", toInRule id), ("car_instance_id", toInRule d)])
                         S.setQueryStringRaw $ "userid=" <> (B.pack $ show i)
