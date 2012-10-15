@@ -1,5 +1,15 @@
 {-# LANGUAGE RankNTypes, GADTs, StandaloneDeriving, NoMonoLocalBinds, NoMonomorphismRestriction, GeneralizedNewtypeDeriving,OverloadedStrings, ScopedTypeVariables, DeriveGeneric, TypeSynonymInstances, FlexibleInstances, ImpredicativeTypes #-}
-module Data.MemState where  
+module Data.MemState (
+            MemState,
+            Query(..),
+            Result(..),
+            QueryChan,
+            runQuery,
+            newMemState,
+            queryManager
+            
+                     
+        ) where  
 
 import qualified Data.HashMap.Strict as H 
 import           Control.Monad.STM

@@ -43,7 +43,8 @@ module Data.Conversion (
        pprint,
        pprints,
        object,
-       list 
+       list,
+       project
 
 
 

@@ -49,12 +49,103 @@ import Control.Monad.CatchIO
 import Control.Concurrent 
 import qualified Data.InRules as I  
 
+{-- Quickcheck is useful for finding corner cases in 
+-   functions. You setup a 'law' for your function and
+-   then define a property based on that law. 
+-
+-   QuickCheck will then try to find a fail case 
+-   for you. 
+-
+-   HUnit is useful to test expected behaviour of 
+-   functions. This is less strong than a property,
+-   but more useful for complex interfaces. 
+--}
+
+{-- how to write a test with quickCheck  
+-
+-   Say I want to show emperical that:
+-   
+-   (a * b) `mod` c = (a `mod` c) * (b `mod` c)
+-   
+-   for (a,b,c) e N 
+-
+-  which is bullshit ofcourse. 
+-  
+-  I first define a property. 
+-
+-  If you start it with 
+-  prop_ we can automagicly run all the tests in this module  
+
+--}
+
+prop_dist_mul_mod = property work
+    -- Positive a create only positive Num a  
+    where work :: Positive Int -> Positive Int -> Positive Int -> Bool 
+          work x y z  = (x * y) `mod` z == (x `mod` z) * (y `mod` z) 
+
+
+{-- 
+- Now I can run the property with:
+- --} 
+
+test_dist_mul_mod = quickCheck prop_dist_mul_mod
+
+
+{-- 
+- how to write a Test with HUnit. 
+-
+- For HUnit we use the 
+- RandomM monad, which has in its state/reader context 
+- a fresh db connection and a seed of a random generator.
+-
+- Let's say we want to test if user 36 has cars at all. 
+- --}
+
+test_has_cars = do 
+                    -- asInRule runs the request in the snap monad embedded
+                    -- in RandomM 
+                    -- asInRule :: RequestBuilder (RandomM c) () -> RandomM c InRule 
+                    a <- asInRule $ do 
+                            -- mkJsonPost creates an request out of a route
+                            -- and arguments  
+                            mkJsonPost "Garage/car" (S.fromList [])
+                            -- directly manipulate the query string 
+                            S.setQueryStringRaw "userid=36"
+                    return (fromInRule (fromJust $ a .> "result") :: [InRule])
+
+
+{-- Now we defined the actual tests and cases --}
+
+-- bracket takes three computation. The initial comp to 
+-- obtain resources ,
+-- the final comp, to release resource and the computation,
+-- that does something with the resource. 
+-- bracket :: m a -> (a -> m c) -> (a -> m b) -> m b 
+
+
+testHasCars = bracket testcon H.disconnect $ \c -> runRandomIO c $ do 
+                    c <- test_has_cars  
+                    runTest $ TestList [
+                            TestLabel "test_user_has_car" $ 
+                                    TestCase $ assertBool "no car for user" (not . null $ c) 
+
+                        ]
+
+
+
+
+
+
 
 {-- 
 -
 -               Unit tests for notifications 
 -
 --}
+
+
+
+
 
 -- | I use monadic quickcheck, because it is more general than HUnit
 
@@ -73,6 +164,11 @@ notificationTests = do
             quickCheck $ prop_read_write_notification_dbstm c po 
             print "Test postoffice, read write db"
             quickCheck $ prop_read_write_notification_db c po 
+            print "Test notification, search notifications"
+            runRandomIO c $ do 
+                            b <- test_search_notification 
+                            runTest $ TestLabel "search notification" $ TestCase $ assertBool "search notification is to big" (not . null $ b)
+
         return ()
 
 
@@ -153,7 +249,7 @@ test_search_notification = do
             xs <- asInRule $ do 
                 mkJsonPost "User/searchNotification" (S.fromList [("archive", InInteger 0), ("sql", InString "orderby id desc" )])
                 S.setQueryStringRaw "userid=36"                                                         
-            liftIO $ print xs
+            return (I.toList (fromJust $ xs .> "result") :: [(String, String)]) 
             -- return (not . null $ xs)
 
 -- | Instance to generate random letters 
@@ -162,10 +258,10 @@ test_search_notification = do
 instance Arbitrary Letter where 
     arbitrary = do 
         (AN ti) <- arbitrary
-        (AN msg) <- arbitrary
+        (AN msg) <- arbitrary 
         to <- arbitrary `suchThat` (>0)
         frm <- arbitrary `suchThat` (>0) 
-        (AN (BL.pack -> xs)) <- arbitrary 
+        (encode -> xs) <- arbitrary :: Gen Value  
         id <- arbitrary `suchThat` (>0) 
 
         return (def {
@@ -198,7 +294,6 @@ testTournament = do
 joinTournament id = do 
             xs <- take 4 <$> testCarUsers 
             forM_ xs $ \(i,d) -> do  
-                    liftIO $ print (i,d)
                     s <- asInRule $ do 
                         mkJsonPost "Tournament/join" (S.fromList [("tournament_id", toInRule id), ("car_instance_id", toInRule d)])
                         S.setQueryStringRaw $ "userid=" <> (B.pack $ show i)
@@ -277,3 +372,53 @@ inrules_test_obj = object [
                                                         )
                                                 ])
                                         ]
+
+-- shape is a binary relationship. But we pretend it gives back a property, 
+-- we can compare:
+-- (1)  shp (a `project` b) == shp b 
+-- (2)  a `project` (b `project` c) = (a `project` b) `project` c
+-- (3)  b `project` c = b, if shp c = shp b  
+-- 
+--  There is no identity 
+--
+--  a `project` e = a, b `project` e = b
+-- 
+-- (a `project` b) `shp` b == True 
+--
+--
+
+
+
+shp xs@(InObject ts) (InObject sp) | S.size  ts /= S.size sp = False 
+                                   | otherwise  = S.foldrWithKey step True sp 
+            where 
+                  step k _ False = False 
+                  step lbl y True = case xs .> lbl of 
+                                        Nothing -> False 
+                                        Just a -> shp a y  
+shp (InArray xs) (InArray sp) | length xs /= length sp = False 
+                              | otherwise = Prelude.and $ uncurry shp <$> (xs `zip` sp)
+shp a b = viewKind a == viewKind b 
+
+test_project = let f = quickCheckWith smallArgs 
+               in f prop_shp_eq >> f prop_project_left_cancelative >>  
+                  f prop_project_assoc >> 
+                  f prop_project_shape 
+
+prop_project_shape = property test
+        where test :: IsomorphT -> IsomorphT -> Bool 
+              test (IsomorphT b) (IsomorphT c')  = (b `project` c) == b 
+                
+                    where c = project c' b  
+
+prop_shp_eq = property test 
+    where test :: IsomorphT -> Bool 
+          test (IsomorphT sh) = shp sh sh 
+
+prop_project_left_cancelative = property test 
+        where test :: IsomorphT -> IsomorphT -> Bool 
+              test (IsomorphT a) (IsomorphT b) = shp (a `project` b) b 
+
+prop_project_assoc  = property test 
+        where test :: IsomorphT -> IsomorphT -> IsomorphT -> Bool 
+              test (IsomorphT a) (IsomorphT b) (IsomorphT c) = (a `project` b) `project` c == a `project` (b `project` c) 
