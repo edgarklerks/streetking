@@ -373,7 +373,7 @@ inrules_test_obj = object [
                                                 ])
                                         ]
 
--- shape is a binary relationship. But now we pretend it gives back a property, 
+-- shape is a binary relationship. But we pretend it gives back a property, 
 -- we can compare:
 -- (1)  shp (a `project` b) == shp b 
 -- (2)  a `project` (b `project` c) = (a `project` b) `project` c
@@ -410,7 +410,6 @@ prop_project_shape = property test
               test (IsomorphT b) (IsomorphT c')  = (b `project` c) == b 
                 
                     where c = project c' b  
-                
 
 prop_shp_eq = property test 
     where test :: IsomorphT -> Bool 
