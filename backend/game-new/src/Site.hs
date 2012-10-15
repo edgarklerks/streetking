@@ -858,7 +858,7 @@ garageParts :: Application ()
 garageParts = do 
         uid <- getUserId 
                         
-        (((l, o), xs),od) <- getPagesWithDTDOrdered ["level", "part_instance_id"] (
+        (((l, o), xs),od) <- getPagesWithDTDOrdered ["level", "part_instance_id", "unique", "improvement"] (
                 "name" +== "part_type" +&& 
                 "part_instance_id" +== "part_instance_id" +&& 
                 "level" +<= "level-max" +&& 
