@@ -25,8 +25,11 @@ import Data.Pointed
 import Data.Copointed
 import Data.Word 
 import Data.Semigroup
+import Control.Monad.Identity
 import qualified Data.List.NonEmpty as N
 import qualified Data.Serialize as S 
+import Test.QuickCheck hiding ((==>))
+
 infixr 6 ==>
 infixr 6 .>
 infixl 6 .>>
@@ -50,11 +53,8 @@ data InRule =
 	  | InNull
 	  | InArray [InRule]
 	  | InObject (Map.HashMap String InRule) 
-    deriving (Eq)
+    deriving (Eq, Show )
                
-
-instance Show InRule where 
-        show a = pprint' "  " 0 a 
 
 newtype Readable = Readable {
         unReadable :: String 
@@ -143,7 +143,7 @@ data KindView = TScalar
              | TArray 
              | TObject 
              | TNone 
-    deriving Show
+    deriving (Show, Eq)
 
 viewKind :: InRule -> KindView 
 viewKind (InArray _) = TArray
@@ -267,6 +267,69 @@ object = InObject . Map.fromList
 
 list :: [InRule] -> InRule 
 list xs = InArray xs 
+
+--  shp (a `project` b) == shp b 
+--  a `project` (b `project` c) = (a `project` b) `project` c
+--  b `project` c = b, if shp c = b  
+-- 
+--  There is no identity 
+--
+--  a `project` e = a, b `project` e = b
+-- 
+-- 
+--
+--
+project :: InRule -> InRule -> InRule 
+project xs@(InObject _) (InObject sp)  = InObject $ mapWithKey step sp 
+            where step k x = case xs .> k of 
+                                    Nothing -> x
+                                    Just a -> project a x 
+project    (InArray xs) (InArray sp) = InArray $ stepBoth xs sp 
+                        where stepBoth (x:xs) (s:sp) = project x s : stepBoth xs sp 
+                              stepBoth []  sp = sp 
+                              stepBoth xs  [] = []
+project a b = b 
+
+                
+
+mapWithKey :: (k -> a -> b) -> Map.HashMap k a -> Map.HashMap k b 
+mapWithKey f xs = runIdentity $ Map.traverseWithKey step xs 
+        where   step k = return . f k 
+
+-- InArray -> InObject 
+
+arrayToObj :: InRule -> InRule 
+arrayToObj (InArray xs) = InObject $ Map.fromList $  (show <$> [0..]) `zip` xs 
+
+shp xs@(InObject ts) (InObject sp) | Map.size  ts /= Map.size sp = False 
+                                   | otherwise  = Map.foldrWithKey step True sp 
+            where 
+                  step k _ False = False 
+                  step lbl y True = case xs .> lbl of 
+                                        Nothing -> False 
+                                        Just a -> shp a y  
+shp (InArray xs) (InArray sp) | length xs /= length sp = False 
+                              | otherwise = and $ uncurry shp <$> (xs `zip` sp)
+shp a b = viewKind a == viewKind b 
+
+
+shpTestAB = shp a b && not (shp b a)
+    where a = object $ [
+                        ("test", InInteger 1),
+--                        ("test2", InInteger 3),
+                        ("test3", InBool True)
+                       ]
+
+          b = object $ [
+                    ("test", InInteger 3),
+                    ("test2", InBool True) 
+                ]
+
+shpTestArr = shp lb lc && shp lc lb && not (shp la lb) 
+    where la = list $ [ ]
+-- shpTestArr = (a, b)
+          lb = list $ [InBool True, InInteger 9, InBool True]
+          lc = list $ [InBool False, InInteger 9, InBool False]
 
 -- | Create single InRule object.
 singleObj :: ToInRule a => String -> a -> InRule
