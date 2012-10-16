@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, FlexibleContexts, ScopedTypeVariables, RankNTypes, BangPatterns #-}
 module Proto where 
 
-import           Data.MemState 
+import           Data.MemTimeState 
 import qualified Data.Serialize as S
 import qualified Control.Monad.CatchIO as CIO
 import           Control.Monad.Error 

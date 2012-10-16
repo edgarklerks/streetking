@@ -9,7 +9,8 @@ module Data.PriorityQueue (
         tailMin,
         insert,
         singleton,
-        extractTill 
+        extractTill,
+        extractTillWithKey
 
     ) where 
 
@@ -32,6 +33,12 @@ data ViewMin q a = a :> Prio q a
 
 data ViewPrioMin q a = (q,a) ::> Prio q a 
                      | NilPrio  
+
+extractTillWithKey :: Ord q => q -> Prio q a -> ([(q,a)], Prio q a)
+extractTillWithKey  q xs = worker q xs [] 
+        where worker q (viewPrio -> (q',a) ::> xs) z | q >= q' = worker q xs ((q,a):z)
+                                                     | q < q' = (z,xs)
+              worker q (viewPrio -> NilPrio) z = (z, mempty)
 
 extractTill :: Ord q =>  q -> Prio q a -> ([a], Prio q a)
 extractTill q xs = worker q xs [] 
