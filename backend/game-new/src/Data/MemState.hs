@@ -168,7 +168,7 @@ type QueryChan = TChan (Query, Unique Result)
 
 test :: IO a
 test = do 
-    m <- newMemState "asd"
+    m <- newMemState undefined undefined "asd"
     n <- newTChanIO 
     forkIO $ queryManager "asd" m n
    
