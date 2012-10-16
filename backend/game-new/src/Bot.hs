@@ -31,7 +31,7 @@ import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as BL 
 import Data.String 
 import qualified Model.CarInGarage as CIG 
-import Data.Database hiding (Value) 
+import Data.Database hiding (Value, Insert,Delete) 
 import Data.DatabaseTemplate 
 import Data.Maybe 
 import Model.Functions 
@@ -48,6 +48,7 @@ import Test.QuickCheck.Test
 import Control.Monad.CatchIO 
 import Control.Concurrent 
 import qualified Data.InRules as I  
+import Data.MemTimeState 
 
 {-- Quickcheck is useful for finding corner cases in 
 -   functions. You setup a 'law' for your function and
@@ -422,3 +423,51 @@ prop_project_left_cancelative = property test
 prop_project_assoc  = property test 
         where test :: IsomorphT -> IsomorphT -> IsomorphT -> Bool 
               test (IsomorphT a) (IsomorphT b) (IsomorphT c) = (a `project` b) `project` c == a `project` (b `project` c) 
+
+
+{-- 
+-
+- Test for MemTimeState  
+-
+- --}
+
+instance Arbitrary Query where 
+    arbitrary = oneof [insert,delete,query,ds]
+        where insert = do 
+                    k <- arbitrary
+                    v <- arbitrary 
+                    return $ Insert k v 
+              delete = do 
+                    k <- arbitrary 
+                    return $ Delete k 
+              query = do 
+                    k <- arbitrary 
+                    return $ Query k 
+              ds = return DumpState 
+
+test_query = do 
+        ms <- newMemState (1000 * 1000 * 60 * 60) (6000 * 1000) "testshit" 
+        qc <- newTChanIO 
+        forkIO $ queryManager "testshit" ms qc
+        quickCheck (test_query_insert qc)
+        quickCheck (test_delete qc)
+
+test_delete qc = monadicIO $ do 
+                    k <- pick arbitrary 
+                    v <- pick arbitrary
+                    res <- Q.run $ runQuery qc (Insert k v)
+                    test <- Q.run $ runQuery qc (Delete k)
+                    ps <- Q.run $ runQuery qc (Query k)
+                    Q.assert (ps == NotFound && res == Empty && test == Empty) 
+                    
+
+test_query_insert qc = monadicIO $ do 
+        k <- pick arbitrary
+        v <- pick arbitrary
+        res <- Q.run $ runQuery qc (Insert k v)
+        test <- Q.run $ runQuery qc (Query k)
+        Q.assert (res == Empty && test == Value v)
+
+
+
+    

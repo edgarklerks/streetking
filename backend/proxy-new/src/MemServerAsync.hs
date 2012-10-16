@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RankNTypes,StandaloneDeriving, MultiParamTypeClasses, TypeSynonymInstances, ViewPatterns, LiberalTypeSynonyms, FunctionalDependencies, FlexibleContexts, FlexibleInstances, ExistentialQuantification, RankNTypes #-}
 module MemServerAsync where 
 
-import Data.MemState 
+import Data.MemTimeState 
 import System.ZMQ3 hiding (version)
 
 import Control.Monad
