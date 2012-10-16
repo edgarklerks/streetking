@@ -1,5 +1,15 @@
 {-# LANGUAGE RankNTypes, GADTs, StandaloneDeriving, NoMonoLocalBinds, NoMonomorphismRestriction, GeneralizedNewtypeDeriving,OverloadedStrings, ScopedTypeVariables, DeriveGeneric, TypeSynonymInstances, FlexibleInstances, ImpredicativeTypes #-}
-module Data.MemState where  
+module Data.MemState (
+            MemState,
+            Query(..),
+            Result(..),
+            QueryChan,
+            runQuery,
+            newMemState,
+            queryManager
+            
+                     
+        ) where  
 
 import qualified Data.HashMap.Strict as H 
 import           Control.Monad.STM
@@ -23,8 +33,10 @@ data MemState = MS {
             lock :: MVar (),
             changes :: TVar Int 
         } 
-type MemMap = (H.HashMap B.ByteString (TVar B.ByteString))
+
+type MemMap = H.HashMap B.ByteString (TVar B.ByteString)
 type Snapshot = H.HashMap B.ByteString B.ByteString
+
 
 instance S.Serialize Snapshot where 
             put = S.put . H.toList
@@ -86,7 +98,7 @@ loadsnapshot m = foldM step (H.empty) (H.keys m)
                                         return $ H.insert i p x
 
 
-newMemState :: FilePath -> IO MemState 
+newMemState :: t -> t -> FilePath -> IO MemState 
 newMemState fp = do 
            b <- doesFileExist fp  
            if b then mkstate fp 
@@ -154,6 +166,7 @@ data Op = I | D | Q
 type Unique a = TMVar a
 type QueryChan = TChan (Query, Unique Result)
 
+test :: IO a
 test = do 
     m <- newMemState "asd"
     n <- newTChanIO 
@@ -167,6 +180,7 @@ test = do
     forever $ threadDelay 10000
 
 
+iclient :: (Enum a, Show a) => QueryChan -> a -> a -> IO ()
 iclient n p q = forM_ [p..q] $ \i -> runQuery n $ Insert (C.pack $ show i) (C.pack $ show i)
 
     
