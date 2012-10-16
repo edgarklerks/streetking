@@ -65,7 +65,9 @@ Executable proxy-new
     data-default,
     template-haskell,
     haskell-src,
-    aeson
+    aeson,
+    lens-family-core,
+    QuickCheck 
 
   if flag(development)
     build-depends:

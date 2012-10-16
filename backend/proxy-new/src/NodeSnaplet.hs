@@ -16,7 +16,7 @@ import Control.Monad.State
 import qualified Data.Binary as B 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L 
-import Data.MemState 
+import Data.MemTimeState 
 import System.Random 
 import Proto 
 import System.ZMQ3 as Z  

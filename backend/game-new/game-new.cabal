@@ -72,7 +72,8 @@ Executable game-new
     cryptohash,
     entropy,
     smallcheck,
-    base64-bytestring 
+    base64-bytestring,
+    lens-family-core 
 
   if flag(development)
     build-depends:
