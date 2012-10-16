@@ -31,6 +31,7 @@ import           Lens.Family
 import           Lens.Family.Unchecked
 import           Data.Time.Clock.POSIX
 import           Data.Foldable 
+import           Debug.Trace 
 import           Prelude hiding (foldr, foldl)
 
 
@@ -232,7 +233,9 @@ compressState ms = let tmk = _mapkey ms
 runQuery :: QueryChan -> Query -> IO Result 
 runQuery s x = do 
             un <- newEmptyTMVarIO 
+            print x 
             atomically $ writeTChan s (x,un)
+            print "writetchan"
             atomically $ takeTMVar un 
 
 
@@ -300,7 +303,7 @@ data Result where
         Empty :: Result 
         Except :: String -> Result 
         KeyVal :: B.ByteString -> B.ByteString -> Result 
-    deriving Show
+    deriving (Eq,Show)
 
 instance S.Serialize Result where 
         put (Value b) = S.put (0 :: Word8) *> S.put b
@@ -334,16 +337,21 @@ instance S.Serialize Query where
 
 
 queryManager :: FilePath -> MemState -> QueryChan -> IO ()
-queryManager fp ms qc = sweeper ms >> (forever $ do 
+queryManager fp ms qc = forkIO (sweeper ms) >> (forever $ do 
                             atomically $ changes ~. (+1) $ ms   
+                            i <- atomically $ ms ^. changes 
+                            when (i > 1000) $ void $ forkIO $ do 
+                                                storeSnapShot fp ms 
                             ct <- getMicroSeconds 
                             (q,u) <- atomically $ readTChan qc 
+                            liftIO $ print q 
                             case q of 
                                 Insert x y -> atomically $ do 
                                             s <- insertKeyValue ms (ct + _ttl ms) x y 
                                             putTMVar u Empty 
                                 Delete x -> atomically $ do 
                                                 deleteKey ms x  
+                                                putTMVar u Empty 
                                 Query a -> atomically $ do 
                                                 v <- getValue ms (ct + _ttl ms) a  
                                                 case v of 

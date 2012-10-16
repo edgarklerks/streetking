@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RankNTypes,StandaloneDeriving, MultiParamTypeClasses, TypeSynonymInstances, ViewPatterns, LiberalTypeSynonyms, FunctionalDependencies, FlexibleContexts, FlexibleInstances, ExistentialQuantification, RankNTypes #-}
 module MemServerAsync where 
 
-import Data.MemState 
+import Data.MemTimeState 
 import System.ZMQ3 hiding (version)
 
 import Control.Monad
@@ -272,6 +272,7 @@ newProtoConfig addrs addr fp = do
                 pl <- socket ctx Pull 
                 bind pl addr 
                 forkIO $ queryManager fp l s  
+                liftIO $ print "qm"
                 outc <- newEmptyDVar 
                 return $ PC {
                             version = versionConst,
@@ -317,9 +318,9 @@ queryNode pc p r n req = do
                     s <- runQuery (memstate pc) t
                     case s of 
                         NotFound -> client' p r n req  
-                        (Value v) -> return $ result (KeyVal a v)
-                        (KeyVal a v) -> return $ result (KeyVal a v)
-                        (Empty) -> client' p r n req  
+                        Value v -> return $ result (KeyVal a v)
+                        KeyVal a v -> return $ result (KeyVal a v)
+                        Empty -> client' p r n req  
                 Just a -> forkIO (void $ client' p  r n req) *> return (result Empty)
 
 
