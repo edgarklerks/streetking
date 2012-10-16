@@ -99,7 +99,7 @@ loadsnapshot m = foldM step (H.empty) (H.keys m)
 
 
 newMemState :: t -> t -> FilePath -> IO MemState 
-newMemState fp = do 
+newMemState _ _ fp = do 
            b <- doesFileExist fp  
            if b then mkstate fp 
                 else mknewstate  
