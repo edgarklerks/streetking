@@ -233,9 +233,7 @@ compressState ms = let tmk = _mapkey ms
 runQuery :: QueryChan -> Query -> IO Result 
 runQuery s x = do 
             un <- newEmptyTMVarIO 
-            print x 
             atomically $ writeTChan s (x,un)
-            print "writetchan"
             atomically $ takeTMVar un 
 
 
@@ -344,7 +342,6 @@ queryManager fp ms qc = forkIO (sweeper ms) >> (forever $ do
                                                 storeSnapShot fp ms 
                             ct <- getMicroSeconds 
                             (q,u) <- atomically $ readTChan qc 
-                            liftIO $ print q 
                             case q of 
                                 Insert x y -> atomically $ do 
                                             s <- insertKeyValue ms (ct + _ttl ms) x y 

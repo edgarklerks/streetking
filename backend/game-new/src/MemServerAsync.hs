@@ -272,7 +272,6 @@ newProtoConfig addrs addr fp = do
                 pl <- socket ctx Pull 
                 bind pl addr 
                 forkIO $ queryManager fp l s  
-                liftIO $ print "qm"
                 outc <- newEmptyDVar 
                 return $ PC {
                             version = versionConst,
