@@ -344,6 +344,7 @@ queryManager fp ms qc = sweeper ms >> (forever $ do
                                             putTMVar u Empty 
                                 Delete x -> atomically $ do 
                                                 deleteKey ms x  
+                                                putTMVar u Empty 
                                 Query a -> atomically $ do 
                                                 v <- getValue ms (ct + _ttl ms) a  
                                                 case v of 

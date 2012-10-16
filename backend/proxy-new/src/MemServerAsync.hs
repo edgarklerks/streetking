@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RankNTypes,StandaloneDeriving, MultiParamTypeClasses, TypeSynonymInstances, ViewPatterns, LiberalTypeSynonyms, FunctionalDependencies, FlexibleContexts, FlexibleInstances, ExistentialQuantification, RankNTypes #-}
 module MemServerAsync where 
 
-import Data.MemTimeState 
+import Data.MemState 
 import System.ZMQ3 hiding (version)
 
 import Control.Monad
@@ -79,7 +79,6 @@ handleUpdates = do
 
 handleCommand :: Sender a => Socket a -> Proto -> ProtoMonad p ()
 handleCommand s (fromJust . getCommand -> p) = do 
-            liftIO $ print $ "received " ++ (show p)
             case p of 
                Sync -> do H.keys <$> readsDVar outgoing  >>= sendProto s . nodeList 
                NodeList xs -> forM_ xs connectToNode *> sendProto s (result Empty)
@@ -267,7 +266,7 @@ newProtoConfig addrs addr fp = do
                 is <- socket ctx Rep 
                 bind is addrs
                 ps <- newDVar H.empty 
-                l <- newMemState (60 * 1000 * 1000) (6000 * 1000) fp 
+                l <- newMemState (60 * 1000 * 1000 * 30) (6000 * 1000) fp  
                 s <- newEmptyDVar  
                 ans <- newDVar H.empty 
                 pl <- socket ctx Pull 
