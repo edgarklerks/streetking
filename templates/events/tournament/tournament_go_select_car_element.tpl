@@ -1,5 +1,6 @@
 <div class="tournament-car-element-container backgound-darkgray">
-	<div class="tournament-car-element-image-container tournament-car-element-image-container-image" style="background-image:url(test_store/car_[:id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>
+	<!--<div class="tournament-car-element-image-container tournament-car-element-image-container-image" style="background-image:url(test_store/car_[:id].jpg?t=[:eval TIMESTAMP(id)])">&nbsp;</div>-->
+	<div class="tournament-car-element-image-container tournament-car-element-image-container-image"  style='background-image:url([:eval IMAGESERVER("[\"user_car\","+id+",\"car\"]")])'>&nbsp;</div>
 	<div class="tournament-car-element-data-container">
 		<div class="tournament-car-element-info-container">
 			<div class="tournament-car-element-infotext-container">
