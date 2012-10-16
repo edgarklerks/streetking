@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RankNTypes,StandaloneDeriving, MultiParamTypeClasses, TypeSynonymInstances, ViewPatterns, LiberalTypeSynonyms, FunctionalDependencies, FlexibleContexts, FlexibleInstances, ExistentialQuantification, RankNTypes #-}
 module MemServerAsync where 
 
-import Data.MemState 
+import Data.MemTimeState 
 import System.ZMQ3 hiding (version)
 
 import Control.Monad
@@ -266,7 +266,7 @@ newProtoConfig addrs addr fp = do
                 is <- socket ctx Rep 
                 bind is addrs
                 ps <- newDVar H.empty 
-                l <- newMemState fp 
+                l <- newMemState (60 * 1000 * 1000 * 30) (6000 * 1000) fp  
                 s <- newEmptyDVar  
                 ans <- newDVar H.empty 
                 pl <- socket ctx Pull 
