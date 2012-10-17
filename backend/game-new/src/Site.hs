@@ -2066,6 +2066,7 @@ tournamentReport = do
             uid <- getUserId 
             (((l,o),xs),od) <- getPagesWithDTDOrdered ["id", "created"] (
                         "tournament_id" +== "tournament_id" +&&
+                        "id" +== "id" +&&
                         "created" +>= "created-min" +&&
                         "created" +<= "created-max" +&&
                         "account" +==| (toSql uid)
