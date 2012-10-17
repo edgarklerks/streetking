@@ -33,5 +33,6 @@ $(genAll "TournamentReport" "tournament_report" [
     ("tournament_result", ''TournamentResults),
     ("account_id", ''Integer),
     ("tournament", ''Tournament),
-    ("players", ''Players)
+    ("players", ''Players),
+    ("created", ''Integer)
     ]   )

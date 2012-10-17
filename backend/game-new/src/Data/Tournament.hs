@@ -224,6 +224,7 @@ getResults mid = do
 
 toArchive :: Integer -> [TR.TournamentResult] -> SqlTransaction Connection ()
 toArchive mid xs = do 
+                tt <- liftIO $ milliTime
                 tr <- load mid :: SqlTransaction Connection (Maybe T.Tournament)
                 ss <- search ["tournament_id" |== (toSql mid)] [] 100000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
                 forM_ ss $ \(TP.account_id -> x) -> 
@@ -232,7 +233,8 @@ toArchive mid xs = do
                             TRP.tournament_result = xs,
                             TRP.tournament = tr,
                             TRP.account_id = fromJust $ x,
-                            TRP.players = ss
+                            TRP.players = ss,
+                            TRP.created = tt 
                         } :: TRP.TournamentReport)
 
 
