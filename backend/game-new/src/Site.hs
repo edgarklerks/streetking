@@ -95,6 +95,7 @@ import qualified Model.PersonnelReport as PR
 import qualified Model.TravelReport as TR 
 import qualified Model.Functions as DBF
 import qualified Model.Support as SUP 
+import qualified Model.TournamentReport as TRP 
 import qualified Data.HashMap.Strict as HM
 import           Control.Monad.Trans
 import           Application
@@ -424,39 +425,6 @@ carBuy = do
 
         writeResult ("You succesfully bought the car" :: String)
 
-{-    
-         where ps uid xs car =  runDb $ do 
-                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                cm <- load (fromJust $ CM.id car) :: SqlTransaction Connection (Maybe CM.CarMarket)
-                case cm of 
-                        Nothing -> rollback "No such car found"
-                        Just car -> do  
-                
-                            -- save car to garage 
-                
-                            cid <- save ((def :: CarInstance.CarInstance) {
-                                         CarInstance.garage_id =  G.id g,
-                                         CarInstance.car_id = fromJust $ CM.id car 
-                                    }) :: SqlTransaction Connection Integer
-                
-                        -- sammeln stockr parts 
-                        --
-
-                            -- Part loader 
-                            pts <- search ["car_id" |== (toSql $ CM.id car)] [] 1000 0 :: SqlTransaction Connection [CSP.CarStockPart]
-
-
-                            let step z part = do 
-                                    save (def {
-                                       PI.part_id = fromJust $ CSP.id part,
-                                       PI.car_instance_id = Just cid,
-                                       PI.account_id = uid,
-                                       PI.deleted = False 
-                                    })
-                                    return ()
-
-                            foldM_ step () pts  
--}
 
 carReturn :: Application ()
 carReturn = do 
@@ -2030,7 +1998,6 @@ tournamentJoined = do
 
                                 
 
-
 tournamentResults :: Application ()
 tournamentResults = do 
         uid <- getUserId 
@@ -2094,6 +2061,17 @@ readNotification = do
                 Nothing -> internalError "no such notification"
                 Just a -> setRead  uid a *> writeResult True  
 
+tournamentReport :: Application ()
+tournamentReport = do 
+            uid <- getUserId 
+            (((l,o),xs),od) <- getPagesWithDTDOrdered ["id", "created"] (
+                        "tournament_id" +== "tournament_id" +&&
+                        "created" +>= "created-min" +&&
+                        "created" +<= "created-max" +&&
+                        "account" +==| (toSql uid)
+                    )
+            rs <- runDb $ search xs od l o :: Application [TRP.TournamentReport] 
+            writeMapables rs
 readArchive :: Application ()
 readArchive = do 
         uid <- getUserId 
@@ -2283,6 +2261,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Tournament/joined", tournamentJoined),
                 ("/Tournament/cancel", cancelTournamentJoin),
                 ("/Tournament/idk", tournamentPlayers),
+                ("/Tournament/report", tournamentReport),
                 ("/Support/send", reportIssue) 
           ]
 
