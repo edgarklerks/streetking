@@ -1679,27 +1679,8 @@ raceChallengeAccept = do
                     c <- (aget ["id" |== (toSql $ Chg.type chg)] (rollback $ "challenge type not found for id " ++ (show $ Chg.type chg)) :: SqlTransaction Connection ChgT.ChallengeType)
                     return $ ChgT.name c
 
-        -- TODO: check user busy
-        cons chgt
-        cons chg 
-
-        cons uid
-        cons "uid ok"
-
-        -- TODO: check user busy
-        liftIO $ print chgt *> print chg 
-
-        let t = N.raceStart {
-                    N.race_type = read $ chgt,
-                    N.race_id = cid  
-
-                }
-        N.sendNotification uid t
-        N.sendNotification (rp_account_id $ Chg.challenger chg) t 
 
 
-        liftIO $ print t
-        liftIO $ print "notifications sit"
         rid <- runDb $ do
             -- TODO: get / search functions for track, user, car with task triggering
             
@@ -1778,6 +1759,15 @@ raceChallengeAccept = do
                     otherwise -> rollback $ "challenge type not supported: " ++ chgt
 
             return rid
+
+        let t = N.raceStart {
+                    N.race_type = read $ chgt,
+                    N.race_id = rid  
+
+                }
+        N.sendNotification uid t
+        N.sendNotification (rp_account_id $ Chg.challenger chg) t 
+
 
         writeResult rid
 
