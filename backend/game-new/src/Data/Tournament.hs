@@ -64,12 +64,14 @@ import           Prelude hiding ((.),id)
 import           Data.Conversion 
 import           Data.Convertible 
 import qualified Model.TournamentResult as TR
+import qualified Model.TournamentPlayers as TP 
 import           GHC.Generics 
 import           Data.Text (Text) 
 import           Test.QuickCheck 
 import           System.Random 
 import           Data.Monoid 
 import qualified Notifications as N 
+import qualified Model.TournamentReport as TRP 
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -207,7 +209,9 @@ getResults mid = do
                 if (T.done tr) then return rs 
                                else do 
                                 ss <- filterM (step mt) rs 
-                                when (ss `sameLength` rs) $ save (tr { T.running = False, T.done = True}) >> return ()  
+                                when (ss `sameLength` rs) $ do 
+                                                toArchive (fromJust $ T.id tr) ss 
+                                                save (tr { T.running = False, T.done = True}) >> return ()  
                                 return ss 
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
               step mt (TR.TournamentResult _ tid rid _ _ _ _ _) = do 
@@ -218,6 +222,18 @@ getResults mid = do
                 
 
 
+toArchive :: Integer -> [TR.TournamentResult] -> SqlTransaction Connection ()
+toArchive mid xs = do 
+                tr <- load mid :: SqlTransaction Connection (Maybe T.Tournament)
+                ss <- search ["tournament_id" |== (toSql mid)] [] 100000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
+                forM_ ss $ \(TP.account_id -> x) -> 
+                    void $ save (def {
+                            TRP.tournament_id  = mid,
+                            TRP.tournament_result = xs,
+                            TRP.tournament = tr,
+                            TRP.account_id = fromJust $ x,
+                            TRP.players = ss
+                        } :: TRP.TournamentReport)
 
 
 divideClowns :: Tournament -> SqlTransaction Connection [[TP.TournamentPlayer]]

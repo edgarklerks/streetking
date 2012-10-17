@@ -62,10 +62,31 @@ data MemState = MS {
               _seed :: TVar StdGen,
               _changes :: TVar Int,
               _sweep :: Time,-- sweep every n seconds  
-              _ttl :: Time
+              _ttl :: Time,
+              _filelock :: TMVar ()
 
     }
 
+unlockFile  :: MemState -> IO ()
+unlockFile ms = atomically $ putTMVar (_filelock ms) ()
+
+lockFile :: MemState -> IO ()
+lockFile ms = atomically $ takeTMVar (_filelock ms)
+
+-- | Blocking lock action 
+withLock :: MemState -> IO a -> IO a 
+withLock ms a = do s <- atomically $ takeTMVar (_filelock ms)
+                   x <- a
+                   atomically $ putTMVar (_filelock ms) s
+                   return x 
+
+
+-- | Non blocking lock action 
+ifUnlock :: MemState -> IO a -> IO ()
+ifUnlock ms a = do s <- atomically $ tryTakeTMVar (_filelock ms) 
+                   case s of 
+                        Nothing -> return ()
+                        Just l -> a >> atomically (putTMVar (_filelock ms) l)
 
 mkTLens f = mkLens out inp 
     where out a = readTVar (f a) 
@@ -165,10 +186,10 @@ newMemState ttl sw fp = do
                         mm <- newTVar mempty 
                         chg <- newTVar 0 
                         g' <- newTVar g 
-                        return $ MS mk tm mm g' chg sw ttl 
+                        s <- newTMVar ()
+                        return $ MS mk tm mm g' chg sw ttl s 
 
 -- H.HashMap B.ByteString B.ByteString (=Snapshot)
---
 
 -- H.HashMap B.ByteString B.ByteString -> H.HashMap Key Pointer (=Map)
 buildPointerMap :: Snapshot -> IO Map 
@@ -176,6 +197,7 @@ buildPointerMap sn = foldrM step mempty (H.keys sn)
         where step x z = do 
                     p <- randomIO 
                     return $ H.insert x p z 
+
 -- Time -> (Map, Snapshot) -> H.HashMap Pointer (B.ByteString, TVar Time )(=MemMap)
 
 buildMemMap :: Time -> Map -> Snapshot -> IO MemMap 
@@ -208,7 +230,8 @@ rebuildState snp ttl sw = do
                     seed' <- newStdGen 
                     seed <- newTVarIO seed' 
                     chg <- newTVarIO 0 
-                    return $ MS mk' tm' mm' seed chg sw ttl 
+                    p <- newTMVarIO () 
+                    return $ MS mk' tm' mm' seed chg sw ttl p
 
 compressState :: MemState -> STM Snapshot 
 compressState ms = let tmk = _mapkey ms 
@@ -338,8 +361,10 @@ queryManager :: FilePath -> MemState -> QueryChan -> IO ()
 queryManager fp ms qc = forkIO (sweeper ms) >> (forever $ do 
                             atomically $ changes ~. (+1) $ ms   
                             i <- atomically $ ms ^. changes 
-                            when (i > 1000) $ void $ forkIO $ do 
+                            when (i `mod` 10000 == 0) $ void $ forkIO $ 
+                                            ifUnlock ms $ do 
                                                 storeSnapShot fp ms 
+
                             ct <- getMicroSeconds 
                             (q,u) <- atomically $ readTChan qc 
                             case q of 
