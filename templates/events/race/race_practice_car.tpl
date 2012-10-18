@@ -24,19 +24,19 @@
 	}
 	[:when (race.data.length == 1)]{
 		<div class="race-car-element-container">
-<!--			<div class="race-car-element-image-container race-car-element-image-container-image" style="background-image:url(test_store/car_[:race.data.0.rd_car.id].jpg?t=[:eval TIMESTAMP(id)])">-->
-			<div class="race-car-element-image-container race-car-element-image-container-image" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+race.data.0.rd_car.id+",\"car\"]")])'>
-				<a href="#Garage/car?car_instance_id=[:race.data.0.rd_car.id]" module="GARAGE_CAR_INFO"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>
-			</div>	
-			<div class="race-car-element-data-container">
-				<div class="race-car-element-info-container">
-					<div class="race-car-element-infotext-container">
-						<div>Manufacturer:&nbsp;<span>[:race.data.0.rd_car.manufacturer_name]</span></div>
-						<div>Model:&nbsp;<span>[:race.data.0.rd_car.name]</span></div>
-						<div>Year:&nbsp;<span>[:race.data.0.rd_car.year]</span></div>
-						<div>Level:&nbsp;<span>[:race.data.0.rd_car.level]</span></div>
-					</div>
-					<div class="race-car-element-vertical-line"></div>
+			<div class="float-left">
+				<div class="race-car-element-image-container race-car-element-image-container-image" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+race.data.0.rd_car.id+",\"car\"]")])'>
+					<a href="#Garage/car?car_instance_id=[:race.data.0.rd_car.id]" module="GARAGE_CAR_INFO"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>
+				</div>	
+			</div>
+			<div class="float-left race-car-element-vertical-line"></div>
+			<div class="float-right">
+			</div>
+			<div class="clearfix"></div>
+			<div>
+				
+				
+<!--
 					<div class="race-car-element-infobar-container">
 						<div class="race-car-element-info-data-box">
 							<div class="race-car-element-info-data-name">Top speed <span>[:eval round(race.data.0.rd_car.top_speed/10000)]</span> km/h</div>
@@ -69,72 +69,45 @@
 							</div>
 						</div>
 					</div>
+-->
+				
+			</div>
+			<div class="clearfix"></div>
+			<div>
+				<div class="speedometer-right">
+					<img src="images/speedometer_pointer.png" id="speedometer-pointer-[:race.data.0.rd_user.id]" class="speedometer_pointer">
+					<div id="digital-speedometer-[:race.data.0.rd_user.id]" class="digital-speedometer">10</div>
+				</div>
+
+<!--
+			<div class="race-car-element-data-container">
+				<div class="race-car-element-info-container">
+					<div class="race-car-element-infotext-container">
+						<div>Manufacturer:&nbsp;<span>[:race.data.0.rd_car.manufacturer_name]</span></div>
+						<div>Model:&nbsp;<span>[:race.data.0.rd_car.name]</span></div>
+						<div>Year:&nbsp;<span>[:race.data.0.rd_car.year]</span></div>
+						<div>Level:&nbsp;<span>[:race.data.0.rd_car.level]</span></div>
+					</div>
+					<div class="race-car-element-vertical-line"></div>
+
 					<div class="clearfix"></div>
 				</div>
 			</div>
-			<div class="clearfix"></div>
+-->
+			</div>
 		</div>
 		<div class="clearfix"></div>
 	}
-	<div class="dialog-corner dialog-corner-tl dialog-corner-h"></div>
-	<div class="dialog-corner dialog-corner-tl dialog-corner-v"></div>
-	<div class="dialog-corner dialog-corner-tr dialog-corner-h"></div>
-	<div class="dialog-corner dialog-corner-tr dialog-corner-v"></div>
-	<div class="dialog-corner dialog-corner-bl dialog-corner-h"></div>
-	<div class="dialog-corner dialog-corner-bl dialog-corner-v"></div>
-	<div class="dialog-corner dialog-corner-br dialog-corner-h"></div>
-	<div class="dialog-corner dialog-corner-br dialog-corner-v"></div>
-</div>
-
 <!--
-	<div class="vertical-element-container ui-corner-all">
-	<div class="vertical-element-image-container">
-		<img src="test_store/car_[:race.data.0.rd_car.id].jpg?t=[:eval TIMESTAMP(0.id)]" alt="" border="0" width="450" height="244" class="vertical-element-car-image ui-corner-top" />
-	</div>
-	<div class="vertical-element-info-about">
-		<div>Manufacturer:&nbsp;<b>[:race.data.0.rd_car.manufacturer_name]</b></div>
-		<div>Model:&nbsp;<b>[:race.data.0.rd_car.name]</b></div>
-		<div>Year:&nbsp;<b>[:race.data.0.rd_car.year]</b></div>
-		<div>Level:&nbsp;<b>[:race.data.0.rd_car.level]</b></div>
-	</div>
-	<div class="vertical-element-info-data-box-container">
-		<div class="vertical-element-info-data-box">
-			<div class="vertical-element-info-data-name">Top speed <span>[:race.data.0.rd_car.top_speed]</span> km/h</div>
-			<div class="progress-bar-box-small ui-corner-all-2px">
-				<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((0.top_speed/100)*100)]%"></div>
-			</div>
+	<div class="race-speedometer-element-container">
+		<div class="speedometer-left">
+			<img src="images/speedometer_pointer.png" id="speedometer-pointer-left" class="speedometer_pointer">
+			<div id="digital-speedometer-left" class="digital-speedometer">0</div>
 		</div>
-		<div class="vertical-element-info-data-box">
-			<div class="vertical-element-info-data-name">Acceleration <span>[:race.data.0.rd_car.acceleration]</span> s</div>
-			<div class="progress-bar-box-small ui-corner-all-2px">
-				<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((0.acceleration/100)*100)]%"></div>
-			</div>
+		<div class="speedometer-right">
+			<img src="images/speedometer_pointer.png" id="speedometer-pointer-right" class="speedometer_pointer">
+			<div id="digital-speedometer-right" class="digital-speedometer">0</div>
 		</div>
-		<div class="vertical-element-info-data-box">
-			<div class="vertical-element-info-data-name">Braking <span>[:race.data.0.rd_car.braking]</span></div>
-			<div class="progress-bar-box-small ui-corner-all-2px">
-				<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((0.braking/100)*100)]%"></div>
-			</div>
-		</div>
-		<div class="vertical-element-info-data-box">
-			<div class="vertical-element-info-data-name">Handling <span>[:race.data.0.rd_car.handling]</span></div>
-			<div class="progress-bar-box-small ui-corner-all-2px">
-				<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((0.handling/100)*100)]%"></div>
-			</div>
-		</div>
-		<div class="vertical-element-info-data-box">
-			<div class="vertical-element-info-data-name">Weight <span>[:race.data.0.rd_car.weight]</span> kg</div>
-			<div class="progress-bar-box-small ui-corner-all-2px">
-				<div class="progress-bar-small ui-corner-all-2px" style="width:[:eval ((0.weight/100)*100)]%"></div>
-			</div>
-		</div>
-		<div class="small-element-info-data-box">
-			<div class="small-element-info-data-name">Used <span>[:eval floor(0.wear/1000)]</span> %</div>
-			<div class="progress-bar-box-small ui-corner-all-2px">
-				<div class="progress-bar-small progress-bar-info-used240 ui-corner-all-2px" style="width:[:eval floor(0.wear/1000)]%"></div>
-			</div>
-		</div>
-	</div>
-	<div class="crearfix"></div>
-</div>
+	<div>
 -->
+</div>

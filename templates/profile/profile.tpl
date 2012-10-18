@@ -1,5 +1,7 @@
 <div class="profile-box" mtitle="Profile">
-	<div class="profile-note">You have not used the <b>[:skill_unused]</b> skill points!!!</div>
+	[:when (skill_unused > 0)]{
+		<div class="profile-note">You have not used the <b>[:skill_unused]</b> skill points!!!</div>
+	}
 	<div class="profile-element">
 		<div class="profile-skill-name">Acceleration:</div> 
 		<div class="profile-skill-count">[:skill_acceleration]</div>
