@@ -95,11 +95,11 @@ serveImage e h = do
     liftIO $ print "detected type"
     liftIO $ print mt 
     when (not $ anyAllowed mt at) $ e $ "wrong mimetype" ++ (show mt)
-    modifyResponse (\r -> addHeader "Cache-Control" "must-revalidate" r)
+    modifyResponse (\r -> addHeader "Cache-Control" "max-age=0, must-revalidate" r)
     r <- getResponse 
     let s = getHeader "If-None-Match" r  
     case s of 
-        Nothing -> serveFile' sd fp 
+        Nothing -> serveFile' sd fp *> modifyResponse (\r -> addHeader "Cache-Control" "max-age=0, must-revalidate" r)
         Just e -> do 
                 etag <- liftIO $ C.pack <$> getEtag (joinPath [sd,fp])
                 if (etag == e) then modifyResponse (\r -> setResponseStatus 304 "Not Modified" $ r)
