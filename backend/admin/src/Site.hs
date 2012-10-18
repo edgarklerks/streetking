@@ -40,11 +40,11 @@ import qualified Model.City as CIT
 import qualified Model.Continent as CON 
 import qualified Model.Config as CO  
 import qualified Model.Garage as G 
-import qualified Model.Notifications as NT 
+import qualified Model.Notification as NT 
 import qualified Model.Personnel as P
 import qualified Model.PersonnelInstance as PI
 import qualified Model.ParameterTable as PT 
-import qualified Model.Notifications as NN 
+import qualified Model.Notification as NN 
 import           Snap.Util.FileServe
 import           Text.Templating.Heist 
 import           SqlTransactionSnaplet hiding (runDb)

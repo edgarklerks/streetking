@@ -2059,7 +2059,7 @@ tournamentReport = do
                         "id" +== "id" +&&
                         "created" +>= "created-min" +&&
                         "created" +<= "created-max" +&&
-                        "account" +==| (toSql uid)
+                        "account_id" +==| (toSql uid)
                     )
             rs <- runDb $ search xs od l o :: Application [TRP.TournamentReport] 
             writeMapables rs
