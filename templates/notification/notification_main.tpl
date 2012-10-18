@@ -1,0 +1,1 @@
+<div id="notification_list" mtitle="Notification">No new notification</div>
