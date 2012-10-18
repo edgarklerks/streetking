@@ -321,7 +321,7 @@ testCreateTournament = do
                         T.track_id = 1,
                         T.players = 4, 
                         T.name = nm,
-                        T.image = ""
+                        T.image = "http://www.hallomall.com/media/catalog/product/cache/1/thumbnail/50x/9df78eab33525d08d6e5fb8d27136e95/j/u/justin_bieber_face_mask.jpg"
                 })
         c <- ask 
         runTest $ TestList [TestLabel "tournament exist" $ tournamentExist c nm ,
