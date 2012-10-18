@@ -16,12 +16,4 @@
 			<div id="track-info-refresh-race"></div>
 		</div>
 	</div>
-	<div class="dialog-corner dialog-corner-tl dialog-corner-h"></div>
-	<div class="dialog-corner dialog-corner-tl dialog-corner-v"></div>
-	<div class="dialog-corner dialog-corner-tr dialog-corner-h"></div>
-	<div class="dialog-corner dialog-corner-tr dialog-corner-v"></div>
-	<div class="dialog-corner dialog-corner-bl dialog-corner-h"></div>
-	<div class="dialog-corner dialog-corner-bl dialog-corner-v"></div>
-	<div class="dialog-corner dialog-corner-br dialog-corner-h"></div>
-	<div class="dialog-corner dialog-corner-br dialog-corner-v"></div>
 </div>
