@@ -1,4 +1,4 @@
-<form name="register" action="User/register" method="post" title="Sign up">
+<form name="register" action="User/register" method="post" mtitle="Sign up">
 	<div class="error">&nbsp;</div>
 	<div class="ui-input-box"><label class="ui-input-label">email:</label><input type="text" name="email" value="" class="ui-input-text ui-corner-all-2px"/></div>
 	<div class="clearfix"></div>
