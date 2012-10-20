@@ -1,14 +1,18 @@
-<div style="padding:5px 0 5px 0; border-bottom: 1px dotted #f00;" >
-	<div style="text-align:left;">
-		<b>title:</b> [:title] 
-		[:when (read == false)] { <span style="color:#f00;font-size:8px;">new</span> }
-<!--		<div><b>time:</b> [:eval TIMESTAMPTODATE(sendat)]</div> -->
-		<div><b>time:</b> [:timeAgo]</div>
+<div class="notification-element-box">
+	<div class="notification-element-icon-box backgound-blue">
+		<div class="notification-element-icon sk-icons-info">&nbsp;</div>
 	</div>
-	<div style="text-align:right;">
-<!--		[:data]	<b>message:</b> [:message] -->
-		<a href="#User/notificationSearch?id=[:id]" class="button" module="SHOW_NOTIFICATION">Show</a> 
-		[:when (read == false)] {<a href="#User/notificationRead?id=[:id]" class="button" module="READ_NOTIFICATION">Mark as read</a> }
-		<a href="#User/archiveNotification?id=[:id]" class="button" module="DELETE_NOTIFICATION">delete</a>
+	<div class="notification-element-info-container">
+		<div class="notification-element-info-box">
+			<div class="notification-element-title">[:title]</div>
+			<div class="notification-element-time">[:timeAgo]</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="notification-element-buttons-box">
+			<a href="#User/notificationSearch?id=[:id]" class="button" module="SHOW_NOTIFICATION">Show</a> 
+			[:when (read == false)] {<a href="#User/notificationRead?id=[:id]" class="button" module="READ_NOTIFICATION">Mark as read</a> }
+			<a href="#User/archiveNotification?id=[:id]" class="button" module="DELETE_NOTIFICATION">delete</a>
+		</div>
 	</div>
+	<div class="clearfix"></div>
 </div>
