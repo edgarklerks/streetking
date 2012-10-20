@@ -12,7 +12,8 @@
 			<div class="notification-element-buttons-box">
 				<a href="#User/notificationSearch?id=[:id]" class="button" module="SHOW_NOTIFICATION">Show</a> 
 				[:when (read == false)] {<a href="#User/notificationRead?id=[:id]" class="button" module="READ_NOTIFICATION">Mark as read</a> }
-				<a href="#User/archiveNotification?id=[:id]" class="button" module="DELETE_NOTIFICATION">delete</a>
+				<a href="#User/archiveNotification?id=[:id]" class="button confirm-box" module="DELETE_NOTIFICATION" mtitle="Delete notification" message="Are you sure you want to delete this notofication?">delete</a>
+
 			</div>
 		</div>
 		<div class="clearfix"></div>
