@@ -89,16 +89,4 @@
 		</div>
 		<div class="clearfix"></div>
 	}
-<!--
-	<div class="race-speedometer-element-container">
-		<div class="speedometer-left">
-			<img src="images/speedometer_pointer.png" id="speedometer-pointer-left" class="speedometer_pointer">
-			<div id="digital-speedometer-left" class="digital-speedometer">0</div>
-		</div>
-		<div class="speedometer-right">
-			<img src="images/speedometer_pointer.png" id="speedometer-pointer-right" class="speedometer_pointer">
-			<div id="digital-speedometer-right" class="digital-speedometer">0</div>
-		</div>
-	<div>
--->
 </div>

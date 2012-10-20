@@ -1,1 +1,3 @@
-<div id="notification_list" mtitle="Notification">No new notification</div>
+<div class="inner-scroll-box notification-container" mtitle="Notification">
+	<div id="notification_list">No new notification</div>
+</div>
