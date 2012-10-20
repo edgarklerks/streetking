@@ -3,8 +3,7 @@
 	<div><b>message:</b> [:message]  </div>
 	<div class="buttons-panel">
 		<a href="#User/notification" class="button" module="RELOAD_NOTIFICATION">close</a>
-<!--		<a href="#User/notification" class="button" module="SHOW_NOTIFICATIONS">close</a>-->
-		<a href="#User/notificationDelete?id=[:id]" class="button" module="DELETE_NOTIFICATION">delete</a>
+		<a href="#User/archiveNotification?id=[:id]" class="button confirm-box" module="DELETE_NOTIFICATION" mtitle="Delete notification" message="Are you sure you want to delete this notofication?">delete</a>
 	</div>
 	<div class="clearfix"></div>
 </div>
