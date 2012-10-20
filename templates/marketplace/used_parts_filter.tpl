@@ -1,4 +1,4 @@
-<div class="filter-box" title="Filtering">
+<div class="filter-box" mtitle="Filtering">
 	<form id="marketplace-filter-form">
 		<input type="hidden" name="me" id="me" value="[:requestParams.me]"/>
 		<div class="filter-title-box filter-title-box-by-level">
