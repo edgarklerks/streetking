@@ -1,3 +1,3 @@
-<div class="ui-corner-all" title="Mission">
+<div class="ui-corner-all" mtitle="Mission">
 	<div>Coming soon</div>
 </div>

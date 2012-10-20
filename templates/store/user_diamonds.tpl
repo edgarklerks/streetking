@@ -1,4 +1,4 @@
-<form name="login" action="User/login" method="post" title="Do it now">
+<form name="login" action="User/login" method="post" mtitle="Do it now">
 	<div class="error">&nbsp;</div>
 	<div>Some text as you want to use their diamonds</div>
 	<div class="buttons-panel">
