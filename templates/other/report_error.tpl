@@ -1,8 +1,8 @@
-<form id="report" name="report" action="Support/send" method="post" title="Report about error">
+<form id="report" name="report" action="Support/send" method="post" mtitle="Report about error">
 	<div class="error">&nbsp;</div>
 	<div class="ui-input-box">
-		<label class="ui-input-label">message:</label>
-		<textarea name="message"></textarea>
+		<label class="ui-input-label label-width100">Your message:</label>
+		<textarea name="message" rows="8" class="ui-input-textarea ui-corner-all-2px ui-textarea-width260"></textarea>
 	</div>
 	<div class="clearfix"></div>
 	<div class="buttons-panel">
