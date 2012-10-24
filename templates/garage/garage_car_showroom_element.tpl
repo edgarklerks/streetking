@@ -1,3 +1,5 @@
+<div class="garage-active-car-container" style="background-image:url([:eval IMAGESERVER("[\"user_car\",\"1290\",\"car\"]")])">active car</div>
+
 <!--
 <div class="car-showroom-element-box" car_id="[:id]">
 	<div class="car-showroom-element-info-box">
