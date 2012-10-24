@@ -1,3 +1,4 @@
+<!--
 <div class="car-showroom-element-box" car_id="[:id]">
 	<div class="car-showroom-element-info-box">
 		<div class="car-showroom-element-info-container">
@@ -71,3 +72,4 @@
 		</div>
 	</div>
 </div>
+-->
