@@ -60,11 +60,11 @@
 			</div>
 			<div class="garage-car-showroom-element-action-button-container garage-part-element-buttons-container button-box-wider">
 				[:when ((wear > 0 ) & (active == false))]{
-					[:when (wear > 0 )]{<a href="#Garage/car?car_instance_id=[:id]" class="button cmd-repair width-47p" module="GARAGE_TASK">repair<div>&nbsp;</div></a>}
+					[:when (wear > 0 )]{<a href="#Garage/car?car_instance_id=[:id]" class="button float-left cmd-repair width-47p" module="GARAGE_TASK">repair<div>&nbsp;</div></a>}
 					[:when (active == false)]{<a href="#Garage/car?car_instance_id=[:id]" class="button float-right width-47p" module="GARAGE_CAR_SELL">sell<div>&nbsp;</div></a>}
 				}
 				[:when ((wear > 0 ) & (active == true))]{
-					<a href="#Garage/car?car_instance_id=[:id]" class="button cmd-repair width-100p" module="GARAGE_TASK">repair<div>&nbsp;</div></a>
+					<a href="#Garage/car?car_instance_id=[:id]" class="button cmd-repair width-100p no-icon" module="GARAGE_TASK">repair<div>&nbsp;</div></a>
 				}
 				[:when ((wear < 1 ) & (active == false))]{
 					<a href="#Garage/car?car_instance_id=[:id]" class="button width-100p" module="GARAGE_CAR_SELL">sell<div>&nbsp;</div></a>
