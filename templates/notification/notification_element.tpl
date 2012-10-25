@@ -1,7 +1,7 @@
 <div class="notification-element-container">
 	<div class="notification-element-box">
 		<div class="notification-element-icon-box backgound-blue">
-			<div class="notification-element-icon sk-icons-info">&nbsp;</div>
+			<div class="notification-element-icon sk-icons sk-icons-[:type]">&nbsp;</div>
 		</div>
 		<div class="notification-element-info-container">
 			<div class="notification-element-info-box">
