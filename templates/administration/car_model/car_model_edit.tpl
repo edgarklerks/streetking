@@ -1,4 +1,4 @@
-<div style="float:left">
+﻿<div style="float:left">
 	<form id="edit_form" action="car_model/put" method="post">
 		<div class="error">&nbsp;</div>
 		<input type="hidden" name="id" value="[:0.id]"/>
