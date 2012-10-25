@@ -51,20 +51,28 @@
 				</div>
 			</div>
 		</div>
-		<div class="garage-car-showroom-element-buttons-box button-box-wider">
-			<div class="garage-car-showroom-element-button-active button-box-nowider">
+		<div class="garage-car-showroom-element-buttons-box">
+			<div class="garage-car-showroom-element-active-button-container">
 				[:when (active == false)]{
-					[:when (ready == true)]{<a href="#Car/activate?id=[:id]" class="car-button" module="GARAGE_CAR_SET_ACTIVE">set active</a>}
-					[:when (ready == false)]{<a href="#Garage/carReady?id=[:id]" class="car-button" module="GARAGE_CAR_SET_ACTIVE_FAIL">set active</a>}
+					[:when (ready == true)]{<a href="#Car/activate?id=[:id]" class="button width-100p" module="GARAGE_CAR_SET_ACTIVE">set active</a>}
+					[:when (ready == false)]{<a href="#Garage/carReady?id=[:id]" class="button width-100p" module="GARAGE_CAR_SET_ACTIVE_FAIL">set active</a>}
 				}
 			</div>
-			<div class="garage-car-showroom-element-button-action">
-				[:when (wear > 0 )]{<a href="#Garage/car?car_instance_id=[:id]" class="car-button cmd-repair [:when (wear > 0 & (active == false))]{cmd-width48}[:when (wear > 0 & (active == true))]{cmd-width100}" module="GARAGE_TASK">repair<div>&nbsp;</div></a>}
-				[:when (active == false)]{<a href="#Garage/car?car_instance_id=[:id]" class="car-button [:when (wear > 0 & (active == false))]{cmd-width48}[:when (wear < 1 & (active == false))]{cmd-width100}" module="GARAGE_CAR_SELL">sell<div>&nbsp;</div></a>}
+			<div class="garage-car-showroom-element-action-button-container garage-part-element-buttons-container button-box-wider">
+				[:when ((wear > 0 ) & (active == false))]{
+					[:when (wear > 0 )]{<a href="#Garage/car?car_instance_id=[:id]" class="button cmd-repair width-47p" module="GARAGE_TASK">repair<div>&nbsp;</div></a>}
+					[:when (active == false)]{<a href="#Garage/car?car_instance_id=[:id]" class="button float-right width-47p" module="GARAGE_CAR_SELL">sell<div>&nbsp;</div></a>}
+				}
+				[:when ((wear > 0 ) & (active == true))]{
+					<a href="#Garage/car?car_instance_id=[:id]" class="button cmd-repair width-100p" module="GARAGE_TASK">repair<div>&nbsp;</div></a>
+				}
+				[:when ((wear < 1 ) & (active == false))]{
+					<a href="#Garage/car?car_instance_id=[:id]" class="button width-100p" module="GARAGE_CAR_SELL">sell<div>&nbsp;</div></a>
+				}
 			</div>
-			<div class="garage-car-showroom-element-button-info button-box-nowider">
-				<a href="#Garage/car?car_instance_id=[:id]&car_id=[:car_id]" class="car-button setup-button" module="GARAGE_CAR_SETUP">set up</a>
-				<a href="#Garage/car?car_instance_id=[:id]" class="car-button carinfo-button" module="GARAGE_CAR_INFO">info</a>
+			<div class="garage-car-showroom-element-info-button-container">
+				<a href="#Garage/car?car_instance_id=[:id]&car_id=[:car_id]" class="button width-47p" module="GARAGE_CAR_SETUP">set up</a>
+				<a href="#Garage/car?car_instance_id=[:id]" class="button float-right width-47p" module="GARAGE_CAR_INFO">info</a>
 			</div>
 		</div>
 		<div class="dialog-corner dialog-corner-tl dialog-corner-h"></div>
