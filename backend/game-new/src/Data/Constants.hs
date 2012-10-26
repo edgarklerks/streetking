@@ -22,18 +22,19 @@ constants = p [
 
         ("g", 9.81),                        -- gravitational acceleration
         ("kmh", 1 / 3.6),                   -- km/h per m/s
+        ("e", 2.7182818284),                -- Euler's number (base of the natural logarithm) 
 
         ("rhoV", -0.004351),                -- air density variation per K around 273K
         ("rho0", 1.2922),                   -- air density at 273K
 
-        ("p0", 10**(-10)),                   -- car power hp base
-        ("pR", 500),                        -- car power hp range
+        ("p0", 50),                         -- car power hp base
+        ("pR", 450),                        -- car power hp range
 
         ("mu0", 0.75),                      -- car traction coefficient base
         ("muR", 0.75),                      -- car traction coefficient range
 
-        ("cda0", 0.75),                     -- inverse car drag coefficient base
-        ("cdaR", -0.5),                     -- inverse car drag coefficient range
+        ("cda0", 0.75),                     -- drag coefficient base
+        ("cdaR", -0.5),                     -- drag coefficient range
 
         ("df0", 0),                         -- car downforce base
         ("dfR", 3),                         -- car downforce range
@@ -41,8 +42,11 @@ constants = p [
         ("he0", 0.5),                       -- car handling multiplier base
         ("heR", 0.5),                       -- car handling multiplier range
 
-        ("bf0", 7000),                      -- car braking force base
-        ("bfR", 21000)                      -- car braking force range
+--        ("bf0", 7000),                      -- car braking force base -- TODO: eliminate
+--        ("bfR", 21000),                     -- car braking force range -- TODO: eliminate
+
+        ("bp0", 0.5),                       -- car braking percentage of max traction 
+        ("bpR", 0.5)                        -- car braking percentage of force base
      ]
 
 constant :: String -> Double
