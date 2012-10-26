@@ -5,5 +5,8 @@
 		<div class="award-list-container-inner" id="award-list-container"></div>
 	</div>
 	<form name="register" action="User/register123" method="post">
+		<div class="award-element-buttons-box">
+			<a href="#" class="button" module="SHARE_ON_FACEBOOK">share</a>
+		</div>
 	</form>
 </div>
