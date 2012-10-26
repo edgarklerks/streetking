@@ -26,7 +26,7 @@
 	</div>
 	<div class="user-info-box-diamond">
 		<div class="user-info-label">Diamonds</div>
-		<div class="user-info-data-box-diamond header-icons header-icons-diamond"><span class="user-info-data-box">[:diamonds]</span></div>
+		<div class="user-info-data-box-diamond header-icons header-icons-diamond cursor-pointer" module="MARKETPLACE"><span class="user-info-data-box">[:diamonds]</span></div>
 	</div>
 	<div class="clearfix"></div>
 </div>
