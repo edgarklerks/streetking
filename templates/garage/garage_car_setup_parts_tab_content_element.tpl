@@ -49,7 +49,7 @@
 		<div class="clearfix"></div>
 	</div>
 	<div class="garage-car-setup-part-element-button-box button-box-wider">
-		<a href="#Garage/addPart?part_instance_id=[:part_instance_id]&car_instance_id=[:requestParams.car_instance_id]" changePart="[:part_type_id]" class="button setup-part-button" module="GARAGE_CAR_PART_ADD">add<div>&nbsp;</div></a>
+		[:when (floor(wear/1000) < 100)]{<a href="#Garage/addPart?part_instance_id=[:part_instance_id]&car_instance_id=[:requestParams.car_instance_id]" changePart="[:part_type_id]" class="button setup-part-button" module="GARAGE_CAR_PART_ADD">add<div>&nbsp;</div></a>}
 		[:when (unique == false)]{<a href="#Personnel/task?subject_id=[:part_instance_id]&task=improve_part" class="button setup-part-button cmd-improve" module="GARAGE_TASK">improve<div>&nbsp;</div></a>}
 		[:when (wear > 0)]{<a href="#Personnel/task?subject_id=[:part_instance_id]&task=repair_part" class="button setup-part-button cmd-repair" module="GARAGE_TASK">repair<div>&nbsp;</div></a>}
 	</div>
