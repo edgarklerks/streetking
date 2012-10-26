@@ -199,6 +199,9 @@ kfold :: (InKey -> InRule -> b -> b) -> InRule -> b -> b
 kfold f x z = pfold f' x z 
     where f' k x z = f (copoint (k :: IdentityMonoid InKey)) x z 
 
+
+
+        
 -- | Find top level matching keyword 
 (.>) :: InRule -> String -> Maybe InRule
 (.>) (InObject xs) lbl = Map.lookup lbl xs
