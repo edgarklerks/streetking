@@ -12,7 +12,7 @@
 				<div class="report-element-vertical-line"></div>
 				<div class="report-element-infobar-container">
 					<div><a href="#Tournament/idk?tournament_id=[:tournament_id]" class="button" module="TOURNAMENT_GO_RESULT">more</a></div>
-					<div><a href="#Tournament/idk?tournament_id=[:tournament_id]" class="button" module="AAA">welcome</a></div>
+					<div><a href="#Tournament/idk?tournament_id=[:tournament_id]" class="button" module="WELCOME_SCREEN">welcome</a></div>
 				</div>
 				<div class="clearfix"></div>
 			</div>
