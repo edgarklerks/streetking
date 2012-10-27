@@ -16,7 +16,7 @@ module Data.Racing where {-- (
 
 import Data.Constants
 import Data.Car
-import Data.Driver
+import qualified Data.Driver as D
 import Data.Environment
 import Data.Track
 import Data.Section
@@ -157,7 +157,7 @@ $(genMapableRecord "RaceData"
 type RaceDatas = [RaceData]
 
 runRaceWithParticipant :: RaceParticipant -> Track -> Environment -> RaceResult 
-runRaceWithParticipant p t e = raceResult2FE $ runRace t (accountDriver $ rp_account p) (carInGarageCar $ rp_car p) e
+runRaceWithParticipant p t e = raceResult2FE $ runRace t (D.accountDriver $ rp_account p) (carInGarageCar $ rp_car p) e
 
 raceData :: RaceParticipant -> RaceResult -> RaceData
 raceData p r = RaceData (rp_account_min p) (rp_car_min p) r
@@ -201,8 +201,8 @@ track4 = Track 0 [Section 0 Nothing 700]
 
 -- run a path using driver skills. path is a double 0 - 1 indicating the quality of the traveled path.
 -- from this and the section properties, the effective radius and path length are calculated.
-path :: Driver -> Path
-path d =  skillIntelligence d 
+path :: D.Driver -> Path
+path d =  D.intelligence d 
 
 -- "correct" a section, i.e. take into account the path and modify the angle, arclength and radius accordingly
 pathSection :: Section -> Path -> Section
@@ -244,14 +244,14 @@ sectionPathLength s p = case (radius s) of
         Just rp -> rp * (fromJust $ sectionPathAngle s p)
 
 -- calculate maximum speed in a section
-topSpeed :: Section -> Driver -> Car -> Environment -> Speed
+topSpeed :: Section -> D.Driver -> Car -> Environment -> Speed
 topSpeed s d c e = case (radius s) of
     Nothing -> lightSpeed
     Just r -> corneringSpeed c e r -- TODO: account for driver handling skill
 
 data RaceConfig = RC {
         track :: Track,
-        driver :: Driver,
+        driver :: D.Driver,
         car :: Car,
         env :: Environment
     }
@@ -278,7 +278,7 @@ raceM = do
 --}
  
 -- for a driver, car and environment, given a list of sections, make a list of section results
-runRace :: Track -> Driver -> Car -> Environment -> RaceResult
+runRace :: Track -> D.Driver -> Car -> Environment -> RaceResult
 runRace (Track i ss) d c e = res $ runRace' ss' d c e
     where
         ss' :: [(Section, Path, Speed)] -- each section with a path and the exit speed limit (i.e., the max speed in the next section). the last section effectively has no exit speed limit.
@@ -296,7 +296,7 @@ runRace (Track i ss) d c e = res $ runRace' ss' d c e
                 vf = sectionSpeedOut $ last rs
        
 -- (section, path, speed): for each section, the path has been determined. the speed is the maximum entry speed for the next section.
-runRace' :: [(Section, Path, Speed)] -> Driver -> Car -> Environment -> [SectionResult]
+runRace' :: [(Section, Path, Speed)] -> D.Driver -> Car -> Environment -> [SectionResult]
 runRace' sps d c e = {-# SCC runRace' #-} fst $ L.foldr (\x z -> {-# SCC innerLoop #-} step z x) ([], 0) sps
     where
         step :: ([SectionResult], Speed) -> (Section, Path, Speed) -> ([SectionResult], Speed)
@@ -308,7 +308,7 @@ runRace' sps d c e = {-# SCC runRace' #-} fst $ L.foldr (\x z -> {-# SCC innerLo
 data IState = IState !Time' !Length !Speed !Speed !Bool !Integer
 
 -- runSection: integrate over section 
-runSection :: Section -> Path -> Speed -> Speed -> Driver -> Car -> Environment -> SectionResult
+runSection :: Section -> Path -> Speed -> Speed -> D.Driver -> Car -> Environment -> SectionResult
 runSection s@(Section i _ _) p vin vnext d c e = {-# SCC procEntry #-} proc $ IState 0 0 vin vin False 0
     where
         s' = pathSection s p
@@ -363,13 +363,15 @@ accelerationTime c e v = (v^2 * m / p + p / (m * mu^2 * g^2)) / 2
         g = constant "g"
 
 -- maximum braking force that can be applied is lower value of braking force and maximum force applied through tyres
+-- NOTE: braking parameter meaning changed to precentage of traction force available for braking 
 brakingForce :: Car -> Environment -> Double
-brakingForce c e = min (brf c) (mu * m * g) 
+brakingForce c e = (brp c) * mu * m * g
+    -- min (brf c) (mu * m * g) 
     where
         m = mass c
         mu = (tco c) * (mtraction e)
         g = constant "g"
- 
+
 -- minimum distance traveled before car can be stopped from v (m/s)
 stoppingDistance :: Car -> Environment -> Double -> Double
 stoppingDistance c e v = m * v^2 / (2 * b)
