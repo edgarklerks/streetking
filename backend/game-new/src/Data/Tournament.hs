@@ -55,7 +55,10 @@ import qualified Model.TrackDetails as TD
 import qualified Model.TrackMaster as TT
 import qualified Model.Report as RP 
 import qualified Model.RaceReward as RWD
-import           Data.Racing
+--import           Data.Racing
+import           Data.RacingNew
+import           Data.RaceParticipant
+import           Data.RaceReward
 import qualified Data.Task as Task
 import           Data.Track
 import           Data.Environment

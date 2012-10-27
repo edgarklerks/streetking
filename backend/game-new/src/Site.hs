@@ -126,6 +126,8 @@ import           Data.Environment
 --import           Data.Racing
 import           Data.RacingNew
 import           Data.CarDerivedParameters
+import           Data.RaceReward
+import           Data.RaceParticipant
 import           Data.Section
 import           Data.Track
 import           Data.Driver

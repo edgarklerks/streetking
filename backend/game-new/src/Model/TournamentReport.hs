@@ -11,7 +11,8 @@ import qualified Data.Aeson as AS
 import           Data.InRules
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as B
-import           Data.Racing 
+--import           Data.Racing 
+import Data.RaceReward
 
 import qualified Data.HashMap.Strict as HM
 import           Control.Applicative

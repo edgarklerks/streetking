@@ -20,7 +20,8 @@ import Data.Aeson.Types
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 
-import Data.Racing
+--import Data.Racing
+import Data.RacingNew
 
 import Data.Maybe
 
@@ -32,7 +33,7 @@ $(genAll "RaceDetails" "race_details" [
                     ("end_time", ''Integer),
                     ("time_left", ''Integer),
                     ("type", ''String),
-                    ("data", ''RaceDatas)
+                    ("data", ''RaceDataList)
     ])
 
 

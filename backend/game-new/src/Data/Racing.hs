@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings, ViewPatterns, FlexibleContexts, BangPatterns #-}
 
-module Data.Racing where {-- (
+module Data.Racing () where {-- (
         runRaceWithParticipant,
         RaceParticipant(..),
         RaceDatas,
