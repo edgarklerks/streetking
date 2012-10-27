@@ -6,15 +6,19 @@ module Data.RacingNew (
         SectionResult (..),
         RaceConfig (..),
         SectionConfig (..),
+        RaceData (..),
+        RaceDataList,
         RaceM,
         SectionM,
         sectionConfig,
         runSectionM,
         runRaceM,
         raceWithParticipant,
+        runRaceWithParticipant,
         race,
 
-        accelerationTime,
+        raceData,
+       accelerationTime,
         brakingDistance,
         lateralAcceleration
     ) where
@@ -103,48 +107,48 @@ type MDouble = Maybe Double
 $(genMapableRecord "SectionResult" [
 
         -- section data
-        ("section_id", ''Integer),
+        ("sectionId", ''Integer),
        
         -- performance data
         ("performance", ''P.RaceSectionPerformance),
         
         -- effective path: original section modified by intelligence performance
-        ("effective_radius", ''MDouble),
-        ("effective_arclength", ''Double),
+        ("effectiveRadius", ''MDouble),
+        ("effectiveArclength", ''Double),
         
         -- distance in section phases
-        ("length_acceleration_phase", ''Double),
-        ("length_braking_phase", ''Double),
-        ("length_constant_phase", ''Double),
-        ("length_section", ''Double),
+        ("lengthAccelerationPhase", ''Double),
+        ("lengthBrakingPhase", ''Double),
+        ("lengthConstantPhase", ''Double),
+        ("sectionLength", ''Double),
 
         -- time spent in section phases
-        ("time_acceleration_phase", ''Double),
-        ("time_braking_phase", ''Double),
-        ("time_constant_phase", ''Double),
-        ("time_section", ''Double),
+        ("timeAccelerationPhase", ''Double),
+        ("timeBrakingPhase", ''Double),
+        ("timeConstantPhase", ''Double),
+        ("sectionTime", ''Double),
 
         -- speed data
-        ("speed_entry", ''Double),
-        ("speed_exit", ''Double),
-        ("speed_cap", ''Double),
-        ("speed_top", ''Double),
-        ("speed_avg", ''Double)
+        ("sectionSpeedIn", ''Double),
+        ("sectionSpeedOut", ''Double),
+        ("sectionSpeedCap", ''Double),
+        ("sectionSpeedMax", ''Double),
+        ("sectionSpeedAvg", ''Double)
     ])
 
 type SectionResultList = [SectionResult]
 
 $(genMapableRecord "RaceResult" [
-        ("track_id", ''Integer),
-        ("race_time", ''Double),
-        ("race_speed_top", ''Double),
-        ("race_speed_finish", ''Double),
-        ("race_speed_avg", ''Double),
-        ("sections", ''SectionResultList)
+        ("trackId", ''Integer),
+        ("raceTime", ''Double),
+        ("raceSpeedTop", ''Double),
+        ("raceSpeedFin", ''Double),
+        ("raceSpeedAvg", ''Double),
+        ("sectionResults", ''SectionResultList)
    ])
 
 instance Ord RaceResult where 
-        compare (race_time -> x) (race_time -> y) = compare x y 
+        compare (raceTime -> x) (raceTime -> y) = compare x y 
 
 type RaceResultList = [RaceResult] 
 
@@ -153,16 +157,26 @@ raceResult tid [] = RaceResult tid 0 0 0 0 []
 raceResult tid rs = RaceResult tid tme spk sfn sag rs
         where
             mrs f = L.map f rs
-            tme = L.sum $ mrs time_section 
-            spk = L.maximum $ mrs speed_top
-            sag = (L.sum $ mrs effective_arclength) / tme 
-            sfn = speed_exit $ L.last rs
+            tme = L.sum $ mrs sectionTime
+            spk = L.maximum $ mrs sectionSpeedMax
+            sag = (L.sum $ mrs effectiveArclength) / tme 
+            sfn = sectionSpeedOut $ L.last rs
+
+$(genMapableRecord "RaceData" [
+            ("rd_user", ''APM.AccountProfileMin),
+            ("rd_car", ''CMI.CarMinimal),
+            ("rd_result", ''RaceResult)
+       ])
+
+
+
+type RaceDataList = [RaceData]
 
 -- generate race configuration from a given RaceParticipant, a Track and a random seed
 raceConfigWithParticipant :: RP.RaceParticipant -> T.Track -> RaceConfig
 raceConfigWithParticipant p t = RaceConfig {
-        driver = D.accountDriver $ RP.account p,
-        car = C.carInGarageCar $ RP.car p,
+        driver = D.accountDriver $ RP.rp_account p,
+        car = C.carInGarageCar $ RP.rp_car p,
         environment = E.defaultEnvironment,
         track = t
     }
@@ -178,41 +192,39 @@ raceWithParticipant p t g = race (raceConfigWithParticipant p t) g
 
 {-
  - Compatibility
- - }
+ -}
 
-$(genMapableRecord "RaceData"
-    [
-            ("rd_user", ''APM.AccountProfileMin),
-            ("rd_car", ''CMI.CarMinimal),
-            ("rd_result", ''RaceResult)
---            ("rd_rewards", ''RaceRewards)
-       ])
 
-type RaceDatas = [RaceData]
+raceData :: RP.RaceParticipant -> RaceResult -> RaceData
+raceData p r = RaceData {
+                rd_user = RP.rp_account_min p,
+                rd_car = RP.rp_car_min p,
+                rd_result = r
+            }
 
 runRaceWithParticipant :: RP.RaceParticipant -> T.Track -> E.Environment -> RaceResult 
 runRaceWithParticipant p t e = case raceWithParticipant p t (mkStdGen 0) of
         Left err -> undefined
-        Right res -> RaceData (rp_account_min p) (rp_car_min p) $ raceResult2FE r
- 
+        Right res -> raceResult2FE res
+
 -- convert to front-end units (km/h instead of m/s)
 raceResult2FE :: RaceResult -> RaceResult
 raceResult2FE r = r {
-        race_speed_top = ms2kmh $ race_speed_top r,
-        race_speed_finish = ms2kmh $ race_speed_finish r,
-        race_speed_avg = ms2kmh $ race_speed_avg r
+        raceSpeedTop = ms2kmh $ raceSpeedTop r,
+        raceSpeedFin = ms2kmh $ raceSpeedFin r,
+        raceSpeedAvg = ms2kmh $ raceSpeedAvg r
     }
 
 sectionResult2FE :: SectionResult -> SectionResult
 sectionResult2FE r = r {
-       speed_entry = ms2kmh $ speed_entry r, 
-       speed_exit = ms2kmh $ speed_exit r, 
-       speed_cap = ms2kmh $ speed_cap r, 
-       speed_top = ms2kmh $ speed_top r, 
-       speed_avg = ms2kmh $ speed_avg r
+       sectionSpeedIn = ms2kmh $ sectionSpeedIn r, 
+       sectionSpeedOut = ms2kmh $ sectionSpeedOut r, 
+       sectionSpeedCap = ms2kmh $ sectionSpeedCap r, 
+       sectionSpeedMax = ms2kmh $ sectionSpeedMax r, 
+       sectionSpeedAvg= ms2kmh $ sectionSpeedAvg r
     } 
 
-{ -
+{-
  - Execution
  -}
 
@@ -229,7 +241,7 @@ doRace = do
                 q <- randomPerformance
                 sectionConfig s q
         -- get maximum speed in each section and shift by one position, to get maximum speed in the next section for each section
-        vs <- forM cs $ \s -> return $ runSectionM sectionSpeedCap s 
+        vs <- forM cs $ \s -> return $ runSectionM speedCap s 
         -- run sections; each section affects the next, so a fold is implied.
         (rs, vf) <- foldM worker ([], initialSpeed) $ L.zip cs $ L.tail vs ++ [lightSpeed]
         -- generate race result
@@ -238,7 +250,7 @@ doRace = do
                 worker :: ([SectionResult], Speed) -> (SectionConfig, Speed) -> RaceM ([SectionResult], Speed)
                 worker (rs, vin) (c, vnext) = do
                     let r = runSectionM (doSection vin vnext) c
-                    return (rs ++ [r], speed_exit r)
+                    return (rs ++ [r], sectionSpeedOut r)
 
 -- generate performance given a random seed
 randomPerformance :: RaceM P.RaceSectionPerformance
@@ -358,7 +370,7 @@ sectionConfig s q = do
 -- perform section calculations
 doSection :: Speed -> Speed -> SectionM SectionResult
 doSection vin' vnext' = do
-        vcap' <- sectionSpeedCap 
+        vcap' <- speedCap 
         -- determine vin, the minimum of vin' and vcap, and note that it should be equal to vin, unless something went wrong in the last section.
         let vin = min vin' vcap'
         -- determine maximum achievable speed through acceleration across l
@@ -402,23 +414,23 @@ doSection vin' vnext' = do
         con <- ask
 
         return $ SectionResult {
-                section_id = sid,
+                sectionId = sid,
                 performance = p,
-                effective_radius = sr,
-                effective_arclength = sl,
-                length_acceleration_phase = ala,
-                length_braking_phase = bla,
-                length_constant_phase = cla,
-                length_section = tla,
-                time_acceleration_phase = ata,
-                time_braking_phase = bta,
-                time_constant_phase = cta,
-                time_section = tta,
-                speed_entry = vin,
-                speed_exit = vtgt, 
-                speed_cap = vcap',
-                speed_top = vaa,
-                speed_avg = sl / tta
+                effectiveRadius = sr,
+                effectiveArclength = sl,
+                lengthAccelerationPhase = ala,
+                lengthBrakingPhase = bla,
+                lengthConstantPhase = cla,
+                sectionLength = tla,
+                timeAccelerationPhase = ata,
+                timeBrakingPhase = bta,
+                timeConstantPhase = cta,
+                sectionTime = tta,
+                sectionSpeedIn = vin,
+                sectionSpeedOut = vtgt, 
+                sectionSpeedCap = vcap',
+                sectionSpeedMax = vaa,
+                sectionSpeedAvg = sl / tta
             } 
 
 -- TODO: correct for traction for low initial speeds
@@ -478,8 +490,8 @@ lateralAcceleration = do
         let g = constant "g"
         return $ h * mu * g / (1 - r * df / m) 
 
-sectionSpeedCap :: SectionM Double
-sectionSpeedCap = do
+speedCap :: SectionM Double
+speedCap = do
         r <- S.radius <$> asks section
         case r of
                 Nothing -> return lightSpeed
@@ -542,34 +554,34 @@ writeRC rc = do
 
 writeRR :: RaceResult -> IO ()
 writeRR rr = do
-        sho rr "track id" track_id
-        sho rr "total time" race_time
-        sho rr "top speed" race_speed_top
-        sho rr "average speed" race_speed_avg
-        sho rr "final speed" race_speed_finish
+        sho rr "track id" trackId
+        sho rr "total time" raceTime
+        sho rr "top speed" raceSpeedTop
+        sho rr "average speed" raceSpeedAvg
+        sho rr "final speed" raceSpeedFin
         putStrLn "sections:"
-        forM_ (sections rr) $ \sr -> do
+        forM_ (sectionResults rr) $ \sr -> do
                 putStrLn ""
                 writeSR sr
 
 writeSR :: SectionResult -> IO ()
 writeSR sr = do
         sho sr "performance" performance
-        sho sr "effective radius" effective_radius
-        sho sr "effective arclength" effective_arclength
-        sho sr "length accelerating" length_acceleration_phase
-        sho sr "length braking" length_braking_phase
-        sho sr "length constant" length_constant_phase
-        sho sr "length total" length_section
-        sho sr "time accelerating" time_acceleration_phase
-        sho sr "time braking" time_braking_phase
-        sho sr "time constant" time_constant_phase
-        sho sr "time total" time_section
-        sho sr "speed entry" speed_entry
-        sho sr "speed exit" speed_exit
-        sho sr "speed top" speed_top
-        sho sr "speed avg" speed_avg
-        sho sr "speed cap" speed_cap
+        sho sr "effective radius" effectiveRadius
+        sho sr "effective arclength" effectiveArclength
+        sho sr "length accelerating" lengthAccelerationPhase
+        sho sr "length braking" lengthBrakingPhase
+        sho sr "length constant" lengthConstantPhase
+        sho sr "length total" sectionLength
+        sho sr "time accelerating" timeAccelerationPhase
+        sho sr "time braking" timeBrakingPhase
+        sho sr "time constant" timeConstantPhase
+        sho sr "time total" sectionTime
+        sho sr "speed entry" sectionSpeedIn
+        sho sr "speed exit" sectionSpeedOut
+        sho sr "speed top" sectionSpeedMax
+        sho sr "speed avg" sectionSpeedAvg
+        sho sr "speed cap" sectionSpeedCap
         return ()
 
 -- account id Pancho: 70

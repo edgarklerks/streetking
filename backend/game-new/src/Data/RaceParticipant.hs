@@ -3,8 +3,8 @@
 module Data.RaceParticipant ( 
     RaceParticipant (..),
     mkRaceParticipant,
-    account_id,
-    car_id
+    rp_account_id,
+    rp_car_id
 ) where
 
 {-
@@ -32,18 +32,18 @@ import qualified Model.CarMinimal as CMI
 type MInteger = Maybe Integer
 
 $(genMapableRecord "RaceParticipant" [
-        ("account", ''A.Account),
-        ("account_min", ''APM.AccountProfileMin),
-        ("car", ''CIG.CarInGarage),
-        ("car_min", ''CMI.CarMinimal),
-        ("escrow_id", ''MInteger)
+        ("rp_account", ''A.Account),
+        ("rp_account_min", ''APM.AccountProfileMin),
+        ("rp_car", ''CIG.CarInGarage),
+        ("rp_car_min", ''CMI.CarMinimal),
+        ("rp_escrow_id", ''MInteger)
     ])
 
-account_id :: RaceParticipant -> Integer
-account_id = fromJust . A.id . account
+rp_account_id :: RaceParticipant -> Integer
+rp_account_id = fromJust . A.id . rp_account
 
-car_id :: RaceParticipant -> Integer
-car_id = fromJust . CIG.id . car
+rp_car_id :: RaceParticipant -> Integer
+rp_car_id = fromJust . CIG.id . rp_car
 
 -- TODO: remove minified screenshots from RP. add projection shortcuts for compatibility. 
 --account_min :: RaceParticipant -> APM.AccountProfileMin
