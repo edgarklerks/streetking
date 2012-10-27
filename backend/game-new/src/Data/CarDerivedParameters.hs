@@ -2,7 +2,8 @@
 
 
 module Data.CarDerivedParameters ( 
---        withDerivedParameters
+        withDerivedParameters,
+        withDerivedParametersMin
 ) where
 
 
@@ -127,6 +128,18 @@ withDerivedParameters cig = cig {
         CIG.nitrous = todbi $ derive nitrous car
     }
         where car = carInGarageCar cig
+
+withDerivedParametersMin :: CMI.CarMinimal -> CMI.CarMinimal 
+withDerivedParametersMin cig = cig {
+        CMI.acceleration = todbi $ derive acceleration car,
+        CMI.top_speed = todbi $ derive topspeed car,
+        CMI.cornering = todbi $ derive cornering car,
+        CMI.stopping = todbi $ derive stopping car,
+        CMI.nitrous = todbi $ derive nitrous car
+    }
+        where car = carMinimalCar cig
+
+
 
 derive :: R.RaceM a -> Car -> a
 derive m c = case R.runRaceM m g rc of

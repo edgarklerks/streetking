@@ -49,7 +49,9 @@ import qualified Data.Track as T
 import qualified Data.Section as S
 
 import qualified Model.Account as A
+import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
+import qualified Model.CarMinimal as CMI
 
 import Control.Monad.Error 
 
@@ -173,8 +175,47 @@ race rc g = runRaceM doRace g rc
 raceWithParticipant :: (RandomGen g) => RP.RaceParticipant -> T.Track -> g -> Either String RaceResult
 raceWithParticipant p t g = race (raceConfigWithParticipant p t) g
 
---runSection :: SectionConfig -> Speed -> Speed -> RaceM SectionResult
---runSection c v0 v1 = return $ runReader (doSection v0 v1) c
+
+{-
+ - Compatibility
+ - }
+
+$(genMapableRecord "RaceData"
+    [
+            ("rd_user", ''APM.AccountProfileMin),
+            ("rd_car", ''CMI.CarMinimal),
+            ("rd_result", ''RaceResult)
+--            ("rd_rewards", ''RaceRewards)
+       ])
+
+type RaceDatas = [RaceData]
+
+runRaceWithParticipant :: RP.RaceParticipant -> T.Track -> E.Environment -> RaceResult 
+runRaceWithParticipant p t e = case raceWithParticipant p t (mkStdGen 0) of
+        Left err -> undefined
+        Right res -> RaceData (rp_account_min p) (rp_car_min p) $ raceResult2FE r
+ 
+-- convert to front-end units (km/h instead of m/s)
+raceResult2FE :: RaceResult -> RaceResult
+raceResult2FE r = r {
+        race_speed_top = ms2kmh $ race_speed_top r,
+        race_speed_finish = ms2kmh $ race_speed_finish r,
+        race_speed_avg = ms2kmh $ race_speed_avg r
+    }
+
+sectionResult2FE :: SectionResult -> SectionResult
+sectionResult2FE r = r {
+       speed_entry = ms2kmh $ speed_entry r, 
+       speed_exit = ms2kmh $ speed_exit r, 
+       speed_cap = ms2kmh $ speed_cap r, 
+       speed_top = ms2kmh $ speed_top r, 
+       speed_avg = ms2kmh $ speed_avg r
+    } 
+
+{ -
+ - Execution
+ -}
+
 
 -- perform race calculations
 doRace :: RaceM RaceResult 
@@ -445,6 +486,10 @@ sectionSpeedCap = do
                 Just q -> do
                         a <- lateralAcceleration
                         return $ sqrt (q * a)
+
+
+
+
 
 
 
