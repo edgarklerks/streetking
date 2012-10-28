@@ -1785,8 +1785,16 @@ processRace t ps tid = do
 
         cons "pral"
 
-         -- race participants
-        let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
+        -- race participants
+--        let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
+        rs' <- forM ps $ \p -> do
+                g <- liftIO $ newStdGen
+                case raceWithParticipant p trk g of
+                        Left e -> rollback e
+                        Right r -> return (p, r)
+
+        let rs = List.sortBy (\(_, a) (_, b) -> compare (raceTime a) (raceTime b)) rs'
+
         cons "laap"
 
         cons rs
