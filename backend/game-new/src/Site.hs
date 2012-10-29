@@ -1808,6 +1808,8 @@ processRace t ps tid = do
                     R.data = map (\(p,r) -> raceData p r) rs 
                 }
 
+        cons $ "saved race " ++ (show rid)
+
         let winner_id = rp_account_id $ fst $ head rs
 
 --        parN $ flip fmap rs $ \(p,r) -> do
