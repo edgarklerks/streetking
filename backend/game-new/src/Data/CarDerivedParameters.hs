@@ -166,15 +166,15 @@ deriveM m = do
 
 -- time to accelerate from 0 to 100 km/h
 acceleration :: R.RaceM Double
-acceleration = deriveM $ R.accelerationTime 0 $ 100 * (constant "kmh")
+acceleration = deriveM $ R.accelerationTime 0 $ kmh2ms 100 
 
 -- distance to stop from 100 km/h
 stopping :: R.RaceM Double
-stopping = deriveM $ R.brakingDistance (100 * (constant "kmh")) 0
+stopping = deriveM $ R.brakingDistance (kmh2ms 100) 0
 
 -- car top speed
 topspeed :: R.RaceM Double
-topspeed = deriveM $ (* (constant "kmh")) <$> asks R.topSpeed
+topspeed = deriveM $ ms2kmh <$> asks R.topSpeed
 
 -- cornering in maximum g's. this depends on the corner radius because of aerodynamic downforce effects being speed dependent.
 cornering :: R.RaceM Double
