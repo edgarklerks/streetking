@@ -97,10 +97,10 @@ data SectionConfig = SectionConfig {
         topSpeed :: Double
 } deriving Show
 
-type SectionM a = Reader SectionConfig a
+type SectionM a = ErrorT String (Reader SectionConfig) a
 
-runSectionM :: SectionM a -> SectionConfig -> a
-runSectionM = runReader
+runSectionM :: SectionM a -> SectionConfig -> Either String a
+runSectionM m = runReader (runErrorT m)
 
 type MDouble = Maybe Double
 
@@ -241,7 +241,10 @@ doRace = do
                 q <- randomPerformance
                 sectionConfig s q
         -- get maximum speed in each section and shift by one position, to get maximum speed in the next section for each section
-        vs <- forM cs $ \s -> return $ runSectionM speedCap s 
+        vs <- forM cs $ \s -> do
+                case runSectionM speedCap s of
+                        Left e -> throwError e
+                        Right r -> return r
         -- run sections; each section affects the next, so a fold is implied.
         (rs, vf) <- foldM worker ([], initialSpeed) $ L.zip cs $ L.tail vs ++ [lightSpeed]
         -- generate race result
@@ -249,8 +252,9 @@ doRace = do
             where
                 worker :: ([SectionResult], Speed) -> (SectionConfig, Speed) -> RaceM ([SectionResult], Speed)
                 worker (rs, vin) (c, vnext) = do
-                    let r = runSectionM (doSection vin vnext) c
-                    return (rs ++ [r], sectionSpeedOut r)
+                    case runSectionM (doSection vin vnext) c of
+                            Left e -> throwError e
+                            Right r -> return (rs ++ [r], sectionSpeedOut r)
 
 -- generate performance given a random seed
 randomPerformance :: RaceM P.RaceSectionPerformance
@@ -350,11 +354,13 @@ sectionConfig s q = do
 
                     -- car power available for acceleration.
                     -- driver acceleration performance applies a factor 0.5 - 1
+                    -- TODO: reducing power also reduces top speed. use a different algorithm.
                     effPower :: P.RaceSectionPerformance -> RaceM Double
                     effPower q = do
                             p <- C.pwr <$> asks car
-                            let f = 0.5 + 0.5 * (P.acceleration q)
-                            return $ f * p
+--                            let f = 0.5 + 0.5 * (P.acceleration q)
+--                            return $ f * p
+                            return p
 
                     -- braking is % of tyre traction available to slow down car. traction force is mu * m * g
                     -- driver braking performance applies a factor 0.5 - 1
@@ -370,15 +376,35 @@ sectionConfig s q = do
 -- perform section calculations
 doSection :: Speed -> Speed -> SectionM SectionResult
 doSection vin' vnext' = do
+
+        i <- S.section_id <$> asks section
+
+        -- ensure sanity
+        when (isNaN vin') $ throwError "doSection: vin is not a number"
+        when (isNaN vnext') $ throwError $ "doSection: vnext is not a number in section " ++ (show i)
+
+        -- get speed cap for this section
         vcap' <- speedCap 
+
+        -- ensure sanity
+        when (isNaN vcap') $ throwError "doSection: vcap is not a number"
+
         -- determine vin, the minimum of vin' and vcap, and note that it should be equal to vin, unless something went wrong in the last section.
         let vin = min vin' vcap'
         -- determine maximum achievable speed through acceleration across l
         sl <- S.arclength <$> asks section
-        va <- (min vcap') <$> achievableSpeed vin sl 
+        
+        va' <- achievableSpeed vin sl 
+        when (vin > va') $ throwError $ L.concat ["doSection: achievable speed lower than initial speed (vin = ", show vin, ", l = ", show sl, ", va' = ", show va',  ")"]
+
+        let va = min vcap' va'
+
+        -- ensure sanity
+        when (isNaN va) $ throwError "doSection: va is not a number"
+
         -- cap target output speed with local speed cap
         let vnext = min vnext' va
-        when (vin > va) $ error "doSection: achievable speed lower than initial speed"
+
         -- determine braking distance from achievable speed to target exit speed
         bl <- brakingDistance va vnext
         -- if distance > length, do not accelerate at all
@@ -436,16 +462,18 @@ doSection vin' vnext' = do
 -- TODO: correct for traction for low initial speeds
 achievableSpeed :: Speed -> Length -> SectionM Speed 
 achievableSpeed v0 l = do
-        when (l < 0) $ error "achievableSpeed: section length is negative"
+        when (l < 0) $ throwError "achievableSpeed: section length is negative"
         m <- asks mass 
         k <- asks aero
         s <- asks topSpeed
-        return $ ((v0 ** 3 - s ** 3) * (constant "e") ** (-( 3 * k * l) / m) + s ** 3) ** (1/3 :: Double)
+        let res = ((v0 ** 3 - s ** 3) * (constant "e") ** (-( 3 * k * l) / m) + s ** 3) ** (1/3 :: Double)
+        when (v0 > res) $ throwError $ L.concat ["achievableSpeed: result is smaller than initial speed (vin = ", show v0, ", top speed = ", show s, ")"]
+        return res 
 
 -- TODO: correct for traction for low initial speeds
 accelerationTime :: Speed -> Speed -> SectionM Time 
 accelerationTime v0 v1 = do
-        when (v0 > v1) $ error "accelerationTime: source is greater than target"
+        when (v0 > v1) $ throwError "accelerationTime: source is greater than target"
         s <- asks topSpeed
         m <- asks mass
         p <- asks power
@@ -456,7 +484,7 @@ accelerationTime v0 v1 = do
 -- TODO: correct for traction for low initial speed
 accelerationDistance :: Speed -> Speed -> SectionM Double
 accelerationDistance v0 v1 = do
-        when (v0 > v1) $ error "accelerationDistance: source is greater than target"
+        when (v0 > v1) $ throwError "accelerationDistance: source is greater than target"
         s <- asks topSpeed
         m <- asks mass
         p <- asks power
@@ -467,7 +495,7 @@ accelerationDistance v0 v1 = do
 -- TODO: include air resistance
 brakingTime :: Speed -> Speed -> SectionM Double
 brakingTime v0 v1 = do
-        when (v1 > v0) $ error "brakingTime: target is greater than source"
+        when (v1 > v0) $ throwError "brakingTime: target is greater than source"
         m <- asks mass
         b <- asks braking
         return $ (v0 - v1) * m / b
@@ -475,7 +503,7 @@ brakingTime v0 v1 = do
 -- TODO: include air resistance
 brakingDistance :: Speed -> Speed -> SectionM Double 
 brakingDistance v0 v1 = do
-        when (v1 > v0) $ error "brakingDistance: target is greater than source"
+        when (v1 > v0) $ throwError "brakingDistance: target is greater than source"
         m <- asks mass
         b <- asks braking
         return $ 0.5 * (v0 ** 2 - v1 ** 2) * m / b
@@ -487,16 +515,24 @@ lateralAcceleration = do
         mu <- asks traction
         df <- asks downforce
         m <- asks mass
+        when (h < 0) $ throwError $ L.concat ["lateralAcceleration: negative handling (", show h, ")"]
+        when (mu < 0) $ throwError $ L.concat ["lateralAcceleration: negative traction (", show mu, ")"]
+        -- TODO: downforce caculation is broken. Set downforce effect to zero for now.
+        let df = 0
+        when ((1 - r * df / m) < 0) $ throwError $ L.concat ["lateralAcceleration: downforce out of bounds (df = ", show df, ", r = ", show r, ", m = ", show m, ")"]
         let g = constant "g"
         return $ h * mu * g / (1 - r * df / m) 
 
 speedCap :: SectionM Double
 speedCap = do
+        i <- S.section_id <$> asks section
         r <- S.radius <$> asks section
         case r of
                 Nothing -> return lightSpeed
                 Just q -> do
                         a <- lateralAcceleration
+                        when (a < 0) $ throwError $ "speedCap: encountered negative lateral acceleration limit on section " ++ (show i)
+                        when (q < 0) $ throwError $ "speedCap: encountered negative section radius on section " ++ (show i)
                         return $ sqrt (q * a)
 
 
@@ -548,6 +584,7 @@ writeRC rc = do
         putStrLn "sections:"
         forM_ (T.sections $ track rc) $ \s -> do
                 putStrLn ""
+                sho s "section id" S.section_id
                 sho s "arclength" S.arclength
                 sho s "radius" S.radius
         return ()
@@ -589,6 +626,9 @@ writeSR sr = do
 
 p :: IO ()
 p = loadAndTest 70 342 12
+
+b :: IO ()
+b = loadAndTest 36 321 11
 
 loadCar :: Integer -> SqlTransaction Connection C.Car
 loadCar cid = C.carInGarageCar <$> aload cid (rollback $ "cannot find car for id " ++ show cid)
