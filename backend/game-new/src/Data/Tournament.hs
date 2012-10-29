@@ -353,9 +353,15 @@ processTournamentRace t' ps tid = do
         let env = defaultEnvironment
         trk <- trackDetailsTrack <$> (agetlist ["track_id" |== toSql tid] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails])
         tdt <- aget ["track_id" |== toSql tid] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
- 
-          -- race participants
-        let rs = L.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
+        rs' <- forM ps $ \p -> do
+                g <- liftIO $ newStdGen
+                case raceWithParticipant p trk g of
+                        Left e -> rollback e
+                        Right r -> return (p, r)
+
+        let rs = L.sortBy (\(_, a) (_, b) -> compare (raceTime a) (raceTime b)) rs'
+
+
 
         -- current time, finishing times, race time (slowest finishing time) 
         t <- (+t') <$> liftIO milliTime

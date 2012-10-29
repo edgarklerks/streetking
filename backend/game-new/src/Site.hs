@@ -1391,7 +1391,7 @@ searchReports t = do
         ns :: [RP.Report] <- runDb $ do
             userActions uid
             search xs [Order ("time",[]) False] l o 
---        writeMapables ns -- toInRule wraps Data in ByteString so it ends up as a JSON string
+--      BUG:  writeMapables ns -- toInRule wraps Data in ByteString so it ends up as a JSON string
         writeResult' ns
  
 downloadCarImage :: Application ()
@@ -1594,10 +1594,6 @@ racePractice = do
             c <-  fmap withDerivedParameters $ aget ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found") :: SqlTransaction Connection CIG.CarInGarage
             cm <- fmap withDerivedParametersMin $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
 
---            ry <- DBF.garage_active_car_ready (fromJust $ G.id g)
---                            case length ry > 0 of
---                                True -> rollback "your active car is not ready"
---                                False -> return ()
             
             let y = RaceParticipant a am c cm Nothing
             
@@ -2144,28 +2140,6 @@ userClaimFreeCar = do
         -- create new car in user's garage
         runDb $ instantiateCar mid uid
 
-{-
-        -- create car in user's garage; create stock parts in car
-        runDb $ do
-
-            cid <- save ((def :: CarInstance.CarInstance) {
-                    CarInstance.garage_id =  G.id g,
-                    CarInstance.car_id = mid
-                }) :: SqlTransaction Connection Integer
-                
-            pts <- search ["car_id" |== toSql mid] [] 1000 0 :: SqlTransaction Connection [CSP.CarStockPart]
-
-            let step z part = do 
-                save (def {
-                        PI.part_id = fromJust $ CSP.id part,
-                        PI.car_instance_id = Just cid,
-                        PI.account_id = uid,
-                        PI.deleted = False 
-                    })
-                return ()
-
-            foldM_ step () pts
-    -}        
         writeResult ("You have received a free car" :: String)
 
 
