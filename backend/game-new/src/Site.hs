@@ -1805,6 +1805,8 @@ processRace t ps tid = do
         cons $ concat ["start time = ", show t]
         cons $ concat ["end time = ", show te]
 
+        when (te > 9223372036854775808) $ rollback "finish time out of bounds"
+
         -- save race data
         rid <- save $ (def :: R.Race) {
                     R.track_id = tid,

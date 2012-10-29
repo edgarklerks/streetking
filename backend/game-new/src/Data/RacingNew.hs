@@ -591,16 +591,19 @@ writeRC rc = do
 
 writeRR :: RaceResult -> IO ()
 writeRR rr = do
-        sho rr "track id" trackId
-        sho rr "total time" raceTime
-        sho rr "top speed" raceSpeedTop
-        sho rr "average speed" raceSpeedAvg
-        sho rr "final speed" raceSpeedFin
         putStrLn "sections:"
         forM_ (sectionResults rr) $ \sr -> do
                 putStrLn ""
                 writeSR sr
 
+        putStrLn ""
+        putStrLn "final:"
+        sho rr "track id" trackId
+        sho rr "total time" raceTime
+        sho rr "top speed" raceSpeedTop
+        sho rr "average speed" raceSpeedAvg
+        sho rr "final speed" raceSpeedFin
+ 
 writeSR :: SectionResult -> IO ()
 writeSR sr = do
         sho sr "performance" performance
@@ -629,6 +632,9 @@ p = loadAndTest 70 342 12
 
 b :: IO ()
 b = loadAndTest 36 321 11
+
+a :: IO ()
+a = loadAndTest 33 356 1
 
 loadCar :: Integer -> SqlTransaction Connection C.Car
 loadCar cid = C.carInGarageCar <$> aload cid (rollback $ "cannot find car for id " ++ show cid)
