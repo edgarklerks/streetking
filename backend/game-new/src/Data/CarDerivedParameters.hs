@@ -12,6 +12,7 @@ import System.Random
 import Data.Constants
 import Data.Car
 import Data.Environment
+import Control.Monad.Error
 import qualified Data.RacingNew as R
 import qualified Data.RaceSectionPerformance as P
 import Data.Section
@@ -157,7 +158,9 @@ derive m c = case R.runRaceM m g rc of
 deriveM :: R.SectionM a -> R.RaceM a
 deriveM m = do
         c <- R.sectionConfig defaultSection $ P.perfectPerformance -- { P.intelligence = 0.5, P.reaction = 0.5 } -- maximize car potential but do not perturb section
-        return $ R.runSectionM m c 
+        case R.runSectionM m c of
+                Left e -> throwError e
+                Right r -> return r
     where
         defaultSection = Section 0 (Just 100) 250
 
