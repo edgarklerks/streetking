@@ -1799,6 +1799,12 @@ processRace t ps tid = do
         let fin r = (t+) $ ceiling $ (1000 *) $ raceTime r  
         let te = (\(_,r) -> fin r) $ last rs
 
+
+        cons "saving race..."
+        cons $ concat ["track id = ", show tid]
+        cons $ concat ["start time = ", show t]
+        cons $ concat ["end time = ", show te]
+
         -- save race data
         rid <- save $ (def :: R.Race) {
                     R.track_id = tid,
