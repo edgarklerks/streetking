@@ -174,7 +174,7 @@ stopping = deriveM $ R.brakingDistance (100 * (constant "kmh")) 0
 
 -- car top speed
 topspeed :: R.RaceM Double
-topspeed = deriveM $ asks R.topSpeed
+topspeed = deriveM $ (* (constant "kmh")) <$> asks R.topSpeed
 
 -- cornering in maximum g's. this depends on the corner radius because of aerodynamic downforce effects being speed dependent.
 cornering :: R.RaceM Double

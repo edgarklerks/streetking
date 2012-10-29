@@ -631,7 +631,7 @@ p :: IO ()
 p = loadAndTest 70 342 12
 
 b :: IO ()
-b = loadAndTest 36 321 11
+b = loadAndTest 36 321 4 
 
 a :: IO ()
 a = loadAndTest 33 356 1
