@@ -29,6 +29,7 @@ import qualified Model.Account as A
 import qualified Model.PartModifier as PM 
 import qualified Model.PartInstance as PI 
 import qualified Model.PartInstance as PIn 
+import qualified Model.CarInstanceParts as CIP
 import qualified Model.Application as AP
 import qualified Model.Challenge as CH
 import qualified Model.ChallengeAccept as CHA 
@@ -138,6 +139,7 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/car_model/put", putModel (def :: C.Car))
          , ("/parameter/get", getModel (def :: PT.ParameterTable))
          , ("/parameter/put", putModel (def :: PT.ParameterTable))
+         , ("/car_instance_parts/get", getModel (def :: CIP.CarInstanceParts))
          , ("/car_instance/get", getModel (def :: CI.CarInstance))
          , ("/car_instance/put", putModel (def :: CI.CarInstance))
          , ("/car_instance/visual", visualCarInstance) 

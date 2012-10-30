@@ -354,10 +354,10 @@ sectionConfig s q = do
 
                     -- car power available for acceleration.
                     -- driver acceleration performance applies a factor 0.5 - 1
-                    -- TODO: reducing power also reduces top speed. use a different algorithm.
                     effPower :: P.RaceSectionPerformance -> RaceM Double
                     effPower q = do
                             p <- C.pwr <$> asks car
+                              -- TODO: reducing power also reduces top speed. use a different algorithm.
 --                            let f = 0.5 + 0.5 * (P.acceleration q)
 --                            return $ f * p
                             return p
