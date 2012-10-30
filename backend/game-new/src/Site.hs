@@ -47,6 +47,7 @@ import qualified Model.CarInstance as CarInstance
 import qualified Model.CarInGarage as CIG 
 import qualified Model.CarMinimal as CMI 
 import qualified Model.Car3dModel as C3D
+import qualified Model.CarPrototype as CPro
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
 import qualified Model.PartInstance as PI 
@@ -2103,21 +2104,39 @@ readArchive = do
 instantiateCar :: Integer -> Integer -> SqlTransaction Connection Integer
 instantiateCar mid uid = do
 
+        -- get garage
         g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
-        m <- aget ["id" |== toSql mid] (rollback "car model not found") :: SqlTransaction Connection CM.CarMarket 
-                
-        -- if user has no active car, the new car will be active 
-        as <- search ["garage_id" |== toSql (G.id g), "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CarInstance.CarInstance]
-        let act = case as of
-                [] -> True
-                otherwise -> False
 
-        cid <- save ((def :: CarInstance.CarInstance) {
+        -- get car prototype
+        c <- aget ["id" |== toSql mid, "prototype" |== toSql True] (rollback "Car prototype not found") :: SqlTransaction Connection CarInstance.CarInstance
+
+        -- get car model
+--        m <- aget ["id" |== toSql mid] (rollback "car model not found") :: SqlTransaction Connection CM.CarMarket 
+        
+        -- get car prototype parts 
+        ps <- search ["car_instance_id" |== toSql mid] [] 1 0 :: SqlTransaction Connection [PI.PartInstance]
+        
+        -- if user has no active car, the new car will be active 
+        act <- ( (>0) . length) <$> (search ["garage_id" |== toSql (G.id g), "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CarInstance.CarInstance])
+        
+        -- instantiate new car
+        cid <- save (def :: CarInstance.CarInstance) {
                 CarInstance.garage_id =  G.id g,
-                CarInstance.car_id = mid,
+                CarInstance.car_id = CarInstance.car_id c,
                 CarInstance.active = act 
-            }) :: SqlTransaction Connection Integer
+            } :: SqlTransaction Connection Integer
+
+        -- instantiate new parts
+        forM_ ps $ \p -> save (def :: PI.PartInstance) {
+                PI.part_id = PI.part_id p,
+                PI.car_instance_id = Just cid,
+                PI.improvement = PI.improvement p,
+                PI.wear = PI.wear p,
+                PI.account_id = uid,
+                PI.deleted = False
+            }
                 
+{-
         -- Part loader 
         pts <- search ["car_id" |== (toSql $ CM.id m)] [] 1000 0 :: SqlTransaction Connection [CSP.CarStockPart]
 
@@ -2131,18 +2150,20 @@ instantiateCar mid uid = do
             return ()
 
         foldM_ step () pts
+-}
 
         return cid
 
 userClaimFreeCar :: Application ()
 userClaimFreeCar = do
         uid <- getUserId
-        xs <- getJson >>= scheck ["car_model_id"]
-        let mid = extract "car_model_id" xs :: Integer
+        xs <- getJson >>= scheck ["id"]
+        let mid = extract "id" xs :: Integer
 
         -- get records and set free_car to false
         m <- runDb $ do
-            m <- aget ["id" |== toSql mid, "level" |== toSql (1 :: Integer)] (rollback "car cannot be claimed") :: SqlTransaction Connection CM.CarMarket 
+--            m <- aget ["id" |== toSql mid, "level" |== toSql (1 :: Integer)] (rollback "car cannot be claimed") :: SqlTransaction Connection CM.CarMarket 
+            m <- aget ["id" |== toSql mid, "prototype_claimable" |== toSql True] (rollback "car cannot be claimed") :: SqlTransaction Connection CPro.CarPrototype
             aget ["id" |== toSql uid, "free_car" |== toSql True] (rollback "you may not claim a free car") :: SqlTransaction Connection A.Account
             update "account" ["id" |== toSql uid] [] [("free_car", toSql False)]
             return m

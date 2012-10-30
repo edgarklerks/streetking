@@ -23,6 +23,7 @@ $(genAll "CarInstance" "car_instance"
         ("car_id", ''Integer),
         ("garage_id", ''MInteger),
         ("deleted", ''Bool),
+        ("prototype", ''Bool),
         ("active", ''Bool)
     ]
     )
