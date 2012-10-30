@@ -52,7 +52,7 @@ import qualified Model.Part as Part
 import qualified Model.PartMarket as PM 
 import qualified Model.PartInstance as PI 
 import qualified Model.PartDetails as PD 
-import qualified Model.CarMarket as CM 
+--import qualified Model.CarMarket as CM 
 import qualified Model.ManufacturerMarket as MAM 
 import qualified Model.MarketItem as MI 
 import qualified Model.Transaction as Transaction
@@ -290,7 +290,8 @@ marketModel = do
       puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
       let ctr = ("level" |<= (toSql $ A.level puser )) 
       ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id")
-      ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
+--      ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
+      ns <- runDb (search (ctr:xs) [] l o) :: Application [CPro.CarPrototype]
       writeMapables ns
 
 marketAllowedParts :: Application ()
@@ -410,20 +411,21 @@ carBuy = do
             cid <- instantiateCar mid uid
 
             -- get car model
-            car <- fromJust <$> load mid :: SqlTransaction Connection CM.CarMarket
+--            car <- fromJust <$> load mid :: SqlTransaction Connection CM.CarMarket
+            car <- fromJust <$> load mid :: SqlTransaction Connection CPro.CarPrototype
         
             -- create shopping report
             reportShopper uid (def {
-                    SR.amount = abs(CM.price car),
+                    SR.amount = abs(CPro.price car),
                     SR.car_instance_id =  Just cid,
                     SR.report_descriptor = "shop_car_buy"
                 })
 
             -- make payment
             transactionMoney uid (def {
-                    Transaction.amount = - abs(CM.price car),
+                    Transaction.amount = - abs(CPro.price car),
                     Transaction.type = "car_instance",
-                    Transaction.type_id = fromJust $ CM.id car
+                    Transaction.type_id = CPro.car_model_id car
                 })
 
             return cid
