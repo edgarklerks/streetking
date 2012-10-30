@@ -13,6 +13,7 @@
 		<ul>
 			<li><a href="#car_model/get" class="button" module="CAR_MODEL_LIST">Car model</a></li>
 			<li><a href="#car_instance/get" class="button" module="CAR_INSTANCE_LIST">Car instance</a></li>
+			<li><a href="#car_instance/get" class="button" module="CAR_PROTOTYPE_LIST">Car prototype</a></li>
 			<li><a href="#car_options/get" class="button" module="CAR_OPTIONS_LIST">Car options</a></li>
 		</ul>
 	</li>
