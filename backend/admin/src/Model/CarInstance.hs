@@ -25,6 +25,7 @@ $(genAll "CarInstance" "car_instance"
         ("deleted", ''Bool),
         ("prototype", ''Bool),
         ("prototype_name", ''String),
+        ("prototype_claimable", ''Bool),
         ("prototype_available", ''Bool)
     ]
     )
