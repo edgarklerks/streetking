@@ -12,7 +12,7 @@
 </form>
 <div>
 	Car part list
-	<div id="part_list">loading please wait..</div>
-	<div><a class="button" module="CAR_PROTOTYPE_ADD_PART">add</a></div>
+	<div id="car_prototype_part_list">loading please wait..</div>
+	<div><a href="#car_instance/get?id=[:0.id]" class="button" module="CAR_PROTOTYPE_PARTS_ADD">add</a></div>
 </div>
 <div>[:0.visual]</div>
