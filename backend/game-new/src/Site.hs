@@ -97,6 +97,7 @@ import qualified Model.TravelReport as TR
 import qualified Model.Functions as DBF
 import qualified Model.Support as SUP 
 import qualified Model.TournamentReport as TRP 
+import qualified Data.CarReady as CR
 import qualified Data.HashMap.Strict as HM
 import           Control.Monad.Trans
 import           Application
@@ -630,35 +631,48 @@ carDeactivate = do
                     False -> return "Could not deactivate the car" 
 
 
--- db funcs obsolete
--- garage_car_ready
--- garage_active_car_ready
--- new functions:
--- * get worn parts
--- * get missing parts
-
 garageCarReady :: Application ()
 garageCarReady = do 
     uid <- getUserId 
+    gid <- getUserGarageId
     xs <- getJson >>= scheck ["id"]
-    s <-  prc uid xs 
-    writeResult s
-        where prc uid xs = runDb $ do 
-                personnelUpdate uid 
-                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                r <- DBF.garage_car_ready (fromJust $ G.id g) $ extract "id" xs
-                return r
-            
+    let cid = extract "id" xs :: Integer
+    rs <- runDb $ do
+            -- update actions
+            personnelUpdate uid
+            -- check if user owns the car
+            aget ["garage_id" |== toSql gid] (rollback "Car not found in garage") :: SqlTransaction Connection CarInstance.CarInstance
+            -- get result
+            CR.carReady cid
+    writeResult rs 
 
+--        where prc uid xs = runDb $ do 
+--                personnelUpdate uid 
+--                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+--                r <- DBF.garage_car_ready (fromJust $ G.id g) $ extract "id" xs
+--                return r
+            
 garageActiveCarReady :: Application ()
 garageActiveCarReady = do 
     uid <- getUserId 
-    s <-  prc uid
-    writeResult s
-        where prc uid = runDb $ do 
-                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
-                r <- DBF.garage_active_car_ready (fromJust $ G.id g)
-                return r
+    gid <- getUserGarageId
+    rs <- runDb $ do
+            -- update actions
+            personnelUpdate uid
+            -- get user active car 
+            ac <- aget ["garage_id" |== toSql gid, "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CarInstance.CarInstance
+            -- get result
+            CR.carReady $ fromJust $ CarInstance.id ac
+    writeResult rs 
+
+--    uid <- getUserId
+--    gid <- getUserGarageId
+---    s <-  prc uid
+--   writeResult s
+--        where prc uid = runDb $ do 
+--                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
+--                r <- DBF.garage_active_car_ready (fromJust $ G.id g)
+--                return r
 
 
 marketPlaceBuy :: Application ()
@@ -2190,7 +2204,13 @@ reportIssue = do
         let b = updateHashMap xs (def :: SUP.Support)
         runDb $ save (b { SUP.account_id = uid })
         writeResult (1 :: Integer)
-
+        
+getUserGarageId :: Application Integer
+getUserGarageId = do 
+        uid <- getUserId 
+        g <- runDb (aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage)
+        return $ fromJust $ G.id g
+ 
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: Bool ->  [(C.ByteString, Handler App App ())]

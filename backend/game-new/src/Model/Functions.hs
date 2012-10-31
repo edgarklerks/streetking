@@ -20,8 +20,8 @@ $(mkFunctions [
         ("car_get_worn_parts", [''Integer], ''CIP.CarInstanceParts, Row),
         ("car_get_missing_parts", [''Integer], ''PT.PartType, Row),
         -- remove
-        ("garage_car_ready", [''Integer, ''Integer], ''String, Row),
-        ("garage_active_car_ready", [''Integer], ''String, Row),
+--        ("garage_car_ready", [''Integer, ''Integer], ''String, Row),
+--        ("garage_active_car_ready", [''Integer], ''String, Row),
         -- / remove
         ("garage_set_active_car", [''Integer, ''Integer], ''Bool, Scalar),
         ("garage_unset_active_car", [''Integer, ''Integer], ''Bool, Scalar),
