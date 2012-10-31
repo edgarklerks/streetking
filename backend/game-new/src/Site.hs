@@ -630,6 +630,13 @@ carDeactivate = do
                     False -> return "Could not deactivate the car" 
 
 
+-- db funcs obsolete
+-- garage_car_ready
+-- garage_active_car_ready
+-- new functions:
+-- * get worn parts
+-- * get missing parts
+
 garageCarReady :: Application ()
 garageCarReady = do 
     uid <- getUserId 
