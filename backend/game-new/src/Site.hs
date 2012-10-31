@@ -2119,7 +2119,7 @@ instantiateCar mid uid = do
         ps <- search ["car_instance_id" |== toSql mid] [] 1000 0 :: SqlTransaction Connection [PI.PartInstance]
         
         -- if user has no active car, the new car will be active 
-        act <- ( (>0) . length) <$> (search ["garage_id" |== toSql (G.id g), "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CarInstance.CarInstance])
+        act <- ( not . (> 0) . length) <$> (search ["garage_id" |== toSql (G.id g), "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CarInstance.CarInstance])
         
         -- instantiate new car
         cid <- save (def :: CarInstance.CarInstance) {
