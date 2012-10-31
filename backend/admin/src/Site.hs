@@ -24,6 +24,7 @@ import qualified Data.HashMap.Strict as S
 import qualified Control.Monad.CatchIO as CIO 
 import qualified Model.Car as C 
 import qualified Model.CarInstance as CI
+import qualified Model.CarInGarage as CIG
 import qualified Model.CarOptions as CO 
 import qualified Model.Account as A
 import qualified Model.PartModifier as PM 
@@ -142,6 +143,7 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/parameter/put", putModel (def :: PT.ParameterTable))
          , ("/car_instance_parts/get", getModel (def :: CIP.CarInstanceParts))
          , ("/market_parts/get", getModel (def :: MP.PartMarket))
+         , ("/car_in_garage/get", getModel (def :: CIG.CarInGarage))
          , ("/car_instance/get", getModel (def :: CI.CarInstance))
          , ("/car_instance/put", putModel (def :: CI.CarInstance))
          , ("/car_instance/visual", visualCarInstance) 
