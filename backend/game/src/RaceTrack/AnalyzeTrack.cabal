@@ -1,0 +1,60 @@
+name: AnalyzeTrack
+version: 1.0
+build-type: Simple 
+cabal-version: >= 1.2 
+
+
+executable Optimize
+    main-is: Optimize.hs 
+    extensions: ViewPatterns 
+    ghc-options: -rtsopts -O2
+    build-depends:
+        deepseq,
+        semigroups
+
+executable DatabasePump
+    main-is: DatabasePump.hs
+    extensions: ViewPatterns
+    ghc-options: -rtsopts -O2
+    build-depends:
+        HDBC-postgresql,
+        HDBC
+
+executable Celling 
+    main-is: Celling.hs
+    extensions: ViewPatterns
+    ghc-options: -rtsopts -O2
+
+executable ImageGrouping
+    main-is: ImageGrouping.hs 
+    extensions: ViewPatterns
+    ghc-options: -rtsopts -O2
+    build-depends:
+       process,
+       vector,
+       mtl
+
+executable SegmentingAlternative 
+    main-is: SegmentingAlternative.hs
+    extensions: ViewPatterns 
+    ghc-options: -rtsopts -O2
+    build-depends: 
+        binary,
+        bytestring,
+        array
+        
+
+executable Segmenting
+    main-is: Segmenting.hs 
+    extensions: ViewPatterns
+    ghc-options: -rtsopts -O2
+    build-depends:
+        base, 
+        Codec-Image-DevIL,
+        directory,
+        binary,
+        array,
+        QuickCheck,
+        bytestring 
+
+
