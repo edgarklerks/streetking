@@ -15,13 +15,13 @@
 <div style="float: left">
 	<img src='[:eval IMAGESERVER("[\"car\",\""+0.car_id+"\",\"car\"]")]'  style="width:300px; height:200px">
 </div>
-<div style="float: left">
-	params
+<div style="float: left; font-size:9px;" id="car_prototype_parameters">
+	loading..
 </div>
 <div style="clear:both;"></div>
 <div>
 	Car part list
-	<div id="car_prototype_part_list">loading please wait..</div>
+	<div id="car_prototype_part_list">loading..</div>
 	<div id="addPart"></div>
 	<div><a href="#car_instance/get?id=[:0.id]" class="button" module="CAR_PROTOTYPE_PARTS_ADD">add</a></div>
 </div>
