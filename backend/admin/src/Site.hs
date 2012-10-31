@@ -46,6 +46,7 @@ import qualified Model.Personnel as P
 import qualified Model.PersonnelInstance as PI
 import qualified Model.ParameterTable as PT 
 import qualified Model.Notification as NN 
+import qualified Model.MarketPlace as MP
 import           Snap.Util.FileServe
 import           Text.Templating.Heist 
 import           SqlTransactionSnaplet hiding (runDb)
@@ -140,6 +141,7 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/parameter/get", getModel (def :: PT.ParameterTable))
          , ("/parameter/put", putModel (def :: PT.ParameterTable))
          , ("/car_instance_parts/get", getModel (def :: CIP.CarInstanceParts))
+         , ("/market_parts/get", getModel (def :: MP.MarketPlace))
          , ("/car_instance/get", getModel (def :: CI.CarInstance))
          , ("/car_instance/put", putModel (def :: CI.CarInstance))
          , ("/car_instance/visual", visualCarInstance) 

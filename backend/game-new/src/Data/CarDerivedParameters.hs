@@ -120,6 +120,12 @@ accelerationForce c e v = {-# SCC accelerationForce #-} case (v <= tractionSpeed
  - The actual parameters used in the race calculation duplicate these formulas but use pertinent environment data where available.
  -}
 
+
+-- TODO
+-- 1. Update the (Active) CarReady module
+-- 2. Use it to determine if a car is "ready" before calculating parameters
+-- 3. If a car is not ready, set all parameters to zero
+
 withDerivedParameters :: CIG.CarInGarage -> CIG.CarInGarage
 withDerivedParameters cig = cig {
         CIG.acceleration = todbi $ derive acceleration car,
