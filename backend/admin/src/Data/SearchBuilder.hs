@@ -23,16 +23,29 @@ data Behaviour where
     Ignore :: Behaviour 
  deriving Eq
 
+type MString = Maybe String
+type MInteger = Maybe Integer
+type MInt = Maybe Int
+type MBool = Maybe Bool
+type MChar = Maybe Char
+type MDouble = Maybe Double
+
 defaultBehaviours :: Behaviours
 defaultBehaviours = [
             ("Integer", MinMax),
+            ("MInteger", MinMax),
             ("Int", MinMax),
+            ("MInt", MinMax),
             ("Double", MinMax),
+            ("MDouble", MinMax),
             ("String", Like),
+            ("MString", Like),
             ("Bool", Equal),
+            ("MBool", Equal),
             ("Id", Equal),
             ("Id", MinMax),
-            ("Char", Equal)
+            ("Char", Equal),
+            ("MChar", Equal)
         ]
 
 defaultExceptions :: Exceptions 
