@@ -2,8 +2,11 @@
 
 
 module Data.CarDerivedParameters ( 
-        withDerivedParameters,
-        withDerivedParametersMin
+--        withDerivedParameters,
+--        withDerivedParametersMin
+        searchCarInGarage,
+        getCarInGarage,
+        loadCarInGarage
 ) where
 
 
@@ -11,6 +14,8 @@ module Data.CarDerivedParameters (
 import Data.Database
 import Data.SqlTransaction
 import Database.HDBC (toSql)
+import Data.Conversion
+import Data.InRules
 import System.Random
 import Data.Constants
 import Data.Car
@@ -140,7 +145,6 @@ nitrous c = nos c
 
 -}
 
-
 searchCarInGarage :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [CIG.CarInGarage]
 searchCarInGarage cs os l o = do
         xs <- search cs os l o :: SqlTransaction Connection [CIG.CarInGarage]
@@ -159,6 +163,16 @@ getCarInGarage cs f = do
 
 loadCarInGarage :: Integer -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CIG.CarInGarage
 loadCarInGarage i f = getCarInGarage ["id" |== toSql i] f
+
+searchCarMinified :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [CMI.CarMinimal]
+searchCarMinified cs os l o = (map CMI.minify) <$> searchCarInGarage cs os l o
+
+getCarMinified :: Constraints -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CMI.CarMinimal
+getCarMinified cs f = CMI.minify <$> getCarInGarage cs f
+
+loadCarMinified :: Integer -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CMI.CarMinimal
+loadCarMinified i f = CMI.minify <$> loadCarInGarage i f
+
 
 withDerivedParameters :: CIG.CarInGarage -> CIG.CarInGarage
 withDerivedParameters cig = cig {
@@ -180,8 +194,8 @@ withZeroParameters cig = cig {
     }
         where car = carInGarageCar cig
 
-
-withDerivedParametersMin :: CMI.CarMinimal -> CMI.CarMinimal 
+{-
+ithDerivedParametersMin :: CMI.CarMinimal -> CMI.CarMinimal 
 withDerivedParametersMin cig = cig {
         CMI.acceleration = todbi $ derive acceleration car,
         CMI.top_speed = todbi $ derive topspeed car,
@@ -190,7 +204,7 @@ withDerivedParametersMin cig = cig {
         CMI.nitrous = todbi $ derive nitrous car
     }
         where car = carMinimalCar cig
-
+-}
 
 
 derive :: R.RaceM a -> Car -> a
