@@ -47,6 +47,7 @@ $(genAll "GaragePart" "garage_parts" [
     ("required", ''Bool),
     ("fixed", ''Bool),
     ("task_subject", ''Bool),
+    ("garage_id", ''Integer),
     ("hidden", ''Bool)
  ])
 
