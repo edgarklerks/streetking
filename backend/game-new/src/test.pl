@@ -22,7 +22,6 @@ use strict;
 use warnings;
 use WWW::Mechanize; 
 use JSON::XS;
-use DDS;
 
 # Config 
 my $server = "http://r3.graffity.me:9003";
