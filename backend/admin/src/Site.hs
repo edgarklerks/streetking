@@ -42,7 +42,7 @@ import qualified Model.City as CIT
 import qualified Model.Continent as CON 
 import qualified Model.Config as CO  
 import qualified Model.Garage as G 
-import qualified Model.GarageParts GP
+import qualified Model.GarageParts as GP
 import qualified Model.Notification as NT 
 import qualified Model.Personnel as P
 import qualified Model.PersonnelInstance as PI
