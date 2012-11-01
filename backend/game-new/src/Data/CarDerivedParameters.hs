@@ -8,6 +8,9 @@ module Data.CarDerivedParameters (
 
 
 --import Control.Monad
+import Data.Database
+import Data.SqlTransaction
+import Database.HDBC (toSql)
 import System.Random
 import Data.Constants
 import Data.Car
@@ -25,6 +28,8 @@ import Data.Maybe
 import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
 
+import Data.CarReady
+
 todbi :: Double -> Integer
 todbi = floor . (10000 *)
 fromdbi :: Integer -> Double
@@ -32,8 +37,6 @@ fromdbi = (/ 10000) . fromInteger
 
 type Speed = Double
 type Length = Double
-
-
 
 
 {-
@@ -111,20 +114,51 @@ accelerationForce :: Car -> Environment -> Speed -> Double
 accelerationForce c e v = {-# SCC accelerationForce #-} case (v <= tractionSpeedTreshold c e) of
     True -> {-# SCC aTrue #-}  (mass c) * (tco c) * (mtraction e) * (constant "g")
     False -> {-# SCC aFalse #-} (pwr c) / v
+    
+-- acceleration: time for 0 - 100 km/h in s, disregarding drag
+acceleration :: Car -> Double
+acceleration c = accelerationTime c defaultEnvironment $ 100 * (constant "kmh")
+
+-- topspeed: maximum speed reachable due to engine power opposed by drag
+topspeed :: Car -> Double
+topspeed c = (p / ak) ** (1/3 :: Double) / (constant "kmh")
+    where
+        p = pwr c
+        ak = 0.5 * (rho defaultEnvironment) * (cda c)
+
+-- cornering: maximum lateral acceleration in g for a curve with radius 100 m
+cornering :: Car -> Double
+cornering c = (lateralAcceleration c defaultEnvironment 100) / (constant "g") 
+
+-- stopping: distance traveled while braking from 100 - 0 km/h, disregarding drag and reactions
+stopping :: Car -> Double
+stopping c = stoppingDistance c defaultEnvironment $ 100 * (constant "kmh")
+
+-- nitrous: not yet specified
+nitrous :: Car -> Double
+nitrous c = nos c
+
 -}
 
-{-
- - Display quantities
- -
- - Note that some of these depend on environmental variables; teh default environment is used.
- - The actual parameters used in the race calculation duplicate these formulas but use pertinent environment data where available.
- -}
 
+searchCarInGarage :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [CIG.CarInGarage]
+searchCarInGarage cs os l o = do
+        xs <- search cs os l o :: SqlTransaction Connection [CIG.CarInGarage]
+        forM xs $ \x -> do
+                r <- (carReady . fromJust . CIG.id) x
+                case ready r of
+                        True -> return $ withDerivedParameters x
+                        False -> return $ withZeroParameters x
 
--- TODO
--- 1. Update the (Active) CarReady module
--- 2. Use it to determine if a car is "ready" before calculating parameters
--- 3. If a car is not ready, set all parameters to zero
+getCarInGarage :: [Constraint] -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CIG.CarInGarage
+getCarInGarage cs f = do
+        xs <- searchCarInGarage cs [] 1 0
+        case xs of
+                x:_ -> return x
+                otherwise -> f
+
+loadCarInGarage :: Integer -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CIG.CarInGarage
+loadCarInGarage i f = getCarInGarage ["id" |== toSql i] f
 
 withDerivedParameters :: CIG.CarInGarage -> CIG.CarInGarage
 withDerivedParameters cig = cig {
@@ -135,6 +169,17 @@ withDerivedParameters cig = cig {
         CIG.nitrous = todbi $ derive nitrous car
     }
         where car = carInGarageCar cig
+
+withZeroParameters :: CIG.CarInGarage -> CIG.CarInGarage
+withZeroParameters cig = cig {
+        CIG.acceleration = 0,
+        CIG.top_speed = 0,
+        CIG.cornering = 0,
+        CIG.stopping = 0,
+        CIG.nitrous = 0
+    }
+        where car = carInGarageCar cig
+
 
 withDerivedParametersMin :: CMI.CarMinimal -> CMI.CarMinimal 
 withDerivedParametersMin cig = cig {
@@ -189,29 +234,3 @@ cornering = deriveM $ (/ (constant "g")) <$> R.lateralAcceleration
 nitrous :: R.RaceM Double
 nitrous = return 0
 
-{-
--- acceleration: time for 0 - 100 km/h in s, disregarding drag
-acceleration :: Car -> Double
-acceleration c = accelerationTime c defaultEnvironment $ 100 * (constant "kmh")
-
--- topspeed: maximum speed reachable due to engine power opposed by drag
-topspeed :: Car -> Double
-topspeed c = (p / ak) ** (1/3 :: Double) / (constant "kmh")
-    where
-        p = pwr c
-        ak = 0.5 * (rho defaultEnvironment) * (cda c)
-
--- cornering: maximum lateral acceleration in g for a curve with radius 100 m
-cornering :: Car -> Double
-cornering c = (lateralAcceleration c defaultEnvironment 100) / (constant "g") 
-
--- stopping: distance traveled while braking from 100 - 0 km/h, disregarding drag and reactions
-stopping :: Car -> Double
-stopping c = stoppingDistance c defaultEnvironment $ 100 * (constant "kmh")
-
--- nitrous: not yet specified
-nitrous :: Car -> Double
-nitrous c = nos c
-
-
--}

@@ -1521,7 +1521,7 @@ partImprove uid pi = do
                         let p = fromJust p'             
                         let a = fromIntegral (sk * ut)
                         void $ save (p {
-                                PI.improvement = min 100000 $ (PI.improvement p + round (a * pr'))
+                                PI.improvement = min 10000 $ (PI.improvement p + round (a * pr'))
                             })
 
                         when (PLID.task_end pi < s) $ do 
