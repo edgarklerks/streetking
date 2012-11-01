@@ -17,7 +17,7 @@ import           Prelude hiding (id)
 
 type MString =  Maybe String 
 type MInteger = Maybe Integer 
-$(genAll "GaragePart" "garage_parts" [
+$(genAll "GarageParts" "garage_parts" [
     ("id", ''Id),
     ("account_id", ''Integer),
     ("part_type_id", ''Integer),

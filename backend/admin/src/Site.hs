@@ -42,7 +42,7 @@ import qualified Model.City as CIT
 import qualified Model.Continent as CON 
 import qualified Model.Config as CO  
 import qualified Model.Garage as G 
-import qualified Model.GaragePart as GP
+import qualified Model.GarageParts GP
 import qualified Model.Notification as NT 
 import qualified Model.Personnel as P
 import qualified Model.PersonnelInstance as PI
@@ -145,7 +145,7 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/car_instance_parts/get", getModel (def :: CIP.CarInstanceParts))
          , ("/market_parts/get", getModel (def :: MP.PartMarket))
          , ("/car_in_garage/get", getModel (def :: CIG.CarInGarage))
-         , ("/garage_part/get", getModel (def :: GP.GaragePart))
+         , ("/garage_part/get", getModel (def :: GP.GarageParts))
          , ("/car_instance/get", getModel (def :: CI.CarInstance))
          , ("/car_instance/put", putModel (def :: CI.CarInstance))
          , ("/car_instance/visual", visualCarInstance) 
