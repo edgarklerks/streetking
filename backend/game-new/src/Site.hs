@@ -884,10 +884,11 @@ garageCar = do
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         let p = runDb $ do
             personnelUpdate uid 
-            (ns :: [CIG.CarInGarage]) <- search xs od l o
+            ns <- searchCarInGarage xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
-        writeMapables (withDerivedParameters <$> ns)
+--        writeMapables (withDerivedParameters <$> ns)
+        writeMapables ns
 
 
 
@@ -897,10 +898,12 @@ garageActiveCar = do
         (((l,o), xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid) +&& "active" +==| SqlBool True) 
         let p = runDb $ do
             personnelUpdate uid 
-            ns <- search xs od l o
+--            ns <- search xs od l o
+            ns <- searchCarInGarage xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
-        writeMapables (withDerivedParameters <$> ns)
+--        writeMapables (withDerivedParameters <$> ns)
+        writeMapables ns
 
 
 loadModel :: Application ()
@@ -1614,9 +1617,11 @@ racePractice = do
             -- TODO: check user busy
 
             -- get active car
-            g <-  aget ["account_id" |== toSql uid] (rollback "garage not found") :: SqlTransaction Connection G.Garage 
-            c <-  fmap withDerivedParameters $ aget ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            cm <- fmap withDerivedParametersMin $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            g <- aget ["account_id" |== toSql uid] (rollback "garage not found") :: SqlTransaction Connection G.Garage 
+--            c <-  fmap withDerivedParameters $ aget ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found") :: SqlTransaction Connection CIG.CarInGarage
+--            cm <- fmap withDerivedParametersMin $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            c <- getCarInGarage ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found")
+            let cm = CMI.minify c
 
             
             let y = RaceParticipant a am c cm Nothing
@@ -1657,8 +1662,10 @@ raceChallengeWith p = do
             Task.run Task.User uid
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             am <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
-            c  <- fmap withDerivedParameters $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            cm <- fmap withDerivedParametersMin $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+--            c  <- fmap withDerivedParameters $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+--            cm <- fmap withDerivedParametersMin $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            c  <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found")
+            let cm = CMI.minify c 
             t  <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _  <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
@@ -1723,8 +1730,10 @@ raceChallengeAccept = do
 
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
-            c  <- fmap withDerivedParameters $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
-            cm <- fmap withDerivedParametersMin $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+--            c  <- fmap withDerivedParameters $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
+--            cm <- fmap withDerivedParametersMin $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            c <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car minimal not found") 
+            let cm = CMI.minify c 
 
             cons a
             cons am
@@ -1956,8 +1965,10 @@ searchTournamentCar = do
 
                 let car_id = TR.car_id $ fromJust trn 
                 case car_id of 
-                    Nothing -> fmap (map withDerivedParameters) $ search ["account_id" |== (toSql uid)] [] 100 0 ::  SqlTransaction Connection [CIG.CarInGarage]
-                    Just x -> fmap (map withDerivedParameters) $ search ["account_id" |== (toSql uid) .&& "car_id" |== (toSql x)] [] 100 0 :: SqlTransaction Connection [CIG.CarInGarage]
+--                    Nothing -> fmap (map withDerivedParameters) $ search ["account_id" |== (toSql uid)] [] 100 0 ::  SqlTransaction Connection [CIG.CarInGarage]
+--                    Just x -> fmap (map withDerivedParameters) $ search ["account_id" |== (toSql uid) .&& "car_id" |== (toSql x)] [] 100 0 :: SqlTransaction Connection [CIG.CarInGarage]
+                    Nothing -> searchCarInGarage ["account_id" |== (toSql uid)] [] 100 0
+                    Just x -> searchCarInGarage ["account_id" |== (toSql uid) .&& "car_id" |== (toSql x)] [] 100 0
         writeMapables ts 
 
 
