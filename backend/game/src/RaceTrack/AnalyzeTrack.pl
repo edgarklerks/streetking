@@ -145,12 +145,13 @@ mkdir($datadir);
 
 consoleInfo "Opening log file";
 
-my $fh;
+my @fh = ();
 
 if(!$verbose){
-    open $fh, ">$datadir/racetrack.log";
+    open $fh[0], ">$datadir/racetrack.log";
 } else {
-    open $fh, ">&STDOUT";
+    open $fh[0], ">$datadir/racetrack.log";
+    open $fh[1], ">&STDOUT";
 }
 
 ImageGrouping();
@@ -164,34 +165,53 @@ Database();
 
 consoleOk "Done with track analysis";
 consoleInfo "Closing log file";
-close $fh;
+for my $fh(@fh){
+    close $fh;
+}
 
 exit;
 
+sub tolog {
+    my $ll = shift;
+    for my $fh(@fh){
+        print $fh $ll;
+    }
+}
+
+sub sep {
+    my $ll = shift; 
+    my $length = 40;
+    my $lr = ($length - length $ll) / 2;
+    my $padded = uc("=" x $lr . $ll . "=" x $lr);
+
+    print "\n\n" . $padded . "=" x ($length - length $padded) . "\n\n";
+
+}
+
 sub Optimize {
-    print $fh "\n\n=============Database==================\n\n";
+    sep "Optimizing";
     consoleInfo "Running Optimizer"; 
     my $out = `Optimize cells.bin $minlen $mergelen`;
-    print $fh $out;
+    tolog $out;
     consoleOk "Optimizer ran";
 }
 
 sub Database {
-    print $fh "\n\n=============Database==================\n\n";
+    sep "Database";
     consoleInfo "Running DatabasePump"; 
     my $out = `DatabasePump $dist dump.bin segments.bin cells.bin $tid`;
-    print $fh $out;
+    tolog $out;
     consoleOk "Saved to database";
 
 
 }
 
 sub ImageGrouping {
-    print $fh "\n\n=============ImageGrouping==================\n\n";
+    sep "ImageGrouping";
     consoleInfo "Running ImageGrouping";
 
     my $out = `ImageGrouping $dir \"$pos\" $img $animate`;
-    print $fh $out;
+    tolog $out;
 
     unless(-e "dump.bin"){
         consoleError "dump is not created. Check log file";
@@ -215,8 +235,8 @@ sub Segmenting {
     } else {
         $out = `Segmenting $img +RTS -K128M`;
     }
-    print $fh "\n\n=============SEGMENTING==================\n\n";
-    print $fh $out;
+    sep "Segmenting";
+    tolog $out;
 
     unless(-e "segments.bin"){
         consoleError "Segmenting failed. Check log file";
@@ -234,14 +254,14 @@ sub Segmenting {
 }
 
 sub Celling {
+
     consoleInfo "Running Celling";
 
-
-    print $fh "\n\n=============CELLING==================\n\n";
+    sep "Celling";
 
     my $out = `Celling`;
 
-    print $fh $out;
+    tolog $out;
 
     unless(-e "cells.bin"){
         consoleError "Celling failed. Check log file";

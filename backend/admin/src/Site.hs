@@ -62,6 +62,7 @@ import           Control.Monad.Trans
 import           Data.DatabaseTemplate
 import           Data.SearchBuilder  
 import           Database.HDBC.PostgreSQL (Connection) 
+import           Database.HDBC.SqlValue
 import qualified Data.ModelToSVG as SB  
 import           Data.ModelToSVG hiding (def, render, lines)
 import           Data.InRules 
@@ -160,6 +161,7 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/part_modifier/put", putModel (def :: PM.PartModifier))
          , ("/part_instance/get", getModel (def :: PI.PartInstance))
          , ("/part_instance/put", putModel (def :: PI.PartInstance))
+--         , ("/part_instance/update", updateModel "id" (def :: PI.PartInstance))
          , ("/notification/put", putModel (def :: NN.Notification))
          , ("/notification/get", getModel (def :: NN.Notification))
          , ("/part_instance/visual", visualPartInstance) 
@@ -226,22 +228,36 @@ putTournament = do
             let p = updateHashMap xs def 
             x <- runDb $ TRM.createTournament p  
             writeResult x
-
+-- for part_instance 
 
 getModel :: (Database Connection a, Mapable a) => a -> Application ()
 putModel :: (Mapable a, Database Connection a) => a -> Application ()
+-- updateModel :: (Mapable a, Database Connection a) => a -> Application () 
 getModel a = sgets 
         where sgets = do 
                   let (dtd, so) = build defaultBehaviours a  defaultExceptions  
                   (((l,o),xs),od) <- getPagesWithDTDOrdered so dtd 
                   ns <- runDb $ search xs od l o 
                   writeMapables (ns `asTypeOf` ([a]))
+
+
 putModel a = sputs 
     where sputs = do 
                 xs <- getJson 
                 let p = updateHashMap xs a
                 x <- runDb $ save p
                 writeResult x 
+
+
+updateModel k a = sputs 
+    where sputs = do 
+            xs <- getJson 
+            let v = (S.!) xs k 
+            s <- runDb $ do 
+                ps <- fromJust <$> load (fromSql v)  
+                let ts = toHashMap (ps `asTypeOf` a)
+                save (fromInRule (toInRule $ ts `S.union` xs ) `asTypeOf` a)
+            writeResult s
 
 
 

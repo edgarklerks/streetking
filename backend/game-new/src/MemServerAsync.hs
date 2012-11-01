@@ -361,6 +361,17 @@ clientCommand n1 n2 p = withContext 1 $ \c ->
                 x <- receiveProto r
                 print x 
 
+silentCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
+silentCommand n1 n2 p = withContext 1 $ \c -> 
+         withSocket c Req $ \r -> 
+         withSocket c Pull $ \d -> 
+            do 
+                ds <- bind d n1 
+                connect r n2 
+                sendProto r p
+                void $  receiveProto r
+
+
 
 
 modifysDVar :: (MonadGetter m s, MonadIO m, ModifyDVar m f) => (s -> f b) -> (b -> b) -> m ()

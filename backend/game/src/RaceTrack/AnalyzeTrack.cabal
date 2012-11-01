@@ -10,7 +10,8 @@ executable Optimize
     ghc-options: -rtsopts -O2
     build-depends:
         deepseq,
-        semigroups
+        semigroups,
+        DebugTraceHelpers
 
 executable DatabasePump
     main-is: DatabasePump.hs
@@ -18,7 +19,8 @@ executable DatabasePump
     ghc-options: -rtsopts -O2
     build-depends:
         HDBC-postgresql,
-        HDBC
+        HDBC,
+        DebugTraceHelpers
 
 executable Celling 
     main-is: Celling.hs
@@ -32,7 +34,8 @@ executable ImageGrouping
     build-depends:
        process,
        vector,
-       mtl
+       mtl,
+       DebugTraceHelpers
 
 executable SegmentingAlternative 
     main-is: SegmentingAlternative.hs
@@ -41,7 +44,8 @@ executable SegmentingAlternative
     build-depends: 
         binary,
         bytestring,
-        array
+        array,
+        DebugTraceHelpers
         
 
 executable Segmenting
@@ -55,6 +59,7 @@ executable Segmenting
         binary,
         array,
         QuickCheck,
-        bytestring 
+        bytestring, 
+        DebugTraceHelpers
 
 

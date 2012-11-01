@@ -41,7 +41,10 @@ module Data.Conversion (
        unionsObj,
        toString,
        pprint,
-       pprints
+       pprints,
+       object,
+       list,
+       project
 
 
 

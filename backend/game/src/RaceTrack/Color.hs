@@ -1,3 +1,4 @@
+{-# LANGUAGE ViewPatterns #-}
 module Color where
 
 import Data.Word 
