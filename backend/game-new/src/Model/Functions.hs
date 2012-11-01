@@ -19,10 +19,6 @@ $(mkFunctions [
         ("garage_actions_account", [''Integer], ''Bool, Scalar),
         ("car_get_worn_parts", [''Integer], ''CIP.CarInstanceParts, Row),
         ("car_get_missing_parts", [''Integer], ''PT.PartType, Row),
-        -- remove
---        ("garage_car_ready", [''Integer, ''Integer], ''String, Row),
---        ("garage_active_car_ready", [''Integer], ''String, Row),
-        -- / remove
         ("garage_set_active_car", [''Integer, ''Integer], ''Bool, Scalar),
         ("garage_unset_active_car", [''Integer, ''Integer], ''Bool, Scalar),
         ("claim_tasks", [''Integer, ''Integer, ''Integer], ''TK.Task, Row),
