@@ -17,9 +17,13 @@ import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
 
+import qualified Model.AccountProfile as AP
+
 import Data.Conversion
+
 type MString = Maybe String 
 type MInteger = Maybe Integer 
+
 $(genAll "AccountProfileMin" "account_profile" [             
                     ("id", ''Id),
                     ("nickname", ''String),
@@ -31,4 +35,6 @@ $(genAll "AccountProfileMin" "account_profile" [
                     ("continent_name", ''String)
         ])
 
+minify :: AP.AccountProfile -> AccountProfileMin 
+minify c = fromInRule $ project (toInRule (def :: AccountProfileMin)) (toInRule c) 
 
