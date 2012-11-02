@@ -47,8 +47,10 @@ $(genAll "CarInGarage" "car_in_garage"
         ("active", ''Bool),
         ("ready", ''Bool),
         ("year", ''Integer),
+        ("car_label", ''String),
         ("car_color", ''String)
     ])
+
 {-
 instance AS.ToJSON CarInGarage where
         toJSON c = AS.toJSON $ HM.fromList $ [ 
