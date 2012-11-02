@@ -42,6 +42,13 @@ $(genAll "CarMinimal" "car_in_garage"
         ("year", ''Integer)
     ])
 
+class ToCarMinimal a where
+        toCM :: a -> CarMinimal
+
+instance ToCarMinimal CIG.CarInGarage where
+        toCM x = fromInRule $ project (toInRule (def :: CarMinimal)) (toInRule x) 
+
+
 minify :: CIG.CarInGarage -> CarMinimal
-minify c = fromInRule $ project (toInRule (def :: CarMinimal)) (toInRule c) 
+minify = toCM
 

@@ -3,6 +3,7 @@
 
 module Data.RacingNew (
         RaceResult (..),
+        raceResult2FE,
         SectionResult (..),
         RaceConfig (..),
         SectionConfig (..),
@@ -18,7 +19,7 @@ module Data.RacingNew (
         race,
 
         raceData,
-       accelerationTime,
+        accelerationTime,
         brakingDistance,
         lateralAcceleration
     ) where
@@ -639,11 +640,18 @@ b = loadAndTest 36 321 4
 a :: IO ()
 a = loadAndTest 33 356 1
 
+
+getCIG :: Integer -> SqlTransaction Connection CIG.CarInGarage
+getCIG cid = aload cid (rollback $ "cannot find car for id " ++ show cid)
+
+getA :: Integer -> SqlTransaction Connection A.Account
+getA aid = aload aid (rollback $ "cannot find account for id " ++ show aid)
+
 loadCar :: Integer -> SqlTransaction Connection C.Car
-loadCar cid = C.carInGarageCar <$> aload cid (rollback $ "cannot find car for id " ++ show cid)
+loadCar cid = C.carInGarageCar <$> getCIG cid
 
 loadDriver :: Integer -> SqlTransaction Connection D.Driver
-loadDriver aid = D.accountDriver <$> aload aid (rollback $ "cannot find account for id " ++ show aid)
+loadDriver aid = D.accountDriver <$> getA aid
 
 loadTrack :: Integer -> SqlTransaction Connection T.Track
 loadTrack tid = T.trackDetailsTrack <$> agetlist ["track_id" |== toSql tid] [] 1000 0 (rollback $ "cannot find track data for id " ++ show tid)

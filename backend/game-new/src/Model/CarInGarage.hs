@@ -48,6 +48,10 @@ $(genAll "CarInGarage" "car_in_garage"
         ("ready", ''Bool),
         ("year", ''Integer),
         ("car_label", ''String),
+        ("prototype", ''Bool),
+        ("prototype_name", ''String),
+        ("prototype_available", ''Bool),
+        ("prototype_claimable", ''Bool),
         ("car_color", ''String)
     ])
 
