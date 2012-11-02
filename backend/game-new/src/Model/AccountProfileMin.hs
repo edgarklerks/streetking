@@ -17,6 +17,7 @@ import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
 
+import qualified Model.Account as A
 import qualified Model.AccountProfile as AP
 
 import Data.Conversion
@@ -35,6 +36,16 @@ $(genAll "AccountProfileMin" "account_profile" [
                     ("continent_name", ''String)
         ])
 
-minify :: AP.AccountProfile -> AccountProfileMin 
-minify c = fromInRule $ project (toInRule (def :: AccountProfileMin)) (toInRule c) 
+class ToAccountProfileMin a where
+        toAPM :: a -> AccountProfileMin
+
+instance ToAccountProfileMin AP.AccountProfile where
+        toAPM x = fromInRule $ project (toInRule (def :: AccountProfileMin)) (toInRule x)
+
+instance ToAccountProfileMin A.Account where
+        toAPM x = fromInRule $ project (toInRule (def :: AccountProfileMin)) (toInRule x)
+
+
+--minify :: AP.AccountProfile -> AccountProfileMin 
+--minify c = fromInRule $ project (toInRule (def :: AccountProfileMin)) (toInRule c) 
 
