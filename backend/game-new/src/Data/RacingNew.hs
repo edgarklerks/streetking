@@ -206,11 +206,12 @@ raceData p r = RaceData {
 runRaceWithParticipant :: RP.RaceParticipant -> T.Track -> E.Environment -> RaceResult 
 runRaceWithParticipant p t e = case raceWithParticipant p t (mkStdGen 0) of
         Left err -> undefined
-        Right res -> raceResult2FE res
+        Right res -> res
 
 -- convert to front-end units (km/h instead of m/s)
 raceResult2FE :: RaceResult -> RaceResult
 raceResult2FE r = r {
+        sectionResults = L.map sectionResult2FE $ sectionResults r,
         raceSpeedTop = ms2kmh $ raceSpeedTop r,
         raceSpeedFin = ms2kmh $ raceSpeedFin r,
         raceSpeedAvg = ms2kmh $ raceSpeedAvg r
