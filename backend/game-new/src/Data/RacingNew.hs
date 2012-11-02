@@ -187,7 +187,7 @@ race rc g = runRaceM doRace g rc
 
 -- run race with participant and track
 raceWithParticipant :: (RandomGen g) => RP.RaceParticipant -> T.Track -> g -> Either String RaceResult
-raceWithParticipant p t g = race (raceConfigWithParticipant p t) g
+raceWithParticipant p t g = raceResult2FE <$> race (raceConfigWithParticipant p t) g
 
 
 {-
