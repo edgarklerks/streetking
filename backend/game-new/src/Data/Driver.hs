@@ -6,6 +6,7 @@ module Data.Driver (
 
 import Data.Constants
 import qualified Model.Account as A
+import qualified Model.AccountProfile as AP
 
 data Driver = Driver {
     acceleration :: Double,
@@ -26,6 +27,13 @@ noobDriver = Driver 0.05 0.05 0.05 0.05 0.05
 
 leetDriver :: Driver
 leetDriver = Driver 0.8 0.8 0.8 0.8 0.8
+
+
+class ToDriver a where
+        toDriver :: a -> Driver
+
+instance ToDriver A.Account where
+        toDriver = accountDriver
 
 accountDriver :: A.Account -> Driver
 accountDriver a = Driver acc brk ctl itl rct

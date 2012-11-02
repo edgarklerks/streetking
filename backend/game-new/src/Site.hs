@@ -47,7 +47,7 @@ import qualified Model.CarInstance as CarInstance
 import qualified Model.CarInGarage as CIG 
 import qualified Model.CarMinimal as CMI 
 import qualified Model.Car3dModel as C3D
-import qualified Model.CarPrototype as CPro
+--import qualified Model.CarPrototype as CPro
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
 import qualified Model.PartInstance as PI 
@@ -292,7 +292,8 @@ marketModel = do
       let ctr = ("level" |<= (toSql $ A.level puser )) 
       ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id")
 --      ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
-      ns <- runDb (search (ctr:xs) [] l o) :: Application [CPro.CarPrototype]
+--      ns <- runDb (search (ctr:xs) [] l o) :: Application [CPro.CarPrototype]
+      ns <- runDb (searchCarInGarage (ctr:xs) [] l o)
       writeMapables ns
 
 marketAllowedParts :: Application ()
@@ -413,20 +414,21 @@ carBuy = do
 
             -- get car model
 --            car <- fromJust <$> load mid :: SqlTransaction Connection CM.CarMarket
-            car <- fromJust <$> load mid :: SqlTransaction Connection CPro.CarPrototype
+--            car <- fromJust <$> load mid :: SqlTransaction Connection CPro.CarPrototype
+            car <- getCarInGarage ["prototype" |== toSql True, "prototype_available" |== toSql True] (rollback "Car prototype not found")
         
             -- create shopping report
             reportShopper uid (def {
-                    SR.amount = abs(CPro.price car),
+                    SR.amount = abs(CIG.total_price car),
                     SR.car_instance_id =  Just cid,
                     SR.report_descriptor = "shop_car_buy"
                 })
 
             -- make payment
             transactionMoney uid (def {
-                    Transaction.amount = - abs(CPro.price car),
+                    Transaction.amount = - abs(CIG.total_price car),
                     Transaction.type = "car_instance",
-                    Transaction.type_id = CPro.car_model_id car
+                    Transaction.type_id = CIG.car_id car
                 })
 
             return cid
@@ -2196,9 +2198,10 @@ userClaimFreeCar = do
 
         -- get records and set free_car to false
         m <- runDb $ do
---            m <- aget ["id" |== toSql mid, "level" |== toSql (1 :: Integer)] (rollback "car cannot be claimed") :: SqlTransaction Connection CM.CarMarket 
-            m <- aget ["id" |== toSql mid, "prototype_claimable" |== toSql True] (rollback "car cannot be claimed") :: SqlTransaction Connection CPro.CarPrototype
             aget ["id" |== toSql uid, "free_car" |== toSql True] (rollback "you may not claim a free car") :: SqlTransaction Connection A.Account
+--            m <- aget ["id" |== toSql mid, "level" |== toSql (1 :: Integer)] (rollback "car cannot be claimed") :: SqlTransaction Connection CM.CarMarket 
+--            m <- aget ["id" |== toSql mid, "prototype_claimable" |== toSql True] (rollback "car cannot be claimed") :: SqlTransaction Connection CPro.CarPrototype
+            m <- getCarInGarage ["id" |== toSql mid, "prototype" |== toSql True, "prototype_claimable" |== toSql True] (rollback "car cannot be claimed")
             update "account" ["id" |== toSql uid] [] [("free_car", toSql False)]
             return m
         
