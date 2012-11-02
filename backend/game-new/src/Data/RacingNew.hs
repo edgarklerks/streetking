@@ -467,8 +467,11 @@ achievableSpeed v0 l = do
         k <- asks aero
         s <- asks topSpeed
         let res = ((v0 ** 3 - s ** 3) * (constant "e") ** (-( 3 * k * l) / m) + s ** 3) ** (1/3 :: Double)
-        when (v0 > res) $ throwError $ L.concat ["achievableSpeed: result is smaller than initial speed (vin = ", show v0, ", top speed = ", show s, ")"]
-        return res 
+--        when (v0 > res) $ throwError $ L.concat ["achievableSpeed: result is smaller than initial speed (vin = ", show v0, ", top speed = ", show s, ")"]
+--        return res 
+        case v0 > res of
+                True -> return v0
+                False -> return res
 
 -- TODO: correct for traction for low initial speeds
 accelerationTime :: Speed -> Speed -> SectionM Time 
