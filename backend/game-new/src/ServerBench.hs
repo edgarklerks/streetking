@@ -23,7 +23,6 @@ import Control.Monad
 
 serverPort = 9003
 serverAdd = "localhost" 
-
 main = do 
      s <- server serverAdd serverPort
      x <- asInRule $ sendPost "token=demodemodemo" s "Application/identify" InNull
@@ -49,10 +48,11 @@ main = do
             readTVar r 
         case p `mod` 100 == 0 && p > 0 of 
             True -> do  
-                print $ "time per request: " ++ (show $ (fromIntegral q / fromIntegral p) / 1000000 )
+                print $ "time per request: " ++ (show $ (fromIntegral q / fromIntegral p))
+                print $ "total time: " ++ (show q)
                 print $ "requests done: " ++ (show $ p)
                 etime <- getMicros 
-                print $ "Time lapsed: " ++ (show $ fromIntegral (etime - btime) / 1000000)
+                print $ "Time lapsed: " ++ (show $ fromIntegral (etime - btime))
 
 
             otherwise -> return ()
