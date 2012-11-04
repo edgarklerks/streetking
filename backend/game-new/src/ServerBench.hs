@@ -46,13 +46,13 @@ main = do
             n <- readTChan p 
             modifyTVar r (\(x,y) -> (x+1,y + n))
             readTVar r 
-        case p `mod` 100 == 0 && p > 0 of 
+        case floor p `mod` 100 == 0 && p > 0 of 
             True -> do  
-                print $ "time per request: " ++ (show $ (fromIntegral q / fromIntegral p :: Double))
+                print $ "time per request: " ++ (show $ (q / p :: Double))
                 print $ "total time: " ++ (show q)
                 print $ "requests done: " ++ (show $ p)
                 etime <- getMicros 
-                print $ "Time lapsed: " ++ (show $ fromIntegral (etime - btime) :: Double)
+                print $ "Time lapsed: " ++ (show $ (etime - btime))
 
 
             otherwise -> return ()
@@ -125,5 +125,7 @@ measure f = do
         return (t - s)
 
 -- microseconds time 
-getMicros :: IO Integer 
-getMicros = fromIntegral <$> (/1000000) <$> ((*) <$> getPOSIXTime <*> pure 1000000) 
+getMicros :: IO Double  
+getMicros = do 
+        s <- getPOSIXTime 
+        return (realToFrac s)
