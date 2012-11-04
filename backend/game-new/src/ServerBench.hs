@@ -86,7 +86,7 @@ sendGet ur s u o = do
                                     rqMethod = GET,
                                     rqHeaders = [
                                                 mkHeader HdrContentLength (show $ 0),
-                                                mkHeader HdrConnection "keep-alive"
+                                                mkHeader HdrConnection "close"
                                                 ],
                                     rqBody = B.pack [],
                                     rqURI = fromJust $ y 
