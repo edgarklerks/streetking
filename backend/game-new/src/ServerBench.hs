@@ -48,7 +48,7 @@ main = do
             readTVar r 
         case p `mod` 100 == 0 && p > 0 of 
             True -> do  
-                print $ "time per request: " ++ (show $ (fromIntegral q / fromIntegral p))
+                print $ "time per request: " ++ (show $ (fromIntegral q / fromIntegral p :: Double))
                 print $ "total time: " ++ (show q)
                 print $ "requests done: " ++ (show $ p)
                 etime <- getMicros 
