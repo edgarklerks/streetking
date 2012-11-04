@@ -52,7 +52,7 @@ main = do
                 print $ "total time: " ++ (show q)
                 print $ "requests done: " ++ (show $ p)
                 etime <- getMicros 
-                print $ "Time lapsed: " ++ (show $ fromIntegral (etime - btime))
+                print $ "Time lapsed: " ++ (show $ fromIntegral (etime - btime) :: Double)
 
 
             otherwise -> return ()
@@ -117,7 +117,7 @@ server :: String -> Int -> IO (HandleStream B.ByteString)
 server x p = openTCPConnection x p 
 
 -- | Measure the time of an operation in milliseconds 
-measure :: IO t -> IO Integer 
+measure :: IO t -> IO Double 
 measure f = do 
         s <- getMicros 
         f 
@@ -126,4 +126,4 @@ measure f = do
 
 -- microseconds time 
 getMicros :: IO Integer 
-getMicros = floor <$> ((*) <$> getPOSIXTime <*> pure 1000000)
+getMicros = fromIntegral <$> (/1000000) <$> ((*) <$> getPOSIXTime <*> pure 1000000) 
