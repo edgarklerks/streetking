@@ -290,7 +290,7 @@ marketModel = do
       uid <- getUserId
       puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
       let ctr = ("level" |<= (toSql $ A.level puser )) 
-      ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id")
+      ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id" +&& "prototype" +==| toSql True +&& "prototype_available" +==| toSql True)
 --      ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
 --      ns <- runDb (search (ctr:xs) [] l o) :: Application [CPro.CarPrototype]
       ns <- runDb (searchCarInGarage (ctr:xs) [] l o)
@@ -1850,6 +1850,10 @@ processRace t ps tid = do
                     R.type = 1,
                     R.data = map (\(p,r) -> raceData p r) rs 
                 }
+
+        -- apply energy cost
+        let ec = TT.energy_cost tdt
+
 
         cons $ "saved race " ++ (show rid)
 
