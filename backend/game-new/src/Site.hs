@@ -1612,20 +1612,30 @@ racePractice = do
 
             userActions uid
 
-            a <-  aload uid (rollback "you dont exist, go away") :: SqlTransaction Connection A.Account
-            am <- aload uid (rollback "profile not found") :: SqlTransaction Connection APM.AccountProfileMin
+            a <- aload uid (rollback "you dont exist, go away") :: SqlTransaction Connection A.Account
+            let am = APM.toAPM a
 
-            -- TODO: check track level
-            -- TODO: check user busy
+            -- check busy
+            when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
+
+            -- check track level
+            t <- aget ["id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            when (A.level a < TT.track_level t) $ rollback "Your are not ready for this track"
+
+            -- check user energy
+            let ecost = TT.energy_cost t * 10000
+            when (A.energy a < ecost) $ rollback "You don't have enough energy, bro"
 
             -- get active car
             g <- aget ["account_id" |== toSql uid] (rollback "garage not found") :: SqlTransaction Connection G.Garage 
---            c <-  fmap withDerivedParameters $ aget ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found") :: SqlTransaction Connection CIG.CarInGarage
---            cm <- fmap withDerivedParametersMin $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
             c <- getCarInGarage ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found")
+            -- TODO: active car reacy?
             let cm = CMI.minify c
 
             
+            -- apply energy cost
+            update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
+
             let y = RaceParticipant a am c cm Nothing
             
             t <- liftIO milliTime 
@@ -1663,14 +1673,27 @@ raceChallengeWith p = do
             userActions uid
             Task.run Task.User uid
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-            am <- aget ["id" |== toSql uid] (rollback "account min not found") :: SqlTransaction Connection APM.AccountProfileMin
---            c  <- fmap withDerivedParameters $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
---            cm <- fmap withDerivedParametersMin $ aload (fromJust $ CIG.id c) (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+            let am = APM.toAPM a
+
+            -- check busy
+            when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
+
+            -- check track level
+            t <- aget ["id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            when (A.level a < TT.track_level t) $ rollback "Your are not ready for this track"
+
+            -- check user energy
+            let ecost = TT.energy_cost t * 10000
+            when (A.energy a < ecost) $ rollback "You don't have enough energy, bro"
+
             c  <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found")
             let cm = CMI.minify c 
-            t  <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
+--            t  <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _  <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
+
+            -- apply energy cost
+            update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
 
             me <- case amt > 0 of
                     True -> Just <$> Escrow.deposit uid amt
@@ -1731,11 +1754,28 @@ raceChallengeAccept = do
             cons (me :: Maybe Integer)
 
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-            am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
---            c  <- fmap withDerivedParameters $ aget ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CIG.CarInGarage
---            cm <- fmap withDerivedParametersMin $ aget ["id" |== (toSql $ CIG.id c)] (rollback "Active car minimal not found") :: SqlTransaction Connection CMI.CarMinimal
+--            am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
+            let am = APM.toAPM a
+
+            let tid = Chg.track_id chg
+
+            -- check busy
+            when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
+
+            -- check track level
+            t <- aget ["id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            when (A.level a < TT.track_level t) $ rollback "Your are not ready for this track"
+
+            -- check user energy
+            let ecost = TT.energy_cost t * 10000
+            when (A.energy a < ecost) $ rollback "You don't have enough energy, bro"
+
+
             c <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car minimal not found") 
-            let cm = CMI.minify c 
+            let cm = CMI.toCM c 
+
+            -- apply energy cost
+            update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
 
             cons a
             cons am
@@ -1851,10 +1891,6 @@ processRace t ps tid = do
                     R.data = map (\(p,r) -> raceData p r) rs 
                 }
 
-        -- apply energy cost
-        let ec = TT.energy_cost tdt
-
-
         cons $ "saved race " ++ (show rid)
 
         let winner_id = rp_account_id $ fst $ head rs
@@ -1866,7 +1902,7 @@ processRace t ps tid = do
                 let ft = fin r
                 let isWinner = uid == winner_id
 
-                -- set account busy until user finish
+                -- set account busy until user finish; subtract energy
                 update "account" ["id" |== toSql uid] [] [("busy_until", toSql ft), ("busy_subject_id", toSql rid), ("busy_type", SqlInteger 2)]
 
                 -- task: update race time on user finish
