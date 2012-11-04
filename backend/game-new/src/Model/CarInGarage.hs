@@ -23,6 +23,7 @@ $(genAll "CarInGarage" "car_in_garage"
     [
         ("id", ''Id),
         ("car_id", ''Integer),
+        ("manufacturer_id", ''Integer),
         ("manufacturer_name", ''String),
         ("manufacturer_picture", ''String),
         ("weight", ''Integer),

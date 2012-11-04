@@ -21,6 +21,7 @@ $(genAll "Track" "track"
         ("city_id", ''Integer),
         ("name", ''String),
         ("level", ''Integer),
+        ("energy_cost", ''Integer),
         ("data", ''String),
         ("loop", ''Bool),
         ("length", ''Double),
