@@ -1619,7 +1619,7 @@ racePractice = do
             when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
 
             -- check track level
-            t <- aget ["id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            t <- aget ["track_id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
             when (A.level a < TT.track_level t) $ rollback "Your are not ready for this track"
 
             -- check user energy
@@ -1679,7 +1679,7 @@ raceChallengeWith p = do
             when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
 
             -- check track level
-            t <- aget ["id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            t <- aget ["track_id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
             when (A.level a < TT.track_level t) $ rollback "Your are not ready for this track"
 
             -- check user energy
@@ -1763,7 +1763,7 @@ raceChallengeAccept = do
             when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
 
             -- check track level
-            t <- aget ["id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            t <- aget ["track_id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
             when (A.level a < TT.track_level t) $ rollback "Your are not ready for this track"
 
             -- check user energy
