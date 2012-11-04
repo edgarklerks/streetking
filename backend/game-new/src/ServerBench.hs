@@ -22,7 +22,7 @@ import Control.Monad
 
 
 serverPort = 9003
-serverAdd = "r3.graffity.me" 
+serverAdd = "localhost" 
 
 main = do 
      s <- server serverAdd serverPort
