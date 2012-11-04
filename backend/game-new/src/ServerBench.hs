@@ -35,7 +35,7 @@ main = do
      print (usr :: String)
      p <- newTChanIO  
      btime <- getMicros
-     replicateM_ 100 $ forkIO $ forever $ do 
+     replicateM_ 10 $ forkIO $ forever $ do 
             s <- server serverAdd serverPort
             x <- measure $ benchUserMe ("user_token=" <> usr)  s 
             atomically $ writeTChan p x 
