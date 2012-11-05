@@ -28,19 +28,23 @@ char * buildPacket (enum Method, char *, char *, char *);
 int doRequest(char *, int, char *);
 int methodSize(enum Method);
 const char * methodString(enum Method);
+enum Method getMethod(const char *);
 
 
 int main(int argc, char * argv[]){
         /* prebuilt packet */
 
-        if(argc < 3){
+        if(argc < 5){
                 error("not enough parameters");
         }
 
-        char * ps = buildPacket(GET, 
+        int repeat = atoi(argv[1]);
+        enum Method method = getMethod(argv[2]);
+
+        char * ps = buildPacket(method, 
                         "r3.graffity.me",
-                        argv[1],
-                        argv[2]);
+                        argv[3],
+                        argv[4]);
        
         int i = 0;
 
@@ -48,7 +52,7 @@ int main(int argc, char * argv[]){
         int fails = 0;
         time_t successTime = 0; 
         time_t failTime = 0; 
-        for(i = 0; i < 50; i++){
+        for(i = 0; i < repeat; i++){
 
             time_t btime = time(0);
             int n = doRequest("r3.graffity.me", 9003, ps);
@@ -66,6 +70,29 @@ int main(int argc, char * argv[]){
 
 
         return 0; 
+}
+
+enum Method getMethod(const char * c){
+        if(strncmp(c, "POST",4)){
+                return POST;
+        }
+        if(strncmp(c, "PUT", 3)){
+                return PUT;
+        }
+        if(strncmp(c,"HEAD",4)){
+                return HEAD;
+        }
+        if(strncmp(c,"GET",3)){
+                return GET;
+        }
+        if(strncmp(c,"DELETE",5)){
+                return DELETE;
+        }
+        if(strncmp(c,"OPTIONS",7)){
+                return OPTIONS;
+        }
+        error("Not a valid method supplied");
+
 }
 
 int doRequest(char * host, int port, char * packet){
@@ -211,6 +238,6 @@ int methodSize(enum Method p){
 }
 
 void error(const char * msg){
-    printf("%s\n", msg);
+    fprintf(stderr, "%s\n", msg);
     exit(-1);
 }
