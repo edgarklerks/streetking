@@ -251,7 +251,7 @@ userMe = do
 loadMenu :: Application ()
 loadMenu = do 
     mt <- getOParam "tree_type"
-    n <- runDb (search ["menu_type" |== (toSql mt) ] [Order ("number", []) True] 100000 0) :: Application [MM.MenuModel] 
+    n <- runDb (search ["menu_type" |== (toSql mt) ] [Order ("number", []) True] 1000 0) :: Application [MM.MenuModel] 
     writeResult  (AS.toJSON (MM.fromFlat (convert n :: MM.FlatTree)))
 
 marketPlace :: Application ()
@@ -303,7 +303,7 @@ marketAllowedParts = do
     let d = updateHashMap xs (def :: MPT.MarketPartType)
     p <- runDb $ do 
             x <- fromJust <$> load uid :: SqlTransaction Connection A.Account 
-            (search ["car_id" |== (toSql $ MPT.car_id d) .&& "level" |<= (toSql $ A.level x)] [Order ("sort_part_type",[]) True] 10000 0) :: SqlTransaction Connection [MPT.MarketPartType]
+            (search ["car_id" |== (toSql $ MPT.car_id d) .&& "level" |<= (toSql $ A.level x)] [Order ("sort_part_type",[]) True] 1000 0) :: SqlTransaction Connection [MPT.MarketPartType]
     writeResult (AS.toJSON $ MM.mkTabs "PARTS" (fmap MPT.name p))
 
 marketBuy :: Application ()
@@ -832,7 +832,20 @@ marketCars = do
                                     "level" +<=| (toSql $ A.level puser)
                                     )
                     )
-    ns <- runDb $ search xs [] l o :: Application [MPC.MarketPlaceCar]
+    -- TODO: single integrated detailed car instance type
+--    ns <- runDb $ search xs [] l o :: Application [MPC.MarketPlaceCar]
+    ns <- runDb $ do
+            ns <- search xs [] l o :: SqlTransaction Connection [MPC.MarketPlaceCar]
+            forM ns $ \n -> do
+                    c <- loadCarInGarage (fromJust $ MPC.car_instance_id n) $ rollback "cannot load CIG"
+                    return $ n {
+                            MPC.acceleration = CIG.acceleration c,
+                            MPC.top_speed = CIG.top_speed c,
+                            MPC.stopping = CIG.stopping c,
+                            MPC.cornering = CIG.cornering c,
+                            MPC.nitrous = CIG.nitrous c
+                        }
+            
     writeMapables ns 
     
 
@@ -1526,7 +1539,7 @@ partImprove uid pi = do
                         let p = fromJust p'             
                         let a = fromIntegral (sk * ut)
                         void $ save (p {
-                                PI.improvement = min 10000 $ (PI.improvement p + round (a * pr'))
+                                PI.improvement = min (10^6) $ (PI.improvement p + round (a * pr'))
                             })
 
                         when (PLID.task_end pi < s) $ do 
