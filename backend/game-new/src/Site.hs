@@ -1643,8 +1643,7 @@ racePractice = do
             g <- aget ["account_id" |== toSql uid] (rollback "garage not found") :: SqlTransaction Connection G.Garage 
             c <- getCarInGarage ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found")
             -- TODO: active car reacy?
-            let cm = CMI.minify c
-
+            let cm = CMI.toCM c
             
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]

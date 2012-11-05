@@ -31,7 +31,7 @@ $(genAll "AccountProfileMin" "account_profile" [
                     ("picture_small", ''MString),
                     ("picture_medium", ''MString),
                     ("picture_large", ''MString),
-                    ("level", ''MInteger),
+                    ("level", ''Integer),
                     ("city_name", ''String),
                     ("continent_name", ''String)
         ])
