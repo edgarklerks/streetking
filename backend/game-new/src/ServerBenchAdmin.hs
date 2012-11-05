@@ -7,18 +7,21 @@ import System.Environment
 import qualified Data.ByteString.Char8 as B 
 import Control.Monad 
 import Data.Monoid 
+uriCtrl = "tcp://*:9006"
+uriData = "tcp://*:9005"
 
 
 main = do
     forkIO $ receiveEvents 
 
-    forkIO $ startUri 
+    forkIO $ startUri >> print "done sending"
+
     forever $ threadDelay 10000
 
 
 receiveEvents = withContext 1 $ \c -> 
                     withSocket c Pull $ \s -> do
-                            bind s "tcp://r3.graffity.me:9005"
+                            bind s uriData 
                             keepReceiving s
         where keepReceiving s = do 
                         xs <- receive s 
@@ -29,14 +32,16 @@ receiveEvents = withContext 1 $ \c ->
 
 startUri = do 
         [xs] <- getArgs 
+        print xs 
         sendUri xs
                 
 
 sendUri uri = withContext 1 $ \c -> 
                 withSocket c Pub $ \s -> do 
-                            bind s "tcp://r3.graffity.me:9006"
+                            bind s uriCtrl
+                            threadDelay 100000
 
-                            replicateM_ 1000 $ do
+                            replicateM_ 10000 $ do
                                     send s [] ("uri " <> (B.pack uri))
 
        
