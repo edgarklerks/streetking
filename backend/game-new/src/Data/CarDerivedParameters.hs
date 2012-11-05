@@ -33,6 +33,8 @@ import Data.Maybe
 import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
 
+import qualified Model.MarketPlaceCar as MPC
+
 import Data.CarReady
 
 todbi :: Double -> Integer
@@ -163,6 +165,9 @@ getCarInGarage cs f = do
 
 loadCarInGarage :: Integer -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CIG.CarInGarage
 loadCarInGarage i f = getCarInGarage ["id" |== toSql i] f
+
+--ptest :: (ToInRule a, ToInRule b, FromInRule b) => a -> b -> b 
+--ptest a b = fromInRule $ project (toInRule b) (toInRule a)
 
 searchCarMinified :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [CMI.CarMinimal]
 searchCarMinified cs os l o = (map CMI.minify) <$> searchCarInGarage cs os l o
