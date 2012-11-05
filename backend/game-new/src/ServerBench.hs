@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Main where 
 
 
@@ -6,7 +7,8 @@ import Control.Applicative
 import System.CPUTime 
 import Network.TCP 
 import Network.HTTP 
-import qualified Data.ByteString.Lazy as B
+import qualified Data.ByteString.Lazy.Char8 as B
+import qualified Data.ByteString.Char8 as BL
 import Control.Concurrent.STM 
 import Control.Concurrent 
 import Data.Conversion  
@@ -19,6 +21,8 @@ import Data.Aeson
 import qualified Data.HashMap.Strict as S
 import System.ZMQ3
 import Control.Monad 
+import System.Process 
+import GHC.IO.Exception
 
 
 serverPort = 9003
@@ -34,41 +38,85 @@ main = do
      let usr = fromInRule $ fromJust (n .> "result")
      print (usr :: String)
      p <- newTChanIO  
-     btime <- getMicros
-     replicateM_ 100 $ forkIO $ forever $ do 
-            s <- server serverAdd serverPort
-            x <- measure $ benchUserMe ("user_token=" <> usr)  s 
-            atomically $ writeTChan p x 
-     r <- newTVarIO (0,0) 
-
+     print "Wait state, waiting on command"
+     uri <- waitOnPeer 
+     print "starting"
+     replicateM_ 10 $ forkIO $ do 
+          x <- benchProg uri usr dev  
+          case x of 
+            Nothing -> return ()
+            Just a -> atomically $ writeTChan p a 
      forkIO $ forever $ do 
-        (p,q) <- atomically $ do 
-            n <- readTChan p 
-            modifyTVar r (\(x,y) -> (x+1,y + n))
-            readTVar r 
-        case floor p `mod` 100 == 0 && p > 0 of 
-            True -> do  
-                print $ "time per request: " ++ (show $ (q / p :: Double))
-                print $ "total time: " ++ (show q)
-                print $ "requests done: " ++ (show $ p)
-                etime <- getMicros 
-                print $ "Time lapsed: " ++ (show $ (etime - btime))
-
-
-            otherwise -> return ()
+            s <- atomically $ readTChan p 
+            sendToPeer s 
+            print "Result"
+            print s 
      forever $ threadDelay 10000 
-
-
-
-
-
-        
-
      return () 
 
+waitOnPeer = withContext 1 $ \c -> 
+             withSocket c Sub $ \(s :: Socket Sub) -> do
+                     connect s "tcp://r3.graffity.me:9006"
+                     subscribe s "uri"
+                     waitOnPeer s 
+        where waitOnPeer s = do 
+                    r <- receive s  
+                    return (BL.unpack r) 
+
+
+sendToPeer out = withContext 1 $ \c -> 
+             withSocket c Push $ \s -> do
+                     connect s "tcp://r3.graffity.me:9005"
+                     send s [] (BL.pack $ show out) 
+
+
+
+
+
         
-benchUserMe q s = do 
-            sendGet q s "User/me" (params [])
+
+
+data Output = OUT {
+        successes :: Int,
+        successesTime :: Int, 
+        failures :: Int, 
+        failuresTime :: Int 
+    } deriving (Show, Read)
+
+benchProg uri usr dev = do 
+        (exitcode, sout, serr) <- readProcessWithExitCode "./stress" [
+                                                          "50"
+                                                        , "POST"
+                                                        , uri 
+                                                                <> "?" 
+                                                                <> "application_token=" 
+                                                                <> urlEncode dev
+                                                                <> "&user_token="
+                                                                <> urlEncode usr
+                                                         , "{}"
+                                                            ] "" 
+        if exitcode == ExitSuccess  
+                then 
+                    return (Just $ parseOut sout)
+                else 
+                    return $ Nothing 
+       
+
+
+
+parseOut :: String -> Output 
+parseOut xs = let bs = breaks ' ' xs 
+              in case bs of 
+                [n,p,q,r] -> OUT (read n) (read p) (read q) (read r)
+                otherwise -> error "failure to parse"
+
+
+breaks :: Char -> String -> [String]
+breaks c [] = [] 
+breaks c xs = let (n, (rest)) = break (==c) xs 
+              in case rest of 
+                    [] -> [n]
+                    (_:rest) -> n : breaks c rest 
 
 mkTokens u d = "user_token=" <> u  <> "&application_token=" <> d
 
