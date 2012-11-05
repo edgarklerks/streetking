@@ -22,7 +22,7 @@ import Control.Monad
 
 
 serverPort = 9003
-serverAdd = "localhost" 
+serverAdd = "r3.graffity.me" 
 main = do 
      s <- server serverAdd serverPort
      x <- asInRule $ sendPost "token=demodemodemo" s "Application/identify" InNull
@@ -35,7 +35,7 @@ main = do
      print (usr :: String)
      p <- newTChanIO  
      btime <- getMicros
-     replicateM_ 50 $ forkIO $ forever $ do 
+     replicateM_ 100 $ forkIO $ forever $ do 
             s <- server serverAdd serverPort
             x <- measure $ benchUserMe ("user_token=" <> usr)  s 
             atomically $ writeTChan p x 
