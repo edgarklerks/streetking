@@ -40,10 +40,10 @@ class ToAccountProfileMin a where
         toAPM :: a -> AccountProfileMin
 
 instance ToAccountProfileMin AP.AccountProfile where
-        toAPM x = fromInRule $ project (toInRule (def :: AccountProfileMin)) (toInRule x)
+        toAPM x = let y = def :: AccountProfileMin in fromInRule $ project (toInRule y) (toInRule x)
 
 instance ToAccountProfileMin A.Account where
-        toAPM x = fromInRule $ project (toInRule (def :: AccountProfileMin)) (toInRule x)
+        toAPM x = let y = def :: AccountProfileMin in fromInRule $ project (toInRule y) (toInRule x)
 
 
 --minify :: AP.AccountProfile -> AccountProfileMin 

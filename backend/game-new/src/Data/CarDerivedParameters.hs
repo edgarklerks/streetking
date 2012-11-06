@@ -170,13 +170,13 @@ loadCarInGarage i f = getCarInGarage ["id" |== toSql i] f
 --ptest a b = fromInRule $ project (toInRule b) (toInRule a)
 
 searchCarMinified :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [CMI.CarMinimal]
-searchCarMinified cs os l o = (map CMI.minify) <$> searchCarInGarage cs os l o
+searchCarMinified cs os l o = (map CMI.toCM) <$> searchCarInGarage cs os l o
 
 getCarMinified :: Constraints -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CMI.CarMinimal
-getCarMinified cs f = CMI.minify <$> getCarInGarage cs f
+getCarMinified cs f = CMI.toCM <$> getCarInGarage cs f
 
 loadCarMinified :: Integer -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CMI.CarMinimal
-loadCarMinified i f = CMI.minify <$> loadCarInGarage i f
+loadCarMinified i f = CMI.toCM <$> loadCarInGarage i f
 
 
 withDerivedParameters :: CIG.CarInGarage -> CIG.CarInGarage
