@@ -7,8 +7,8 @@ import System.Environment
 import qualified Data.ByteString.Char8 as B 
 import Control.Monad 
 import Data.Monoid 
-uriCtrl = "tcp://172.20.0.10:9006"
-uriData = "tcp://172.20.0.10:9005"
+uriCtrl = "tcp://*:9006"
+uriData = "tcp://*:9005"
 
 
 main = do
@@ -39,8 +39,7 @@ startUri = do
 sendUri uri = withContext 1 $ \c -> 
                 withSocket c Push $ \s -> do 
                             bind s uriCtrl
-
-                            forever $ do
+                            replicateM_ 10 $ do
                                     send s [] ((B.pack uri))
 
        
