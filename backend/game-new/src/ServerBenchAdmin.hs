@@ -37,14 +37,10 @@ startUri = do
                 
 
 sendUri uri = withContext 1 $ \c -> 
-                withSocket c Req $ \s -> do 
+                withSocket c Push $ \s -> do 
                             bind s uriCtrl
-                            threadDelay 100000
 
-                            replicateM_ 10$ do
-                                    threadDelay 100
+                            forever $ do
                                     send s [] ((B.pack uri))
-                                    x <- receive s 
-                                    print $ "received :" <> x 
 
        

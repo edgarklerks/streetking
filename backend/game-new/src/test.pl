@@ -24,7 +24,7 @@ use WWW::Mechanize;
 use JSON::XS;
 
 # Config 
-my $server = "http://r3.graffity.me:9003";
+my $server = "http://localhost:9003";
 my $email = "edgar.klerks\@gmail.com";
 my $password = "wetwetwet";
 
@@ -38,7 +38,7 @@ setup();
 webBench();
 
 sub webBench {
-   my $res = `webbench -c 10 --get --http11 '$server/User/me?user_token=$usr'`; 
+   my $res = `webbench -c 2 --get --http11 '$server/index.html'`; 
    print $res;
 }
 

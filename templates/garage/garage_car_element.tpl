@@ -15,40 +15,42 @@
 			<div class="garage-car-element-vertical-line"></div>
 			<div class="garage-car-element-infobar-container">
 				<div class="garage-car-element-info-data-box">
-					<div class="garage-car-element-info-data-name">Top speed <span>[:eval floor((top_speed/10000))]</span> km/h</div>
+					<div class="garage-car-element-info-data-name">Top speed <span>[:eval floor(top_speed/10000)]</span> <b>km/h</b></div>
 					<div class="garage-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((top_speed/10000)*100)]%"></div>
+						<div class="garage-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+top_speed/10000+",80,200]")]%'></div>
 					</div>
 				</div>
 				<div class="garage-car-element-info-data-box">
-					<div class="garage-car-element-info-data-name">Acceleration <span>[:eval floor(acceleration/1000)/10]</span> s</div>
+					<div class="garage-car-element-info-data-name">Acceleration <span>[:eval floor(acceleration/1000)/10]</span> <b>s</b></div>
 					<div class="garage-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-car-element-progress-bar ui-corner-all-1px" style="width:[:eval (acceleration/10000)]%"></div>
+						<div class="garage-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+acceleration/10000+",-4,10]")]%'></div>
 					</div>
 				</div>
 				<div class="garage-car-element-info-data-box">
-					<div class="garage-car-element-info-data-name">Braking <span>[:eval floor((braking/10000))]</span></div>
+					<div class="garage-car-element-info-data-name">Braking <span>[:eval floor(stopping/10000)]</span> <b>m</b></div>
 					<div class="garage-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((braking/10000)*100)]%"></div>
+						<div class="garage-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+stopping/10000+",-15,70]")]%'></div>
 					</div>
 				</div>
 				<div class="garage-car-element-info-data-box">
-					<div class="garage-car-element-info-data-name">Handling <span>[:eval floor((handling/10000))]</span></div>
+					<div class="garage-car-element-info-data-name">Handling <span>[:eval floor(cornering/1000)/10]</span> <b>g</b></div>
 					<div class="garage-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((handling/10000)*100)]%"></div>
+						<div class="garage-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+cornering/10000+",0.3,1]")]%'></div>
 					</div>
 				</div>
 				<div class="garage-car-element-info-data-box">
-					<div class="garage-car-element-info-data-name">Weight <span>[:weight]</span> kg</div>
+					<div class="garage-car-element-info-data-box-name">Used <span>[:eval floor(wear/100)]</span> <b>%</b></div>
 					<div class="garage-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/10000)*100)]%"></div>
+						<div class="garage-car-element-progress-bar garage-car-element-progress-used ui-corner-all-1px" style="width:[:eval floor(wear/100)]%"></div>
 					</div>
 				</div>
 				<div class="garage-car-element-info-data-box">
-					<div class="garage-car-element-info-data-box-name">Used <span>[:eval floor(wear/1000)]</span> %</div>
+					<div class="garage-car-element-info-data-name">Weight <span>[:weight]</span> <b>kg</b></div>
+					<!--
 					<div class="garage-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-car-element-progress-bar garage-car-element-progress-used ui-corner-all-1px" style="width:[:eval floor(wear/1000)]%"></div>
+						<div class="garage-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+cornering/10000+",0.3,1]")]%'></div>
 					</div>
+					-->
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -61,7 +63,7 @@
 			[:when (ready == false)]{<a href="#Garage/carReady?id=[:id]" class="button car-button" module="GARAGE_CAR_SET_ACTIVE_FAIL">set active<div>&nbsp;</div></a>}
 		}
 		<a href="#Garage/car?car_instance_id=[:id]&car_id=[:car_id]" class="button car-button" module="GARAGE_CAR_SETUP">set up<div>&nbsp;</div></a>
-		[:when (wear > 0 )]{<a href="#Garage/car?car_instance_id=[:id]" class="button car-button cmd-repair" module="GARAGE_TASK">repair<div>&nbsp;</div></a>}
+		[:when (wear > 0 )]{<a href="#Personnel/task?subject_id=[:id]&task=repair_car" class="button car-button cmd-repair" module="GARAGE_TASK">repair<div>&nbsp;</div></a>}
 		[:when (active == false)]{<a href="#Garage/car?car_instance_id=[:id]" class="button car-button" module="GARAGE_CAR_SELL">sell<div>&nbsp;</div></a>}
 	</div>
 	<div class="clearfix"></div>
