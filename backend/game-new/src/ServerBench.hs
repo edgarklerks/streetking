@@ -29,6 +29,7 @@ uriCtrl = "tcp://172.20.0.10:9006"
 uriData = "tcp://172.20.0.10:9005"
 serverPort = 9003
 serverAdd = "r3.graffity.me" 
+
 main = do 
      s <- server serverAdd serverPort
      x <- asInRule $ sendPost "token=demodemodemo" s "Application/identify" InNull
@@ -40,20 +41,13 @@ main = do
      let usr = fromInRule $ fromJust (n .> "result")
      print (usr :: String)
      forkIO $ forever $ do 
-         p <- newTChanIO  
          print "Wait state, waiting on command"
          uri <- waitOnPeer 
          print "starting"
-         replicateM_ 10 $ forkIO $ do 
-              x <- benchProg uri usr dev  
-              case x of 
+         x <- benchProg uri usr dev  
+         case x of 
                 Nothing -> return ()
-                Just a -> atomically $ writeTChan p a 
-         forkIO $ forever $ do 
-                s <- atomically $ readTChan p 
-                sendToPeer s 
-                print "Result"
-                print s 
+                Just a -> sendToPeer s  
      forever $ threadDelay 10000 
      return () 
 
