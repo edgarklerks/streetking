@@ -1699,7 +1699,7 @@ raceChallengeWith p = do
             when (A.energy a < ecost) $ rollback "You don't have enough energy, bro"
 
             c  <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found")
-            let cm = CMI.minify c 
+            let cm = CMI.toCM c 
 --            t  <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
             _  <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType

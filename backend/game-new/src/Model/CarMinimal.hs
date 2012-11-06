@@ -46,9 +46,9 @@ class ToCarMinimal a where
         toCM :: a -> CarMinimal
 
 instance ToCarMinimal CIG.CarInGarage where
-        toCM x = fromInRule $ project (toInRule (def :: CarMinimal)) (toInRule x) 
+        toCM x = let y = def :: CarMinimal in fromInRule $ project (toInRule y) (toInRule x) 
 
 
-minify :: CIG.CarInGarage -> CarMinimal
-minify = toCM
+--minify :: CIG.CarInGarage -> CarMinimal
+--minify = toCM
 
