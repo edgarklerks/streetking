@@ -13,24 +13,26 @@
 			<div class="part-element-vertical-line"></div>
 			<div class="part-element-infobar-container">
 				<div class="part-element-info-data-box">
-					<div class="part-element-info-data-box-name">[:parameter1_name]: <span>+[:parameter1]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
+					<div class="part-element-info-data-box-name">[:parameter1_name]: <span>+[:eval parameter1]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
 					<div class="part-element-progress-bar-box ui-corner-all-1px">
-						<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter1/100)*100]%"></div>
+						<div class="part-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+parameter1/100+",40,70]")]%'></div>
 					</div>
 				</div>
 				[:when (parameter2_name)]{
 					<div class="part-element-info-data-box">
 						<div class="part-element-info-data-box-name">[:parameter2_name]: <span>+[:parameter2]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
 						<div class="part-element-progress-bar-box ui-corner-all-1px">
-							<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter2/100)*100]%"></div>
+							<div class="part-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+parameter2/100+",40,70]")]%'></div>
 						</div>
 					</div>
 				}
 				<div class="part-element-info-data-box">
 					<div class="part-element-info-data-box-name">Weight <span>+[:weight]</span> kg</div>
+					<!--
 					<div class="part-element-progress-bar-box ui-corner-all-1px">
 						<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/100)*100)]%"></div>
 					</div>
+					-->
 				</div>
 			</div>
 			<div class="clearfix"></div>

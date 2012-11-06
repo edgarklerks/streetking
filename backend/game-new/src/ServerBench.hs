@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Main where 
+module Main where
+
 
 
 import Data.Time.Clock.POSIX 
@@ -25,8 +26,11 @@ import System.Process
 import GHC.IO.Exception
 
 
+uriCtrl = "tcp://172.20.0.10:9006"
+uriData = "tcp://172.20.0.10:9005"
 serverPort = 9003
 serverAdd = "r3.graffity.me" 
+
 main = do 
      s <- server serverAdd serverPort
      x <- asInRule $ sendPost "token=demodemodemo" s "Application/identify" InNull
@@ -37,27 +41,20 @@ main = do
                                ("password", "wetwetwet")]
      let usr = fromInRule $ fromJust (n .> "result")
      print (usr :: String)
-     p <- newTChanIO  
-     print "Wait state, waiting on command"
-     uri <- waitOnPeer 
-     print "starting"
-     replicateM_ 10 $ forkIO $ do 
-          x <- benchProg uri usr dev  
-          case x of 
-            Nothing -> return ()
-            Just a -> atomically $ writeTChan p a 
      forkIO $ forever $ do 
-            s <- atomically $ readTChan p 
-            sendToPeer s 
-            print "Result"
-            print s 
+         print "Wait state, waiting on command"
+         uri <- waitOnPeer 
+         print "starting"
+         x <- benchProg uri usr dev  
+         case x of 
+                Nothing -> return ()
+                Just a -> sendToPeer a  
      forever $ threadDelay 10000 
      return () 
 
 waitOnPeer = withContext 1 $ \c -> 
-             withSocket c Sub $ \(s :: Socket Sub) -> do
-                     connect s "tcp://r3.graffity.me:9006"
-                     subscribe s "uri"
+             withSocket c Pull $ \s -> do
+                     connect s uriCtrl 
                      waitOnPeer s 
         where waitOnPeer s = do 
                     r <- receive s  
@@ -66,7 +63,7 @@ waitOnPeer = withContext 1 $ \c ->
 
 sendToPeer out = withContext 1 $ \c -> 
              withSocket c Push $ \s -> do
-                     connect s "tcp://r3.graffity.me:9005"
+                     connect s uriData  
                      send s [] (BL.pack $ show out) 
 
 
@@ -96,9 +93,11 @@ benchProg uri usr dev = do
                                                          , "{}"
                                                             ] "" 
         if exitcode == ExitSuccess  
-                then 
+                then do
+                    print "lala"
                     return (Just $ parseOut sout)
-                else 
+                else do
+                    print serr 
                     return $ Nothing 
        
 
