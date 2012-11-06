@@ -58,12 +58,11 @@ main = do
      return () 
 
 waitOnPeer = withContext 1 $ \c -> 
-             withSocket c Rep $ \(s :: Socket Rep) -> do
+             withSocket c Pull $ \s -> do
                      connect s uriCtrl 
                      waitOnPeer s 
         where waitOnPeer s = do 
                     r <- receive s  
-                    send s [] "ok" 
                     return (BL.unpack r) 
 
 
