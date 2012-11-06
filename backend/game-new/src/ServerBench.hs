@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Main where 
+module Main where
+
 
 
 import Data.Time.Clock.POSIX 
@@ -92,9 +93,11 @@ benchProg uri usr dev = do
                                                          , "{}"
                                                             ] "" 
         if exitcode == ExitSuccess  
-                then 
+                then do
+                    print "lala"
                     return (Just $ parseOut sout)
-                else 
+                else do
+                    print serr 
                     return $ Nothing 
        
 
