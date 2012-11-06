@@ -47,7 +47,7 @@ main = do
          x <- benchProg uri usr dev  
          case x of 
                 Nothing -> return ()
-                Just a -> sendToPeer s  
+                Just a -> sendToPeer a  
      forever $ threadDelay 10000 
      return () 
 
