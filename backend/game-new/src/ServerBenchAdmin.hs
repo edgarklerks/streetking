@@ -25,6 +25,7 @@ receiveEvents = withContext 1 $ \c ->
                             keepReceiving s
         where keepReceiving s = do 
                         xs <- receive s 
+                        print "recv line"
                         appendFile "data.csv" (B.unpack xs <> "\n") 
                         keepReceiving s 
 
@@ -39,7 +40,8 @@ startUri = do
 sendUri uri = withContext 1 $ \c -> 
                 withSocket c Push $ \s -> do 
                             bind s uriCtrl
-                            replicateM_ 10 $ do
+                            replicateM_ 100 $ do
+                                    threadDelay 100000
                                     send s [] ((B.pack uri))
 
        
