@@ -43,10 +43,10 @@ main = do
      print (usr :: String)
      forkIO $ forever $ do 
          print "Wait state, waiting on command"
-         uri <- waitOnPeer 
+         (uri, meth, dat) <- waitOnPeer 
          print "starting"
          s <- floor <$> getPOSIXTime
-         x <- benchProg uri usr dev  
+         x <- benchProg uri meth dat usr dev  
          case x of 
                 Nothing -> return ()
                 Just a -> sendToPeer (s,a)  
@@ -59,7 +59,7 @@ waitOnPeer = withContext 1 $ \c ->
                      waitOnPeer s 
         where waitOnPeer s = do 
                     r <- receive s  
-                    return (BL.unpack r) 
+                    return $ read (BL.unpack r) :: (String, String, String)
 
 
 sendToPeer out = withContext 1 $ \c -> 
@@ -88,17 +88,17 @@ data Output = OUT {
         failuresTime :: Int 
     } deriving (Show, Read)
 
-benchProg uri usr dev = do 
+benchProg uri meth dat usr dev = do 
         (exitcode, sout, serr) <- readProcessWithExitCode "./stress" [
                                                           "5000"
-                                                        , "POST"
+                                                        , meth
                                                         , uri 
                                                                 <> "?" 
                                                                 <> "application_token=" 
                                                                 <> urlEncode dev
                                                                 <> "&user_token="
                                                                 <> urlEncode usr
-                                                         , "{}"
+                                                         , dat
                                                             ] "" 
         if exitcode == ExitSuccess  
                 then do
