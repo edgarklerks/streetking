@@ -1,22 +1,37 @@
 [:when (sortFieldNames)]{
-	<form id="list_form_filter" style="border:1px solid #f00; text-align:left;">
+	<div class="horizontal-line">&nbsp;</div>
+	<form id="list_form_filter" style="text-align:left;">
 	[:repeat data:sortFieldNames as:fName] {
 		[:when (res == "market_parts")]{
 			[:when (fName == "name")]{
-				<div>[:fName] -> <input type="text" name="[:fName]" value="" list="part_type" listFillField="name"></div>
+				<div><label>[:fName]:</label> <input type="text" name="[:fName]" value="" list="part_type" listFillField="name" class="ui-button-text"></div>
 			}
 			[:when (fName != "name")]{
-				<div>[:fName] -> <input type="text" name="[:fName]" value=""></div>
+				<div><label>[:fName]:</label> <input type="text" name="[:fName]" value="" class="ui-button-text"></div>
 			}
 			
 		}
 		[:when ((res != "market_parts"))]{
-			<div>[:fName] -> <input type="text" name="[:fName]" value=""></div>
+			<div><label>[:fName]:</label> <input type="text" name="[:fName]" value="" class="ui-input-text ui-corner-all-2px" class="ui-button-text"></div>
 		}
 	}
-		<input type="button" value="filter" id="filter">
+		<input type="submit" value="filter" id="filter">
 	</form>
-	[:sortFieldNames]
+	<div style="clear:both"></div>
+	<div class="horizontal-line">&nbsp;</div>
 }
-<div id="list_elements">
+<div class="scroll-content" style="margin-top:3px">
+	<table id="list_elements">
+		[:when (sortFieldNames)]{
+			<thead>
+				<tr>
+				[:repeat data:sortFieldNames as:fName] {
+					<td>[:fName]</td>
+				}
+				<td>&nbsp;</td>
+				</tr>
+			</thead>
+		}
+		<tbody></tbody>
+	</table>
 </div>
