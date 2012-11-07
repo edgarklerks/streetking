@@ -50,6 +50,7 @@ import qualified Model.Car3dModel as C3D
 --import qualified Model.CarPrototype as CPro
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
+import qualified Model.PartMarketType as PMT
 import qualified Model.PartInstance as PI 
 import qualified Model.PartDetails as PD 
 import qualified Model.CarMarket as CM 
@@ -273,7 +274,6 @@ marketPlace = do
                     )
            ns <- runDb (search ( ("level" |<= (toSql $ A.level puser + 2)) : xs) [] l o) :: Application [MP.MarketPlace]
            writeMapables ns
-
 
 
 marketManufacturer :: Application ()
@@ -861,7 +861,7 @@ marketCars = do
 marketParts :: Application ()
 marketParts = do 
    uid <- getUserId
-   puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
+   puser <- fromJust <$> runDb (load uid) :: Application (A.Account)
    ((l, o), xs) <- getPagesWithDTD (
             "car_id" +== "car_id" +&& 
             "name" +== "part_type" +&&  
@@ -873,6 +873,22 @@ marketParts = do
             )
    ns <- runDb (search xs [] l o) :: Application [PM.PartMarket]
    writeMapables ns  
+
+marketPartTypes :: Application ()
+marketPartTypes = do 
+   uid <- getUserId
+   puser <- fromJust <$> runDb (load uid) :: Application (A.Account)
+   ((l, o), xs) <- getPagesWithDTD (
+            "name" +== "name" +&&  
+            "min_level" +<= "level-max" +&& 
+            "max_level" +>= "level-min" +&&
+            "min_price" +<= "price-max" +&&
+            "max_price" +>= "price-min" +&&
+            "min_level" +<=| (toSql $ A.level puser)
+        )
+   ns <- runDb (search xs [] l o) :: Application [PMT.PartMarketType]
+   writeMapables ns  
+
 
 garageParts :: Application ()
 garageParts = do 
@@ -2310,6 +2326,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Market/sell", marketSell),
                 ("/Market/return", marketReturn),
                 ("/Market/parts", marketParts),
+                ("/Market/partTypes", marketPartTypes),
                 ("/Market/buyCar", carMarketBuy),
                 ("/Market/cars", marketCars),
                 ("/Garage/car", garageCar),
