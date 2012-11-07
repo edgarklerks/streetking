@@ -52,7 +52,7 @@ import qualified Model.Part as Part
 import qualified Model.PartMarket as PM 
 import qualified Model.PartInstance as PI 
 import qualified Model.PartDetails as PD 
---import qualified Model.CarMarket as CM 
+import qualified Model.CarMarket as CM 
 import qualified Model.ManufacturerMarket as MAM 
 import qualified Model.MarketItem as MI 
 import qualified Model.Transaction as Transaction
@@ -290,9 +290,18 @@ marketModel = do
       uid <- getUserId
       puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
       let ctr = ("level" |<= (toSql $ A.level puser )) 
-      ((l,o),xs) <-  getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id" +&& "prototype" +==| toSql True +&& "prototype_available" +==| toSql True)
---      ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
+      ((l,o),xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id")
+      ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
 --      ns <- runDb (search (ctr:xs) [] l o) :: Application [CPro.CarPrototype]
+--      ns <- runDb (searchCarInGarage (ctr:xs) [] l o)
+      writeMapables ns
+
+marketCarPrototype :: Application ()
+marketCarPrototype = do 
+      uid <- getUserId
+      puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
+      let ctr = ("level" |<= (toSql $ A.level puser)) 
+      ((l,o),xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id" +&& "car_id" +== "car_id" +&& "prototype" +==| toSql True +&& "prototype_available" +==| toSql True)
       ns <- runDb (searchCarInGarage (ctr:xs) [] l o)
       writeMapables ns
 
@@ -2296,6 +2305,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/User/claimFreeCar", userClaimFreeCar),
                 ("/Market/manufacturer", marketManufacturer),
                 ("/Market/model", marketModel),
+                ("/Market/prototype", marketCarPrototype),
                 ("/Market/buy", marketBuy),
                 ("/Market/sell", marketSell),
                 ("/Market/return", marketReturn),
