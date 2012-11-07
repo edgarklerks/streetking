@@ -45,6 +45,6 @@ sendUri uri m d= withContext 1 $ \c ->
                             bind s uriCtrl
                             replicateM_ 10 $ do
                                     threadDelay 100000
-                                    send s [] ((B.pack $ show (uri, m, uri)))
+                                    send s [] ((B.pack $ show (uri, m, d)))
 
        
