@@ -9,7 +9,7 @@ import Control.Applicative
 import Control.Concurrent
 
 
-testServer = TS "r2.graffity.me" 9003
+testServer = TS "r3.graffity.me" 9003
 bareServer = TS "127.0.0.1" 9003
 
 main = do xs <- runTests test testServer 
@@ -24,13 +24,13 @@ testTournament = do
        setQuery [("userid", "34")] 
        setResource "Tournament" 
        setAction "get" 
-       setArguments [("tournament_id", "68")] 
+       setArguments [("tournament_id", "124")] 
        initRequest (\r -> liftIO (print r) *> setSucceed True ) 
 
        setMethod "POST"
        setName "tournament result test"
        setAction "result"
-       setArguments [("tournament_id", "68")] 
+       setArguments [("tournament_id", "124")] 
        initRequest (\r -> liftIO (print r) *> setSucceed True)
 
 
