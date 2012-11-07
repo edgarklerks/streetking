@@ -27,7 +27,7 @@ import GHC.IO.Exception
 
 
 uriCtrl = "tcp://172.20.0.10:9006"
-uriData = "tcp://172.20.0.10:9005"
+uriData = "tcp://172.20.0.10:9105"
 serverPort = 9003
 serverAdd = "r3.graffity.me" 
 
@@ -45,10 +45,11 @@ main = do
          print "Wait state, waiting on command"
          uri <- waitOnPeer 
          print "starting"
+         s <- floor <$> getPOSIXTime
          x <- benchProg uri usr dev  
          case x of 
                 Nothing -> return ()
-                Just a -> sendToPeer a  
+                Just a -> sendToPeer (s,a)  
      forever $ threadDelay 10000 
      return () 
 
@@ -62,9 +63,16 @@ waitOnPeer = withContext 1 $ \c ->
 
 
 sendToPeer out = withContext 1 $ \c -> 
-             withSocket c Push $ \s -> do
+             withSocket c Req $ \s -> do
+                     print "Trying to connect"
                      connect s uriData  
+                     print "Connected"
                      send s [] (BL.pack $ show out) 
+                     print "sendt"
+                     t <- receive s 
+                     print t
+
+
 
 
 
@@ -82,7 +90,7 @@ data Output = OUT {
 
 benchProg uri usr dev = do 
         (exitcode, sout, serr) <- readProcessWithExitCode "./stress" [
-                                                          "50"
+                                                          "5000"
                                                         , "POST"
                                                         , uri 
                                                                 <> "?" 
@@ -94,7 +102,7 @@ benchProg uri usr dev = do
                                                             ] "" 
         if exitcode == ExitSuccess  
                 then do
-                    print "lala"
+                    print (parseOut sout) 
                     return (Just $ parseOut sout)
                 else do
                     print serr 
