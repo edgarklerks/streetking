@@ -12,7 +12,7 @@
 	</ul>
 }
 <ul class="sk-tab-icons">
-	[:when (requestParams.car_id > 0)]{<li class="sk-tab-icons-body"><a module="MARKETPLACE_NEWCAR_TAB" href="#Market/model/?id=[:requestParams.car_id]" alt="Cars" title="Cars">&nbsp;</a></li>}
+	[:when (requestParams.car_id > 0)]{<li class="sk-tab-icons-body"><a module="MARKETPLACE_NEWCAR_TAB" href="#Market/prototype/?car_id=[:requestParams.car_id]" alt="Cars" title="Cars">&nbsp;</a></li>}
 	[:when (requestParams.action == "Market/place")]{
 		<li class="sk-tab-icons-body">
 			[:when (requestParams.me == 0)]{
