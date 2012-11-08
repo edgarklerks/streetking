@@ -35,16 +35,16 @@ receiveEvents = withContext 1 $ \c ->
 
 
 startUri = do 
-        [xs,method,dat] <- getArgs 
-        print (xs,method,dat)
-        sendUri xs method dat
+        (xs:method:quer:dat:_) <- getArgs 
+        print (xs,method,quer, dat)
+        sendUri xs method quer dat
                 
 
-sendUri uri m d= withContext 1 $ \c -> 
+sendUri uri m q d = withContext 1 $ \c -> 
                   withSocket c Push $ \s -> do 
                             bind s uriCtrl
                             replicateM_ 10 $ do
                                     threadDelay 100000
-                                    send s [] ((B.pack $ show (uri, m, d)))
+                                    send s [] ((B.pack $ show (uri, m, q, d)))
 
        

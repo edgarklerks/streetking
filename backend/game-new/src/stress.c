@@ -73,22 +73,22 @@ int main(int argc, char * argv[]){
 }
 
 enum Method getMethod(const char * c){
-        if(strncmp(c, "POST",4)){
+        if(strncmp(c, "POST",4) == 0){
                 return POST;
         }
-        if(strncmp(c, "PUT", 3)){
+        if(strncmp(c, "PUT", 3) == 0){
                 return PUT;
         }
-        if(strncmp(c,"HEAD",4)){
+        if(strncmp(c,"HEAD",4) == 0){
                 return HEAD;
         }
-        if(strncmp(c,"GET",3)){
+        if(strncmp(c,"GET",3) == 0){
                 return GET;
         }
-        if(strncmp(c,"DELETE",5)){
+        if(strncmp(c,"DELETE",5) == 0){
                 return DELETE;
         }
-        if(strncmp(c,"OPTIONS",7)){
+        if(strncmp(c,"OPTIONS",7) == 0){
                 return OPTIONS;
         }
         error("Not a valid method supplied");
