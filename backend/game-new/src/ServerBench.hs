@@ -43,11 +43,13 @@ main = do
      print (usr :: String)
      forkIO $ forever $ do 
          print "Wait state, waiting on command"
-         (uri, meth, dat) <- waitOnPeer 
+         (uri, meth, quer, dat) <- waitOnPeer 
+         print (uri, meth,quer, dat)
          print "starting"
          s <- floor <$> getPOSIXTime
-         x <- benchProg uri meth dat usr dev  
-         case x of 
+         replicateM_ 10 $ forkIO $ do 
+             x <- benchProg uri meth quer dat usr dev  
+             case x of 
                 Nothing -> return ()
                 Just a -> sendToPeer (s,a)  
      forever $ threadDelay 10000 
@@ -59,7 +61,7 @@ waitOnPeer = withContext 1 $ \c ->
                      waitOnPeer s 
         where waitOnPeer s = do 
                     r <- receive s  
-                    return $ read (BL.unpack r) :: (String, String, String)
+                    return $ read (BL.unpack r) :: IO (String, String, String, String)
 
 
 sendToPeer out = withContext 1 $ \c -> 
@@ -88,9 +90,9 @@ data Output = OUT {
         failuresTime :: Int 
     } deriving (Show, Read)
 
-benchProg uri meth dat usr dev = do 
+benchProg uri meth params dat usr dev = do 
         (exitcode, sout, serr) <- readProcessWithExitCode "./stress" [
-                                                          "5000"
+                                                          "50"
                                                         , meth
                                                         , uri 
                                                                 <> "?" 
@@ -98,6 +100,8 @@ benchProg uri meth dat usr dev = do
                                                                 <> urlEncode dev
                                                                 <> "&user_token="
                                                                 <> urlEncode usr
+                                                                <> "&" 
+                                                                <> params
                                                          , dat
                                                             ] "" 
         if exitcode == ExitSuccess  
@@ -105,6 +109,7 @@ benchProg uri meth dat usr dev = do
                     print (parseOut sout) 
                     return (Just $ parseOut sout)
                 else do
+                    print "Error"
                     print serr 
                     return $ Nothing 
        
