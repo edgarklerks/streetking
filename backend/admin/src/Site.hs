@@ -56,6 +56,12 @@ import qualified SqlTransactionSnaplet as S
 import qualified Model.Part as P 
 import qualified Model.Part as PP 
 import qualified Model.PartType as PT 
+import qualified Model.RewardLog as RL 
+import qualified Model.Rule as RULE
+import qualified Model.Action as ACTION
+import qualified Model.RuleReward as RW  
+import qualified Model.Reward as REW 
+
 import           Model.General 
 import           Data.Monoid
 import           Control.Monad.Trans 
@@ -195,6 +201,13 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/tournament/put", putTournament)
          , ("/notification/get", getModel (def :: NT.Notification))
          , ("/notification/put", putModel (def :: NT.Notification))
+         , ("/reward/get", getModel (def :: REW.Reward))
+         , ("/reward/put", putModel (def :: REW.Reward))
+         , ("/action/get", getModel (def :: ACTION.Action))
+         , ("/action/put", putModel (def :: ACTION.Action))
+         , ("/rule/get", getModel (def :: RULE.Rule))
+         , ("/rule/put", putModel (def :: RULE.Rule))
+         , ("/reward_log/get", getModel (def :: RL.RewardLog))
          , ("",          serveDirectory "static")
          ]
 

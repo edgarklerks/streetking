@@ -21,5 +21,6 @@ $(genAll "Action" "action"
           , ("reward_id", ''Id)
           , ("rule_id", ''Id)
           , ("change", ''Integer)
+          , ("name", ''String)
     ])
 

@@ -84,7 +84,9 @@ import qualified Model.ChallengeExtended as ChgE
 import qualified Model.Report as RP 
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
+import qualified Model.EventStream as ES 
 import qualified Model.RaceReward as RWD
+import qualified Model.RewardLog as RL 
 import qualified Model.TournamentPlayers as TP 
 import qualified Model.Tournament as TR 
 import qualified Model.Tournament as TRM 
@@ -150,6 +152,8 @@ import           Data.Tiger
 import           Control.Arrow 
 import           Snap.Snaplet
 import           Data.Tournament 
+import           Data.Reward 
+import           Data.Event 
 
 import qualified Notifications as N 
 
@@ -1688,10 +1692,13 @@ racePractice = do
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
 
+
             let y = RaceParticipant a am c cm Nothing
             
             t <- liftIO milliTime 
             (rid, _) <- processRace t [y] tid 
+
+            ES.emitEvent uid (PracticeRace tid) 
             
             return rid
 
@@ -2316,7 +2323,9 @@ getUserGarageId = do
         uid <- getUserId 
         g <- runDb (aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage)
         return $ fromJust $ G.id g
- 
+
+
+
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: Bool ->  [(C.ByteString, Handler App App ())]
@@ -2408,8 +2417,26 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Tournament/cancel", cancelTournamentJoin),
                 ("/Tournament/idk", tournamentPlayers),
                 ("/Tournament/report", tournamentReport),
+                ("/Reward/get", rewardLog),
                 ("/Support/send", reportIssue) 
           ]
+rewardLog :: Application ()
+rewardLog = do 
+        uid <- getUserId 
+        runDb $ activateRewards uid 
+        (((l,o), xs),od) <- getPagesWithDTDOrdered ["id","name","viewed","experience","money"] (
+           "account_id" +==| (toSql uid) +&&
+           "id" +== "id" +&& 
+
+           ifdtd "viewed" (const True)
+               ("viewed" +== "viewed")
+               ("viewed" +==| (toSql False))
+            
+            ) 
+        xs <- runDb $ search xs od l o :: Application [RL.RewardLog]
+        runDb $ forM_ xs (checkRewardLog . fromJust . RL.id)
+        writeMapables xs 
+
 
 initAll po = Task.initTask *> initTournament po  
 
