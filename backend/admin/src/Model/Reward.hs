@@ -20,5 +20,6 @@ $(genAll "Reward" "reward"
           ("id", ''Id)
         , ("money", ''Integer)
         , ("experience", ''Integer)
+        , ("name", ''String)
     ])
 
