@@ -42,7 +42,7 @@ int main(int argc, char * argv[]){
         enum Method method = getMethod(argv[2]);
 
         char * ps = buildPacket(method, 
-                        "r3.graffity.me",
+                        "r4.graffity.me",
                         argv[3],
                         argv[4]);
        
@@ -55,7 +55,7 @@ int main(int argc, char * argv[]){
         for(i = 0; i < repeat; i++){
 
             time_t btime = time(0);
-            int n = doRequest("r3.graffity.me", 9003, ps);
+            int n = doRequest("r4.graffity.me", 9003, ps);
             time_t etime = time(0);
             if(n == 1){
                     successes++;
