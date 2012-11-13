@@ -45,6 +45,7 @@ instance (ToInRule a) => ToInRule [a] where
     toInRule = InArray . map toInRule
 instance (FromInRule a) => FromInRule [a] where
     fromInRule (InArray xs) = map fromInRule xs
+    fromInRule _ = [] 
 
 instance (ToInRule t1, ToInRule t2) => ToInRule (t1, t2) where
     toInRule (x1, x2) = InArray [toInRule x1, toInRule x2]
