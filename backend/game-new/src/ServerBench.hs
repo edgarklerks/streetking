@@ -26,8 +26,8 @@ import System.Process
 import GHC.IO.Exception
 
 
-uriCtrl = "tcp://172.20.0.10:9006"
-uriData = "tcp://172.20.0.10:9105"
+uriCtrl = "tcp://172.22.0.10:9006"
+uriData = "tcp://172.22.0.10:9105"
 serverPort = 9003
 serverAdd = "r3.graffity.me" 
 
