@@ -87,6 +87,7 @@ instance Evaluate Event Symbol where
     match (ChallengeRace n) (RaceI s) | n == s = True 
     match (PracticeRace _) PracticeS = True 
     match (PracticeRace n) (PracticeI p) | n == p = True 
+    match _ _ = False 
 
 
 
