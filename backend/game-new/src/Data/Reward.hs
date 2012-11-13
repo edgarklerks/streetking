@@ -49,7 +49,7 @@ activateRewards uid = do
             xs <- runEventStream uid
             forM_ xs $ \(n,e) -> 
                 do
-                    es <- search ["rule_id" |== toSql e] [] 10000 0 :: SqlTransaction Connection [RW.RuleReward]
+                    es <- search ["id" |== toSql e] [] 10000 0 :: SqlTransaction Connection [RW.RuleReward]
                     forM_ es $ \e -> do 
                                 let x = (RW.change e)
                                 z <- liftIO $ randomRIO (0, 99)
