@@ -306,7 +306,14 @@ marketCarPrototype = do
       uid <- getUserId
       puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
       let ctr = ("level" |<= (toSql $ A.level puser)) 
-      ((l,o),xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id" +&& "car_id" +== "car_id" +&& "prototype" +==| toSql True +&& "prototype_available" +==| toSql True)
+      ((l,o),xs) <- getPagesWithDTD (
+                  "manufacturer_id" +== "manufacturer_id"
+              +&& "id" +== "id"
+              +&& "car_id" +== "car_id"
+              +&& "prototype" +==| toSql True
+              +&& "prototype_available" +==| toSql True
+              +&& "prototype_claimable" +== "prototype_claimable"
+          )
       ns <- runDb (searchCarInGarage (ctr:xs) [] l o)
       writeMapables ns
 
