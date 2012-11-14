@@ -13,7 +13,7 @@ import Control.Applicative
 import Data.Maybe
 import Data.InRules
 import Data.Conversion
-import           Model.General
+import Model.General
 import Debug.Trace
 
 addRespect :: Integer -> Integer -> SqlTransaction Connection ()
@@ -28,7 +28,6 @@ respectNext uid = do
         k :: Integer <- CFG.getKey "respect_for_level"
         let r = (\l -> k * ((l ^ 2) + l) `div` 2) $ A.level a
         trace ("needed for next level: " ++ (show $ r - (A.respect a))) return $ r - (A.respect a) 
-         
 
 checkLevel :: Integer -> SqlTransaction Connection ()
 checkLevel uid = do
