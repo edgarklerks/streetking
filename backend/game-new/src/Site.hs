@@ -192,18 +192,17 @@ salt = "blalalqa"
 
 userRegister :: Application () 
 userRegister = do 
-           x <- getJson >>= scheck ["email", "password", "nickname"] 
-           scfilter x [("email", email), ("password", minl 6), ("nickname", minl 3 `andcf` maxl 16)]
-           let m = updateHashMap x (def :: A.Account)
-           let c = m { A.password = tiger32 $ C.pack (A.password m) `mappend` salt }
-           let g = def :: G.Garage  
-
-            -- save all  
-           i <- runDb  $ do 
-                uid <- save c 
-                g <- save (g { G.account_id = uid })
-                return uid
-           writeResult i
+        x <- getJson >>= scheck ["email", "password", "nickname"] 
+        scfilter x [("email", email), ("password", minl 6), ("nickname", minl 3 `andcf` maxl 16)]
+        i <- runDb $ do 
+            p <- aget ["id" |== SqlInteger 0] (rollback "Account prototype not found") :: SqlTransaction Connection A.Account
+            let m = updateHashMap x p 
+            let c = m { A.password = tiger32 $ C.pack (A.password m) `mappend` salt }
+            let g = def :: G.Garage  
+            uid <- save c 
+            g <- save (g { G.account_id = uid })
+            return uid
+        writeResult i
 
 userLogin :: Application ()
 userLogin = do 
