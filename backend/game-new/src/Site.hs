@@ -197,7 +197,7 @@ userRegister = do
         i <- runDb $ do 
             p <- aget ["id" |== SqlInteger 0] (rollback "Account prototype not found") :: SqlTransaction Connection A.Account
             let m = updateHashMap x p 
-            let c = m { A.password = tiger32 $ C.pack (A.password m) `mappend` salt }
+            let c = m { A.id = Nothing, A.password = tiger32 $ C.pack (A.password m) `mappend` salt }
             let g = def :: G.Garage  
             uid <- save c 
             g <- save (g { G.account_id = uid })
