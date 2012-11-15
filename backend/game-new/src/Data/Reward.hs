@@ -1,11 +1,10 @@
-{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE ViewPatterns, RecordWildCards #-}
 module Data.Reward where 
 
 
 import Data.Event 
 
 import Model.EventStream
-import Model.Rule
 import Model.Action
 import Data.Decider 
 
@@ -30,7 +29,72 @@ import System.Random
 import qualified Model.RewardLog as RL 
 import qualified Model.Transaction as TR 
 import Control.Monad.Trans 
+import Data.Monoid hiding (Any, All) 
+import Data.Conversion 
 
+newtype Rewards = Rewards {
+                    unRewards :: [Reward]
+                  }
+    deriving (Show)
+instance ToInRule Rewards where 
+        toInRule (Rewards xs) = toInRule xs 
+instance ToInRule Reward where 
+        toInRule (Reward rl nm prz) = fromList $ [
+                                      ("rule", toInRule rl)
+                                    , ("name", toInRule nm)
+                                    , ("prizes", toInRule prz)
+                                ]
+
+
+instance ToInRule Prize where 
+    toInRule (Money x) = fromList $ [("money", InInteger x)]
+    toInRule (Experience x) = fromList $ [("experience", InInteger x)]
+
+data Reward = Reward {
+                rule :: String,
+                name :: String,
+                prizes :: [Prize]
+            }
+    deriving (Show)
+
+data Prize  = Money Integer 
+            | Experience Integer 
+    deriving (Show)
+
+transform :: RL.RewardLog -> Reward 
+transform rw = Reward {
+              rule = RL.rule rw
+            , name = RL.name rw 
+            , prizes = [
+                      Money (RL.money rw)
+                    , Experience (RL.experience rw)
+                ]
+        }
+
+testRewards = transformRewards $ [
+             RL.RewardLog (Just 1) (Just 1) "1" "1" 1 True 2
+           , RL.RewardLog (Just 2) (Just 1) "2" "2" 2 True 3
+           , RL.RewardLog (Just 3) (Just 1) "1" "1" 3 True 4
+           , RL.RewardLog (Just 3) (Just 1) "1" "1" 3 True 6
+
+    ]
+transformRewards :: [RL.RewardLog] -> Rewards
+transformRewards xs = concatRewards $ Rewards $ transform <$> xs 
+
+concatRewards :: Rewards -> Rewards 
+concatRewards (Rewards xs) = Rewards $ foldr step [] xs  
+    where step x [] = [x] 
+          step x (y:ys) | name x == name y && rule x == rule y = (x `dot` y) : ys
+                        | otherwise = y : step x ys 
+          dot :: Reward -> Reward -> Reward 
+          dot (Reward rl nm prs) (Reward _ _ qrs) = Reward rl nm (joinReward $ prs <> qrs)
+          joinReward xs = foldr prize [] xs
+                where prize x [] = [x]
+                      prize x (y:ys) = case (x,y) of 
+                                        (Money x, Money y) -> Money (x + y) : ys 
+                                        (Experience x, Experience y) -> Experience (x + y) : ys
+                                        otherwise -> y : prize x ys 
+            
 
 checkRewardLog :: Integer -> SqlTransaction Connection ()
 checkRewardLog log = do 
