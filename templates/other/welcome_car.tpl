@@ -1,41 +1,43 @@
 <div class="welcome-car-element-container">
-	<div class="welcome-car-element-title">Honda Civic CX</div>
+	<div class="welcome-car-element-title">[:manufacturer_name] [:name]</div>
 	<div class="welcome-car-element-box">
-		<div class="welcome-car-element-image-container welcome-car-element-image" style="background-image:url([:eval IMAGESERVER("[\"user_car\",356,\"car\"]")])">&nbsp;</div>
+		<div class="welcome-car-element-image-container welcome-car-element-image" style='background-image:url([:eval IMAGESERVER("[\"car\","+car_id+",\"car\"]")])'>&nbsp;</div>
 		<div class="welcome-car-element-info-box">
 			<div class="welcome-car-element-info-data-box">
-				<div class="welcome-car-element-info-data-name">Top speed <span>[:eval floor((top_speed/10000))]</span> km/h</div>
+				<div class="welcome-car-element-info-data-name">Top speed <span>[:eval floor(top_speed/10000)]</span> <b>km/h</b></div>
 				<div class="welcome-car-element-progress-bar-box ui-corner-all-1px">
-					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((top_speed/10000)*100)]%"></div>
+					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+top_speed/10000+",80,200]")]%'></div>
 				</div>
 			</div>
 			<div class="welcome-car-element-info-data-box">
-				<div class="welcome-car-element-info-data-name">Acceleration <span>[:eval floor(acceleration/1000)/10]</span> s</div>
+				<div class="welcome-car-element-info-data-name">Acceleration <span>[:eval floor(acceleration/1000)/10]</span> <b>s</b></div>
 				<div class="welcome-car-element-progress-bar-box ui-corner-all-1px">
-					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style="width:[:eval (acceleration/10000)]%"></div>
+					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+acceleration/10000+",-4,10]")]%'></div>
 				</div>
 			</div>
 			<div class="welcome-car-element-info-data-box">
-				<div class="welcome-car-element-info-data-name">Braking <span>[:eval floor((braking/10000))]</span></div>
+				<div class="welcome-car-element-info-data-name">Braking <span>[:eval floor(stopping/10000)]</span> <b>m</b></div>
 				<div class="welcome-car-element-progress-bar-box ui-corner-all-1px">
-					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((braking/10000)*100)]%"></div>
+					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+stopping/10000+",-15,70]")]%'></div>
 				</div>
 			</div>
 			<div class="welcome-car-element-info-data-box">
-				<div class="welcome-car-element-info-data-name">Handling <span>[:eval floor((handling/10000))]</span></div>
+				<div class="welcome-car-element-info-data-name">Handling <span>[:eval floor(cornering/1000)/10]</span> <b>g</b></div>
 				<div class="welcome-car-element-progress-bar-box ui-corner-all-1px">
-					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((handling/10000)*100)]%"></div>
+					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+cornering/10000+",0.3,1]")]%'></div>
 				</div>
 			</div>
 			<div class="welcome-car-element-info-data-box">
 				<div class="welcome-car-element-info-data-name">Weight <span>[:weight]</span> kg</div>
+				<!--
 				<div class="welcome-car-element-progress-bar-box ui-corner-all-1px">
 					<div class="welcome-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/10000)*100)]%"></div>
 				</div>
+				-->
 			</div>
 		</div>
 		<div class="welcome-car-element-buttons-box">
-			<a href="#Garage/car?car_instance_id=[:id]&car_id=[:car_id]" class="button" module="CHOOSE_THIS_CAR">choose this car</a>
+			<a href="#User/claimFreeCar?id=[:id]" class="button" module="CHOOSE_THIS_CAR">choose this car</a>
 		</div>
 	</div>
 </div>
