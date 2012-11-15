@@ -23,7 +23,7 @@ use warnings;
 
 use Net::SSH::Perl;
 
-my $host = 'r2.graffity.me';
+my $host = 'r4.graffity.me';
 my $pass = 'Opm8r$';
 my $user = 'admin';
 my $cmd = "cd /usr/home/admin/streetking/templates; tar -cvzf /usr/home/admin/templates.tar.gz *";
