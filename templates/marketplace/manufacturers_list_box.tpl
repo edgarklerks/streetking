@@ -1,0 +1,1 @@
+<div id="manufacture-list-box"></div>
