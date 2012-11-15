@@ -2428,7 +2428,9 @@ routes g = fmap (second (wrapErrors g)) $ [
 rewardLog :: Application ()
 rewardLog = do 
         uid <- getUserId 
+        liftIO $ print uid
         runDb $ activateRewards uid 
+        liftIO $ print "hello" 
         (((l,o), xs),od) <- getPagesWithDTDOrdered ["id","name","viewed","experience","money"] (
            "account_id" +==| (toSql uid) +&&
            "id" +== "id" +&& 
@@ -2438,9 +2440,13 @@ rewardLog = do
                ("viewed" +==| (toSql False))
             
             ) 
-        xs <- runDb $ search xs od l o :: Application [RL.RewardLog]
-        runDb $ forM_ xs (checkRewardLog . fromJust . RL.id)
-        writeMapables xs 
+        xs <- runDb $ do 
+                xs <- search xs od l o :: SqlTransaction Connection [RL.RewardLog]
+                forM_ xs (checkRewardLog . fromJust . RL.id)
+                return xs 
+
+        liftIO $ print xs 
+        writeResult (transformRewards xs) 
 
 
 initAll po = Task.initTask *> initTournament po  
