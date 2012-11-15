@@ -32,6 +32,14 @@
 			<li><a href="#track/get" class="button" module="TRACK_LIST">Tracks</a></li>
 			<li><a href="#track_time/get" class="button" module="TRACK_TIME_LIST">Track times</a></li>
 		</ul>
+	</li>
+	<li>
+		<a href="#">Reward</a>
+		<ul>
+			<li><a href="#reward/get" class="button" module="REWARD_LIST">Rewards</a></li>
+			<li><a href="#reward/get" class="button" module="ACTION_LIST">Actions</a></li>
+			<li><a href="#reward/get" class="button" module="RULE_LIST">Rules</a></li>
+		</ul>
 	</li>	
 	<li>
 		<a href="#">Other</a>
