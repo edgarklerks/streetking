@@ -11,7 +11,7 @@
 				<div class="report-element-infotext-container">
 					<div>Name:&nbsp;<span>[:name]</span></div>
 					<div>Salary:&nbsp;<span>SK$&nbsp;[:salary]</span></div>
-					<div>Country:&nbsp;<img src="img/flags/[:country_shortname].png" alt="[:country_name]" title="[:country_name]" border="0"></div>
+					<div>Country:&nbsp;<img src="images/flags/[:country_shortname].png" alt="[:country_name]" title="[:country_name]" border="0"></div>
 					[:when (report_descriptor == "train_personnel")]{
 						<div>Improve skill:&nbsp;<span>[:type]</span></div>
 					}

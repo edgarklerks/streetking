@@ -6,7 +6,7 @@
 				<div>Name:&nbsp;<span>[:name]</span></div>
 				[:when (requestParams.action_type == "market")]{<div>Price:&nbsp;<span>SK$&nbsp;[:price]</span></div>}
 				<div>Salary:&nbsp;<span>SK$&nbsp;[:salary]</span></div>
-				<div>Country:&nbsp;<img src="img/flags/[:country_shortname].png" alt="[:country_name]" title="[:country_name]" border="0"></div>
+				<div>Country:&nbsp;<img src="images/flags/[:country_shortname].png" alt="[:country_name]" title="[:country_name]" border="0"></div>
 			</div>
 			<div class="personnel-element-vertical-line"></div>
 			<div class="personnel-element-infobar-container">
