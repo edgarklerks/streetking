@@ -244,8 +244,7 @@ userMe :: Application ()
 userMe = do 
     x <- getUserId
     n <- runDb $ do 
-            userActions x
---            Task.run Task.User x
+--            userActions x
             DBF.account_update_energy x 
             p <- (load x) :: SqlTransaction Connection (Maybe AP.AccountProfile)
             return p
