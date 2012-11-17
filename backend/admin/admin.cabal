@@ -67,7 +67,9 @@ Executable admin
     blaze-svg,
     ghc-prim,
     MonadRandom,
-    binary
+    binary,
+    filepath,
+    directory
 
   if flag(development)
     build-depends:

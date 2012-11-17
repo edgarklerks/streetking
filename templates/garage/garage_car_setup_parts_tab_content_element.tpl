@@ -11,7 +11,9 @@
 					<div class="garage-car-setup-part-element-info-data-box">
 						<div class="garage-car-setup-part-element-info-data-box-name">[:parameter1_name]: <span>+[:parameter1]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
 						<div class="garage-car-setup-part-element-progress-bar-box ui-corner-all-1px">
-							<div class="garage-car-setup-part-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter1/100)*100]%"></div>
+							<div class="garage-car-setup-part-element-progress-bar ui-corner-all-1px" style='width:[:parameter1_bars.currBarPerc]%'></div>
+
+							<div class="garage-car-setup-part-element-progress-bar-[:parameter1_bars.cls] ui-corner-all-1px" style='left:[:parameter1_bars.left]%; width:[:parameter1_bars.diff]%'></div>
 						</div>
 					</div>
 					[:when (parameter2_name)]{

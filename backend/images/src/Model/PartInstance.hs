@@ -25,5 +25,6 @@ $(genAll "PartInstance" "part_instance"
         ("improvement", ''Integer),
         ("wear", ''Integer),
         ("account_id", ''Integer),
-        ("deleted", ''Bool)
+        ("deleted", ''Bool),
+        ("immutable", ''Bool)
     ])

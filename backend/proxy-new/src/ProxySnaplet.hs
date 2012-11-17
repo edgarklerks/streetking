@@ -199,7 +199,7 @@ sendAbroad r rq = do
     resp <- getResponse
     p <- liftIO $ newChan 
 
-    liftIO $ forkIO $ withManager $ \m -> run_ $  http r' (\_ _ -> chanIterator p) m 
+    liftIO $ withManager $ \m -> run_ $  http r' (\_ _ -> chanIterator p) m 
 
     finishWith (setResponseBody (mapEnum toByteString fromByteString $ chanEnum p) resp) 
 

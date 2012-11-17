@@ -1,5 +1,9 @@
 {-# LANGUAGE OverloadedStrings, ViewPatterns, NoMonomorphismRestriction,FlexibleContexts #-}
-
+{--
+- Change log:
+-   Edgar - added loadTemplate resource to server 
+-
+- -}
 ------------------------------------------------------------------------------
 -- | This module is where all the routes and handlers are defined for your
 -- site. The 'app' function is the initializer that combines everything
@@ -75,6 +79,9 @@ import           Data.InRules
 import qualified Model.Tournament as TRM 
 import qualified Data.Tournament as TRM 
 import           Data.Conversion 
+import qualified Data.ByteString.Char8 as C 
+import           System.Directory
+import           System.FilePath.Posix
 
 
 ------------------------------------------------------------------------------
@@ -208,9 +215,19 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/rule/get", getModel (def :: RULE.Rule))
          , ("/rule/put", putModel (def :: RULE.Rule))
          , ("/reward_log/get", getModel (def :: RL.RewardLog))
+         , ("/Game/template", loadTemplate)
          , ("",          serveDirectory "static")
          ]
 
+
+loadTemplate :: Application ()
+loadTemplate = do 
+        name <- getOParam "name"
+        let pth =  ("resources/static/" ++ C.unpack name ++ ".tpl")
+        let dirs = splitDirectories pth
+        if ".." `elem` dirs 
+            then internalError "do not hacked server"
+            else serveFileAs "text/plain" pth
 
 
 

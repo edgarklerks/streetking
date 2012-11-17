@@ -7,7 +7,11 @@
 module Site
   ( Site.app
   ) where
-
+{-- Change log 
+- Edgar: Added unset immutable flag to cancelTournamentJoin
+-
+-
+---}
 ------------------------------------------------------------------------------
 import           Control.Applicative
 import           Data.Monoid
@@ -555,6 +559,8 @@ carSell = do
                 case cig of 
                     Nothing -> rollback "no such car"
                     Just car -> do 
+                        b <- CarInstance.isMutable (fromJust $ MI.car_instance_id d)
+                        when (not b) $ rollback "Car is used in a tournament or race; cannot sell car."
                     {-- 
                      - 1. Substract fee 
                      - 2. Add car to market 
@@ -583,9 +589,6 @@ carSell = do
                         save (x { CarInstance.garage_id = Nothing })
                         
                                          
-                        
-                         
-        
 
 
 carTrash :: Application ()
@@ -601,6 +604,8 @@ carTrash = do
                 case cig of 
                     Nothing -> rollback "no such car"
                     Just car -> do 
+                        b  <- CarInstance.isMutable (fromJust $ CIG.id d)
+                        when (not b) $ rollback "car is in a tournament or race; cannot be sold"
                         reportShopper uid (def {
                                 SR.part_instance_id = CIG.id car,
                                 SR.amount = abs (CIG.total_price car),
@@ -1021,6 +1026,8 @@ removePart = do
         case mt of 
             [] -> rollback "No such part"
             [t] -> do 
+                b <- CarInstance.isMutable (CIP.car_instance_id t)
+                when (not b) $ rollback "This part cannot be removed. Car is in tournament or race"
                 case CIP.fixed t of
                     True -> rollback "This part cannot be removed"
                     False -> do
@@ -2132,7 +2139,7 @@ cancelTournamentJoin = do
                     runDb $ do 
                         xs <- search ["deleted" |== (toSql False) .&& "account_id" |== (toSql uid) .&& "tournament_id" |== (toSql $ HM.lookup "tournament_id" xs)] [] 1 0 :: SqlTransaction Connection [TP.TournamentPlayer]
                         case xs of 
-                            [a] -> void $ save (a {TP.deleted = True})
+                            [a] -> CarInstance.setMutable (fromJust $ TP.car_instance_id a)  *> void ( save (a {TP.deleted = True}) )
                             [] -> return () 
                     writeResult (1 :: Int) 
 

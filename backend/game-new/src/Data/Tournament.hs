@@ -12,7 +12,13 @@ module Data.Tournament (
         loadTournamentFull
         
     ) where 
-
+{-- Change log:
+- 17-11-2012 
+- Edgar - added immutable flag set to addClownToTournament for car_instance 
+- Edgar - added immutable flag unset to getResults for car_instance  
+-
+-
+- --}
 import Control.Monad.Trans 
 import Model.TH
 import Model.TournamentPlayers as TP
@@ -111,6 +117,7 @@ joinTournament cinst n acid = do
 
                     checkPrequisites ac (fromJust $ trn) cinst 
                     addClownToTournament ac (fromJust $ trn) cinst 
+                    
 
 
                 return () 
@@ -128,7 +135,9 @@ joinTournament cinst n acid = do
                             TP.account_id = A.id a, 
                             TP.tournament_id = T.id t 
                                     } :: TP.TournamentPlayer )
+                        setImmutable cinst 
                         return ()
+
 -- | check car, enough money, time prequisites
 checkPrequisites :: Account -> Tournament -> Integer -> SqlTransaction Connection () 
 checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm dn rn im) cinst = do 
@@ -213,6 +222,8 @@ getResults mid = do
                                else do 
                                 ss <- filterM (step mt) rs 
                                 when (ss `sameLength` rs) $ do 
+                                                xs <- search ["tournament_id" |== toSql (T.id tr)] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
+                                                forM_ xs $ setMutable . fromJust . TP.car_instance_id 
                                                 toArchive (fromJust $ T.id tr) ss 
                                                 save (tr { T.running = False, T.done = True}) >> return ()  
                                 return ss 
