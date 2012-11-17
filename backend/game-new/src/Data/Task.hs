@@ -17,6 +17,7 @@ import           Data.Attoparsec.Number
 import           Data.Time.Clock.POSIX
 import           Model.General 
 import           Data.DataPack
+import           Data.Account as DA
 
 import qualified Model.Transaction as TR 
 import           Model.Transaction (transactionMoney)
@@ -270,12 +271,14 @@ executeTask t = let d = TK.data t in
                         return True 
    
                 Just GiveRespect ->do
-                        ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
-                        case ma of
-                            Nothing -> throwError "process: give respect: user not found"
-                            Just a -> do
-                                save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
-                                return True
+                        DA.addRespect ("account_id" .<< d) ("amount" .<< d)
+                        return True
+--                        ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
+--                        case ma of
+--                            Nothing -> throwError "process: give respect: user not found"
+--                            Just a -> do
+--                                save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
+--                                return True
 
                 Just GivePart -> do
                         mp <- load $ "part_model_id" .<< d :: SqlTransaction Connection (Maybe PM.Part)

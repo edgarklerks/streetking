@@ -196,7 +196,8 @@ salt = "blalalqa"
 
 userRegister :: Application () 
 userRegister = do 
-        x <- getJson >>= scheck ["email", "password", "nickname"] 
+        x <- getJson >>= scheck ["email", "password", "nickname"]
+        -- TODO: nice error messages. also unique email address from database, add a check here.
         scfilter x [("email", email), ("password", minl 6), ("nickname", minl 3 `andcf` maxl 16)]
         i <- runDb $ do 
             p <- aget ["id" |== SqlInteger 0] (rollback "Account prototype not found") :: SqlTransaction Connection A.Account
