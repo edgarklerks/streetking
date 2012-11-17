@@ -939,12 +939,42 @@ garageParts = do
                     
                 "account_id" +==| toSql uid
             )
+
         let p = runDb $ do
             personnelUpdate uid 
             ns <- search xs od l o
             return ns 
+
         ns <- p :: Application [GPT.GaragePart]
         writeMapables ns 
+
+garagePartsWithPreview :: Application ()
+garagePartsWithPreview = do 
+        uid <- getUserId 
+        (((l, o), xs),od) <- getPagesWithDTDOrdered ["level", "part_instance_id", "unique", "improvement"] (
+                "name" +== "part_type" +&& 
+                "part_instance_id" +== "part_instance_id" +&& 
+                "level" +<= "level-max" +&& 
+                "level" +>= "level-min" +&&
+                "price" +>= "price-min" +&&
+                "price" +<= "price-max" +&& 
+
+                ifdtd "anycar" (=="1")
+                    ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
+                    ("car_id" +== "car_id") +&& 
+                "account_id" +==| toSql uid
+            )
+
+        as <- getJson >>= scheck ["preview_car_instance_id"]
+        let pid = extract "preview_car_instance_id" as :: Integer
+        
+        ps <- runDb $ do
+            personnelUpdate uid 
+            ns <- search xs od l o :: SqlTransaction Connection [GPT.GaragePart]
+            cig <- loadCarInGarage pid $ rollback $ "preview car not found for id " ++ (show pid)
+            previewWithPartList cig ns
+        
+        writeMapables ps
 
            
 garageCar :: Application ()
@@ -2373,6 +2403,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Game/template", loadTemplate),
                 ("/Game/tree", loadMenu),
                 ("/Garage/parts", garageParts),
+                ("/Garage/partsPreviewed", garagePartsWithPreview),
                 ("/Market/allowedParts", marketAllowedParts),
                 ("/Market/place", marketPlace),
                 ("/Market/trash", marketTrash),

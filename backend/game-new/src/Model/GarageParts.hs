@@ -17,6 +17,8 @@ import           Prelude hiding (id)
 
 type MString =  Maybe String 
 type MInteger = Maybe Integer 
+type MBool = Maybe Bool
+
 $(genAll "GaragePart" "garage_parts" [
     ("id", ''Id),
     ("account_id", ''Integer),
@@ -25,12 +27,15 @@ $(genAll "GaragePart" "garage_parts" [
     ("parameter1", ''MInteger),
     ("parameter1_unit", ''MString),
     ("parameter1_name", ''MString),
+    ("parameter1_is_modifier", ''MBool),
     ("parameter2", ''MInteger),
     ("parameter2_unit", ''MString),
     ("parameter2_name", ''MString),
+    ("parameter2_is_modifier", ''MBool),
     ("parameter3", ''MInteger),
     ("parameter3_unit", ''MString),
     ("parameter3_name", ''MString),
+    ("parameter3_is_modifier", ''MBool),
     ("car_id", ''Id),
     ("d3d_model_id", ''Integer),
     ("level", ''Integer),

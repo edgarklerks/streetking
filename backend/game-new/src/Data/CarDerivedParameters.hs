@@ -1,16 +1,20 @@
-{-# LANGUAGE FlexibleContexts, FlexibleInstances, TypeSynonymInstances, FunctionalDependencies, MultiParamTypeClasses, OverloadedStrings, RankNTypes, ScopedTypeVariables #-}
-
+{-# LANGUAGE TemplateHaskell, FlexibleContexts, FlexibleInstances, TypeSynonymInstances, FunctionalDependencies, MultiParamTypeClasses, OverloadedStrings, RankNTypes, ScopedTypeVariables #-}
 
 module Data.CarDerivedParameters ( 
 --        withDerivedParameters,
 --        withDerivedParametersMin
         searchCarInGarage,
         getCarInGarage,
-        loadCarInGarage
+        loadCarInGarage,
+        previewWithPartList,
+        previewWithPart
 ) where
 
 
 --import Control.Monad
+import Model.TH
+import Model.General
+import Data.InRules
 import Data.Database
 import Data.SqlTransaction
 import Database.HDBC (toSql)
@@ -27,15 +31,87 @@ import Data.Section
 import Control.Monad.Reader
 import Control.Applicative
 import Data.Database
-import Model.General
 import Data.Maybe
+import Data.Default
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Aeson as AS
 
 import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
+import qualified Model.GarageParts as GP
+import qualified Model.CarInstanceParts as CIP
 
 import qualified Model.MarketPlaceCar as MPC
 
 import Data.CarReady
+import Debug.Trace
+import qualified Data.Car as C
+
+type BaseParameter = Double
+type BaseParameterModifier = Double
+
+zeroBaseParam :: BaseParameter
+zeroBaseParam = 0
+
+zeroBaseParamModifier :: BaseParameterModifier
+zeroBaseParamModifier = 1
+
+$(genMapableRecord "CarBaseParameters" [
+        ("car_mass", ''BaseParameter),
+        ("car_power", ''BaseParameter),
+        ("car_power_m", ''BaseParameterModifier),
+        ("car_traction", ''BaseParameter),
+        ("car_traction_m", ''BaseParameterModifier),
+        ("car_braking", ''BaseParameter),
+        ("car_braking_m", ''BaseParameterModifier),
+        ("car_handling", ''BaseParameter),
+        ("car_handling_m", ''BaseParameterModifier),
+        ("car_aero", ''BaseParameter),
+        ("car_aero_m", ''BaseParameterModifier),
+        ("car_nos", ''BaseParameter),
+        ("car_nos_m", ''BaseParameterModifier)
+    ])
+
+zeroParams :: CarBaseParameters
+zeroParams = CarBaseParameters {
+        car_mass = zeroBaseParam,
+        car_power = zeroBaseParam,
+        car_power_m = zeroBaseParamModifier,
+        car_traction = zeroBaseParam,
+        car_traction_m = zeroBaseParamModifier,
+        car_braking = zeroBaseParam,
+        car_braking_m = zeroBaseParamModifier,
+        car_handling = zeroBaseParam,
+        car_handling_m = zeroBaseParamModifier,
+        car_aero = zeroBaseParam,
+        car_aero_m = zeroBaseParamModifier,
+        car_nos = zeroBaseParam,
+        car_nos_m = zeroBaseParamModifier
+    }
+
+$(genMapableRecord "CarDerivedParameters" [
+        ("car_acceleration", ''Integer),
+        ("car_top_speed", ''Integer),
+        ("car_cornering", ''Integer),
+        ("car_stopping", ''Integer),
+        ("car_nitrous", ''Integer)
+    ]) 
+
+
+$(genMapableRecord "PartParameter" [
+        ("parameter", ''Double),
+        ("parameter_name", ''String),
+        ("parameter_is_modifier", ''Bool)
+    ])
+
+$(genMapableRecord "PreviewPart" [
+        ("part", ''GP.GaragePart),
+        ("params", ''CarDerivedParameters)
+    ])
+
+type PreviewParts = [PreviewPart]
+
+type PartData = (Integer, [PartParameter])
 
 todbi :: Double -> Integer
 todbi = floor . (10000 *)
@@ -44,108 +120,6 @@ fromdbi = (/ 10000) . fromInteger
 
 type Speed = Double
 type Length = Double
-
-
-{-
-
--- speed where engine power overtakes tyre traction as limiting factor to acceleration.
-tractionSpeedTreshold :: Car -> Environment -> Double
-tractionSpeedTreshold c e = p / (m * mu * g)
-    where
-        m = mass c
-        mu = (tco c) * (mtraction e)
-        p = pwr c
-        g = constant "g"
-
--- time to reach traction speed treshold.
-tractionSpeedTresholdTime :: Car -> Environment -> Double
-tractionSpeedTresholdTime c e = p / (m * mu^2 * g^2)
-    where
-        m = mass c
-        mu = (tco c) * (mtraction e)
-        p = pwr c
-        g = constant "g"
-
--- time to reach v (m/s). note: does not account for drag; highly inaccurate for high v.
-accelerationTime :: Car -> Environment -> Double -> Double
-accelerationTime c e v = (v^2 * m / p + p / (m * mu^2 * g^2)) / 2
-    where
-        m = mass c
-        mu = (tco c) * (mtraction e)
-        p = pwr c
-        g = constant "g"
-
--- maximum braking force that can be applied is lower value of braking force and maximum force applied through tyres
-brakingForce :: Car -> Environment -> Double
---brakingForce c e = min (brf c) (mu * m * g) 
--- braking force is braking factor multiplied with tyre traction factor
-brakingForce c e = (brf c) * mu * m * g 
-    where
-        m = mass c
-        mu = (tco c) * (mtraction e)
-        g = constant "g"
- 
--- minimum distance traveled before car can be stopped from v (m/s)
-stoppingDistance :: Car -> Environment -> Double -> Double
-stoppingDistance c e v = m * v^2 / (2 * b)
-    where
-        b = brakingForce c e 
-        m = mass c
-        mu = (tco c) * (mtraction e)
-        g = constant "g"
-
--- distance to reduce speed from v1 to v2. TODO: this should take drag force into account!!
-speedReductionDistance :: Car -> Environment -> Speed -> Speed -> Length
-speedReductionDistance c e v1 v2 = (stoppingDistance c e v1) - (stoppingDistance c e v2)
-
--- maximum lateral acceleration in m / s^2; this limits cornering speed.
-lateralAcceleration :: Car -> Environment -> Double -> Double
-lateralAcceleration c e r = h * mu * g / (1 - r * df / m) 
-    where
-        h = hlm c
-        mu = (tco c) * (mtraction e)
-        df = dnf c
-        m = mass c
-        g = constant "g"
-
--- speed achievable in a corner with radius r in m.
-corneringSpeed :: Car -> Environment -> Double -> Double
-corneringSpeed c e r = sqrt $ (r *) $ lateralAcceleration c e r
-
--- drag force for car in environment at speed v
-dragForce :: Car -> Environment -> Speed -> Double
-dragForce c e v = {-# SCC dragForce #-} v^2 * 0.5 * (rho e) * (cda c)
-
--- acceleration force for car in environment at speed v using continuous transmission approximation: torque T ~ P/v. at low speeds, T is limited by tyre traction.
-accelerationForce :: Car -> Environment -> Speed -> Double
-accelerationForce c e v = {-# SCC accelerationForce #-} case (v <= tractionSpeedTreshold c e) of
-    True -> {-# SCC aTrue #-}  (mass c) * (tco c) * (mtraction e) * (constant "g")
-    False -> {-# SCC aFalse #-} (pwr c) / v
-    
--- acceleration: time for 0 - 100 km/h in s, disregarding drag
-acceleration :: Car -> Double
-acceleration c = accelerationTime c defaultEnvironment $ 100 * (constant "kmh")
-
--- topspeed: maximum speed reachable due to engine power opposed by drag
-topspeed :: Car -> Double
-topspeed c = (p / ak) ** (1/3 :: Double) / (constant "kmh")
-    where
-        p = pwr c
-        ak = 0.5 * (rho defaultEnvironment) * (cda c)
-
--- cornering: maximum lateral acceleration in g for a curve with radius 100 m
-cornering :: Car -> Double
-cornering c = (lateralAcceleration c defaultEnvironment 100) / (constant "g") 
-
--- stopping: distance traveled while braking from 100 - 0 km/h, disregarding drag and reactions
-stopping :: Car -> Double
-stopping c = stoppingDistance c defaultEnvironment $ 100 * (constant "kmh")
-
--- nitrous: not yet specified
-nitrous :: Car -> Double
-nitrous c = nos c
-
--}
 
 searchCarInGarage :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [CIG.CarInGarage]
 searchCarInGarage cs os l o = do
@@ -199,17 +173,92 @@ withZeroParameters cig = cig {
     }
         where car = carInGarageCar cig
 
-{-
-ithDerivedParametersMin :: CMI.CarMinimal -> CMI.CarMinimal 
-withDerivedParametersMin cig = cig {
-        CMI.acceleration = todbi $ derive acceleration car,
-        CMI.top_speed = todbi $ derive topspeed car,
-        CMI.cornering = todbi $ derive cornering car,
-        CMI.stopping = todbi $ derive stopping car,
-        CMI.nitrous = todbi $ derive nitrous car
+
+deriveParameters :: CarBaseParameters -> CarDerivedParameters
+deriveParameters b = CarDerivedParameters {
+        car_acceleration = todbi $ derive acceleration car,
+        car_top_speed = todbi $ derive topspeed car,
+        car_cornering = todbi $ derive cornering car,
+        car_stopping = todbi $ derive stopping car,
+        car_nitrous = todbi $ derive nitrous car
     }
-        where car = carMinimalCar cig
--}
+        where car = C.Car {
+                C.mass = car_mass b,
+                C.power = (car_power b) * (car_power_m b),
+                C.traction = (car_traction b) * (car_traction_m b),
+                C.handling = (car_handling b) * (car_handling_m b),
+                C.braking = (car_braking b) * (car_braking_m b),
+                C.aero = (car_aero b) * (car_aero_m b),
+                C.nos = (car_nos b) * (car_nos_m b)
+            }
+
+type CarPartMap = HM.HashMap Integer PartData 
+
+garagePartsToMap :: [GP.GaragePart] -> CarPartMap
+garagePartsToMap ps = foldr insertGaragePart HM.empty ps
+
+insertGaragePart :: GP.GaragePart -> CarPartMap -> CarPartMap
+insertGaragePart p m = HM.insert (GP.part_type_id p) (GP.weight p, garagePartParams p) m
+
+garagePartParams :: GP.GaragePart -> [PartParameter] 
+garagePartParams p = addParam (fromdbi <$> GP.parameter1 p, GP.parameter1_name p, GP.parameter1_is_modifier p) $
+                     addParam (fromdbi <$> GP.parameter2 p, GP.parameter2_name p, GP.parameter2_is_modifier p) $
+                     addParam (fromdbi <$> GP.parameter3 p, GP.parameter3_name p, GP.parameter3_is_modifier p) []
+
+carPartsToMap :: [CIP.CarInstanceParts] -> CarPartMap
+carPartsToMap ps = foldr insertCarPart HM.empty ps
+
+insertCarPart :: CIP.CarInstanceParts -> CarPartMap -> CarPartMap
+insertCarPart p m = HM.insert (CIP.part_type_id p) (CIP.weight p, carPartParams p) m
+
+carPartParams :: CIP.CarInstanceParts -> [PartParameter] 
+carPartParams p = addParam (fromdbi <$> CIP.parameter1 p, CIP.parameter1_name p, CIP.parameter1_is_modifier p) $
+                     addParam (fromdbi <$> CIP.parameter2 p, CIP.parameter2_name p, CIP.parameter2_is_modifier p) $
+                     addParam (fromdbi <$> CIP.parameter3 p, CIP.parameter3_name p, CIP.parameter3_is_modifier p) []
+
+addParam :: (Maybe Double, Maybe String, Maybe Bool) -> [PartParameter] -> [PartParameter]
+addParam p ps = case p of
+        (Just v, Just n, Just m) -> (PartParameter { parameter = v, parameter_name = n, parameter_is_modifier = m }) : ps
+        otherwise -> ps
+
+
+baseParameters :: CarPartMap -> CarBaseParameters
+baseParameters m = HM.foldr step zeroParams m
+    where
+        step :: PartData -> CarBaseParameters -> CarBaseParameters
+        step (w, ps) b = let o = car_mass b in foldr step' (b { car_mass = o + (fromInteger w)} ) ps
+        step' :: PartParameter -> CarBaseParameters -> CarBaseParameters
+        step' p b = apl (parameter p) (parameter_name p) (parameter_is_modifier p) b
+        apl :: Double -> String -> Bool -> CarBaseParameters -> CarBaseParameters
+        apl v n m p = case (n,m) of
+                ("Power", False) -> let o = car_power p in p { car_power = o + v } 
+                ("Power", True) -> let o = car_power_m p in p { car_power_m = o * v } 
+                ("Traction", False) -> let o = car_traction p in p { car_traction = o + v } 
+                ("Traction", True) -> let o = car_traction_m p in p { car_traction_m = o * v } 
+                ("Handling", False) -> let o = car_handling p in p { car_handling = o + v } 
+                ("Handling", True) -> let o = car_handling_m p in p { car_handling_m = o * v } 
+                ("Aerodynamics", False) -> let o = car_aero p in p { car_aero = o + v } 
+                ("Aerodynamics", True) -> let o = car_aero_m p in p { car_aero_m = o * v } 
+                ("Braking", False) -> let o = car_braking p in p { car_braking = o + v } 
+                ("Braking", True) -> let o = car_braking_m p in p { car_braking_m = o * v } 
+                ("NOS", False) -> let o = car_nos p in p { car_nos = o + v } 
+                ("NOS", True) -> let o = car_nos_m p in p { car_nos_m = o * v } 
+                otherwise -> p
+
+
+
+previewWithPart :: CIG.CarInGarage -> GP.GaragePart -> SqlTransaction Connection PreviewPart
+previewWithPart cig gp = head <$> previewWithPartList cig [gp]
+
+previewWithPartList :: CIG.CarInGarage -> [GP.GaragePart] -> SqlTransaction Connection [PreviewPart]
+previewWithPartList cig gps = do
+        m <- carPartsToMap <$> search ["car_instance_id" |== toSql (CIG.id cig)] [] 1000 0 :: SqlTransaction Connection CarPartMap
+        let bs = map (\p -> baseParameters $ insertGaragePart p m) gps
+        let ds = map deriveParameters bs
+        return $ zipWith (\d p -> PreviewPart { part = p, params = d } ) ds gps
+
+
+-- TODO: previewWithoutPart -> same stuff for removing attached parts
 
 
 derive :: R.RaceM a -> Car -> a
