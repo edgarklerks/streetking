@@ -211,7 +211,7 @@ runAll tp = Data.Task.run tp 0
 run :: Trigger -> Integer -> SqlTransaction Connection ()
 run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 
-        t <- floor <$> (1000 *) <$> unix_timestamp
+        t <- (1000 *) <$> unix_timestamp
         
         cleanup $ t - 24 * 3600
 
