@@ -1,5 +1,10 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns, TypeSynonymInstances, FlexibleInstances #-}
-
+{-- 
+- Changelog
+- Edgar - default time from database 
+-
+-
+--}
 module Data.Task where
 
 import           Control.Applicative
@@ -18,6 +23,7 @@ import           Data.Time.Clock.POSIX
 import           Model.General 
 import           Data.DataPack
 import           Data.Account as DA
+import           Model.Functions
 
 import qualified Model.Transaction as TR 
 import           Model.Transaction (transactionMoney)
@@ -205,7 +211,7 @@ runAll tp = Data.Task.run tp 0
 run :: Trigger -> Integer -> SqlTransaction Connection ()
 run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 
-        t <- liftIO $ floor <$> (1000 *) <$> getPOSIXTime
+        t <- floor <$> (1000 *) <$> unix_timestamp
         
         cleanup $ t - 24 * 3600
 
