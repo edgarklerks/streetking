@@ -951,7 +951,11 @@ garageParts = do
 garagePartsWithPreview :: Application ()
 garagePartsWithPreview = do 
         uid <- getUserId 
-        (((l, o), xs),od) <- getPagesWithDTDOrdered ["level", "part_instance_id", "unique", "improvement"] (
+
+        as <- getJson
+        let pid = extract "preview_car_instance_id" as :: Integer
+
+        (((l, o), xs),od) <- getPagesWithDTDOrderedAndParams as ["level", "part_instance_id", "unique", "improvement"] (
                 "name" +== "part_type" +&& 
                 "part_instance_id" +== "part_instance_id" +&& 
                 "level" +<= "level-max" +&& 
@@ -965,9 +969,7 @@ garagePartsWithPreview = do
                 "account_id" +==| toSql uid
             )
 
-        as <- getJson >>= scheck ["preview_car_instance_id"]
-        let pid = extract "preview_car_instance_id" as :: Integer
-        
+       
         ps <- runDb $ do
             personnelUpdate uid 
             ns <- search xs od l o :: SqlTransaction Connection [GPT.GaragePart]

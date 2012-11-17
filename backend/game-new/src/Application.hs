@@ -158,6 +158,18 @@ getPagesWithDTDOrdered vs d = do
                     Right x -> do 
                         return (((DB.fromSql b, DB.fromSql o), cst), x)
 
+getPagesWithDTDOrderedAndParams :: SqlMap -> [String] -> DTD -> Application (((Integer, Integer), Constraints), Orders)
+getPagesWithDTDOrderedAndParams xs vs d = do 
+                let b = S.lookupDefault (DB.SqlInteger 100) "limit" xs
+                let o = S.lookupDefault (DB.SqlInteger 0) "offset" xs 
+                let od = S.lookupDefault "" "sql" xs
+                let cst = dtd d $ convert xs 
+                let od' = getSortOrder (convert od) >>= \od -> sortOrder od vs 
+                case od' of 
+                    Left e -> internalError e
+                    Right x -> do 
+                        return (((DB.fromSql b, DB.fromSql o), cst), x)
+
 
 
 getPagesWithDTD :: DTD -> Application ((Integer, Integer), Constraints)
