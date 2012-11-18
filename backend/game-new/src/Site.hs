@@ -1757,7 +1757,7 @@ testWrite = do
         uid <- getUserId
         xs <- runCompose $ do 
             label "bla" (1 :: Integer)
-            label "foo" (HM.fromList [("string" :: String, toInRule 1)])
+            label "foo" (HM.fromList [("string" :: String, toInRule (1 :: Integer))])
             label "bar" (2 :: Integer)
         writeResult xs 
 
