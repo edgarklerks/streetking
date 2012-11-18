@@ -360,9 +360,9 @@ sectionConfig s q = do
                     effPower q = do
                             p <- C.pwr <$> asks car
                             -- TODO: reducing power also reduces top speed. use a different algorithm.
-                            let f = 0.8 + 0.2 * (P.acceleration q)
-                            return $ f * p
---                            return p
+--                            let f = 0.8 + 0.2 * (P.acceleration q)
+--                            return $ f * p
+                            return p
 
                     -- braking is % of tyre traction available to slow down car. traction force is mu * m * g
                     -- driver braking performance applies a factor 0.5 - 1
