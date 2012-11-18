@@ -42,10 +42,12 @@ checkLevel uid = do
 levelUp :: Integer -> SqlTransaction Connection () 
 levelUp uid = do
         s :: Integer <- CFG.getKey "skillpoints_per_level"
+        e :: Integer <- CFG.getKey "energy_per_level"
         a <- aload uid (rollback $ "account not found for id " ++ (show uid)) :: SqlTransaction Connection A.Account
         let fl = A.level a
         let su = A.skill_unused a
-        update "account" ["id" |== (toSql $ uid)] [] [("level", toSql $ fl + 1), ("skill_unused", toSql $ su + s)]
+        let en = (A.max_energy a) + e
+        update "account" ["id" |== (toSql $ uid)] [] [("level", toSql $ fl + 1), ("skill_unused", toSql $ su + s), ("max_energy", toSql en), ("energy", toSql en)]
         -- TODO: level-up notification 
         return ()
          
