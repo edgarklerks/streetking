@@ -4,6 +4,7 @@
 		<div class="setup-car-info-data-element-info-data-name">Top speed <span>[:eval floor(0.top_speed/10000)]</span> <b>km/h</b></div>
 		<div class="setup-car-info-data-element-progress-bar-box ui-corner-all-1px">
 			<div class="setup-car-info-data-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+0.top_speed/10000+",80,200]")]%'></div>
+			<div class="setup-car-info-data-element-progress-bar ui-corner-all-1px car_compare_bar_top_speed"></div>
 		</div>
 		<div class="clearfix"></div>
 	</div>
@@ -11,6 +12,7 @@
 		<div class="setup-car-info-data-element-info-data-name">Acceleration <span>[:eval floor(0.acceleration/1000)/10]</span> <b>s</b></div>
 		<div class="setup-car-info-data-element-progress-bar-box ui-corner-all-1px">
 			<div class="setup-car-info-data-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+0.acceleration/10000+",-4,10]")]%'></div>
+			<div class="setup-car-info-data-element-progress-bar ui-corner-all-1px car_compare_bar_acceleration"></div>
 		</div>
 		<div class="clearfix"></div>
 	</div>
@@ -18,6 +20,7 @@
 		<div class="setup-car-info-data-element-info-data-name">Braking <span>[:eval floor(0.stopping/10000)]</span> <b>m</b></div>
 		<div class="setup-car-info-data-element-progress-bar-box ui-corner-all-1px">
 			<div class="setup-car-info-data-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+0.stopping/10000+",-15,70]")]%'></div>
+			<div class="setup-car-info-data-element-progress-bar ui-corner-all-1px car_compare_bar_stopping"></div>
 		</div>
 		<div class="clearfix"></div>
 	</div>
@@ -25,6 +28,7 @@
 		<div class="setup-car-info-data-element-info-data-name">Handling <span>[:eval floor(0.cornering/1000)/10]</span> <b>g</b></div>
 		<div class="setup-car-info-data-element-progress-bar-box ui-corner-all-1px">
 			<div class="setup-car-info-data-element-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+0.cornering/10000+",0.3,1]")]%'></div>
+			<div class="setup-car-info-data-element-progress-bar ui-corner-all-1px car_compare_bar_cornering"></div>
 		</div>
 		<div class="clearfix"></div>
 	</div>

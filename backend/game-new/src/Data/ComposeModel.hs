@@ -142,3 +142,6 @@ runTest m = do
             c <- db 
             runComposeMonad m error c
 
+expand :: ToInRule a => [(String, a)] -> ComposeMonad r c ()
+expand xs = forM_ xs $ \(s,x) -> label s x 
+

@@ -9,7 +9,7 @@ import Control.Applicative
 import Control.Concurrent
 
 
-testServer = TS "r3.graffity.me" 9003
+testServer = TS "192.168.0.1" 9003
 bareServer = TS "127.0.0.1" 9003
 
 main = do xs <- runTests test testServer 

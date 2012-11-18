@@ -2,6 +2,7 @@
 {-- Change log 
 - Edgar - added immutable predicate 
 - Edgar - added immutable setters and getters 
+- Edgar -- changed immutable flag to a quantity semaphore 
 -
 --}
 module Model.CarInstance where 
@@ -32,16 +33,16 @@ $(genAll "CarInstance" "car_instance"
         ("deleted", ''Bool),
         ("prototype", ''Bool),
         ("active", ''Bool),
-        ("immutable", ''Bool)
+        ("immutable", ''Integer)
 
     ]
     )
 isMutable :: Integer -> SqlTransaction Connection Bool 
-isMutable = fmap (not . immutable . fromJust) . load 
+isMutable = fmap ((==0) .  immutable . fromJust) . load 
 
 
 setImmutable :: Integer -> SqlTransaction Connection Integer 
-setImmutable = load >=> \(fromJust -> c) -> save (c { immutable = True})
+setImmutable = load >=> \(fromJust -> c) -> save (c { immutable = immutable c + 1})
 
 setMutable :: Integer -> SqlTransaction Connection Integer 
-setMutable = load >=> \(fromJust -> c) -> save (c { immutable = False})
+setMutable = load >=> \(fromJust -> c) -> save (c { immutable = min 0 (immutable c - 1)})

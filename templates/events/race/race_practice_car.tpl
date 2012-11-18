@@ -2,8 +2,10 @@
 	[:when (race.data.length == 2)]{
 		<div class="race-car-element-container">
 			<div class="float-left">
+				<div>[:race.data.0.rd_user.nickname]</div>
 				<div class="race-car-element-image-container race-car-element-image-container-image" id="labelling-car-[:race.data.0.rd_user.id]" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+race.data.0.rd_car.id+",\"car\"]")])'>
-					<a href="#Garage/car?car_instance_id=[:race.data.0.rd_car.id]" module="GARAGE_CAR_INFO"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>
+					<!--<a href="#Garage/car?car_instance_id=[:race.data.0.rd_car.id]" module="GARAGE_CAR_INFO"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>-->
+					<a href="#" class="car_info" oid="0"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>
 				</div>	
 				<div class="speedometer-box">
 					<img src="images/speedometer_pointer.png" id="speedometer-pointer-[:race.data.0.rd_user.id]" class="speedometer_pointer">
@@ -16,8 +18,10 @@
 				<div class="race-car-element-border-bottom"></div>
 			</div>
 			<div class="float-right">
+				<div>[:race.data.1.rd_user.nickname]</div>
 				<div class="race-car-element-image-container race-car-element-image-container-image" id="labelling-car-[:race.data.1.rd_user.id]" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+race.data.1.rd_car.id+",\"car\"]")])'>
-					<a href="#Garage/car?car_instance_id=[:race.data.1.rd_car.id]" module="GARAGE_CAR_INFO"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>
+					<!--<a href="#Garage/car?car_instance_id=[:race.data.1.rd_car.id]" module="GARAGE_CAR_INFO"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>-->
+					<a href="#" class="car_info" oid="1"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>
 				</div>	
 				<div class="speedometer-box">
 					<img src="images/speedometer_pointer.png" id="speedometer-pointer-[:race.data.1.rd_user.id]" class="speedometer_pointer">
@@ -30,8 +34,10 @@
 	[:when (race.data.length == 1)]{
 		<div class="race-car-element-container">
 			<div class="float-left">
+				<div>[:race.data.0.rd_user.nickname]</div>
 				<div class="race-car-element-image-container race-car-element-image-container-image" id="labelling-car-[:race.data.0.rd_user.id]" style='background-image:url([:eval IMAGESERVER("[\"user_car\","+race.data.0.rd_car.id+",\"car\"]")])'>
-					<a href="#Garage/car?car_instance_id=[:race.data.0.rd_car.id]" module="GARAGE_CAR_INFO"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>
+					<!--<a href="#Garage/car?car_instance_id=[:race.data.0.rd_car.id]" module="GARAGE_CAR_INFO"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>-->
+					<a href="#" class="car_info" oid="0"><div class="race-car-element-image-zoom car-image-zoom">&nbsp;</div></a>
 				</div>	
 				<div class="speedometer-box">
 					<img src="images/speedometer_pointer.png" id="speedometer-pointer-[:race.data.0.rd_user.id]" class="speedometer_pointer">

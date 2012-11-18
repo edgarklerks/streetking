@@ -9,6 +9,8 @@ module Site
   ) where
 {-- Change log 
 - Edgar: Added unset immutable flag to cancelTournamentJoin
+- Edgar: Added set and unset immutable flag to challenge
+- Edgar: Added immutable predicate to buy and sell functions 
 -
 -
 ---}
@@ -1753,7 +1755,12 @@ racePractice = do
 testWrite :: Application ()
 testWrite = do
         uid <- getUserId
-        writeResult' $ AS.toJSON $ HM.fromList [("bla" :: LB.ByteString, AS.toJSON (1::Integer)), ("foo", AS.toJSON $ HM.fromList [("bar" :: LB.ByteString, 1 :: Integer)])]
+        xs <- runCompose $ do 
+            label "bla" (1 :: Integer)
+            label "foo" (HM.fromList [("string" :: String, toInRule 1)])
+            label "bar" (2 :: Integer)
+        writeResult xs 
+
 
 
 
@@ -1814,12 +1821,13 @@ raceChallengeWith p = do
                     Chg.challenger = RaceParticipant a am c cm me,
                     Chg.deleted = False
                 } 
+            CarInstance.setImmutable (fromJust $ CMI.id cm)
 
             return True
         writeResult i
 
 
-cons f = liftIO $ print f *> print "---"
+cons f = return () -- liftIO $ print f *> print "---"
 
 
 raceChallengeAccept :: Application ()
@@ -1907,6 +1915,7 @@ raceChallengeAccept = do
             
             -- process race
             t <- liftIO milliTime 
+            CarInstance.setMutable (fromJust $ CMI.id $ Chg.car_min chg)
             (rid, rs) <- processRace t ps (Chg.track_id chg)
 
             cons "iwunk: " 
@@ -2192,7 +2201,7 @@ tournamentResults = do
         uid <- getUserId 
         xs <- getJson >>= scheck ["tournament_id"] 
         let b = updateHashMap xs (def :: TP.TournamentPlayer) 
-        liftIO $ print (TP.tournament_id b)
+--        liftIO $ print (TP.tournament_id b)
         ys <- runDb $ getResults (fromJust $ TP.tournament_id b)  
         writeMapables ys 
 
@@ -2469,9 +2478,7 @@ routes g = fmap (second (wrapErrors g)) $ [
 rewardLog :: Application ()
 rewardLog = do 
         uid <- getUserId 
-        liftIO $ print uid
         runDb $ activateRewards uid 
-        liftIO $ print "hello" 
         (((l,o), xs),od) <- getPagesWithDTDOrdered ["id","name","viewed","experience","money"] (
            "account_id" +==| (toSql uid) +&&
            "id" +== "id" +&& 
@@ -2486,7 +2493,6 @@ rewardLog = do
                 forM_ xs (checkRewardLog . fromJust . RL.id)
                 return xs 
 
-        liftIO $ print xs 
         writeResult (transformRewards xs) 
 
 
