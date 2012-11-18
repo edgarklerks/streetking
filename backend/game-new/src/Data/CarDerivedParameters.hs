@@ -201,9 +201,12 @@ insertGaragePart :: GP.GaragePart -> CarPartMap -> CarPartMap
 insertGaragePart p m = HM.insert (GP.part_type_id p) (GP.weight p, garagePartParams p) m
 
 garagePartParams :: GP.GaragePart -> [PartParameter] 
-garagePartParams p = addParam (fromdbi <$> GP.parameter1 p, GP.parameter1_name p, GP.parameter1_is_modifier p) $
-                     addParam (fromdbi <$> GP.parameter2 p, GP.parameter2_name p, GP.parameter2_is_modifier p) $
-                     addParam (fromdbi <$> GP.parameter3 p, GP.parameter3_name p, GP.parameter3_is_modifier p) []
+garagePartParams p = addParam i w (fromdbi <$> GP.parameter1 p, GP.parameter1_name p, GP.parameter1_is_modifier p) $
+                     addParam i w (fromdbi <$> GP.parameter2 p, GP.parameter2_name p, GP.parameter2_is_modifier p) $
+                     addParam i w (fromdbi <$> GP.parameter3 p, GP.parameter3_name p, GP.parameter3_is_modifier p) []
+                            where
+                                    i = fromdbi $ GP.improvement p
+                                    w = fromdbi $ GP.wear p
 
 carPartsToMap :: [CIP.CarInstanceParts] -> CarPartMap
 carPartsToMap ps = foldr insertCarPart HM.empty ps
@@ -212,21 +215,27 @@ insertCarPart :: CIP.CarInstanceParts -> CarPartMap -> CarPartMap
 insertCarPart p m = HM.insert (CIP.part_type_id p) (CIP.weight p, carPartParams p) m
 
 carPartParams :: CIP.CarInstanceParts -> [PartParameter] 
-carPartParams p = addParam (fromdbi <$> CIP.parameter1 p, CIP.parameter1_name p, CIP.parameter1_is_modifier p) $
-                     addParam (fromdbi <$> CIP.parameter2 p, CIP.parameter2_name p, CIP.parameter2_is_modifier p) $
-                     addParam (fromdbi <$> CIP.parameter3 p, CIP.parameter3_name p, CIP.parameter3_is_modifier p) []
+carPartParams p = addParam i w (fromdbi <$> CIP.parameter1 p, CIP.parameter1_name p, CIP.parameter1_is_modifier p) $
+                     addParam i w (fromdbi <$> CIP.parameter2 p, CIP.parameter2_name p, CIP.parameter2_is_modifier p) $
+                     addParam i w (fromdbi <$> CIP.parameter3 p, CIP.parameter3_name p, CIP.parameter3_is_modifier p) []
+                            where
+                                    i = fromdbi $ CIP.improvement p
+                                    w = fromdbi $ CIP.wear p
 
-addParam :: (Maybe Double, Maybe String, Maybe Bool) -> [PartParameter] -> [PartParameter]
-addParam p ps = case p of
-        (Just v, Just n, Just m) -> (PartParameter { parameter = v, parameter_name = n, parameter_is_modifier = m }) : ps
+addParam :: Double -> Double -> (Maybe Double, Maybe String, Maybe Bool) -> [PartParameter] -> [PartParameter]
+addParam i w p ps = case p of
+        (Just v, Just n, Just m) -> (PartParameter { parameter = paramModified v i w, parameter_name = n, parameter_is_modifier = m }) : ps
         otherwise -> ps
 
+-- modify parameter for improvement and wear. improvement can add up to 50% and wear can reduce up to 50%. effects are multiplicative.
+paramModified :: Double -> Double -> Double -> Double
+paramModified v i w = v * (1 + 0.5 * i) * (1 - 0.5 * w);
 
 baseParameters :: CarPartMap -> CarBaseParameters
 baseParameters m = HM.foldr step zeroParams m
     where
         step :: PartData -> CarBaseParameters -> CarBaseParameters
-        step (w, ps) b = let o = car_mass b in foldr step' (b { car_mass = o + (fromInteger w)} ) ps
+        step (m, ps) b = let o = car_mass b in foldr step' (b { car_mass = o + (fromInteger m)} ) ps
         step' :: PartParameter -> CarBaseParameters -> CarBaseParameters
         step' p b = apl (parameter p) (parameter_name p) (parameter_is_modifier p) b
         apl :: Double -> String -> Bool -> CarBaseParameters -> CarBaseParameters
@@ -245,7 +254,7 @@ baseParameters m = HM.foldr step zeroParams m
                 ("NOS", True) -> let o = car_nos_m p in p { car_nos_m = o * v } 
                 otherwise -> p
 
-
+-- parameter = parameter0 * (1 + 0.5 * (improvement / 10000.0)) * (1 - 0.5 * (wear / 10000.0));
 
 previewWithPart :: CIG.CarInGarage -> GP.GaragePart -> SqlTransaction Connection PreviewPart
 previewWithPart cig gp = head <$> previewWithPartList cig [gp]
@@ -253,8 +262,7 @@ previewWithPart cig gp = head <$> previewWithPartList cig [gp]
 previewWithPartList :: CIG.CarInGarage -> [GP.GaragePart] -> SqlTransaction Connection [PreviewPart]
 previewWithPartList cig gps = do
         m <- carPartsToMap <$> search ["car_instance_id" |== toSql (CIG.id cig)] [] 1000 0 :: SqlTransaction Connection CarPartMap
-        let bs = map (\p -> baseParameters $ insertGaragePart p m) gps
-        let ds = map deriveParameters bs
+        let ds = map (\p -> deriveParameters $ baseParameters $ insertGaragePart p m) gps
         return $ zipWith (\d p -> PreviewPart { part = p, params = d } ) ds gps
 
 
