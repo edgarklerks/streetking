@@ -213,9 +213,7 @@ getPlayers mid = do
 
 getResults :: Integer -> SqlTransaction Connection [TR.TournamentResult] 
 getResults mid = do
-                liftIO $ print "mid"
                 tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament
-                liftIO $ print "found tournament"
                 mt <- liftIO milliTime
                 rs <- search ["tournament_id" |== (toSql mid)] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
                 if (T.done tr) then return rs 
@@ -230,8 +228,6 @@ getResults mid = do
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
               step mt (TR.TournamentResult _ tid rid _ _ _ _ _) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
-                                                liftIO (print "Get results")
-                                                liftIO (print $ R.end_time r)
                                                 return (R.end_time r < mt)
                 
 
@@ -315,18 +311,11 @@ runTournamentRounds po tfd =
                               plys = tournamentPlayers tfd
                               rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid) _) =  mkRaceParticipant cid aid Nothing 
                               step tdif xs = do 
-                                liftIO (print "time diff in tournamentRounds:") 
-                                liftIO (print tdif)
                                 races <- forM xs $ \xs -> do
                                              processTournamentRace (tdif) xs tr
-                                liftIO $ print races 
                                 let (ps', ts) = split3 races 
                                 let ps = sortRounds ps'
                                 let tmax = maximum ts  
-                                liftIO (print "new time difference")
-                                liftIO (print tmax)
-                                liftIO (print "tdif + tmax")
-                                liftIO $ print (tmax + tdif)
 
                                 if (one ps) 
                                         then return [races]
@@ -377,7 +366,6 @@ processTournamentRace t' ps tid = do
         -- current time, finishing times, race time (slowest finishing time) 
         t <- (+t') <$> liftIO milliTime
         ct <- liftIO milliTime 
-        liftIO $ print "in process tournament" *> print ("start time: " <> show t <>  " current time " <> show ct <> " difference " <> show t') 
             
         let fin r = (t+) $ ceiling $ (*1000) $ raceTime r  
         let te = fin . snd . last $ rs
@@ -453,13 +441,13 @@ saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> forM_ xs (lmb r)
                                     TR.raceresult2 = Just y
 
                                         } :: TR.TournamentResult)
-                  lmb r xs =  liftIO $ print xs >> return 0 
+                  lmb r xs =  return 0 
  
 
 initTournament po = registerTask pred (executeTask po)
           where pred t | "action" .< (TK.data t) == Just RunTournament = True
                        | otherwise = False 
-executeTask po d | "action" .< (TK.data d) == Just RunTournament  = runTournament d po *> liftIO (print "runtournament") *> return True  
+executeTask po d | "action" .< (TK.data d) == Just RunTournament  = runTournament d po *> return True  
 
 
 taskRewards :: Integer -> Integer -> RaceRewards -> Integer -> SqlTransaction Connection () 

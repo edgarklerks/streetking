@@ -1,7 +1,8 @@
 <ul class="sk-tab-icons">
 	[:repeat data:tabs.nodes as:currtab] {
 		<li class="sk-tab-icons-[:currtab.content.Tab.0]">
-			<a href="#Garage/parts/?part_type=[:currtab.content.Tab.0]&car_id=[:car.0.car_id]&car_instance_id=[:car.0.id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="[:currtab.content.Tab.0]" title="[:currtab.content.Tab.0]">&nbsp;</a>
+			<!--<a href="#Garage/parts/?part_type=[:currtab.content.Tab.0]&car_id=[:car.0.car_id]&car_instance_id=[:car.0.id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="[:currtab.content.Tab.0]" title="[:currtab.content.Tab.0]">&nbsp;</a>-->
+			<a href="#Garage/partsPreviewed/?part_type=[:currtab.content.Tab.0]&car_id=[:car.0.car_id]&preview_car_instance_id=[:car.0.id]&anycar=1" module="GARAGE_CAR_SETUP_TAB" alt="[:currtab.content.Tab.0]" title="[:currtab.content.Tab.0]">&nbsp;</a>
 		</li>
 	}
 	<li class="sk-tab-icons-paint"><a href="#Garage/parts/?part_type=paint&car_id=[:0.car_id]&car_instance_id=[:requestParams.car_instance_id]&anycar=1" module="GARAGE_CAR_PAINT_TAB" alt="paint" title="paint">&nbsp;</a></li>
