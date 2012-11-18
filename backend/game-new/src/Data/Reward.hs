@@ -133,10 +133,10 @@ activateRewards uid = do
                                                                   })
 
                                         -- add experience to account
-                                        void $ DA.addRespect (ACC.respect ac) exp
---                                        void $ save $ ac { ACC.respect = ACC.respect ac + exp }
-                                        -- save to reward log 
+                                        -- void $ save $ ac { ACC.respect = ACC.respect ac + exp }
+                                        void $ DA.addRespect uid exp
 
+                                        -- save to reward log 
                                         void $ save $ def {
                                               RL.account_id = Just uid
                                             , RL.rule = RW.rule e
