@@ -30,7 +30,8 @@ import qualified Model.RewardLog as RL
 import qualified Model.Transaction as TR 
 import Control.Monad.Trans 
 import Data.Monoid hiding (Any, All) 
-import Data.Conversion 
+import Data.Conversion
+import qualified Data.Account as DA
 
 newtype Rewards = Rewards {
                     unRewards :: [Reward]
@@ -131,9 +132,9 @@ activateRewards uid = do
                                                   , TR.type_id = fromJust $ RW.id e
                                                                   })
 
-                                        void $ save $ ac {
-                                            ACC.respect = ACC.respect ac + exp
-                                                 }
+                                        -- add experience to account
+                                        void $ DA.addRespect (ACC.respect ac) exp
+--                                        void $ save $ ac { ACC.respect = ACC.respect ac + exp }
                                         -- save to reward log 
 
                                         void $ save $ def {

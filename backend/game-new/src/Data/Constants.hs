@@ -18,7 +18,7 @@ p xs = snd $ flip runState empty $ do
 constants = p [
 
         ("W/hp", 750.0),                    -- Watt per hp
-        ("pe", 0.5),                        -- power efficiency of car engine
+        ("pe", 0.5),                       -- power efficiency of car engine
 
         ("g", 9.81),                        -- gravitational acceleration
         ("kmh", 1 / 3.6),                   -- km/h per m/s

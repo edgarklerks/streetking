@@ -2018,6 +2018,8 @@ processRace t ps tid = do
                 -- set account busy until user finish; subtract energy
                 update "account" ["id" |== toSql uid] [] [("busy_until", toSql ft), ("busy_subject_id", toSql rid), ("busy_type", SqlInteger 2)]
 
+                -- apply wear to user's parts
+
                 -- task: update race time on user finish
                 Task.trackTime ft tid uid (raceTime r)
 
