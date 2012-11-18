@@ -258,6 +258,8 @@ baseParameters m = HM.foldr step zeroParams m
 previewWithPart :: CIG.CarInGarage -> GP.GaragePart -> SqlTransaction Connection PreviewPart
 previewWithPart cig gp = head <$> previewWithPartList cig [gp]
 
+-- TODO: previewWithoutPart -> same stuff for removing attached parts
+
 previewWithPartList :: CIG.CarInGarage -> [GP.GaragePart] -> SqlTransaction Connection [PreviewPart]
 previewWithPartList cig gps = do
 
@@ -285,7 +287,6 @@ testPreview cid q = do
         previewWithPartList cig gps
 
 
--- TODO: previewWithoutPart -> same stuff for removing attached parts
 
 
 derive :: R.RaceM a -> Car -> a
