@@ -228,6 +228,7 @@ addParam i w p ps = case p of
         otherwise -> ps
 
 -- modify parameter for improvement and wear. improvement can add up to 50% and wear can reduce up to 50%. effects are multiplicative.
+-- parameter = parameter0 * (1 + 0.5 * (improvement / 10000.0)) * (1 - 0.5 * (wear / 10000.0));
 paramModified :: Double -> Double -> Double -> Double
 paramModified v i w = v * (1 + 0.5 * i) * (1 - 0.5 * w);
 
@@ -241,29 +242,47 @@ baseParameters m = HM.foldr step zeroParams m
         apl :: Double -> String -> Bool -> CarBaseParameters -> CarBaseParameters
         apl v n m p = case (n,m) of
                 ("Power", False) -> let o = car_power p in p { car_power = o + v } 
-                ("Power", True) -> let o = car_power_m p in p { car_power_m = o * v } 
+                ("Power", True) -> let o = car_power_m p in p { car_power_m = o * (1+v) } 
                 ("Traction", False) -> let o = car_traction p in p { car_traction = o + v } 
-                ("Traction", True) -> let o = car_traction_m p in p { car_traction_m = o * v } 
+                ("Traction", True) -> let o = car_traction_m p in p { car_traction_m = o * (1+v) } 
                 ("Handling", False) -> let o = car_handling p in p { car_handling = o + v } 
-                ("Handling", True) -> let o = car_handling_m p in p { car_handling_m = o * v } 
+                ("Handling", True) -> let o = car_handling_m p in p { car_handling_m = o * (1+v) } 
                 ("Aerodynamics", False) -> let o = car_aero p in p { car_aero = o + v } 
-                ("Aerodynamics", True) -> let o = car_aero_m p in p { car_aero_m = o * v } 
+                ("Aerodynamics", True) -> let o = car_aero_m p in p { car_aero_m = o * (1+v) } 
                 ("Braking", False) -> let o = car_braking p in p { car_braking = o + v } 
-                ("Braking", True) -> let o = car_braking_m p in p { car_braking_m = o * v } 
+                ("Braking", True) -> let o = car_braking_m p in p { car_braking_m = o * (1+v) } 
                 ("NOS", False) -> let o = car_nos p in p { car_nos = o + v } 
-                ("NOS", True) -> let o = car_nos_m p in p { car_nos_m = o * v } 
+                ("NOS", True) -> let o = car_nos_m p in p { car_nos_m = o * (1+v) } 
                 otherwise -> p
-
--- parameter = parameter0 * (1 + 0.5 * (improvement / 10000.0)) * (1 - 0.5 * (wear / 10000.0));
 
 previewWithPart :: CIG.CarInGarage -> GP.GaragePart -> SqlTransaction Connection PreviewPart
 previewWithPart cig gp = head <$> previewWithPartList cig [gp]
 
 previewWithPartList :: CIG.CarInGarage -> [GP.GaragePart] -> SqlTransaction Connection [PreviewPart]
 previewWithPartList cig gps = do
+
+        liftIO $ print "--- car in garage"
+        liftIO $ print $ show cig
+
         m <- carPartsToMap <$> search ["car_instance_id" |== toSql (CIG.id cig)] [] 1000 0 :: SqlTransaction Connection CarPartMap
-        let ds = map (\p -> deriveParameters $ baseParameters $ insertGaragePart p m) gps
+
+--        liftIO $ print "--- car part parameter map"
+--        liftIO $ print $ show m
+
+        let bs = map (\p -> baseParameters $ insertGaragePart p m) gps
+
+--        liftIO $ print "--- replaced part parameter maps"
+--        liftIO $ print $ show bs
+
+        let ds = map deriveParameters bs 
         return $ zipWith (\d p -> PreviewPart { part = p, params = d } ) ds gps
+
+-- doSql $ testPreview 442 ["part_type_id" |== SqlInteger 19]
+testPreview :: Integer -> Constraints -> SqlTransaction Connection [PreviewPart]
+testPreview cid q = do
+        cig <- loadCarInGarage cid $ rollback "could not retrieve car"
+        gps <- search q [] 10 0 :: SqlTransaction Connection [GP.GaragePart]
+        previewWithPartList cig gps
 
 
 -- TODO: previewWithoutPart -> same stuff for removing attached parts
