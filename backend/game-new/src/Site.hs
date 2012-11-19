@@ -53,7 +53,6 @@ import qualified Model.CarInstance as CarInstance
 import qualified Model.CarInGarage as CIG 
 import qualified Model.CarMinimal as CMI 
 import qualified Model.Car3dModel as C3D
---import qualified Model.CarPrototype as CPro
 import qualified Model.Part as Part 
 import qualified Model.PartMarket as PM 
 import qualified Model.PartMarketType as PMT
@@ -336,7 +335,7 @@ marketBuy :: Application ()
 marketBuy = do 
     uid <- getUserId 
     xs <- getJson 
-    tpsx <- liftIO milliTime 
+    tpsx <- runDb $ milliTime 
     
     runDb $ do 
         let item' = updateHashMap xs (def :: Part.Part)        
@@ -429,8 +428,6 @@ carBuy :: Application ()
 carBuy = do 
         uid <- getUserId 
         xs <- getJson >>= scheck ["id"]
---    let car = updateHashMap xs ( def :: CM.CarMarket)
---    flup <- ps uid mid
         let mid = extract "id" xs
 
         cid <- runDb $ do
@@ -439,8 +436,6 @@ carBuy = do
             cid <- instantiateCar mid uid
 
             -- get car model
---            car <- fromJust <$> load mid :: SqlTransaction Connection CM.CarMarket
---            car <- fromJust <$> load mid :: SqlTransaction Connection CPro.CarPrototype
             car <- getCarInGarage ["prototype" |== toSql True, "prototype_available" |== toSql True] (rollback "Car prototype not found")
         
             -- create shopping report
@@ -819,7 +814,7 @@ marketTrash = do
         uid <- getUserId
         xs <- getJson >>= scheck ["part_instance_id"]
         let d = updateHashMap xs (def :: GPT.GaragePart)
-        tpsx <- liftIO milliTime 
+        tpsx <- runDb $ milliTime 
         pts uid d tpsx 
         writeResult True 
     where pts uid d tpsx = runDb $ do 
@@ -1313,7 +1308,7 @@ personnelStartTask pid tsk sid = do
                                     assert (not . null $ ci) "car doesn't exist"
                             otherwise -> rollback "no interpretation of task possible"
                         td <- loaddbConfig "task_duration"
-                        now <- liftIO $ milliTime 
+                        now <- milliTime 
                         p <- aload (fromJust $ PLID.personnel_instance_id pid) (rollback "cannot find personnel") :: SqlTransaction Connection PLI.PersonnelInstance 
                         save (p {
                              PLI.task_id = fromJust $ PTT.id ptt,
@@ -1588,7 +1583,7 @@ userActions uid = do
         Task.run Task.User uid
 --        DBF.garage_actions_account uid
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-        t <- liftIO milliTime 
+        t <- milliTime 
         let u = A.busy_until a
         personnelUpdate uid
         when (u > 0 && u <= t) $ do
@@ -1619,7 +1614,7 @@ personnelUpdate uid = do
 
 partImprove :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partImprove uid pi = do
-                s <- liftIO $ milliTime
+                s <- milliTime
                 let ut = (min (PLID.task_end pi) s) - (PLID.task_updated pi)
                 let sk = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
@@ -1630,7 +1625,7 @@ partImprove uid pi = do
                         let p = fromJust p'             
                         let a = fromIntegral (sk * ut)
                         void $ save (p {
-                                PI.improvement = min (10^6) $ (PI.improvement p + round (a * pr'))
+                                PI.improvement = min (10^4) $ (PI.improvement p + round (a * pr'))
                             })
 
                         when (PLID.task_end pi < s) $ do 
@@ -1646,7 +1641,7 @@ partImprove uid pi = do
 
 partRepair :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partRepair uid pi = do 
-                s <- liftIO $ milliTime 
+                s <- milliTime 
 
                 let ut = (min (PLID.task_end pi) s) - (PLID.task_updated pi)
                 let sk = PLID.skill_repair pi 
@@ -1675,7 +1670,7 @@ partRepair uid pi = do
 
 carRepair ::  Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 carRepair uid pi = do  
-            s <- liftIO $ milliTime 
+            s <- milliTime 
             (pr' :: Double) <- loaddbConfig "car_repair_rate" 
             let ut = (min s $ PLID.task_end pi) - (PLID.task_updated pi)
             let sk = PLID.skill_repair pi 
@@ -1742,10 +1737,12 @@ racePractice = do
 
             let y = RaceParticipant a am c cm Nothing
             
-            t <- liftIO milliTime 
-            (rid, _) <- processRace t [y] tid 
-
-            ES.emitEvent uid (PracticeRace tid) 
+            t <- milliTime 
+            (rid, fmap snd -> rs) <- processRace t [y] tid 
+            
+            let etime = t + (maximum $ ceiling  . (*1000) . raceTime <$> rs)
+            Task.emitEvent uid (PracticeRace tid) etime 
+            liftIO $ print etime 
             
             return rid
 
@@ -1914,7 +1911,7 @@ raceChallengeAccept = do
             cons foo
             
             -- process race
-            t <- liftIO milliTime 
+            t <- milliTime 
             CarInstance.setMutable (fromJust $ CMI.id $ Chg.car_min chg)
             (rid, rs) <- processRace t ps (Chg.track_id chg)
 
@@ -2024,13 +2021,13 @@ processRace t ps tid = do
                 Task.trackTime ft tid uid (raceTime r)
 
                 -- generate race rewards
-                rew <- getReward isWinner -- TODO: extend function; different rewards for practice etc.
+--                rew <- getReward isWinner -- TODO: extend function; different rewards for practice etc.
 
                 -- task: grant rewards on user finish
-                taskRewards ft uid rew rid
+ --               taskRewards ft uid rew rid
 
                 -- store rewards for retrieval after user finish
-                save (def :: RWD.RaceReward) { RWD.account_id = uid, RWD.race_id = rid, RWD.time = ft, RWD.rewards = rew }
+  --              save (def :: RWD.RaceReward) { RWD.account_id = uid, RWD.race_id = rid, RWD.time = ft, RWD.rewards = rew }
 
                 -- store user race report -- TODO: determine relevant information
                 RP.report RP.Race uid ft $ mkData $ do
@@ -2042,26 +2039,10 @@ processRace t ps tid = do
                     set "track_data" tdt
                     set "participant" p
                     set "result" r
-                    set "rewards" rew
 
         -- return race id
         return (rid, rs)
        
--- TODO: this function is not finished.
-getReward :: Bool -> SqlTransaction Connection RaceRewards
-getReward w = do
-        pt <- aget [] (rollback "reward part details not found") :: SqlTransaction Connection PD.PartDetails
-        let wr = RaceRewards 0 20 [pt] 
-        let br = RaceRewards 0 5 []
-        case w of
-            True -> return $ br + wr
-            False -> return br
-
-taskRewards :: Integer -> Integer -> RaceRewards -> Integer -> SqlTransaction Connection () 
-taskRewards t u r d = void $ do
-        unless ((==0) $ respect r) $ Task.giveRespect t u $ respect r
-        unless ((==0) $ money r) $ Task.giveMoney t u (money r) "race" d
-        forM_ (parts r) $ \p -> Task.givePart t u $ fromJust $ PD.id p 
 
 searchRaceChallenge :: Application ()
 searchRaceChallenge = do
@@ -2131,7 +2112,7 @@ searchTournamentCar = do
 
 searchRaceReward :: Application ()
 searchRaceReward = do
-        t <- liftIO milliTime
+        t <- runDb $  milliTime
         uid <- getUserId
         ((l,o), xs) <- getPagesWithDTD (
                     "time" +<=| (SqlInteger t)
@@ -2141,8 +2122,8 @@ searchRaceReward = do
         rs <- runDb $ search xs [] l o :: Application [RWD.RaceReward]
         writeMapables rs
 
-milliTime :: IO Integer
-milliTime = floor <$> (*1000) <$> getPOSIXTime :: IO Integer
+milliTime :: SqlTransaction Connection Integer
+milliTime = (*1000) <$> DBF.unix_timestamp 
 
 secondTime :: IO Integer
 secondTime = floor <$> getPOSIXTime :: IO Integer
@@ -2150,7 +2131,7 @@ secondTime = floor <$> getPOSIXTime :: IO Integer
 
 serverTime :: Application ()
 serverTime = do
-        t <- liftIO milliTime
+        t <- runDb $ milliTime
         writeResult t
 
 viewTournament :: Application ()

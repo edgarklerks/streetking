@@ -18,6 +18,7 @@ import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
 import Data.Conversion
 
+type MInteger = Maybe Integer 
 
 $(genAll "CarInGarage" "car_in_garage"
     [
@@ -43,7 +44,7 @@ $(genAll "CarInGarage" "car_in_garage"
         ("total_price", ''Integer),
         ("account_id", ''Integer),
         ("level", ''Integer),
-        ("parts_level", ''Integer),
+        ("parts_level", ''MInteger),
         ("wear", ''Integer),
         ("improvement", ''Integer),
         ("active", ''Bool),

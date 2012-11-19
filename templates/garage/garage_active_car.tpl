@@ -9,6 +9,43 @@
 		</div>
 		<div class="garage-active-car-data-info-box">
 			<div class="garage-active-car-info-data-box">
+				<div class="garage-active-car-info-data-name">Top speed <span>[:top_speed_values.text]</span> <b>km/h</b></div>
+				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
+					<div class="garage-active-car-progress-bar ui-corner-all-1px" style='width:[:top_speed_values.bar]%'></div>
+				</div>
+			</div>
+			<div class="garage-active-car-info-data-box">
+				<div class="garage-active-car-info-data-name">Acceleration <span>[:acceleration_values.text]</span> <b>s</b></div>
+				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
+					<div class="garage-active-car-progress-bar ui-corner-all-1px" style='width:[:acceleration_values.bar]%'></div>
+				</div>
+			</div>
+			<div class="garage-active-car-info-data-box">
+				<div class="garage-active-car-info-data-name">Braking <span>[:stopping_values.text]</span> <b>m</b></div>
+				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
+					<div class="garage-active-car-progress-bar ui-corner-all-1px" style='width:[:stopping_values.bar]%'></div>
+				</div>
+			</div>
+			<div class="garage-active-car-info-data-box">
+				<div class="garage-active-car-info-data-name">Handling <span>[:cornering_values.text]</span> <b>g</b></div>
+				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
+					<div class="garage-active-car-progress-bar ui-corner-all-1px" style='width:[:cornering_values.bar]%'></div>
+				</div>
+			</div>
+			<div class="garage-active-car-info-data-box">
+				<div class="garage-active-car-info-data-name">Weight <span>[:weight_values.text]</span> <b>kg</b></div>
+				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
+					<div class="garage-active-car-progress-bar ui-corner-all-1px" style="width:[:weight_values.bar]%"></div>
+				</div>
+			</div>
+			<div class="garage-active-car-info-data-box">
+				<div class="garage-active-car-info-data-name">Used <span>[:eval floor(wear/100)]</span> <b>%</b></div>
+				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
+					<div class="garage-active-car-progress-bar garage-active-car-progress-bar-used ui-corner-all-1px" style="width:[:eval floor(wear/100)]%"></div>
+				</div>
+			</div>
+			<!--
+			<div class="garage-active-car-info-data-box">
 				<div class="garage-active-car-info-data-name">Top speed <span>[:eval floor(top_speed/10000)]</span> <b>km/h</b></div>
 				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
 					<div class="garage-active-car-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+top_speed/10000+",80,200]")]%'></div>
@@ -32,14 +69,6 @@
 					<div class="garage-active-car-progress-bar ui-corner-all-1px" style='width:[:eval PROGRESSBAR("["+cornering/10000+",0.3,1]")]%'></div>
 				</div>
 			</div>
-			<!--
-			<div class="garage-active-car-info-data-box">
-				<div class="garage-active-car-info-data-name">Improve <span>[:improvement]</span> <b>%</b></div>
-				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
-					<div class="garage-active-car-progress-bar ui-corner-all-1px" style="width:[:eval floor(improvement/1000)]%"></div>
-				</div>
-			</div>
-			-->
 			<div class="garage-active-car-info-data-box">
 				<div class="garage-active-car-info-data-name">Used <span>[:eval floor(wear/100)]</span> <b>%</b></div>
 				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
@@ -48,13 +77,11 @@
 			</div>
 			<div class="garage-active-car-info-data-box">
 				<div class="garage-active-car-info-data-name">Weight <span>[:weight]</span> <b>kg</b></div>
-				<!--
 				<div class="garage-active-car-progress-bar-box ui-corner-all-1px">
 					<div class="garage-active-car-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/100)*100)]%"></div>
 				</div>
-				-->
 			</div>
-
+			-->
 		</div>
 		<div class="garage-active-car-buttons-box">
 			<div class="garage-active-car-active-button-container">&nbsp;</div>
