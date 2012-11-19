@@ -22,6 +22,7 @@ use strict;
 use warnings;
 
 use Net::SSH::Perl;
+use Data::Dumper;
 
 my $host = 'r4.graffity.me';
 my $pass = 'Opm8r$';
@@ -31,4 +32,11 @@ my $cmd = "cd /usr/home/admin/streetking/templates; tar -cvzf /usr/home/admin/te
 my $ssh = Net::SSH::Perl->new($host, port => 27010);
 $ssh->login($user, $pass);
 my ($out, $err, $exit) = $ssh->cmd($cmd);
-($out, $err, $exit) = $ssh->cmd("cd /usr/home/admin/streetking/templates; hg add *.tpl; hg add */*.tpl; hg add */*/*.tpl; hg add */*/*/*.tpl; hg commit -m 'templates autocommit'");
+my $cd = ("cd /usr/home/admin/streetking/templates;");
+$ssh->cmd("$cd hg add *.tpl;");
+$ssh->cmd("$cd hg add */*.tpl;");
+$ssh->cmd("$cd hg add */*/*.tpl;");
+$ssh->cmd("$cd hg add */*/*/*.tpl;");
+my @t = $ssh->cmd("$cd hg commit -m 'templates autocommit'");
+print Dumper(\@t);
+

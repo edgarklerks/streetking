@@ -5,11 +5,11 @@
 		<div class="user-info-data-box-money header-icons header-icons-money"><span class="user-info-data-box">[:money]</span></div>
 	</div>
 	<div class="user-info-box-respect">
-		<div class="user-info-label">Respect<span>[:respect]/???</span></div>
+		<div class="user-info-label">Respect<span>[:respect]/[:next_level.respect_need] ([:next_level.respect_left])</span></div>
 		<div class="user-info-data-box-respect header-icons header-icons-respect">
 			<div class="user-info-data-box">
 				<div class="user-info-data-progress-box ui-corner-all-1px">
-					<div class="user-info-data-progress ui-corner-all-1px" style="width:[:eval 100-((50/100)*100)]%"></div>
+					<div class="user-info-data-progress ui-corner-all-1px" style="width:[:next_level.bar]%"></div>
 				</div>
 			</div>
 		</div>
