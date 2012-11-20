@@ -1,5 +1,5 @@
 {-# LANGUAGE ViewPatterns, RankNTypes, GeneralizedNewtypeDeriving, MultiParamTypeClasses, OverloadedStrings, ScopedTypeVariables, TypeSynonymInstances  #-}
-module Bot where 
+module Main where 
 
 
 import Data.SqlTransaction 
@@ -49,6 +49,7 @@ import Control.Monad.CatchIO
 import Control.Concurrent 
 import qualified Data.InRules as I  
 import Data.MemTimeState 
+import System.Environment
 
 {-- Quickcheck is useful for finding corner cases in 
 -   functions. You setup a 'law' for your function and
@@ -284,6 +285,14 @@ instance Arbitrary Letter where
 -               no corner cases yet
 -
 --}
+
+main = do 
+    x <- head <$> getArgs
+    case x of 
+        "tournament" -> do 
+                        c <- dbconn 
+                        s <- runRandomIO c testTournament 
+                        print s
 
 testTournament :: RandomGen g => RandomM g Connection ()
 testTournament = do 

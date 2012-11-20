@@ -73,7 +73,8 @@ Executable game-new
     entropy,
     smallcheck,
     base64-bytestring,
-    lens-family-core 
+    lens-family-core,
+    zlib
 
   if flag(development)
     build-depends:

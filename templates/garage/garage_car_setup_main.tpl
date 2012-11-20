@@ -7,7 +7,7 @@
 		</div>
 		<div class="setup-car-info-box">
 			<div class="setup-car-info-data-box backgound-darkgray">
-				<div class="setup-car-info-data-logo-box backgound-blue"><div class="setup-car-info-data-logo" style="background-image:url(images/manufacturers/[:0.manufacturer_name]_logo.png);">&nbsp;</div></div>
+				<div class="setup-car-info-data-logo-box backgound-blue"><div class="setup-car-info-data-logo" style="background-image:url(images/manufacturers/[:eval REPLACESPACE(0.manufacturer_name)]_logo.png);">&nbsp;</div></div>
 				<div class="setup-car-info-data-text">
 					<div>Manufacturer:&nbsp;<span>[:0.manufacturer_name]</span></div>
 					<div>Model:&nbsp;<span>[:0.name]</span></div>

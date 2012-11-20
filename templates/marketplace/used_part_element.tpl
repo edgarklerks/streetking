@@ -30,7 +30,15 @@
 					<div class="part-element-info-data-box">
 						<div class="part-element-info-data-box-name">[:parameter2_name]: <span>[:parameter2_values.text]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
 						<div class="part-element-progress-bar-box ui-corner-all-1px">
-							<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:parameter1_values.bar]%"></div>
+							<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:parameter2_values.bar]%"></div>
+						</div>
+					</div>
+				}
+				[:when (parameter3_name)]{
+					<div class="part-element-info-data-box">
+						<div class="part-element-info-data-box-name">[:parameter3_name]: <span>[:parameter3_values.text]</span> [:when (parameter3_unit != null)]{[:parameter3_unit]}</div>
+						<div class="part-element-progress-bar-box ui-corner-all-1px">
+							<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:parameter3_values.bar]%"></div>
 						</div>
 					</div>
 				}
@@ -46,34 +54,6 @@
 						<div class="part-element-progress-bar part-element-progress-used ui-corner-all-1px" style="width:[:eval floor(wear/100)]%"></div>
 					</div>
 				</div>
-				<!--
-				<div class="part-element-info-data-box">
-					<div class="part-element-info-data-box-name">[:parameter1_name]: <span>+[:parameter1]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
-					<div class="part-element-progress-bar-box ui-corner-all-1px">
-						<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter1/100)*100]%"></div>
-					</div>
-				</div>
-				[:when (parameter2_name)]{
-					<div class="part-element-info-data-box">
-						<div class="part-element-info-data-box-name">[:parameter2_name]: <span>+[:parameter2]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
-						<div class="part-element-progress-bar-box ui-corner-all-1px">
-							<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter2/100)*100]%"></div>
-						</div>
-					</div>
-				}
-				<div class="part-element-info-data-box">
-					<div class="part-element-info-data-box-name">Weight <span>+[:weight]</span> kg</div>
-					<div class="part-element-progress-bar-box ui-corner-all-1px">
-						<div class="part-element-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/100)*100)]%"></div>
-					</div>
-				</div>
-				<div class="part-element-info-data-box-absolute">
-					<div class="part-element-info-data-box-name">Used <span>[:eval floor(wear/1000)]</span> %</div>
-					<div class="part-element-progress-bar-box ui-corner-all-2px">
-						<div class="part-element-progress-bar part-element-progress-used ui-corner-all-1px" style="width:[:eval floor(wear/1000)]%"></div>
-					</div>
-				</div>
-				-->
 			</div>
 			<div class="clearfix"></div>
 		</div>

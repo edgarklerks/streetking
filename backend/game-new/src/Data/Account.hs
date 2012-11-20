@@ -1,4 +1,4 @@
-
+{-# LANGUAGE ScopedTypeVariables #-}
 module Data.Account (
         respectNext,
         addRespect

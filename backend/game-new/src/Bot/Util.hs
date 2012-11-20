@@ -103,9 +103,9 @@ testUser1 = 36
 testUser2 :: Integer 
 testUser2 = 34 
 testUser3 :: Integer 
-testUser3 = 78 
+testUser3 = 33 
 testUser4 :: Integer 
-testUser4 = 77 
+testUser4 = 71 
 
 -- | A list of test users 
 testUsers = [testUser1, testUser2, testUser3, testUser4]

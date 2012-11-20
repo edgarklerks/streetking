@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings, ScopedTypeVariables, ViewPatterns, ScopedTypeVariables #-}
 module Model.Account where 
 
 import           Data.SqlTransaction

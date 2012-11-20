@@ -37,6 +37,7 @@ import Data.SqlTransaction
 import Model.Account as A 
 import Model.Transaction as TR  
 import Model.CarInstance  
+import Model.Functions 
 import Model.CarInGarage 
 import Data.Maybe 
 import Model.General 
@@ -66,6 +67,7 @@ import           Data.RacingNew
 import           Data.RaceParticipant
 import           Data.RaceReward
 import qualified Data.Task as Task
+import           Data.Event 
 import           Data.Track
 import           Data.Environment
 import           Model.General
@@ -81,6 +83,8 @@ import           System.Random
 import           Data.Monoid 
 import qualified Notifications as N 
 import qualified Model.TournamentReport as TRP 
+import qualified Model.EventStream as ES 
+import           Control.Concurrent 
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -140,7 +144,7 @@ joinTournament cinst n acid = do
 
 -- | check car, enough money, time prequisites
 checkPrequisites :: Account -> Tournament -> Integer -> SqlTransaction Connection () 
-checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm dn rn im) cinst = do 
+checkPrequisites a (T.Tournament id cid st cs mnl mxl rw tid plys nm dn rn im) cinst = do 
         (n,t) <- numberOfPlayers (fromJust id)
         when dn $ rollback "this tournament is already done" 
         when rn $ rollback "tournament is already running"
@@ -223,7 +227,15 @@ getResults mid = do
                                                 xs <- search ["tournament_id" |== toSql (T.id tr)] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
                                                 forM_ xs $ setMutable . fromJust . TP.car_instance_id 
                                                 toArchive (fromJust $ T.id tr) ss 
-                                                save (tr { T.running = False, T.done = True}) >> return ()  
+                                                save (tr { T.running = False, T.done = True}) 
+
+                                                let winners = (\(x,y,z) -> x) <$> getWinners ss 
+                                                liftIO $ print winners
+
+                                                forM_ (winners `zip` [1..]) $ \(w,p) -> do 
+                                                            liftIO $ print $ "user: " <> (show w) <> " pos: " <> (show p) <> " tid:" <> (show mid)
+                                                            ES.emitEvent w (Data.Event.Tournament p mid) 
+
                                 return ss 
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
               step mt (TR.TournamentResult _ tid rid _ _ _ _ _) = do 
@@ -341,6 +353,47 @@ one _ = False
 split3 :: [(a,b,c)] -> ([(a,b)], [c])
 split3  = foldr step ([], [])
     where step (a,b,c) (ls,rs) = ((a,b):ls,c:rs)
+
+testEmitTournament = runTestDb $ ES.emitEvent 34 (Data.Event.Tournament 9 9)
+
+-- users: 36,34,33,71
+testTournament = runTestDb $ do 
+            b <- (*1000) <$> unix_timestamp 
+            -- Created a tournament 
+            tid <- save (def {
+                             start_time = Just b,
+                             costs = 0,
+                             minlevel = 0,
+                             maxlevel = 10000,
+                             rewards = Nothing,
+                             T.track_id = 12,
+                             players = 4,
+                             T.name = "auto tournament"
+                    } :: T.Tournament)
+            -- finding users with useful car 
+            rs <- search ["active" |== (toSql True) .&& "ready" |== (toSql True)] [] 100 0 :: SqlTransaction Connection [CarInGarage]
+            forM_ (take 4 rs) $ \r -> do 
+                            joinTournament (fromJust $ GC.id r) tid (GC.account_id r)
+            tf <- loadTournamentFull tid 
+            save ((tournament tf) {running = True})
+            xs <- runTournamentRounds undefined tf
+            saveResultTree tid xs 
+            whileM $ do 
+                ps <- getResults tid
+                rs <- search ["tournament_id" |== (toSql tid)] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
+                liftIO $ print (length ps, length rs) 
+                liftIO $ threadDelay 10000
+                return $ ps /= rs 
+
+whileM :: Monad m => m Bool -> m ()
+whileM m = do
+        b <- m
+        if b then whileM m
+             else return ()
+
+
+
+
 
 
 sortRounds :: [(Integer,[(RaceParticipant, RaceResult)])]  -> [RaceParticipant]
@@ -471,6 +524,71 @@ loadTournament = load >=> \x -> when (isNothing x) (rollback "no such tournament
 
 loadPlayers :: Integer -> SqlTransaction Connection [TournamentPlayer] 
 loadPlayers i = search ["tournament_id" |== (toSql i) .&& "deleted" |== (toSql False)] [] 1000000 0 
+
+testRaceResult = [
+            def {
+                TR.round = 0,
+                TR.participant1_id = Just 1,
+                TR.raceresult1 = Just (def, def {
+                        raceTime = 100
+                    }),
+                -- two is third 
+                TR.participant2_id = Just 2,
+                TR.raceresult2 = Just (def, def {
+                        raceTime = 110
+                    })
+ 
+            },
+            
+            def {
+                TR.round = 0,
+                TR.participant1_id = Just 3,
+                TR.raceresult1 = Just (def, def {
+                        raceTime = 120
+                    }),
+                -- four is last 
+                TR.participant2_id = Just 4,
+                TR.raceresult2 = Just (def, def {
+                        raceTime = 130
+                    })
+ 
+            },
+            -- number 1 is the first 
+            def {
+                TR.round = 1,
+                TR.participant1_id = Just 1,
+                TR.raceresult1 = Just (def, def {
+                        raceTime = 110
+                    }),
+            -- three the second 
+                TR.participant2_id = Just 3,
+                TR.raceresult2 = Just (def, def {
+                        raceTime = 120
+                    })
+ 
+            }
+ 
+        ]
+-- want this out of this function: 1324
+getWinners = removeSeen . sortBy (sortF) . splice 
+        where splice = foldr step [] 
+                where step x z = (fromJust $ TR.participant1_id x, getTime1 x, TR.round x) : (fromJust $ TR.participant2_id x, getTime2 x, TR.round x) : z
+                      getTime1 = raceTime . snd . fromJust . TR.raceresult1
+                      getTime2 = raceTime . snd . fromJust . TR.raceresult2
+              sortF :: (a,Double, Integer) -> (a, Double, Integer) -> Ordering 
+              sortF (_,ta,ra) (_,tb,rb) | ra > rb = GT 
+                                        | ra < rb = LT 
+                                        | ra == rb = (flip compare) ta tb
+              removeSeen :: [(Integer, Double, Integer)] -> [(Integer, Double, Integer)]
+              removeSeen  = reverse . foldr step [] 
+                    where step (p,d,i) z 
+                                    | [p] `isInfixOf` (fst3 <$> z) = z 
+                                    | otherwise = (p,d,i) : z
+                          fst3 (a,b,c) = a
+
+
+
+                
 
 newtype CartesianMap a b = CM {
         runCM :: [a -> b] 

@@ -163,16 +163,16 @@ runEventStream uid = do
           es <- search ["account_id" |== toSql uid .&& "active" |== toSql True] [] 10000 0 :: SqlTransaction Connection [E.EventStream]
           xs <- forM es $ \e -> do 
                 (n,r,rb) <- loadRule (fromJust $ E.rule_id e)
-                let (xs, b) = matchEvent r (E.stream e)  
+                let (xs, b) = matchEvent r (fromJust $ E.stream e <|> Just [])  
                 case b of 
                     False -> return []  
                     True -> do 
                             if rb 
                                 then do 
-                                    save (e {E.stream = xs, E.active = False})
+                                    save (e {E.stream = Just xs, E.active = False})
                                     return [(n,fromJust $ E.rule_id e)]
                                 else do 
-                                    save (e {E.stream = xs})
+                                    save (e {E.stream = Just xs})
                                     return [(n,fromJust $ E.rule_id e)]
                             
           return $ join xs 

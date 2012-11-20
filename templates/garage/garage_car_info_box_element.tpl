@@ -1,14 +1,12 @@
 <div class="car-info-part-element-icon backgound-blue">
 	<div class="car-info-part-element-icon-box sk-icons-info sk-icons-info-[:name] [:when (improvement > 0 & unique == false)]{car-info-part-element-icon-box-improved}[:when (unique)]{car-info-part-element-icon-box-unique}">&nbsp;</div>
 	<div class="car-info-part-element-container backgound-transparent">
-<!--		<div class="car-info-part-element-image-container [:when (improvement > 0 & unique == false)]{car-info-part-element-image-container-improved}[:when (unique)]{car-info-part-element-image-container-unique} black-icons-100 [:when (name == "engine")]{car-info-part-element-[:name]-black}[:when (name != "engine")]{car-info-part-element-image-container-image}" [:when (name != "engine")]{style="background-image:url(test_store/[:name]/[:name]_[:d3d_model_id].jpg?t=[:eval TIMESTAMP(id)])"}>&nbsp;</div>-->
 		<div class="car-info-part-element-image-container [:when (improvement > 0 & unique == false)]{car-info-part-element-image-container-improved}[:when (unique)]{car-info-part-element-image-container-unique} black-icons-100 car-info-part-element-image-container-image" style='background-image:url([:eval IMAGESERVER("[\"part\","+part_id+",\""+name+"\"]")])'>&nbsp;</div>
 		<div class="car-info-part-element-data-container">
 				<div class="car-info-part-element-infotext-container">
 					<div>Manufacturer:&nbsp;<span>[:when (manufacturer_name != null)]{[:manufacturer_name]}[:when (manufacturer_name == null)]{For all}</span></div>
 					<div>Model:&nbsp;<span>[:when (car_model != null)]{[:car_model]}[:when (car_model == null)]{For all}</span></div>
 					<div>Type:&nbsp;<span>[:part_modifier]</span></div>
-					<div>Price:&nbsp;<span>SK$ [:price]</span></div>
 					<div>Level:&nbsp;<span>[:level]</span></div>
 					[:when (unique == false)]{
 						<div class="car-info-part-element-info-data-box-absolute">
@@ -32,6 +30,14 @@
 							<div class="car-info-part-element-info-data-box-name">[:parameter2_name]: <span>[:parameter2_values.text]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
 							<div class="car-info-part-element-progress-bar-box ui-corner-all-1px">
 								<div class="car-info-part-element-progress-bar ui-corner-all-1px" style="width:[:parameter2_values.bar]%"></div>
+							</div>
+						</div>
+					}
+					[:when (parameter3_name)]{
+						<div class="car-info-part-element-info-data-box">
+							<div class="car-info-part-element-info-data-box-name">[:parameter3_name]: <span>[:parameter3_values.text]</span> [:when (parameter3_unit != null)]{[:parameter3_unit]}</div>
+							<div class="car-info-part-element-progress-bar-box ui-corner-all-1px">
+								<div class="car-info-part-element-progress-bar ui-corner-all-1px" style="width:[:parameter3_values.bar]%"></div>
 							</div>
 						</div>
 					}
