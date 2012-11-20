@@ -59,7 +59,6 @@ getSortOrder :: String -> Either String SortOrder
 getSortOrder x = case parse startp "" x of 
                         Left e -> Left (show e)
                         Right a -> Right a
-
 startp :: Parser SortOrder
 startp = Col <$> stmp 
 stmp :: Parser [SortOrder]
