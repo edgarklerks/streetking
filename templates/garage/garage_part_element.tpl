@@ -7,7 +7,7 @@
 				<div>Manufacturer:&nbsp;<span>[:when (manufacturer_name != null)]{[:manufacturer_name]}[:when (manufacturer_name == null)]{For all}</span></div>
 				<div>Model:&nbsp;<span>[:when (car_model != null)]{[:car_model]}[:when (car_model == null)]{For all}</span></div>
 				<div>Type:&nbsp;<span>[:part_modifier]</span></div>
-				<div>Price:&nbsp;<span>SK$ [:price]</span></div>
+<!--				<div>Price:&nbsp;<span>SK$ [:price]</span></div>-->
 				<div>Level:&nbsp;<span>[:level]</span></div>
 				[:when (unique == false)]{
 					<div class="garage-part-element-info-data-box-absolute">
@@ -34,35 +34,20 @@
 						</div>
 					</div>
 				}
+				[:when (parameter3_name)]{
+					<div class="garage-part-element-info-data-box">
+						<div class="garage-part-element-info-data-box-name">[:parameter3_name]: <span>[:parameter3_values.text]</span> [:when (parameter3_unit != null)]{[:parameter3_unit]}</div>
+						<div class="garage-part-element-progress-bar-box ui-corner-all-1px">
+							<div class="garage-part-element-progress-bar ui-corner-all-1px" style="width:[:parameter3_values.bar]%"></div>
+						</div>
+					</div>
+				}
 				<div class="garage-part-element-info-data-box">
 					<div class="garage-part-element-info-data-box-name">Weight <span>[:weight_values.text]</span> kg</div>
 					<div class="garage-part-element-progress-bar-box ui-corner-all-1px">
 						<div class="garage-part-element-progress-bar ui-corner-all-1px" style="width:[:weight_values.bar]%"></div>
 					</div>
 				</div>
-				<!--
-				<div class="garage-part-element-info-data-box">
-					<div class="garage-part-element-info-data-box-name">[:parameter1_name]: <span>+[:parameter1]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
-					<div class="garage-part-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-part-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter1/100)*100]%"></div>
-					</div>
-				</div>
-			
-				[:when (parameter2_name)]{
-					<div class="garage-part-element-info-data-box">
-						<div class="garage-part-element-info-data-box-name">[:parameter2_name]: <span>+[:parameter2]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
-						<div class="garage-part-element-progress-bar-box ui-corner-all-1px">
-							<div class="garage-part-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter2/100)*100]%"></div>
-						</div>
-					</div>
-				}
-				<div class="garage-part-element-info-data-box">
-					<div class="garage-part-element-info-data-box-name">Weight <span>+[:weight]</span> kg</div>
-					<div class="garage-part-element-progress-bar-box ui-corner-all-1px">
-						<div class="garage-part-element-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/100)*100)]%"></div>
-					</div>
-				</div>
-				-->
 				<div class="garage-part-element-info-data-box-absolute">
 					<div class="garage-part-element-info-data-box-name">Used <span>[:eval floor(wear/100)]</span> %</div>
 					<div class="garage-part-element-progress-bar-box ui-corner-all-2px">

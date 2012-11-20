@@ -7,6 +7,8 @@ import qualified Data.Aeson.Parser as A
 import qualified Data.Attoparsec.Number as A
 import qualified Data.Text as T 
 import qualified Data.Text.Encoding as T
+import qualified Data.ByteString as BB 
+import qualified Data.ByteString.Lazy as BL 
 import qualified Data.ByteString.Char8 as B
 import qualified Data.ByteString.Lazy.Char8 as L 
 import Database.HDBC.SqlValue 
@@ -14,7 +16,6 @@ import qualified Data.Serialize as S
 import Control.Monad 
 import Data.ByteString.Base64
 import qualified Data.Vector as V
-
 import Data.Time.Calendar
 import Data.Time.Clock 
 import Data.Time.LocalTime
@@ -26,6 +27,7 @@ import Data.Convertible
 import Data.Word 
 import Data.Int 
 import Control.Applicative 
+import Codec.Compression.GZip
 
 instance ToInRule Rational where
     toInRule x = InNumber x
@@ -292,9 +294,31 @@ instance (Hashable k, Eq k, A.FromJSON v, A.FromJSON k) => A.FromJSON (Map.HashM
 
 instance Default (Map.HashMap k v) where 
             def = Map.empty 
+-- decode :: (SqlValue -> Either error B.ByteString)
+-- S.decode :: (B.ByteString -> Either error InRule)
+-- base64
+--  |
+-- \ / 
+-- decode
+--  | binary gzip data 
+-- \|/
+-- gzip 
+--  | serialized data 
+-- \/
+-- S.decode 
+--   |
+--  \|/
+--  InRule 
+strictDecompress :: BB.ByteString -> BB.ByteString
+strictDecompress = BB.concat . BL.toChunks . decompress . BL.fromChunks . pure 
+
+strictCompress :: BB.ByteString -> BB.ByteString
+strictCompress = BB.concat . BL.toChunks . compress . BL.fromChunks . pure 
+
+
 convFromSql :: SqlValue -> InRule  
 convFromSql (SqlString s) = toInRule s
-convFromSql (SqlByteString  s) = case (S.decode <=< decode) s of 
+convFromSql (SqlByteString  s) = case (S.decode <=< (fmap strictDecompress . decode)) s of 
                                     Left _ -> InByteString s
                                     Right a -> a
 convFromSql (SqlWord32  s) = toInRule s
@@ -324,7 +348,7 @@ convSql (InBool False) = toSql  False
 convSql InNull = SqlNull
 convSql (InString s) =  toSql s
 convSql (InByteString s) = toSql s
-convSql r = SqlByteString (encode $ S.encode r)  
+convSql r = SqlByteString (encode $ strictCompress $ S.encode r)  
 
 
 put8 :: Word8 -> S.Put 
@@ -334,7 +358,7 @@ toWord64 :: Int -> Word64
 toWord64 = fromIntegral
 
 instance S.Serialize InRule where 
-    put x = S.put (B.pack "fugly&(*&") *> put' x
+    put x = S.put (B.pack "*1*-%*1*") *> put' x
         where 
             put' (InByteString b) = put8 0  *> S.put b
             put' (InInteger b) = put8 1 *> S.put b
@@ -349,7 +373,7 @@ instance S.Serialize InRule where
     get = get' 
         where get' = do 
                  p <- S.get :: S.Get B.ByteString 
-                 unless (p == B.pack "fugly&(*&") $ fail "fali"
+                 unless (p == B.pack "*1*-%*1*") $ fail "fali"
                  c <- S.get :: S.Get Word8 
                  case c of 
                     0 -> InByteString <$> S.get 

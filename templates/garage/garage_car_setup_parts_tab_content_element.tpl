@@ -25,6 +25,15 @@
 							</div>
 						</div>
 					}
+					[:when (parameter3_name)]{
+						<div class="garage-car-setup-part-element-info-data-box">
+							<div class="garage-car-setup-part-element-info-data-box-name">[:parameter3_name]: <span>[:parameter3_values.text]</span> [:when (parameter3_unit != null)]{[:parameter3_unit]}</div>
+							<div class="garage-car-setup-part-element-progress-bar-box ui-corner-all-1px">
+								<div class="garage-car-setup-part-element-progress-bar ui-corner-all-1px" style="width:[:parameter3_values.bar]%"></div>
+								<div class="garage-car-setup-part-element-progress-bar-[:parameter3_bars.cls] ui-corner-all-1px" style='left:[:parameter3_bars.left]%; width:[:parameter3_bars.diff]%'></div>
+							</div>
+						</div>
+					}
 					<div class="garage-car-setup-part-element-info-data-box">
 						<div class="garage-car-setup-part-element-info-data-box-name">Weight <span>[:weight_values.text]</span> kg</div>
 						<div class="garage-car-setup-part-element-progress-bar-box ui-corner-all-1px">
@@ -35,7 +44,7 @@
 						<div class="garage-car-setup-part-element-info-data-box">
 							<div class="garage-car-setup-part-element-info-data-box-name">Improve <span>[:eval floor(improvement/100)]</span> %</div>
 							<div class="garage-car-setup-part-element-progress-bar-box ui-corner-all-1px">
-								<div class="garage-car-setup-part-element-progress-bar garage-car-setup-part-element-progress-used ui-corner-all-1px" style="width:[:eval (improvement/100)]%"></div>
+								<div class="garage-car-setup-part-element-progress-bar garage-car-setup-part-element-progress-improve ui-corner-all-1px" style="width:[:eval (improvement/100)]%"></div>
 							</div>
 						</div>
 					}

@@ -4,7 +4,6 @@
 		[:when (task == "improve_part")]{Part improved}
 	</div>
 	<div class="report-element-container-inner">
-<!--		<div class="report-element-image-container [:when (improvement > 0 & unique == false)]{report-element-image-container-improved}[:when (unique)]{report-element-image-container-unique} black-icons-100 [:when (part_type == "engine")]{report-element-[:part_type]-black}[:when (part_type != "engine")]{report-element-image-container-image}" [:when (part_type != "engine")]{style="background-image:url(test_store/[:part_type]/[:part_type]_[:picture].jpg?t=[:eval TIMESTAMP(id)])"}>[:when (part_type != "engine")]{<div class="report-element-image-zoom element-image-zoom">&nbsp;</div>}</div> -->
 		<div class="report-element-image-container [:when (improvement > 0 & unique == false)]{report-element-image-container-improved}[:when (unique)]{report-element-image-container-unique} black-icons-100 [:when (part_type == "engine")]{report-element-[:part_type]-black}[:when (part_type != "engine")]{report-element-image-container-image}" [:when (part_type != "engine")]{style='background-image:url([:eval IMAGESERVER("[\"part\","+part_id+",\"" + part_type + "\"]")])'}>[:when (part_type != "engine")]{<div class="report-element-image-zoom element-image-zoom">&nbsp;</div>}</div>
 		<div class="report-element-data-container">
 			<div class="report-element-info-container">
@@ -52,40 +51,48 @@
 					}
 					[:when (parameter1_name)]{
 						<div class="report-element-info-data-box">
-							<div class="report-element-info-data-name">[:parameter1_name]: <span>+[:parameter1]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
+							<div class="report-element-info-data-name">[:parameter1_name]: <span>[:parameter1_values.text]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
 							<div class="report-element-progress-bar-box ui-corner-all-1px">
-								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter1/100)*100]%"></div>
+								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter1_values.bar]%"></div>
 							</div>
 						</div>
 					}
 					[:when (parameter2_name)]{
 						<div class="report-element-info-data-box">
-							<div class="report-element-info-data-name">[:parameter2_name]: <span>+[:parameter2]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
+							<div class="report-element-info-data-name">[:parameter2_name]: <span>[:parameter2_values.text]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
 							<div class="report-element-progress-bar-box ui-corner-all-1px">
-								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:eval (parameter2/100)*100]%"></div>
+								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter2_values.bar]%"></div>
+							</div>
+						</div>
+					}
+					[:when (parameter3_name)]{
+						<div class="report-element-info-data-box">
+							<div class="report-element-info-data-name">[:parameter3_name]: <span>[:parameter3_values.text]</span> [:when (parameter3_unit != null)]{[:parameter3_unit]}</div>
+							<div class="report-element-progress-bar-box ui-corner-all-1px">
+								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter3_values.bar]%"></div>
 							</div>
 						</div>
 					}
 					<div class="report-element-info-data-box">
-						<div class="report-element-info-data-name">Weight <span>[:when (weight)]{[:weight]}[:when (car_weight)]{[:car_weight]}</span> kg</div>
+						<div class="report-element-info-data-name">Weight <span>[:when (weight)]{[:weight_values.text]}[:when (car_weight)]{[:car_weight]}</span> kg</div>
 						<div class="report-element-progress-bar-box ui-corner-all-1px">
-							<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:when (weight)]{[:eval ((weight/100)*100)]}[:when (car_weight)]{[:eval ((car_weight/100)*100)]}%"></div>
+							<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:when (weight)]{[:weight_values.bar]}[:when (car_weight)]{[:eval ((car_weight/100)*100)]}%"></div>
 						</div>
 					</div>
 					[:when (unique == false)]{
 						<div class="report-element-info-data-box">
-							<div class="report-element-info-data-name">Improve <span>[:eval floor(improvement/1000)]</span> [:when (task == "improve_part")]{<span class="green">(+[:eval floor(improvement_change/1000)])</span>} %</div>
+							<div class="report-element-info-data-name">Improve <span>[:eval floor(improvement/100)]</span> [:when (task == "improve_part")]{<span class="green">(+[:eval floor(improvement_change/100)])</span>} %</div>
 							<div class="report-element-progress-bar-box ui-corner-all-1px">
-								[:when (task == "improve_part")]{<div class="garage-part-element-progress-bar garage-part-element-progress-improve ui-corner-all-1px" style="width:[:eval floor((improvement+improvement_change)/1000)]%"></div>}
-								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:eval floor(improvement/1000)]%"></div>
+								[:when (task == "improve_part")]{<div class="garage-part-element-progress-bar garage-part-element-progress-improve ui-corner-all-1px" style="width:[:eval floor((improvement+improvement_change)/100)]%"></div>}
+								<div class="report-element-progress-bar report-element-progress-improve ui-corner-all-1px" style="width:[:eval floor(improvement/100)]%"></div>
 							</div>
 						</div>
 					}
 					<div class="report-element-info-data-box">
-						<div class="report-element-info-data-name">Used <span>[:eval floor(wear/1000)]</span> [:when (task == "repair_part")]{<span class="green">([:eval floor(wear_change/1000)])</span>} %</div>
+						<div class="report-element-info-data-name">Used <span>[:eval floor(wear/100)]</span> [:when (task == "repair_part")]{<span class="green">([:eval floor(wear_change/100)])</span>} %</div>
 						<div class="report-element-progress-bar-box ui-corner-all-1px">
-							[:when (task == "repair_part")]{<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:eval floor(wear/1000)]%"></div>}
-							<div class="report-element-progress-bar report-element-progress-used ui-corner-all-1px" style="width:[:eval floor((wear+wear_change)/1000)]%"></div>
+							[:when (task == "repair_part")]{<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:eval floor(wear/100)]%"></div>}
+							<div class="report-element-progress-bar report-element-progress-used ui-corner-all-1px" style="width:[:eval floor((wear+wear_change)/100)]%"></div>
 						</div>
 					</div>
 				</div>

@@ -1,7 +1,7 @@
 <div class="garage-active-car-container" style="background-image:url([:eval IMAGESERVER("[\"user_car\","+id+",\"car\"]")])">
 	<div class="garage-active-car-info-container corner-box">
 		<div class="garage-active-car-manufacture-box">
-			<div class="garage-active-car-manufacture-logo-box normal" style="background-image:url(images/manufacturers/[:manufacturer_name]_logo.png);"></div>
+			<div class="garage-active-car-manufacture-logo-box normal" style="background-image:url(images/manufacturers/[:eval REPLACESPACE(manufacturer_name)]_logo.png);"></div>
 			<div class="garage-active-car-manufacture-name-box">
 				<div class="garage-active-car-manufacture-name">[:manufacturer_name]</div>
 				<div class="garage-active-car-model-name">[:name]</div>

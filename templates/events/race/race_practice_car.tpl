@@ -15,7 +15,9 @@
 					<div class="race-car-element-infotext-user-box">
 						<div class="race-car-element-infotext-user-image-box normal" style="background-image:url([:race.data.0.rd_user.picture_small]);"></div>
 						<div class="race-car-element-infotext-user-name-box">
-							<div class="race-car-element-infotext-username-label">[:race.data.0.rd_user.nickname]</div>
+							<div class="race-car-element-infotext-username-label">
+								<a href="#User/data?id=[:race.data.0.rd_user.id]" module="PROFILE_VIEW">[:race.data.0.rd_user.nickname]</a>
+							</div>
 							<div class="race-car-element-infotext-user-level-label">Level: <span>[:race.data.0.rd_user.level]</span></div>
 						</div>
 						<div></div>
@@ -51,7 +53,9 @@
 					<div class="race-car-element-infotext-user-box">
 						<div class="race-car-element-infotext-user-image-box normal" style="background-image:url([:race.data.1.rd_user.picture_small]);"></div>
 						<div class="race-car-element-infotext-user-name-box">
-							<div class="race-car-element-infotext-username-label">[:race.data.1.rd_user.nickname]</div>
+							<div class="race-car-element-infotext-username-label">
+								<a href="#User/data?id=[:race.data.1.rd_user.id]" module="PROFILE_VIEW">[:race.data.1.rd_user.nickname]</a>
+							</div>
 							<div class="race-car-element-infotext-user-level-label">Level: <span>[:race.data.1.rd_user.level]</span></div>
 						</div>
 						<div></div>
@@ -105,33 +109,33 @@
 				</div>
 				<div class="race-car-element-infobar-container">
 					<div class="race-car-element-info-data-box">
-						<div class="race-car-element-info-data-name">Top speed <span>[:eval round(race.data.0.rd_car.top_speed/10000)]</span> km/h</div>
+						<div class="race-car-element-info-data-name">Top speed <span>[:race.data.0.rd_car.top_speed_values.text]</span> km/h</div>
 						<div class="race-car-element-progress-bar-box ui-corner-all-1px">
-							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((0.top_speed/100)*100)]%"></div>
+							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:race.data.0.rd_car.top_speed_values.bar]%"></div>
 						</div>
 					</div>
 					<div class="race-car-element-info-data-box">
-						<div class="race-car-element-info-data-name">Acceleration <span>[:eval round(race.data.0.rd_car.acceleration/1000)/10]</span> s</div>
+						<div class="race-car-element-info-data-name">Acceleration <span>[:race.data.0.rd_car.acceleration_values.text]</span> s</div>
 						<div class="race-car-element-progress-bar-box ui-corner-all-1px">
-							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((0.acceleration/100)*100)]%"></div>
+							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:race.data.0.rd_car.acceleration_values.bar]%"></div>
 						</div>
 					</div>
 					<div class="race-car-element-info-data-box">
-						<div class="race-car-element-info-data-name">Braking <span>[:race.data.0.rd_car.braking]</span></div>
+						<div class="race-car-element-info-data-name">Braking <span>[:race.data.0.rd_car.stopping_values.text]</span> m</div>
 						<div class="race-car-element-progress-bar-box ui-corner-all-1px">
-							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((0.braking/100)*100)]%"></div>
+							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:race.data.0.rd_car.stopping_values.bar]%"></div>
 						</div>
 					</div>
 					<div class="race-car-element-info-data-box">
-						<div class="race-car-element-info-data-name">Handling <span>[:race.data.0.rd_car.handling]</span></div>
+						<div class="race-car-element-info-data-name">Handling <span>[:race.data.0.rd_car.cornering_values.text]</span> g</div>
 						<div class="race-car-element-progress-bar-box ui-corner-all-1px">
-							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((0.handling/100)*100)]%"></div>
+							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:race.data.0.rd_car.cornering_values.bar]%"></div>
 						</div>
 					</div>
 					<div class="race-car-element-info-data-box">
-						<div class="race-car-element-info-data-name">Weight <span>[:race.data.0.rd_car.weight]</span> kg</div>
+						<div class="race-car-element-info-data-name">Weight <span>[:race.data.0.rd_car.weight_values.text]</span> kg</div>
 						<div class="race-car-element-progress-bar-box ui-corner-all-1px">
-							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((0.weight/100)*100)]%"></div>
+							<div class="race-car-element-progress-bar ui-corner-all-1px" style="width:[:race.data.0.rd_car.weight_values.bar]%"></div>
 						</div>
 					</div>
 				</div>

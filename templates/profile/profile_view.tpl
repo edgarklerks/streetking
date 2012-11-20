@@ -19,33 +19,33 @@
 				<div class="car-element-vertical-line"></div>
 				<div class="car-element-infobar-container">
 					<div class="car-element-info-data-box">
-						<div class="car-element-info-data-name">Top speed <span>[:car.top_speed]</span> km/h</div>
+						<div class="car-element-info-data-name">Top speed <span>[:car.top_speed_values.text]</span> km/h</div>
 						<div class="car-element-progress-bar-box ui-corner-all-1px">
-							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((car.top_speed/100)*100)]%"></div>
+							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:top_speed_values.bar]%"></div>
 						</div>
 					</div>
 					<div class="car-element-info-data-box">
-						<div class="car-element-info-data-name">Acceleration <span>[:car.acceleration]</span> s</div>
+						<div class="car-element-info-data-name">Acceleration <span>[:car.acceleration_values.text]</span> s</div>
 						<div class="car-element-progress-bar-box ui-corner-all-1px">
-							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((car.acceleration/100)*100)]%"></div>
+							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:acceleration_values.bar]%"></div>
 						</div>
 					</div>
 					<div class="car-element-info-data-box">
-						<div class="car-element-info-data-name">Braking <span>[:car.braking]</span></div>
+						<div class="car-element-info-data-name">Braking <span>[:car.stopping_values.text]</span></div>
 						<div class="car-element-progress-bar-box ui-corner-all-1px">
-							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((car.braking/100)*100)]%"></div>
+							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:stopping_values.bar]%"></div>
 						</div>
 					</div>
 					<div class="car-element-info-data-box">
-						<div class="car-element-info-data-name">Handling <span>[:car.handling]</span></div>
+						<div class="car-element-info-data-name">Handling <span>[:car.cornering_values.text]</span></div>
 						<div class="car-element-progress-bar-box ui-corner-all-1px">
-							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((car.handling/100)*100)]%"></div>
+							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:cornering_values.bar]%"></div>
 						</div>
 					</div>
 					<div class="car-element-info-data-box">
-						<div class="car-element-info-data-name">Weight <span>[:car.weight]</span> kg</div>
+						<div class="car-element-info-data-name">Weight <span>[:car.weight_values.text]</span> kg</div>
 						<div class="car-element-progress-bar-box ui-corner-all-1px">
-							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((car.weight/100)*100)]%"></div>
+							<div class="car-element-progress-bar ui-corner-all-1px" style="width:[:weight_values.bar]%"></div>
 						</div>
 					</div>
 				</div>

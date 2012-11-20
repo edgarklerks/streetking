@@ -15,39 +15,39 @@
 			<div class="tournament-car-element-vertical-line"></div>
 			<div class="tournament-car-element-infobar-container">
 				<div class="tournament-car-element-info-data-box">
-					<div class="tournament-car-element-info-data-name">Top speed <span>[:eval floor((top_speed/10000))]</span> km/h</div>
+					<div class="tournament-car-element-info-data-name">Top speed <span>[:top_speed_values.text]</span> km/h</div>
 					<div class="tournament-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((top_speed/10000)*100)]%"></div>
+						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:top_speed_values.bar]%"></div>
 					</div>
 				</div>
 				<div class="tournament-car-element-info-data-box">
-					<div class="tournament-car-element-info-data-name">Acceleration <span>[:eval floor((acceleration/10000))]</span> s</div>
+					<div class="tournament-car-element-info-data-name">Acceleration <span>[:acceleration_values.text]</span> s</div>
 					<div class="tournament-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((acceleration/10000)*100)]%"></div>
+						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:acceleration_values.bar]%"></div>
 					</div>
 				</div>
 				<div class="tournament-car-element-info-data-box">
-					<div class="tournament-car-element-info-data-name">Braking <span>[:eval floor((braking/10000))]</span></div>
+					<div class="tournament-car-element-info-data-name">Braking <span>[:stopping_values.text]</span> m</div>
 					<div class="tournament-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((braking/10000)*100)]%"></div>
+						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:stopping_values.bar]%"></div>
 					</div>
 				</div>
 				<div class="tournament-car-element-info-data-box">
-					<div class="tournament-car-element-info-data-name">Handling <span>[:eval floor((handling/10000))]</span></div>
+					<div class="tournament-car-element-info-data-name">Handling <span>[:cornering_values.text]</span> g</div>
 					<div class="tournament-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((handling/10000)*100)]%"></div>
+						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:cornering_values.bar]%"></div>
 					</div>
 				</div>
 				<div class="tournament-car-element-info-data-box">
-					<div class="tournament-car-element-info-data-name">Weight <span>[:eval floor((weight/10000))]</span> kg</div>
+					<div class="tournament-car-element-info-data-name">Weight <span>[:weight_values.text]</span> kg</div>
 					<div class="tournament-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:eval ((weight/10000)*100)]%"></div>
+						<div class="tournament-car-element-progress-bar ui-corner-all-1px" style="width:[:weight_values.bar]%"></div>
 					</div>
 				</div>
 				<div class="tournament-car-element-info-data-box">
-					<div class="tournament-car-element-info-data-box-name">Used <span>[:eval floor(wear/1000)]</span> %</div>
+					<div class="tournament-car-element-info-data-name">Used <span>[:eval floor(wear/100)]</span> %</div>
 					<div class="tournament-car-element-progress-bar-box ui-corner-all-1px">
-						<div class="tournament-car-element-progress-bar tournament-car-element-progress-used ui-corner-all-1px" style="width:[:eval floor(wear/1000)]%"></div>
+						<div class="tournament-car-element-progress-bar tournament-car-element-progress-used ui-corner-all-1px" style="width:[:eval floor(wear/100)]%"></div>
 					</div>
 				</div>
 			</div>
