@@ -1738,11 +1738,14 @@ racePractice = do
             let y = RaceParticipant a am c cm Nothing
             
             t <- milliTime 
-            (rid, fmap snd -> rs) <- processRace t [y] tid 
-            
-            let etime = t + (maximum $ ceiling  . (*1000) . raceTime <$> rs)
+            (rid, rs) <- processRace t [y] tid 
+           
+            let etime = t + (maximum $ ceiling  . (*1000) . raceTime <$> (fmap snd rs))
             Task.emitEvent uid (PracticeRace tid) etime 
             liftIO $ print etime 
+            forM_ rs $ \r -> do 
+                    healthLost (rp_account_id $ fst r) (snd r) 
+                    partsWear (rp_car_id $ fst r) (snd r)  
             
             return rid
 
@@ -1917,6 +1920,10 @@ raceChallengeAccept = do
 
             cons "iwunk: " 
             cons rid
+
+            forM_ (rs) $ \r -> do 
+                    partsWear (rp_car_id $ fst r) (snd r)  
+                    healthLost (rp_account_id $ fst r) (snd r)
 
             let fin r = (t+) $ ceiling $ raceTime r 
             let t1 = (\(_,r) -> fin r) $ head rs

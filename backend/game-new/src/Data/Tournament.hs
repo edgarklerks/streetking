@@ -85,6 +85,7 @@ import qualified Notifications as N
 import qualified Model.TournamentReport as TRP 
 import qualified Model.EventStream as ES 
 import           Control.Concurrent 
+import           Data.Tools
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -231,10 +232,18 @@ getResults mid = do
 
                                                 let winners = (\(x,y,z) -> x) <$> getWinners ss 
                                                 liftIO $ print winners
+                                                forM_ ss $ \r -> do 
+                                                       let (Just (rp1,rr1)) = TR.raceresult1 r 
+                                                       let (Just (rp2,rr2)) = TR.raceresult2 r 
+                                                       partsWear (rp_car_id rp1) rr1
+                                                       partsWear (rp_car_id rp2) rr2
+                                                       healthLost (rp_account_id rp1) rr1 
+                                                       healthLost (rp_account_id rp2) rr2
 
                                                 forM_ (winners `zip` [1..]) $ \(w,p) -> do 
                                                             liftIO $ print $ "user: " <> (show w) <> " pos: " <> (show p) <> " tid:" <> (show mid)
                                                             ES.emitEvent w (Data.Event.Tournament p mid) 
+
 
                                 return ss 
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
@@ -314,6 +323,28 @@ unsort = foldM (\z x -> uninsert x z) []
                         s <- randomIO 
                         if s then return (a:ts)
                              else uninsert a xs >>= \xs -> return (x:xs)
+fillRaceParticipant :: T.Tournament -> [RaceParticipant] -> SqlTransaction Connection [RaceParticipant]
+fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = pure xs  
+                                                        | otherwise = do
+                                                              cs <- search ["prototype" |== toSql True .&& "prototype_available" |== toSql True] [] 1000 0 :: SqlTransaction Connection [CarInGarage]
+                                                              as <- search ["bot" |== toSql True] [] 1000 0 :: SqlTransaction Connection [A.Account]
+                                                              (xs<>) <$> replicateM (n - length xs) (createPlayers as cs)
+                where createPlayers :: [Account] -> [CarInGarage] -> SqlTransaction Connection RaceParticipant 
+                      createPlayers as cs = do 
+                            p <- liftIO $ randomPick as 
+                            c <- liftIO $ randomPick cs 
+                            let am = fromInRule $ toInRule (p {
+                                                            A.level = T.minlevel t 
+                                                              }) :: AM.AccountProfileMin
+                            let cm = fromInRule $ toInRule c :: CM.CarMinimal
+                            
+                            
+                            return (def {
+                                rp_account = p,
+                                rp_account_min = am,
+                                rp_car = c,
+                                rp_car_min = cm 
+                                        })
 
 -- runs all the tournament rounds  
 runTournamentRounds :: t -> TournamentFullData -> SqlTransaction Connection [[(Integer, [(RaceParticipant, RaceResult)])]]  
@@ -341,7 +372,8 @@ runTournamentRounds po tfd =
 
                                flip catchSqlError error $ do 
                                    ys <- mapM rp plys >>= liftIO . unsort 
-                                   xs <- step 0 (twothree (ys))
+                                   rs <- fillRaceParticipant (tournament tfd) ys
+                                   xs <- step 0 (twothree (rs))
                                    return $ fmap (fst . split3) $ xs 
 
 
@@ -399,6 +431,9 @@ whileM m = do
 sortRounds :: [(Integer,[(RaceParticipant, RaceResult)])]  -> [RaceParticipant]
 sortRounds [] = [] 
 sortRounds ((rid,ys):xs) = (fst . head) (sortBy (\x y -> compare (snd x) (snd y)) ys) : sortRounds xs 
+
+
+
 
 processTournamentRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)], Integer) 
 processTournamentRace t' ps tid = do

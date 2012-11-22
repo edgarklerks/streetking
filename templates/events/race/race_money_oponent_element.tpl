@@ -40,7 +40,12 @@
 		<div class="race-money-opponent-element-label">race winning amount:</div>
 		<div class="race-money-opponent-element-amount">SK$ [:amount]</div>
 		<div class="race-money-opponent-element-buttons-container">
-			<a href="#Race/challengeAccept?challenge_id=[:challenge_id]" class="button car-info-button" module="RACE_MONEY_ACCPET">race</a>
+			[:when (my_challange == true)]{
+				<a href="#Race/challengeCancel?challenge_id=[:challenge_id]" class="button car-info-button red-text" module="RACE_MONEY_CANCEL">cancel</a>
+			}
+			[:when (my_challange == false)]{
+				<a href="#Race/challengeAccept?challenge_id=[:challenge_id]" class="button car-info-button" module="RACE_MONEY_ACCPET">race</a>
+			}
 		</div>
 	</div>
 	<div class="clearfix"></div>

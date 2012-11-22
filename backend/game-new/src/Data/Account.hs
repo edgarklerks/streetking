@@ -38,14 +38,14 @@ checkLevel uid = do
                     s :: Integer <- CFG.getKey "skillpoints_per_level"
                     e :: Integer <- CFG.getKey "energy_per_level"
                     let en = (A.max_energy a) + e * (nl - A.level a)
-                    let su = A.skill_unused a
+                    let su = A.skill_unused a + s * (nl - A.level a)
                     void $ update "account" 
                                     [
                                         "id" |== (toSql $ uid)
                                     ] [] 
                                     [  
                                         ("level", toSql $ nl), 
-                                        ("skill_unused", toSql $ su + s), 
+                                        ("skill_unused", toSql $ su), 
                                         ("max_energy", toSql en),
                                         ("energy", toSql en)
                                     ]

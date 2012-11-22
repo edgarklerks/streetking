@@ -250,3 +250,11 @@ scheck xs z = let p = sallowed xs z in smust xs p >> return p
 
 assert :: (Error e, MonadError e m) => Bool -> String -> m ()
 assert p e = unless p (throwError (strMsg e))
+
+
+randomPick :: [a] -> IO a
+randomPick [x] = return x 
+randomPick (x:xs) = do 
+            b <- randomRIO (0,1 :: Int) 
+            if b == 1 then randomPick xs 
+                     else return x 
