@@ -21,7 +21,9 @@ module Data.RacingNew (
         raceData,
         accelerationTime,
         brakingDistance,
-        lateralAcceleration
+        lateralAcceleration,
+        partsWear,
+        healthLost 
     ) where
 
 import Model.TH
@@ -57,8 +59,11 @@ import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
-
+import qualified Model.CarInstance as CI
+import qualified Model.PartInstance as PI 
 import Control.Monad.Error 
+import           Model.Config (getKey) 
+import           System.Random 
 
 type Speed = Double
 type Length = Double
@@ -148,10 +153,47 @@ $(genMapableRecord "RaceResult" [
         ("sectionResults", ''SectionResultList)
    ])
 
+
 instance Ord RaceResult where 
         compare (raceTime -> x) (raceTime -> y) = compare x y 
 
 type RaceResultList = [RaceResult] 
+
+partsWear :: Integer -> RaceResult -> SqlTransaction Connection ()
+partsWear x rr = let speed  = fromRational $ toRational $ raceSpeedAvg rr * 3.6 
+                     rt =  raceTime rr 
+                 in do 
+                wpm <- getKey "wearpm"
+                liftIO $ print wpm 
+                xs <- search ["car_instance_id" |==  toSql x ] [] 1000 0 :: SqlTransaction Connection [PI.PartInstance]
+                forM_ xs $ \c -> do 
+                    s <- calcWear wpm speed rt (10000 - fromInteger (PI.wear c)) 
+                    liftIO $ print (floor s, rt)
+                    save (c { PI.wear = PI.wear c + floor s})
+
+healthLost :: Integer -> RaceResult -> SqlTransaction Connection ()
+healthLost uid rr = do 
+            a <- fromJust <$> load uid 
+            void $ save (a {
+                    A.energy = max 0 (A.energy a - 5)
+                    })
+
+-- 
+-- 
+--
+-- wpm : 100 
+--
+calcWear wpm speed rt wear = do 
+        pt <- liftIO $ randomRIO (0,2)
+        return $ parm2 pt wpm speed rt wear
+
+-- parm2 100 100 (4.6 * 60) 100   
+parm2 :: (Floating a) => a -> a -> a -> a -> a -> a
+parm2 pt wpm speed rt wear = wear * (1 - 1 / (1 + (exp (- (wpm / pt * 1000 * 3.6) / (3.6 * speed * rt)))))
+
+
+                
+
 
 raceResult :: Integer -> SectionResultList -> RaceResult
 raceResult tid [] = RaceResult tid 0 0 0 0 []
@@ -702,7 +744,6 @@ testPerturbation s = do
                 print $ L.concat [show x, " -> ", show s']
                 return ()
         return ()
-
 
 
 
