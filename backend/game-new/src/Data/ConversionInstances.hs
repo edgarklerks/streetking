@@ -1,6 +1,8 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, IncoherentInstances, RankNTypes, FlexibleContexts, ViewPatterns, ScopedTypeVariables #-}
 module Data.ConversionInstances where 
-
+{-- Changelog
+- Edgar - added gzip to the object encode / decoding instances 
+--}
 import Data.InRules
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Parser as A
@@ -27,7 +29,8 @@ import Data.Convertible
 import Data.Word 
 import Data.Int 
 import Control.Applicative 
-import Codec.Compression.GZip
+import Codec.Compression.QuickLZ
+import qualified Data.Binary as B 
 
 instance ToInRule Rational where
     toInRule x = InNumber x
@@ -302,23 +305,18 @@ instance Default (Map.HashMap k v) where
 -- decode
 --  | binary gzip data 
 -- \|/
--- gzip 
+-- quicklz 
 --  | serialized data 
 -- \/
 -- S.decode 
 --   |
 --  \|/
 --  InRule 
-strictDecompress :: BB.ByteString -> BB.ByteString
-strictDecompress = BB.concat . BL.toChunks . decompress . BL.fromChunks . pure 
-
-strictCompress :: BB.ByteString -> BB.ByteString
-strictCompress = BB.concat . BL.toChunks . compress . BL.fromChunks . pure 
 
 
 convFromSql :: SqlValue -> InRule  
 convFromSql (SqlString s) = toInRule s
-convFromSql (SqlByteString  s) = case (S.decode <=< (fmap strictDecompress . decode)) s of 
+convFromSql (SqlByteString  s) = case (S.decode <=< (fmap decompress . decode)) s of 
                                     Left _ -> InByteString s
                                     Right a -> a
 convFromSql (SqlWord32  s) = toInRule s
@@ -348,7 +346,7 @@ convSql (InBool False) = toSql  False
 convSql InNull = SqlNull
 convSql (InString s) =  toSql s
 convSql (InByteString s) = toSql s
-convSql r = SqlByteString (encode $ strictCompress $ S.encode r)  
+convSql r = SqlByteString (encode $ compress $ S.encode r)  
 
 
 put8 :: Word8 -> S.Put 
@@ -356,6 +354,53 @@ put8 = S.put
 
 toWord64 :: Int -> Word64 
 toWord64 = fromIntegral
+
+put8b :: Word8 -> B.Put 
+put8b = B.put 
+
+instance B.Binary InRule where 
+    put x = B.put (B.pack "*1*-%*1*") *> put' x
+        where 
+            put' (InByteString b) = put8b 0  *> B.put b
+            put' (InInteger b) = put8b 1 *> B.put b
+            put' (InDouble b) = put8b 2 *> B.put b
+            put' (InNumber b) = put8b 3 *> B.put b 
+            put' (InBool b) = put8b 4 *> B.put b
+            put' (InNull) = put8b 5
+            put' (InArray xs) = put8b 6 *> B.put (toWord64 $ length xs) *> void (forM_ xs B.put)
+            put' (InObject xs) = put8b 7 *> serializeHashMapb xs
+            put' (InString x) = put8b 8 *> B.put x 
+
+    get = get' 
+        where get' = do 
+                 p <- B.get :: B.Get B.ByteString 
+                 unless (p == B.pack "*1*-%*1*") $ fail "fali"
+                 c <- B.get :: B.Get Word8 
+                 case c of 
+                    0 -> InByteString <$> B.get 
+                    1 -> InInteger <$> B.get 
+                    2 -> InDouble <$> B.get 
+                    3 -> InNumber <$> B.get 
+                    4 -> InBool <$> B.get 
+                    5 -> pure InNull 
+                    6 -> do 
+                        lt <- B.get :: B.Get Word64 
+                        xs <- replicateM (fromIntegral lt) $ B.get 
+                        return (InArray xs)
+                    7 -> do
+                        lt <- B.get :: B.Get Word64 
+                        xs <- replicateM (fromIntegral lt) $ (,) <$> B.get <*> B.get 
+                        return (InObject $ Map.fromList xs)
+                    8 -> InString <$> B.get
+                    n -> fail (show n)
+                
+
+
+
+serializeHashMapb xs = let ys = Map.toList xs
+                      in B.put (toWord64 $ length ys) *> 
+                            forM_ ys (\(k,v) -> 
+                                B.put k *> B.put v)
 
 instance S.Serialize InRule where 
     put x = S.put (B.pack "*1*-%*1*") *> put' x

@@ -46,12 +46,12 @@
 		<ul>
 			<li><a href="#account/get"  module="PROFILE_LIST">Manage profiles</a></li>
 			<li><a href="#garage/get"  module="GARAGE_LIST">Garages</a></li>
-			<li><a href="#challenge_type/get"  module="CHALLENGE_TYPE_LIST">Challenge types</a></li>
-			<li><a href="#transaction/get"  module="TRANSACTION_LIST">Transactions</a></li>
-			<li><a href="#config/get"  module="CONFIG_LIST">Config</a></li>
-			<li><a href="#tournament/get"  module="TOURNAMENT_LIST">tournament</a></li>
-			<li><a href="#image/listing"  module="DUMP_IMAGE_LIST">dump image</a></li>
+			<li><a href="#tournament/get"  module="TOURNAMENT_LIST">Tournament</a></li>
 			<li><a href="#notification/get"  module="NOTIFICATION_LIST">Notification</a></li>
+			<li><a href="#challenge_type/get"  module="CHALLENGE_TYPE_LIST">Challenge types</a></li>
+			<li><a href="#config/get"  module="CONFIG_LIST">Game config</a></li>
+			<li><a href="#image/listing"  module="DUMP_IMAGE_LIST">Dump image</a></li>
+			<li><a href="#transaction/get"  module="TRANSACTION_LIST">Transactions</a></li>
 		</ul>
 	</li>	
 </ul>

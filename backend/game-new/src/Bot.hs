@@ -302,7 +302,7 @@ testTournament = do
 
 -- | Join a tournament 
 joinTournament id = do 
-            xs <- take 4 <$> testCarUsers 
+            xs <- take 3 <$> testCarUsers 
             forM_ xs $ \(i,d) -> do  
                     s <- asInRule $ do 
                         mkJsonPost "Tournament/join" (S.fromList [("tournament_id", toInRule id), ("car_instance_id", toInRule d)])

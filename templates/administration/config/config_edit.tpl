@@ -6,7 +6,7 @@
 <div>
 	<label>value:</label>
 <!--<input type="text" name="value" value="[:0.value]"/>-->
-	<textarea id="code_lua" class="code" name="value">[:0.value]</textarea>
+	<textarea id="code_lua" class="code_lua" name="value">[:0.value]</textarea>
 </div>
 	
 	<input type="button" value="save" id="save" module="SAVE">

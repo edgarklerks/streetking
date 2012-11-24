@@ -6,7 +6,7 @@
 <div><label>key:</label><input type="text" name="key" value="[:0.key]"/></div>
 <div>
 	<label>value:</label>
-	<textarea id="code_josn"name="value">[:0.value]</textarea>
+	<textarea class="code_josn" name="value">[:0.value]</textarea>
 </div>
 
 	<input type="button" value="save" id="save" module="SAVE">

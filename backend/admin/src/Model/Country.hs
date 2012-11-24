@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell, MultiParamTypeClasses, OverloadedStrings #-}
 module Model.Country where 
 
 import Data.SqlTransaction 
@@ -6,7 +6,9 @@ import Database.HDBC
 import Data.Convertible 
 import Model.General 
 import Data.Database 
-import Data.InRules 
+import Data.Conversion
+
+import qualified Data.Aeson as AS 
 import Control.Monad
 
 import Control.Applicative

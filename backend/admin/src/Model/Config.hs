@@ -17,7 +17,8 @@ import           Prelude hiding (id)
 
 $(genAllId "Config" "game_config" "key" [
     ("key", ''String),
-    ("value", ''String)
+    ("value", ''String),
+    ("id", ''Id)
  ])
 
 
