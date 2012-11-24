@@ -54,7 +54,8 @@ module Data.SqlTransaction (
     lock,
     Lock(..),
     runTestDb,
-    catchSqlError
+    catchSqlError,
+    commit 
 
 ) where 
 
@@ -88,6 +89,10 @@ newtype SqlTransaction c a = SqlTransaction {
 type SqlTransactionCPS c a = (a -> SqlTransactionCPS c r) -> SqlTransactionCPS c r 
 [type SqlTransactionCPS c a] = (a -> c -> IO (Either String r)) -> (c -> IO (Either String r))
 --}
+--
+commit :: SqlTransaction Connection ()
+commit = ask  >>= liftIO . H.commit 
+
 runSqlTransaction :: (MonadIO m, H.IConnection c, Applicative m) => SqlTransaction c a -> (String -> m a) -> c -> m a 
 runSqlTransaction xs f c = do
                                 liftIO $ H.commit c

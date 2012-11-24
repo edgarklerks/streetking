@@ -43,6 +43,7 @@ import qualified Model.Track as TR
 import qualified Model.TrackTime as TRM 
 import qualified Model.Transaction as TS
 import qualified Model.City as CIT 
+import qualified Model.Country as CY 
 import qualified Model.Continent as CON 
 import qualified Model.Config as CO  
 import qualified Model.Garage as G 
@@ -53,6 +54,7 @@ import qualified Model.PersonnelInstance as PI
 import qualified Model.ParameterTable as PT 
 import qualified Model.Notification as NN 
 import qualified Model.PartMarket as MP
+import qualified Model.AccountGarage as AG 
 import           Snap.Util.FileServe
 import           Text.Templating.Heist 
 import           SqlTransactionSnaplet hiding (runDb)
@@ -151,6 +153,7 @@ writeSVG s = writeAeson $ S.fromList  [("result" :: String, unlines $ drop 4 $ l
 routes :: [(ByteString, Handler App App ())]
 routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/logout",   with auth handleLogout)
+         , ("/account_garage/get", getModel (def :: AG.AccountGarage))
          , ("/new_user", with auth handleNewUser)
          , ("/car_model/get", getModel (def :: C.Car)) 
          , ("/car_model/put", putModel (def :: C.Car))
@@ -178,6 +181,9 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/notification/put", putModel (def :: NN.Notification))
          , ("/notification/get", getModel (def :: NN.Notification))
          , ("/part_instance/visual", visualPartInstance) 
+         , ("/country/get", getModel (def :: CY.Country))
+         , ("/country/put", putModel (def :: CY.Country))
+
          , ("/city/get", getModel (def :: CIT.City))
          , ("/city/put", putModel (def :: CIT.City))
          , ("/continent/get", getModel (def :: CON.Continent))
@@ -187,7 +193,7 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/config/get", getModel (def :: CO.Config))
          , ("/config/put", putModel (def :: CO.Config))
          , ("/transaction/get", getModel (def :: TS.Transaction))
-         , ("/transaction/put", putModel (def :: TS.Transaction))
+--         , ("/transaction/put", putModel (def :: TS.Transaction))
          , ("/track/get", getModel (def :: TR.Track))
          , ("/track/put", putModel (def :: TR.Track))
          , ("/track_time/get", getModel (def :: TRM.TrackTime))

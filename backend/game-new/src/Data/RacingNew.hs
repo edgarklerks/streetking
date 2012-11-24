@@ -23,7 +23,8 @@ module Data.RacingNew (
         brakingDistance,
         lateralAcceleration,
         partsWear,
-        healthLost 
+        healthLost,
+        testDefRace
     ) where
 
 import Model.TH
@@ -709,6 +710,13 @@ loadAndTest aid cid tid = do
                 return (d, c, t)
 
         testRace d c t
+
+testDefRace = do 
+
+        s <- runTestDb $ loadDriver 36
+        q <- runTestDb $ loadTrack 1
+        c <- runTestDb $ loadCar 452 
+        testRace s c q
 
 testRace :: D.Driver -> C.Car -> T.Track -> IO ()
 testRace d c t = do

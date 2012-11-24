@@ -74,7 +74,7 @@ Executable game-new
     smallcheck,
     base64-bytestring,
     lens-family-core,
-    zlib
+    quicklz
 
   if flag(development)
     build-depends:

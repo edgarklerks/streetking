@@ -1,9 +1,14 @@
-<form id="filter" action="car_model/get" method="post">
-	<div class="error">&nbsp;</div>
-	<div><label>id:</label><input type="text" name="id" value=""/></div>
-	<div><label>name:</label><input type="text" name="name" value=""/></div>
-	<input type="submit" value="Sort" id="sort" module="CAR_MODEL_LIST">
-	<a href="#car_model/get?id=0" class="button" module="CAR_MODEL_EDIT">new</a>
-</form>
-
-<div id="list"></div>
+<div class="form-div">
+	<form id="filter" action="car_model/get" method="post">
+		<div class="error">&nbsp;</div>
+		<div><label>id:</label><input type="text" name="id" value=""/></div>
+		<div><label>name:</label><input type="text" name="name" value=""/></div>
+		<div class="clearfix"></div>
+		<div class="buttons-container">
+			<input type="submit" value="Sort" id="sort" module="CAR_MODEL_LIST">
+			<a href="#car_model/get?id=0" class="button" module="CAR_MODEL_EDIT">Add new</a>
+			<input type="reset" value="Clear" class="button" />
+		</div>
+	</form>
+</div>
+<div id="list" class="list-div scroll-content"></div>

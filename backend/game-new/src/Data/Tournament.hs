@@ -9,13 +9,16 @@ module Data.Tournament (
         getPlayers,
         processTournamentRace,
         runTournamentRounds, 
-        loadTournamentFull
+        loadTournamentFull,
+        testTournament
         
     ) where 
 {-- Change log:
 - 17-11-2012 
 - Edgar - added immutable flag set to addClownToTournament for car_instance 
 - Edgar - added immutable flag unset to getResults for car_instance  
+- Edgar - added bots to the tournament. This is a little bit shaky, because
+- a function return the raceparticipant and mutates the database.
 -
 -
 - --}
@@ -86,6 +89,7 @@ import qualified Model.TournamentReport as TRP
 import qualified Model.EventStream as ES 
 import           Control.Concurrent 
 import           Data.Tools
+import           Data.SqlTransaction
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -231,17 +235,20 @@ getResults mid = do
                                                 save (tr { T.running = False, T.done = True}) 
 
                                                 let winners = (\(x,y,z) -> x) <$> getWinners ss 
-                                                liftIO $ print winners
                                                 forM_ ss $ \r -> do 
-                                                       let (Just (rp1,rr1)) = TR.raceresult1 r 
-                                                       let (Just (rp2,rr2)) = TR.raceresult2 r 
-                                                       partsWear (rp_car_id rp1) rr1
-                                                       partsWear (rp_car_id rp2) rr2
-                                                       healthLost (rp_account_id rp1) rr1 
-                                                       healthLost (rp_account_id rp2) rr2
+                                                           let (Just (rp1,rr1)) = TR.raceresult1 r 
+                                                           let (Just (rp2,rr2)) = TR.raceresult2 r 
+                                                            -- filter bots
+                                                            -- out 
+                                                           when (not . GC.prototype $ rp_car rp1) $ do 
+                                                               partsWear (rp_car_id rp1) rr1
+                                                               healthLost (rp_account_id rp1) rr1 
+                                                           when (not . GC.prototype $ rp_car rp2) $ do 
+                                                               partsWear (rp_car_id rp2) rr2
+                                                               healthLost (rp_account_id rp2) rr2
 
                                                 forM_ (winners `zip` [1..]) $ \(w,p) -> do 
-                                                            liftIO $ print $ "user: " <> (show w) <> " pos: " <> (show p) <> " tid:" <> (show mid)
+                                                            cons $ "user: " <> (show w) <> " pos: " <> (show p) <> " tid:" <> (show mid)
                                                             ES.emitEvent w (Data.Event.Tournament p mid) 
 
 
@@ -323,28 +330,51 @@ unsort = foldM (\z x -> uninsert x z) []
                         s <- randomIO 
                         if s then return (a:ts)
                              else uninsert a xs >>= \xs -> return (x:xs)
+
 fillRaceParticipant :: T.Tournament -> [RaceParticipant] -> SqlTransaction Connection [RaceParticipant]
-fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = pure xs  
+fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = do 
+                                                                    cons "do not attach bots"          
+                                                                    pure xs  
                                                         | otherwise = do
+                                                              cons $ "tournament id:" <> (show (T.id t))
+                                                              cons $ "adding: " <> show (n - length xs) <> " bots"
                                                               cs <- search ["prototype" |== toSql True .&& "prototype_available" |== toSql True] [] 1000 0 :: SqlTransaction Connection [CarInGarage]
                                                               as <- search ["bot" |== toSql True] [] 1000 0 :: SqlTransaction Connection [A.Account]
                                                               (xs<>) <$> replicateM (n - length xs) (createPlayers as cs)
                 where createPlayers :: [Account] -> [CarInGarage] -> SqlTransaction Connection RaceParticipant 
                       createPlayers as cs = do 
+                            cons "Creating player"
                             p <- liftIO $ randomPick as 
                             c <- liftIO $ randomPick cs 
-                            let am = fromInRule $ toInRule (p {
-                                                            A.level = T.minlevel t 
-                                                              }) :: AM.AccountProfileMin
+                            cons (p,c)
+                            am <- fromJust <$> load (fromJust $ A.id p) :: SqlTransaction Connection (AM.AccountProfileMin)
                             let cm = fromInRule $ toInRule c :: CM.CarMinimal
+                            cons "Created player"
+
                             
                             
-                            return (def {
+                            let bots = (def {
                                 rp_account = p,
                                 rp_account_min = am,
                                 rp_car = c,
                                 rp_car_min = cm 
                                         })
+                            cons "Constructed bot:"
+                            cons bots 
+
+                            -- add players to tournament_players 
+
+                            save (def {
+                                    TP.car_instance_id = Model.CarInGarage.id c,
+                                    TP.account_id = A.id p, 
+                                    TP.tournament_id = T.id t,
+                                    TP.deleted = False 
+                                } :: TP.TournamentPlayer)
+                            -- commit player to database
+                            commit 
+                            cons "Added player to tournament"
+                            return bots 
+ 
 
 -- runs all the tournament rounds  
 runTournamentRounds :: t -> TournamentFullData -> SqlTransaction Connection [[(Integer, [(RaceParticipant, RaceResult)])]]  
@@ -355,7 +385,8 @@ runTournamentRounds po tfd =
                               rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid) _) =  mkRaceParticipant cid aid Nothing 
                               step tdif xs = do 
                                 races <- forM xs $ \xs -> do
-                                             processTournamentRace (tdif) xs tr
+                                             cons "process races"
+                                             processTournamentRace (tdif) xs tr <* cons "finished process"
                                 let (ps', ts) = split3 races 
                                 let ps = sortRounds ps'
                                 let tmax = maximum ts  
@@ -374,6 +405,8 @@ runTournamentRounds po tfd =
                                    ys <- mapM rp plys >>= liftIO . unsort 
                                    rs <- fillRaceParticipant (tournament tfd) ys
                                    xs <- step 0 (twothree (rs))
+                                    -- commit the transaction to database
+                                    -- and start looping. 
                                    return $ fmap (fst . split3) $ xs 
 
 
@@ -388,10 +421,16 @@ split3  = foldr step ([], [])
 
 testEmitTournament = runTestDb $ ES.emitEvent 34 (Data.Event.Tournament 9 9)
 
+cons a = return () 
+                {--
+    x <- unix_timestamp  
+    liftIO $ print (x,a)
+    --}
 -- users: 36,34,33,71
 testTournament = runTestDb $ do 
             b <- (*1000) <$> unix_timestamp 
             -- Created a tournament 
+            cons "creating tournament"
             tid <- save (def {
                              start_time = Just b,
                              costs = 0,
@@ -399,23 +438,34 @@ testTournament = runTestDb $ do
                              maxlevel = 10000,
                              rewards = Nothing,
                              T.track_id = 12,
-                             players = 4,
-                             T.name = "auto tournament"
+                             players = 8,
+                             T.name = "auto tournament xxx"
                     } :: T.Tournament)
             -- finding users with useful car 
+            cons "searching cars"
             rs <- search ["active" |== (toSql True) .&& "ready" |== (toSql True)] [] 100 0 :: SqlTransaction Connection [CarInGarage]
-            forM_ (take 4 rs) $ \r -> do 
+            cons "joining tournament"
+            forM_ (take 2 rs) $ \r -> do 
                             joinTournament (fromJust $ GC.id r) tid (GC.account_id r)
+            -- loaded tournament 
+            cons "loading tournament"
             tf <- loadTournamentFull tid 
+            cons "saving tournament"
             save ((tournament tf) {running = True})
+            cons "run tournament rounds"
             xs <- runTournamentRounds undefined tf
+            cons xs
             saveResultTree tid xs 
+            cons "saved tournament"
+            {--
             whileM $ do 
+                cons "Getting tournament"
                 ps <- getResults tid
                 rs <- search ["tournament_id" |== (toSql tid)] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
                 liftIO $ print (length ps, length rs) 
                 liftIO $ threadDelay 10000
                 return $ ps /= rs 
+            --}
 
 whileM :: Monad m => m Bool -> m ()
 whileM m = do
@@ -511,8 +561,8 @@ runTournament :: TK.Task -> t -> SqlTransaction Connection Bool
 runTournament tk po = return False <* (do
                 let id = "id" .<< (TK.data tk) ::  Integer
                 tf <- loadTournamentFull id  
-                save ( (tournament tf) { running = True })
                 xs <- runTournamentRounds po tf  
+                save ( (tournament tf) { running = True })
                 saveResultTree id xs)
 
 saveResultTree :: Integer -> [[(Integer, [(RaceParticipant, RaceResult)])]] -> SqlTransaction Connection ()
