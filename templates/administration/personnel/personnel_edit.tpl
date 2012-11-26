@@ -2,7 +2,7 @@
 	<input type="hidden" name="id" value="[:0.id]"/>
 	<div class="edit-element-data-container">
 		<div class="edit-element-data-box">
-			<div><label>country_id:</label><input type="text" name="country_id" value="[:0.country_id]"/></div>
+			<div><label>country_id:</label><input type="text" name="country_id" list="country" value="[:0.country_id]"/></div>
 			<div><label>gender:</label>[:eval OPTIONTRUEFALSE("[\"gender\",\""+0.gender+"\"]")]</div>
 			<div><label>name:</label><input type="text" name="name" value="[:0.name]"/></div>
 			<div><label>picture:</label><input type="text" name="picture" value="[:0.picture]"/></div>

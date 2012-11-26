@@ -1,9 +1,8 @@
 [:when (fields)]{
-	<tr>
+	<tr class="fill_btn" fill_id="[:id]">
 	[:repeat data:fields as:field] {
 		
 		<td>[:field]</td> 
 	}
-	<td><input type="button" class="fill_btn" value="fill this" id="[:id]" /></td>
 	</tr>
 }
