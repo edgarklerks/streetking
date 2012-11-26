@@ -2220,7 +2220,10 @@ wrapErrors g x = when g (void $ runDb (forkSqlTransaction $ Task.run Task.Cron 0
 userNotification :: Application ()
 userNotification = do 
                 uid <- getUserId 
-                xs <- checkMailBox uid 
+                xs <- runDb $ search [   "account_id" |== toSql uid 
+                             .&& "read" |== toSql False 
+                             .&& "archive" |== toSql False
+                             ] [] 100 0 :: Application [Not.PreLetter] 
                 writeMapables xs 
 
 testNotification :: Application ()
