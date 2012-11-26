@@ -1628,6 +1628,9 @@ partImprove uid pi = do
                                 PI.improvement = min (10^4) $ (PI.improvement p + round (a * pr'))
                             })
 
+                        -- needed to put data outside transaction 
+                        commit
+
                         when (PLID.task_end pi < s) $ do 
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                             void $ N.sendCentralNotification uid (N.partImprove {
@@ -1655,6 +1658,9 @@ partRepair uid pi = do
                         void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
                                         })
+                        -- Commit needed to put data outside transaction
+                        commit 
+
                         when (PLID.task_end pi < s) $  do 
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                             void $ N.sendCentralNotification uid (N.partRepair {
@@ -2220,7 +2226,8 @@ wrapErrors g x = when g (void $ runDb (forkSqlTransaction $ Task.run Task.Cron 0
 userNotification :: Application ()
 userNotification = do 
                 uid <- getUserId 
-                xs <- runDb $ search [   "account_id" |== toSql uid 
+                xs <- runDb $ search [
+                                 "to" |== toSql uid 
                              .&& "read" |== toSql False 
                              .&& "archive" |== toSql False
                              ] [] 100 0 :: Application [Not.PreLetter] 
