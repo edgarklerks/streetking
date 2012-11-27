@@ -496,12 +496,10 @@ processTournamentRace t' ps tid = do
                 case raceWithParticipant p trk g of
                         Left e -> rollback e
                         Right r -> return (p, r)
-
         let rs = L.sortBy (\(_, a) (_, b) -> compare (raceTime a) (raceTime b)) rs'
 
-
-
         -- current time, finishing times, race time (slowest finishing time) 
+
         t <- (+t') <$> liftIO milliTime
         ct <- liftIO milliTime 
             
