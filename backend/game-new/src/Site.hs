@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns, ImplicitParams #-}
 ------------------------------------------------------------------------------
 --
 -- | This module is where all the routes and handlers are defined for your
@@ -11,7 +11,7 @@ module Site
 - Edgar: Added unset immutable flag to cancelTournamentJoin
 - Edgar: Added set and unset immutable flag to challenge
 - Edgar: Added immutable predicate to buy and sell functions 
--
+- Edgar: personnelLock is a top-level TVAR should be inside a snaplet
 -
 ---}
 ------------------------------------------------------------------------------
@@ -124,6 +124,7 @@ import           System.FilePath.Posix
 import           System.Directory
 import           Data.String
 import           GHC.Exception (SomeException)
+import           Control.Concurrent.STM 
 
 import qualified Control.Monad.CatchIO as CIO
 import           Lua.Instances
@@ -159,6 +160,8 @@ import           Snap.Snaplet
 import           Data.Tournament 
 import           Data.Reward 
 import           Data.Event 
+import qualified Data.Set as Set 
+import           System.IO.Unsafe 
 
 import qualified Notifications as N 
 
@@ -663,6 +666,7 @@ garageCarReady = do
     let cid = extract "id" xs :: Integer
     rs <- runDb $ do
             -- update actions
+            let ?name = "garageCarReady"
             personnelUpdate uid
             -- check if user owns the car
             aget ["garage_id" |== toSql gid] (rollback "Car not found in garage") :: SqlTransaction Connection CarInstance.CarInstance
@@ -682,6 +686,7 @@ garageActiveCarReady = do
     gid <- getUserGarageId
     rs <- runDb $ do
             -- update actions
+            let ?name = "garageActiveCarReady"
             personnelUpdate uid
             -- get user active car 
             ac <- aget ["garage_id" |== toSql gid, "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CarInstance.CarInstance
@@ -938,6 +943,7 @@ garageParts = do
             )
 
         let p = runDb $ do
+            let ?name = "garageParts"
             personnelUpdate uid 
             ns <- search xs od l o
             return ns 
@@ -968,6 +974,7 @@ garagePartsWithPreview = do
 
        
         ps <- runDb $ do
+            let ?name = "garagePartsWithPreview"
             personnelUpdate uid 
             ns <- search xs od l o :: SqlTransaction Connection [GPT.GaragePart]
             cig <- loadCarInGarage pid $ rollback $ "preview car not found for id " ++ (show pid)
@@ -982,6 +989,7 @@ garageCar = do
         (((l,o), xs),od) <- getPagesWithDTDOrdered ["active", "level"] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         let p = runDb $ do
+            let ?name = "garageCar"
             personnelUpdate uid 
             ns <- searchCarInGarage xs od l o
             return ns 
@@ -996,6 +1004,7 @@ garageActiveCar = do
         uid <- getUserId 
         (((l,o), xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid) +&& "active" +==| SqlBool True) 
         let p = runDb $ do
+            let ?name = "garageCarActive"
             personnelUpdate uid 
 --            ns <- search xs od l o
             ns <- searchCarInGarage xs od l o
@@ -1122,7 +1131,9 @@ garagePersonnel = do
                     "salary" +<= "salarymax" 
             )
         let p = runDb $ do
+            let ?name = "garagePersonnel"
             personnelUpdate uid 
+
             g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
             ns <- search (xs ++ ["garage_id" |== (toSql $ G.id g) ]) [Order ("personnel_instance_id",[]) True]  l o
             return ns 
@@ -1338,11 +1349,12 @@ cancelTaskPersonnel = do
                case cm of 
                         [] -> rollback "That is not your mechanic, friend"
                         [_] -> do
+                            let ?name = "cancelTaskPersonnel"
                             personnelUpdate uid 
                             stopTask (extract "personnel_instance_id" xs) uid  
                             return ()
 
-stopTask :: Integer -> Integer -> SqlTransaction Connection () 
+stopTask :: (?name :: String) => Integer -> Integer -> SqlTransaction Connection () 
 stopTask pid uid = do 
         pi <- aload pid $ rollback "personnel instance not found" :: SqlTransaction Connection PLI.PersonnelInstance
         -- stop task 
@@ -1357,8 +1369,8 @@ stopTask pid uid = do
                 PLI.task_updated = 0,
                 PLI.task_end = 0
             })
-        return ()
-
+        t <- DBF.unix_timestamp
+        traceShow (t, ?name, pid) $ commit 
 
 
         
@@ -1585,6 +1597,7 @@ userActions uid = do
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
         t <- milliTime 
         let u = A.busy_until a
+        let ?name = "userActions"
         personnelUpdate uid
         when (u > 0 && u <= t) $ do
 --            save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
@@ -1596,23 +1609,47 @@ userActions uid = do
 --
 --
 
-personnelUpdate :: Integer -> SqlTransaction Connection ()
+-- TODO: Horrible hack, toplevel tvar is like a global var 
+
+
+personnelLock :: TVar (Set.Set Integer) 
+personnelLock = unsafePerformIO $ newTVarIO (mempty)
+
+-- personnelUpdate :: Integer -> SqlTransaction Connection ()
+personnelProceed uid = liftIO $ atomically $ do 
+                s <- readTVar personnelLock
+                case Set.member uid s of 
+                        True -> return False 
+                        False -> do 
+                                writeTVar personnelLock (Set.insert uid s)
+                                return True 
+
+removeProceed uid = liftIO $ atomically $ do
+        s <- readTVar personnelLock
+        writeTVar personnelLock (Set.delete uid s)
+
 personnelUpdate uid = do 
-            g <- aget ["account_id" |== (toSql uid)] (rollback "cannot find garage") :: SqlTransaction Connection G.Garage 
-            p <- search ["garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
-            case p of
-                [] -> return () 
-                xs -> forM_ xs $ \x -> case PLID.task_name x of 
+        do 
+            b <- personnelProceed uid 
+            when b $ do 
+
+                g <- aget ["account_id" |== (toSql uid)] (rollback "cannot find garage") :: SqlTransaction Connection G.Garage 
+                p <- search ["garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
+                case p of
+                    [] -> return () 
+                    xs -> forM_ xs $ \x -> case PLID.task_name x of 
                                                 "idle" -> return ()
                                                 "improve_part"  -> partImprove uid x 
                                                 "repair_part" -> partRepair uid x 
                                                 "repair_car"  -> carRepair uid x  
+                removeProceed uid 
+
 
             
 
             
 
-partImprove :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
+-- partImprove :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partImprove uid pi = do
                 s <- milliTime
                 let ut = (min (PLID.task_end pi) s) - (PLID.task_updated pi)
@@ -1642,7 +1679,7 @@ partImprove uid pi = do
 
 
 
-partRepair :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
+-- partRepair :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partRepair uid pi = do 
                 s <- milliTime 
 
@@ -1674,7 +1711,7 @@ partRepair uid pi = do
 
 
 
-carRepair ::  Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
+-- carRepair ::  Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 carRepair uid pi = do  
             s <- milliTime 
             (pr' :: Double) <- loaddbConfig "car_repair_rate" 
@@ -1692,6 +1729,7 @@ carRepair uid pi = do
                     void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
                                         })
+
                     when (PLID.task_end pi < s) $  do 
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                             void $ N.sendCentralNotification uid (N.partRepair {
