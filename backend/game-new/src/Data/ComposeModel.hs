@@ -96,7 +96,7 @@ instance ToInRule Box where
 instance ToInRule ComposeMap where 
             toInRule = toInRule . fmap toInRule . unComposeMap 
 
-runComposeMonad :: (Applicative m, MonadIO m, DB.IConnection c) => ComposeMonad a c a -> (String -> m (H.HashMap String InRule)) -> c -> m (H.HashMap String InRule)
+runComposeMonad :: (Applicative m, MonadIO m) => ComposeMonad a Connection a -> (String -> m (H.HashMap String InRule)) -> Connection -> m (H.HashMap String InRule)
 runComposeMonad m f c = do -- (ComposeMap xs)
                                 ts <- unsafeRunCompose c m 
                                 case ts of 
@@ -105,7 +105,7 @@ runComposeMonad m f c = do -- (ComposeMap xs)
 
 
 
-deep :: DB.IConnection c => String -> ComposeMonad a c a -> ComposeMonad r c ()
+deep :: String -> ComposeMonad a Connection a -> ComposeMonad r Connection ()
 deep s m = do 
             c <- ask
             a <- liftIO $ unsafeRunCompose c m  

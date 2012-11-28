@@ -2,6 +2,8 @@
 module Data.Decider where 
 
 import Data.Monoid hiding (Any, All) 
+import Control.Arrow 
+import Control.Category 
 
 data Expr g a where
     Any :: [Expr g a] -> Expr g a
@@ -28,7 +30,6 @@ class Evaluate a b where
 
 
 -- | Every expression gives rise to function 
-
 
 equalDecider = buildDecider (==) 
 
@@ -103,4 +104,19 @@ accept :: (a -> b -> Bool) -> b -> [a] -> Bool
 accept f x [] = False
 accept f x (y:xs) | f y x = True
                   | otherwise = accept f x xs  
+
+-- underline machine is actually very boring. It has some flapping 
+
+newtype Machine a b = Machine {
+                        runMachine :: [a] -> ([b], Bool)
+                }
+
+
+instance Category Machine where 
+        id = Machine $ \xs -> (xs, True)
+(.-) a b = Machine $ \xs -> let (as, bt) = runMachine a xs
+                                (bs, ct) = runMachine b as 
+                            in  (bs, (bt && ct)) 
+
+
 

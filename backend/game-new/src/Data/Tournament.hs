@@ -37,7 +37,6 @@ import Data.List
 import qualified Data.Aeson as AS
 import qualified Data.Aeson.Parser as ASP 
 import Data.SqlTransaction
-import Model.Account as A 
 import Model.Transaction as TR  
 import Model.CarInstance  
 import Model.Functions 
@@ -131,7 +130,7 @@ joinTournament cinst n acid = do
 
                 return () 
     where 
-            addClownToTournament :: Account -> Tournament -> Integer -> SqlTransaction Connection ()
+            addClownToTournament :: A.Account -> Tournament -> Integer -> SqlTransaction Connection ()
             addClownToTournament a t cinst = do 
                         transactionMoney (fromJust $ A.id a) (def {
                                     amount = -(T.costs t),
@@ -148,7 +147,7 @@ joinTournament cinst n acid = do
                         return ()
 
 -- | check car, enough money, time prequisites
-checkPrequisites :: Account -> Tournament -> Integer -> SqlTransaction Connection () 
+checkPrequisites :: A.Account -> Tournament -> Integer -> SqlTransaction Connection () 
 checkPrequisites a (T.Tournament id cid st cs mnl mxl rw tid plys nm dn rn im) cinst = do 
         (n,t) <- numberOfPlayers (fromJust id)
         when dn $ rollback "this tournament is already done" 
@@ -192,7 +191,7 @@ test_samelength_prop = property testSamelength
             testSamelength xs ys = (length xs == length ys) == (sameLength xs ys) && 
                             (sameLength xs xs == sameLength ys ys)
 
-getPlayers :: Integer -> SqlTransaction Connection [[(Account,Account, Id)]]
+getPlayers :: Integer -> SqlTransaction Connection [[(AM.AccountProfileMin,AM.AccountProfileMin, Id)]]
 getPlayers mid = do 
             tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament 
             mt <- liftIO milliTime 
@@ -204,7 +203,7 @@ getPlayers mid = do
     where 
           
           step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
-          step mt (TR.TournamentResult _ tid rid _ _ _ _ _ ) = do 
+          step mt (TR.TournamentResult _ tid rid _ _ _ _ _ _ _ ) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
                                                 return (R.start_time r < mt)
 
@@ -212,7 +211,7 @@ getPlayers mid = do
           returnStart = return []  
           returnSince mt rs = filterM (step mt) rs >>= retrieveAccounts 
 
-          retrieveAccounts :: [TR.TournamentResult] -> SqlTransaction Connection [[(Account, Account, Id)]]
+          retrieveAccounts :: [TR.TournamentResult] -> SqlTransaction Connection [[(AM.AccountProfileMin, AM.AccountProfileMin, Id)]]
           retrieveAccounts  xs = forM (groupByRound xs) $ \rs -> do 
                                                     forM rs $ \r -> (,,) <$> aload (fromJust $ TR.participant1_id r) (rollback "fuckfuckfuck i hate this world") <*> aload (fromJust $ TR.participant2_id r) (rollback "lololi") <*> pure (TR.race_id r)  
                                                             
@@ -236,17 +235,14 @@ getResults mid = do
 
                                                 let winners = (\(x,y,z) -> x) <$> getWinners ss 
                                                 forM_ ss $ \r -> do 
-                                                           let (Just (rp1,rr1)) = TR.raceresult1 r 
-                                                           let (Just (rp2,rr2)) = TR.raceresult2 r 
-                                                            -- filter bots
-                                                            -- out 
-                                                           when (not . GC.prototype $ rp_car rp1) $ do 
-                                                               partsWear (rp_car_id rp1) rr1
-                                                               healthLost (rp_account_id rp1) rr1 
-                                                           when (not . GC.prototype $ rp_car rp2) $ do 
-                                                               partsWear (rp_car_id rp2) rr2
-                                                               healthLost (rp_account_id rp2) rr2
-
+                                                           let car1 = TR.car1_id r 
+                                                           let car2 = TR.car2_id r 
+                                                           let account1 = TR.participant1_id r
+                                                           let account2 = TR.participant2_id r 
+                                                           -- create health
+                                                           -- loss and wear
+                                                           -- loss of car. 
+                                                           return ()
                                                 forM_ (winners `zip` [1..]) $ \(w,p) -> do 
                                                             cons $ "user: " <> (show w) <> " pos: " <> (show p) <> " tid:" <> (show mid)
                                                             ES.emitEvent w (Data.Event.Tournament p mid) 
@@ -254,7 +250,7 @@ getResults mid = do
 
                                 return ss 
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
-              step mt (TR.TournamentResult _ tid rid _ _ _ _ _) = do 
+              step mt (TR.TournamentResult _ tid rid _ _ _ _ _ _ _) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
                                                 return (R.end_time r < mt)
                 
@@ -341,7 +337,7 @@ fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = do
                                                               cs <- search ["prototype" |== toSql True .&& "prototype_available" |== toSql True] [] 1000 0 :: SqlTransaction Connection [CarInGarage]
                                                               as <- search ["bot" |== toSql True] [] 1000 0 :: SqlTransaction Connection [A.Account]
                                                               (xs<>) <$> replicateM (n - length xs) (createPlayers as cs)
-                where createPlayers :: [Account] -> [CarInGarage] -> SqlTransaction Connection RaceParticipant 
+                where createPlayers :: [A.Account] -> [CarInGarage] -> SqlTransaction Connection RaceParticipant 
                       createPlayers as cs = do 
                             cons "Creating player"
                             p <- liftIO $ randomPick as 
@@ -573,12 +569,16 @@ saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> forM_ xs (lmb r)
                                     TR.participant1_id = A.id $ rp_account $ fst x,
                                     TR.participant2_id = A.id $ rp_account $ fst y,
                                     TR.round = r,
-                                    TR.raceresult1 = Just x,
-                                    TR.raceresult2 = Just y
+                                    -- TR.raceresult1 = Nothing -- Just x,
+                                    -- TR.raceresult2 = Nothing -- Just y
+                                    TR.race_time1 = raceTime $ snd x,
+                                    TR.race_time2 = raceTime $ snd y,
+                                    TR.car1_id =  rp_car_id $ fst x ,
+                                    TR.car2_id = rp_car_id $ fst y 
+
 
                                         } :: TR.TournamentResult)
                   lmb r xs =  return 0 
- 
 
 initTournament po = registerTask pred (executeTask po)
           where pred t | "action" .< (TK.data t) == Just RunTournament = True
@@ -608,56 +608,12 @@ loadTournament = load >=> \x -> when (isNothing x) (rollback "no such tournament
 loadPlayers :: Integer -> SqlTransaction Connection [TournamentPlayer] 
 loadPlayers i = search ["tournament_id" |== (toSql i) .&& "deleted" |== (toSql False)] [] 1000000 0 
 
-testRaceResult = [
-            def {
-                TR.round = 0,
-                TR.participant1_id = Just 1,
-                TR.raceresult1 = Just (def, def {
-                        raceTime = 100
-                    }),
-                -- two is third 
-                TR.participant2_id = Just 2,
-                TR.raceresult2 = Just (def, def {
-                        raceTime = 110
-                    })
- 
-            },
-            
-            def {
-                TR.round = 0,
-                TR.participant1_id = Just 3,
-                TR.raceresult1 = Just (def, def {
-                        raceTime = 120
-                    }),
-                -- four is last 
-                TR.participant2_id = Just 4,
-                TR.raceresult2 = Just (def, def {
-                        raceTime = 130
-                    })
- 
-            },
-            -- number 1 is the first 
-            def {
-                TR.round = 1,
-                TR.participant1_id = Just 1,
-                TR.raceresult1 = Just (def, def {
-                        raceTime = 110
-                    }),
-            -- three the second 
-                TR.participant2_id = Just 3,
-                TR.raceresult2 = Just (def, def {
-                        raceTime = 120
-                    })
- 
-            }
- 
-        ]
 -- want this out of this function: 1324
 getWinners = removeSeen . sortBy (sortF) . splice 
         where splice = foldr step [] 
                 where step x z = (fromJust $ TR.participant1_id x, getTime1 x, TR.round x) : (fromJust $ TR.participant2_id x, getTime2 x, TR.round x) : z
-                      getTime1 = raceTime . snd . fromJust . TR.raceresult1
-                      getTime2 = raceTime . snd . fromJust . TR.raceresult2
+                      getTime1 = TR.race_time1
+                      getTime2 = TR.race_time2
               sortF :: (a,Double, Integer) -> (a, Double, Integer) -> Ordering 
               sortF (_,ta,ra) (_,tb,rb) | ra > rb = GT 
                                         | ra < rb = LT 

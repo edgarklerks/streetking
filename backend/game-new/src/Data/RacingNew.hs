@@ -519,6 +519,7 @@ achievableSpeed v0 l = do
                 False -> return res
 
 -- TODO: correct for traction for low initial speeds
+
 accelerationTime :: Speed -> Speed -> SectionM Time 
 accelerationTime v0 v1 = do
         when (v0 > v1) $ throwError "accelerationTime: source is greater than target"

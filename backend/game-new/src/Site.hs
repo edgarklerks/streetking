@@ -1772,6 +1772,7 @@ racePractice = do
             -- get active car
             g <- aget ["account_id" |== toSql uid] (rollback "garage not found") :: SqlTransaction Connection G.Garage 
             c <- getCarInGarage ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found")
+
             -- TODO: active car reacy?
             let cm = CMI.toCM c
             
@@ -2237,7 +2238,6 @@ tournamentResults = do
         uid <- getUserId 
         xs <- getJson >>= scheck ["tournament_id"] 
         let b = updateHashMap xs (def :: TP.TournamentPlayer) 
---        liftIO $ print (TP.tournament_id b)
         ys <- runDb $ getResults (fromJust $ TP.tournament_id b)  
         writeMapables ys 
 

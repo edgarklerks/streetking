@@ -33,6 +33,8 @@ $(genAll "TournamentResult" "tournament_result"
         ("participant1_id", ''Id),
         ("participant2_id", ''Id),
         ("round", ''Integer),
-        ("raceresult1", ''RaceResultTuple),
-        ("raceresult2", ''RaceResultTuple)
+        ("race_time1", ''Double),
+        ("race_time2", ''Double),
+        ("car1_id", ''Integer),
+        ("car2_id", ''Integer)
     ])
