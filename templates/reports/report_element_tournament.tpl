@@ -10,6 +10,16 @@
 					<div class="race-money-opponent-element-car-image-container race-money-opponent-element-car-image" style=''>&nbsp;</div>
 				</div>
 				<div class="report-element-vertical-line"></div>
+
+				<div class="report-element-info-data-box">
+					<div class="report-element-info-data-name">id: <span>[:tournament.id]</span></div>
+				</div>
+				<div class="report-element-info-data-box">
+					<div class="report-element-info-data-name">Players: <span>[:tournament.players]</span></div>
+				</div>
+				<div class="report-element-info-data-box">
+					<div class="report-element-info-data-name">Level: <span>[:tournament.minlevel] - [:tournament.maxlevel]</span></div>
+				</div>
 				<div class="report-element-infobar-container">
 					<div><a href="#Tournament/idk?tournament_id=[:tournament_id]" class="button" module="TOURNAMENT_GO_RESULT">more</a></div>
 				</div>

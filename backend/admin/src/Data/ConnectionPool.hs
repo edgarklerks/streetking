@@ -72,8 +72,10 @@ fillConnectionBucket (ConnectionPool (x,a)) i = do
 reviveConnection :: ConnectionPool -> ConnectionContext -> IO ConnectionContext
 reviveConnection p t@(ConnectionContext (i, c)) = catchSql (commit c >> return t) $ \e -> do 
                 x <- clone c
-                disconnect c
-                atomically $ putConnection p i x 
+                forkIO $ do 
+                    disconnect c
+                    atomically $ putConnection p i x 
+                commit x
                 return (ConnectionContext (i, x))
 
 putConnection :: ConnectionPool -> Int -> Connection -> STM ()
@@ -88,6 +90,7 @@ getConnection x = do
 
 returnConnection :: ConnectionPool -> ConnectionContext -> IO ()
 returnConnection t@(ConnectionPool (pt, ta)) (ConnectionContext (i,c)) = do 
+    commit c
     atomically $ (writeTChan pt i >> fillConnectionBucket t i)
                     
 
@@ -102,7 +105,6 @@ unsafeGetConnection t@(ConnectionPool (pt, ta)) e = do
                 return $ ConnectionContext (p, x) 
 
 initConnectionReclaimer :: ConnectionPool -> Int -> IO ThreadId
-initConnectionReclaimer (ConnectionPool (pt, ta)) i = forkIO $ forever $ do 
-        xs <- atomically $ getAssocs ta
-        threadDelay (1000 * 1000 * 1)
+initConnectionReclaimer pl i = forkIO $ forever $ do 
+        threadDelay (1000 * 100 * 1)
 

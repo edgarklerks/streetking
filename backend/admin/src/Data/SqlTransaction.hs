@@ -54,7 +54,8 @@ module Data.SqlTransaction (
     lock,
     Lock(..),
     runTestDb,
-    catchSqlError
+    catchSqlError,
+    commit 
 
 ) where 
 
@@ -73,7 +74,7 @@ import Data.Convertible
 import Data.Map (Map)
 import qualified Database.HDBC as H
 import qualified Data.HashMap.Strict as M
-import Database.HDBC.PostgreSQL
+import Database.HDBC.PostgreSQL as H
 import Data.Either 
 
 newtype SqlTransaction c a = SqlTransaction {
@@ -88,9 +89,16 @@ newtype SqlTransaction c a = SqlTransaction {
 type SqlTransactionCPS c a = (a -> SqlTransactionCPS c r) -> SqlTransactionCPS c r 
 [type SqlTransactionCPS c a] = (a -> c -> IO (Either String r)) -> (c -> IO (Either String r))
 --}
-runSqlTransaction :: (MonadIO m, H.IConnection c, Applicative m) => SqlTransaction c a -> (String -> m a) -> c -> m a 
+--
+commit :: SqlTransaction Connection ()
+commit = do 
+            c <- ask 
+            liftIO . H.commit $ c
+            liftIO . H.begin $ c
+            return ()
+
+runSqlTransaction :: (MonadIO m, Applicative m) => SqlTransaction Connection a -> (String -> m a) -> Connection -> m a 
 runSqlTransaction xs f c = do
-                                liftIO $ H.commit c
                                 x <- liftIO $ unsafeRunSqlTransaction xs (\_ a -> return (Right a)) c
                                 case x of 
                                     Left b -> liftIO (H.rollback c) *> f b <* liftIO (H.commit c)
@@ -175,12 +183,14 @@ runSqlTransaction xs f c = do
 
 type Future a = MVar (Either String a) 
 
-atomical :: H.IConnection c => SqlTransaction c a -> SqlTransaction c a 
+atomical :: SqlTransaction Connection a -> SqlTransaction Connection a 
 atomical trans = do 
                 c <- ask 
                 liftIO (H.commit c) 
+                liftIO (H.begin c)
                 a <- catchError trans throwError  
                 liftIO $ H.commit  c
+                liftIO (H.begin c)
                 return a
 
 forkSqlTransaction m = do 

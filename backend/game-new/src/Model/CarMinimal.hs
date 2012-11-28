@@ -20,6 +20,7 @@ import Data.Conversion
 
 import qualified Model.CarInGarage as CIG
 
+
 $(genAll "CarMinimal" "car_in_garage"
     [
         ("id", ''Id),

@@ -295,8 +295,11 @@ project (InArray xs) (InArray sp) = InArray $ stepBoth xs sp
 
 project a b = b 
 
-                
 
+{-- filterKey :: [String] -> InRule -> InRule 
+filterKey f obj = kfold
+--}
+--
 mapWithKey :: (k -> a -> b) -> Map.HashMap k a -> Map.HashMap k b 
 mapWithKey f xs = runIdentity $ Map.traverseWithKey step xs 
         where   step k = return . f k 
