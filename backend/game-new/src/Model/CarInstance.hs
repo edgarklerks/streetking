@@ -45,4 +45,4 @@ setImmutable :: Integer -> SqlTransaction Connection Integer
 setImmutable = load >=> \(fromJust -> c) -> save (c { immutable = immutable c + 1})
 
 setMutable :: Integer -> SqlTransaction Connection Integer 
-setMutable = load >=> \(fromJust -> c) -> save (c { immutable = min 0 (immutable c - 1)})
+setMutable = load >=> \(fromJust -> c) -> save (c { immutable = max 0 (immutable c - 1)})
