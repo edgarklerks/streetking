@@ -13,6 +13,7 @@ import SqlTransactionSnaplet hiding (runDb)
 import qualified SqlTransactionSnaplet as ST 
 import Data.Aeson
 import           Data.Attoparsec.Lazy
+import Control.Monad.State
 import Data.SortOrder
 import Data.Database hiding (Value)
 import Model.General
@@ -40,6 +41,10 @@ import Proto
 import Data.MemState 
 import Data.ComposeModel  
 import NotificationSnaplet as N  
+import qualified LockSnaplet as L 
+
+
+
 
 
 
@@ -61,6 +66,7 @@ data App = App
     , _rnd :: Snaplet RandomConfig 
     , _nde :: Snaplet DHTConfig 
     , _notf :: Snaplet N.NotificationConfig
+    , _slock :: Snaplet L.Lock 
     }
 
 makeLens ''App
@@ -88,7 +94,8 @@ instance HasSqlTransaction App where
 instance HasRandom App where 
     randomLens = subSnaplet rnd 
 
-
+instance L.HasLock App where 
+    lockLens = subSnaplet slock 
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
 
@@ -206,3 +213,10 @@ runCompose m = with db $ withConnection $ \c -> do
                 frp <- runComposeMonad m error c
                 frp `seq` return frp 
 
+
+withLockBlock l n a m = with slock $ L.withLockBlock l n a m 
+
+withLockNonBlock l n a m = with slock $ L.withLockNonBlock l n a m  
+
+getLock :: Application L.Lock 
+getLock = with slock $ L.getLock  

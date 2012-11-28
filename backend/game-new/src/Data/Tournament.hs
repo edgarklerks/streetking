@@ -39,7 +39,7 @@ import qualified Data.Aeson.Parser as ASP
 import Data.SqlTransaction
 import Model.Transaction as TR  
 import Model.CarInstance  
-import Model.Functions 
+import Model.Functions as DBF 
 import Model.CarInGarage 
 import Data.Maybe 
 import Model.General 
@@ -89,6 +89,7 @@ import qualified Model.EventStream as ES
 import           Control.Concurrent 
 import           Data.Tools
 import           Data.SqlTransaction
+import qualified LockSnaplet as L 
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -177,8 +178,8 @@ $(genMapableRecord "TournamentFullData" [
         ])
                           
 
-milliTime :: IO Integer
-milliTime = floor <$> (*1000) <$> getPOSIXTime :: IO Integer
+milliTime :: SqlTransaction Connection Integer 
+milliTime = (*1000) <$> DBF.unix_timestamp 
 
 
 sameLength :: [a] -> [b] -> Bool 
@@ -194,7 +195,7 @@ test_samelength_prop = property testSamelength
 getPlayers :: Integer -> SqlTransaction Connection [[(AM.AccountProfileMin,AM.AccountProfileMin, Id)]]
 getPlayers mid = do 
             tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament 
-            mt <- liftIO milliTime 
+            mt <- milliTime 
             rs <- search ["tournament_id" |== (toSql mid)] [] 1000 0 :: SqlTransaction Connection [TR.TournamentResult]
             -- fugly waterfall structure 
             if (T.done tr) then returnAll rs 
@@ -219,15 +220,17 @@ getPlayers mid = do
           groupByRound = groupBy (\x y -> TR.round x == TR.round y)
 
 
-getResults :: Integer -> SqlTransaction Connection [TR.TournamentResult] 
-getResults mid = do
+getResults :: L.Lock -> Integer -> SqlTransaction Connection [TR.TournamentResult] 
+getResults l mid = do
                 tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament
-                mt <- liftIO milliTime
+                mt <- milliTime
                 rs <- search ["tournament_id" |== (toSql mid)] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
                 if (T.done tr) then return rs 
                                else do 
                                 ss <- filterM (step mt) rs 
-                                when (ss `sameLength` rs) $ do 
+                                when (ss `sameLength` rs) $ 
+                                    L.withLockNonBlock l "tournament" mid $  
+                                        do  
                                                 xs <- search ["tournament_id" |== toSql (T.id tr)] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
                                                 forM_ xs $ setMutable . fromJust . TP.car_instance_id 
                                                 toArchive (fromJust $ T.id tr) ss 
@@ -235,14 +238,19 @@ getResults mid = do
 
                                                 let winners = (\(x,y,z) -> x) <$> getWinners ss 
                                                 forM_ ss $ \r -> do 
-                                                           let car1 = TR.car1_id r 
-                                                           let car2 = TR.car2_id r 
-                                                           let account1 = TR.participant1_id r
-                                                           let account2 = TR.participant2_id r 
-                                                           -- create health
-                                                           -- loss and wear
-                                                           -- loss of car. 
-                                                           return ()
+                                                            let car1 = TR.car1_id r 
+                                                            let car2 = TR.car2_id r 
+                                                            let account1 = fromJust $ TR.participant1_id r
+                                                            let account2 = fromJust $ TR.participant2_id r 
+
+                                                            rr1 <- loadRaceResult account1 (fromJust $ TR.race_id r)
+                                                            rr2 <- loadRaceResult account2 (fromJust $ TR.race_id r)
+                                                            healthLost account1 rr1 
+                                                            healthLost account1 rr2
+                                                            partsWear car1 rr1 
+                                                            partsWear car2 rr2 
+                                                            
+                                                            return ()
                                                 forM_ (winners `zip` [1..]) $ \(w,p) -> do 
                                                             cons $ "user: " <> (show w) <> " pos: " <> (show p) <> " tid:" <> (show mid)
                                                             ES.emitEvent w (Data.Event.Tournament p mid) 
@@ -256,9 +264,17 @@ getResults mid = do
                 
 
 
+loadRaceResult :: Integer -> Integer -> SqlTransaction Connection RaceResult 
+loadRaceResult uid rid = do 
+                r <- fromJust <$> load rid :: SqlTransaction Connection R.Race 
+                let rrs =  (R.data) r 
+                return $ head $ fmap rd_result $ filter step rrs 
+        where step x | AM.id (rd_user x) == Just uid = True
+                     | otherwise = False 
+
 toArchive :: Integer -> [TR.TournamentResult] -> SqlTransaction Connection ()
 toArchive mid xs = do 
-                tt <- liftIO $ milliTime
+                tt <- milliTime
                 tr <- load mid :: SqlTransaction Connection (Maybe T.Tournament)
                 ss <- search ["tournament_id" |== (toSql mid)] [] 100000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
                 forM_ ss $ \(TP.account_id -> x) -> 
@@ -496,8 +512,8 @@ processTournamentRace t' ps tid = do
 
         -- current time, finishing times, race time (slowest finishing time) 
 
-        t <- (+t') <$> liftIO milliTime
-        ct <- liftIO milliTime 
+        t <- (+t') <$> milliTime
+        ct <- milliTime 
             
         let fin r = (t+) $ ceiling $ (*1000) $ raceTime r  
         let te = fin . snd . last $ rs
