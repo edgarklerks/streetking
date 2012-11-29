@@ -305,8 +305,6 @@ marketModel = do
       let ctr = ("level" |<= (toSql $ A.level puser )) 
       ((l,o),xs) <- getPagesWithDTD ("manufacturer_id" +== "manufacturer_id" +&& "id" +== "id")
       ns <- runDb (search (ctr:xs) [] l o) :: Application [CM.CarMarket]
---      ns <- runDb (search (ctr:xs) [] l o) :: Application [CPro.CarPrototype]
---      ns <- runDb (searchCarInGarage (ctr:xs) [] l o)
       writeMapables ns
 
 marketCarPrototype :: Application ()
@@ -848,7 +846,6 @@ marketCars = do
                                     )
                     )
     -- TODO: single integrated detailed car instance type
---    ns <- runDb $ search xs [] l o :: Application [MPC.MarketPlaceCar]
     ns <- runDb $ do
             ns <- search xs [] l o :: SqlTransaction Connection [MPC.MarketPlaceCar]
             forM ns $ \n -> do
@@ -975,14 +972,12 @@ garageCar :: Application ()
 garageCar = do 
         uid <- getUserId 
         (((l,o), xs),od) <- getPagesWithDTDOrdered ["active", "level"] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
---        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         let p = runDb $ do
             let ?name = "garageCar"
             personnelUpdate uid 
             ns <- searchCarInGarage xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
---        writeMapables (withDerivedParameters <$> ns)
         writeMapables ns
 
 
@@ -994,11 +989,9 @@ garageActiveCar = do
         let p = runDb $ do
             let ?name = "garageCarActive"
             personnelUpdate  uid 
---            ns <- search xs od l o
             ns <- searchCarInGarage xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
---        writeMapables (withDerivedParameters <$> ns)
         writeMapables ns
 
 
@@ -1246,7 +1239,6 @@ firePersonnel = do
     writeResult ("You succesfully fired this person" :: String)
          where prc uid xs person =  runDb $ do 
                 g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
---                cm <- load (fromJust $ PLI.id person) :: SqlTransaction Connection (Maybe PLI.PersonnelInstance)
                 cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ PLI.id person), "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
                 case cm of 
                         [] -> rollback "That is not your mechanic, friend"
@@ -1810,7 +1802,7 @@ raceChallengeWith p = do
 
             c  <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found")
             let cm = CMI.toCM c 
---            t  <- aget ["track_id" |== toSql tid, "track_level" |<= (SqlInteger $ A.level a), "city_id" |== (SqlInteger $ A.city a)] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
+
             _  <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
 
@@ -1984,7 +1976,6 @@ processRace t ps tid = do
         cons "pral"
 
         -- race participants
---        let rs = List.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
         rs' <- forM ps $ \p -> do
                 g <- liftIO $ newStdGen
                 case raceWithParticipant p trk g of
@@ -2022,7 +2013,6 @@ processRace t ps tid = do
 
         let winner_id = rp_account_id $ fst $ head rs
 
---        parN $ flip fmap rs $ \(p,r) -> do
         forM_ rs $ \(p,r) -> do
             
                 let uid = rp_account_id p
@@ -2036,15 +2026,6 @@ processRace t ps tid = do
 
                 -- task: update race time on user finish
                 Task.trackTime ft tid uid (raceTime r)
-
-                -- generate race rewards
---                rew <- getReward isWinner -- TODO: extend function; different rewards for practice etc.
-
-                -- task: grant rewards on user finish
- --               taskRewards ft uid rew rid
-
-                -- store rewards for retrieval after user finish
-  --              save (def :: RWD.RaceReward) { RWD.account_id = uid, RWD.race_id = rid, RWD.time = ft, RWD.rewards = rew }
 
                 -- store user race report -- TODO: determine relevant information
                 RP.report RP.Race uid ft $ mkData $ do
@@ -2120,8 +2101,6 @@ searchTournamentCar = do
 
                 let car_id = TR.car_id $ fromJust trn 
                 case car_id of 
---                    Nothing -> fmap (map withDerivedParameters) $ search ["account_id" |== (toSql uid)] [] 100 0 ::  SqlTransaction Connection [CIG.CarInGarage]
---                    Just x -> fmap (map withDerivedParameters) $ search ["account_id" |== (toSql uid) .&& "car_id" |== (toSql x)] [] 100 0 :: SqlTransaction Connection [CIG.CarInGarage]
                     Nothing -> searchCarInGarage ["account_id" |== (toSql uid)] [] 100 0
                     Just x -> searchCarInGarage ["account_id" |== (toSql uid) .&& "car_id" |== (toSql x)] [] 100 0
         writeMapables ts 
@@ -2301,9 +2280,6 @@ instantiateCar mid uid = do
         -- get car prototype
         c <- aget ["id" |== toSql mid, "prototype" |== toSql True] (rollback "Car prototype not found") :: SqlTransaction Connection CarInstance.CarInstance
 
-        -- get car model
---        m <- aget ["id" |== toSql mid] (rollback "car model not found") :: SqlTransaction Connection CM.CarMarket 
-        
         -- get car prototype parts 
         ps <- search ["car_instance_id" |== toSql mid] [] 1000 0 :: SqlTransaction Connection [PI.PartInstance]
         
@@ -2327,21 +2303,6 @@ instantiateCar mid uid = do
                 PI.deleted = False
             }
                 
-{-
-        -- Part loader 
-        pts <- search ["car_id" |== (toSql $ CM.id m)] [] 1000 0 :: SqlTransaction Connection [CSP.CarStockPart]
-
-        let step z part = do 
-            save (def {
-                    PI.part_id = fromJust $ CSP.id part,
-                    PI.car_instance_id = Just cid,
-                    PI.account_id = uid,
-                    PI.deleted = False 
-                })
-            return ()
-
-        foldM_ step () pts
--}
 
         return cid
 
@@ -2354,8 +2315,6 @@ userClaimFreeCar = do
         -- get records and set free_car to false
         m <- runDb $ do
             aget ["id" |== toSql uid, "free_car" |== toSql True] (rollback "you may not claim a free car") :: SqlTransaction Connection A.Account
---            m <- aget ["id" |== toSql mid, "level" |== toSql (1 :: Integer)] (rollback "car cannot be claimed") :: SqlTransaction Connection CM.CarMarket 
---            m <- aget ["id" |== toSql mid, "prototype_claimable" |== toSql True] (rollback "car cannot be claimed") :: SqlTransaction Connection CPro.CarPrototype
             m <- getCarInGarage ["id" |== toSql mid, "prototype" |== toSql True, "prototype_claimable" |== toSql True] (rollback "car cannot be claimed")
             update "account" ["id" |== toSql uid] [] [("free_car", toSql False)]
             return m
