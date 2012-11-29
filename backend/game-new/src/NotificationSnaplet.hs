@@ -47,7 +47,8 @@ class HasNotifications b where
 instance S.HasSqlTransaction NotificationConfig where 
         sqlLens = subSnaplet sql 
 
-runDb xs = with sql $ S.runDb internalError xs 
+runDb xs = do
+        with sql $ S.runDb (error "no lock in notification system") internalError xs 
 sendLetter uid letter = do 
                         po <- gets _po 
                         runDb $ N.sendLetter po uid letter 

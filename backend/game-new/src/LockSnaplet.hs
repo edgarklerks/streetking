@@ -30,6 +30,7 @@ newtype Lock = Lock {
     }
 
 
+
 setLock l m a = do 
     let s = unLock l
     liftIO $ atomically $ do 
@@ -50,14 +51,14 @@ setLockBlock l m a = do
                     then return False 
                     else writeTVar s (S.insert (mkKey m a) tv) *> return True 
 
-withLockNonBlock :: (MonadIO m, Applicative m, Hashable a) => Lock -> String -> a -> m () -> m ()
+withLockNonBlock :: (MonadIO m, Applicative m, Show a) => Lock -> String -> a -> m () -> m ()
 withLockNonBlock l n a m = do 
             b <- setLockBlock l n a 
             if b 
                 then m <* removeLock l n a 
                 else return ()
 
-withLockBlock :: (MonadIO m, Applicative m, Hashable a) => Lock -> String -> a -> m b -> m b 
+withLockBlock :: (MonadIO m, Applicative m, Show a) => Lock -> String -> a -> m b -> m b 
 withLockBlock l n a m = do 
             b <- setLockBlock l n a 
             if b 
@@ -68,7 +69,7 @@ getLock :: MonadState Lock m => m Lock
 getLock = do 
         get 
             
-mkKey m a = hashWithSalt (hash m) a 
+mkKey m a = hashWithSalt (hash $ show m) (show a) 
 
 
 class HasLock b where 
@@ -76,5 +77,5 @@ class HasLock b where
 
 initLock :: SnapletInit b Lock 
 initLock = makeSnaplet "Lock" "lock snaplet" Nothing $ do 
-
-        return $ Lock undefined 
+        s <- liftIO $ newTVarIO mempty
+        return $ Lock s 

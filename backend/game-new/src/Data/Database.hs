@@ -25,7 +25,7 @@ dbconn ::  IO Connection
 dbconn = connectPostgreSQL "host=db.graffity.me port=5432 dbname=streetking_dev user=deosx password=#*rl&"
 
 doSql :: SqlTransaction Connection a -> IO a
-doSql t = dbconn >>= (runSqlTransaction t error)
+doSql t = dbconn >>= flip (runSqlTransaction t error) undefined
 
 {-
  - *** Base ***

@@ -26,6 +26,7 @@ import qualified Control.Monad.CatchIO as CIO
 import qualified Database.HDBC.PostgreSQL as DB 
 import qualified Database.HDBC as DB 
 import Data.SqlTransaction
+import qualified LockSnaplet as L 
 
 
 data SqlTransactionConfig = STC {
@@ -46,10 +47,10 @@ returnDatabase :: (MonadIO m, MonadState SqlTransactionConfig m) => DCP.Connecti
 returnDatabase x = gets _pool >>= \c -> liftIO (DCP.returnConnection c x) 
 
 -- runDb :: SqlTransaction Connection a ->
-runDb :: (Applicative m, CIO.MonadCatchIO m, MonadState SqlTransactionConfig m) => (String -> m a) -> SqlTransaction Connection a -> m a
-runDb e xs = withConnection $ \c -> do 
+runDb :: (Applicative m, CIO.MonadCatchIO m, MonadState SqlTransactionConfig m) => L.Lock -> (String -> m a) -> SqlTransaction Connection a -> m a
+runDb l e xs = withConnection $ \c -> do 
     liftIO $ DB.begin c 
-    frp <- runSqlTransaction xs e c 
+    frp <- runSqlTransaction xs e c l 
     liftIO $ DB.commit c 
     frp `seq` return frp
 

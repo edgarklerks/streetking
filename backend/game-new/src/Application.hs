@@ -74,7 +74,9 @@ makeLens ''App
 getUniqueKey :: Application (B.ByteString)
 getUniqueKey = with rnd $ R.getUniqueKey 
 
-runDb a = with db $ ST.runDb error a
+runDb a = do
+        l <- getLock 
+        with db $ ST.runDb l error a
 
 sendLetter uid letter = with notf $ N.sendLetter uid letter 
 
@@ -209,8 +211,10 @@ internalError x = modifyResponse (setResponseCode 500) *> (CIO.throw $ UserError
 
 
 
-runCompose m = with db $ withConnection $ \c -> do 
-                frp <- runComposeMonad m error c
+runCompose m = do
+            l <- getLock 
+            with db $ withConnection $ \c -> do 
+                frp <- runComposeMonad l m error c
                 frp `seq` return frp 
 
 
