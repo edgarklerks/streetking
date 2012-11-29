@@ -5,7 +5,8 @@ module LockSnaplet (
         withLockNonBlock,
         Lock,
         getLock,
-        HasLock(..)
+        HasLock(..),
+        printLocks
     ) where 
 
 
@@ -51,24 +52,37 @@ setLockBlock l m a = do
                     then return False 
                     else writeTVar s (S.insert (mkKey m a) tv) *> return True 
 
-withLockNonBlock :: (MonadIO m, Applicative m, Show a) => Lock -> String -> a -> m () -> m ()
+withLockNonBlock :: (MonadIO m, Applicative m, Show a) => Lock -> Namespace -> a -> m () -> m ()
 withLockNonBlock l n a m = do 
             b <- setLockBlock l n a 
             if b 
-                then m <* removeLock l n a 
+                then do
+                    m  
+                    removeLock l n a 
+                    return ()
                 else return ()
 
-withLockBlock :: (MonadIO m, Applicative m, Show a) => Lock -> String -> a -> m b -> m b 
+withLockBlock :: (MonadIO m, Applicative m, Show a) => Lock -> Namespace -> a -> m b -> m b 
 withLockBlock l n a m = do 
             b <- setLockBlock l n a 
+            liftIO $ printLocks l 
             if b 
-                then m <* removeLock l n a 
+                then do 
+                        liftIO $ print "run first"
+                        s <- m 
+                        liftIO $ print "removed lock"
+                        s `seq` removeLock l n a -- run second  
+                        return s
                 else liftIO (threadDelay 1000) *> withLockBlock l n a m 
 
 getLock :: MonadState Lock m => m Lock 
 getLock = do 
         get 
-            
+
+printLocks :: Lock -> IO ()
+printLocks l = print =<< readTVarIO (unLock l)
+
+mkKey :: (Show a, Show b) => a -> b -> Int 
 mkKey m a = hashWithSalt (hash $ show m) (show a) 
 
 
@@ -79,3 +93,7 @@ initLock :: SnapletInit b Lock
 initLock = makeSnaplet "Lock" "lock snaplet" Nothing $ do 
         s <- liftIO $ newTVarIO mempty
         return $ Lock s 
+
+
+testb = mkKey "personnel" 1 
+testc = mkKey "personnel" 1 

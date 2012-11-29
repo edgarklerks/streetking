@@ -20,6 +20,7 @@ import           Database.HDBC.SqlValue
 import           Data.Foldable 
 import           Prelude hiding (foldr, foldl, foldl1, foldr1)
 import qualified Data.LimitList as LL 
+import           Model.Functions 
 
 
 type Letters = [Letter]
@@ -138,7 +139,7 @@ sendLetter po uid lt = sendCentral uid lt >>= \c -> (liftIO . sendLocal po uid) 
 
 sendCentral ::  UserId -> Letter -> SqlTransaction Connection Letter 
 sendCentral uid it = do 
-                    a <- liftIO $ milliTime  
+                    a <- milliTime  
                     let prit = P.PreLetter Nothing ((+) <$> P.ttl it <*> pure (P.sendat it)) (P.message it) (P.title it) (a) (uid) (P.from it) False False (P.data it) (P.type it) 
                     id <- save  prit 
                     return (prit { P.id = Just id}) 
@@ -222,7 +223,7 @@ extractSince t po = do
 -- | clean up that postoffice a bit 
 goin'Postal :: PostOffice -> IO ()
 goin'Postal po = do 
-            t <- liftIO $ milliTime 
+            t <- floor . (*1000) <$> getPOSIXTime :: IO Integer 
             liftIO $ atomically $ do 
                     ms <- extractSince t po 
                     modifyPostSorter po $ \z -> foldr (\x z -> IM.delete x z) z ms 
@@ -240,7 +241,7 @@ sendBulkCentral = undefined
 
 
 -- | Some tools 
-milliTime :: IO Time 
-milliTime = floor <$> (*1000) <$> getPOSIXTime :: IO Integer
+milliTime :: SqlTransaction Connection Time 
+milliTime = (*1000) <$> unix_timestamp 
 
 

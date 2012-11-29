@@ -675,11 +675,6 @@ garageCarReady = do
             CR.carReady cid
     writeResult rs 
 
---        where prc uid xs = runDb $ do 
---                personnelUpdate uid 
---                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
---                r <- DBF.garage_car_ready (fromJust $ G.id g) $ extract "id" xs
---                return r
             
 garageActiveCarReady :: Application ()
 garageActiveCarReady = do 
@@ -695,14 +690,6 @@ garageActiveCarReady = do
             CR.carReady $ fromJust $ CarInstance.id ac
     writeResult rs 
 
---    uid <- getUserId
---    gid <- getUserGarageId
----    s <-  prc uid
---   writeResult s
---        where prc uid = runDb $ do 
---                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
---                r <- DBF.garage_active_car_ready (fromJust $ G.id g)
---                return r
 
 
 marketPlaceBuy :: Application ()
@@ -1616,7 +1603,6 @@ userActions uid = do
 
 personnelUpdate uid = dbWithLockNonBlock "personnel" uid $ do 
                 t <- DBF.unix_timestamp
-                liftIO $ print $ "Im called from " <> show (t, ?name, uid)
                 g <- aget ["account_id" |== (toSql uid)] (rollback "cannot find garage") :: SqlTransaction Connection G.Garage 
                 p <- search ["garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
                 case p of
@@ -1651,9 +1637,8 @@ partImprove uid pi = do
                         -- needed to put data outside transaction 
                         commit
 
-                        when (PLID.task_end pi < s) $ do 
+                        when (PLID.task_end pi < s) $ dbWithLockNonBlock "notification_personnel" uid $ do 
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
-                            liftIO $ print $ "I gonna send a notification " <> show (s, ?name, uid, pi)
                             void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.improved = round (a * pr')
@@ -1770,7 +1755,6 @@ racePractice = do
            
             let etime = t + (maximum $ ceiling  . (*1000) . raceTime <$> (fmap snd rs))
             Task.emitEvent uid (PracticeRace tid) etime 
-            liftIO $ print etime 
             forM_ rs $ \r -> do 
                     healthLost (rp_account_id $ fst r) (snd r) 
                     partsWear (rp_car_id $ fst r) (snd r)  
@@ -1854,7 +1838,7 @@ raceChallengeWith p = do
         writeResult i
 
 
-cons f = return () -- liftIO $ print f *> print "---"
+cons f = return () 
 
 
 raceChallengeAccept :: Application ()

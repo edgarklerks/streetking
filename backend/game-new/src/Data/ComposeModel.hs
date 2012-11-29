@@ -91,7 +91,7 @@ instance Monoid (ComposeMonad r c ()) where
                                 r ()
 
                 
-unsafeRunCompose l c (CM m) = runSqlTransaction (fmap Right . execWriterT $ runReaderT (runContT m (return))  c ) (return . Left) c l
+unsafeRunCompose l c (CM m) = runSqlTransaction (fmap Right . execWriterT $ runReaderT (runContT m (return)) c) (return . Left) c l
 
 
 

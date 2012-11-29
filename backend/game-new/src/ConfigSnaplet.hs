@@ -35,7 +35,6 @@ $( makeLenses [''ConfigSnaplet])
 class HasConfig b where 
     configLens :: Lens (Snaplet b) (Snaplet ConfigSnaplet)
 
-
 initConfig :: FilePath -> SnapletInit b ConfigSnaplet 
 initConfig fp = makeSnaplet "Configuration" "configuration manager" Nothing $ do 
     c <- liftIO $ C.readConfig fp  

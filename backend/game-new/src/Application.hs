@@ -218,9 +218,15 @@ runCompose m = do
                 frp `seq` return frp 
 
 
-withLockBlock l n a m = with slock $ L.withLockBlock l n a m 
+withLockBlock n a m =  do 
+            l <- getLock 
+            with slock $ do
+                L.withLockBlock l n a m 
 
-withLockNonBlock l n a m = with slock $ L.withLockNonBlock l n a m  
+withLockNonBlock n a m = do  
+            l <- getLock 
+            with slock $ do
+                L.withLockNonBlock l n a m  
 
 getLock :: Application L.Lock 
 getLock = with slock $ L.getLock  
