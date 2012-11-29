@@ -8,6 +8,8 @@ module Data.SqlTransaction (
     waitWhen, 
     waitUnless,
     run,
+    getUser,
+    putUser,
     sRun,
     execute,
     executeMany, 
@@ -27,6 +29,7 @@ module Data.SqlTransaction (
     sFetchAllRows',
     finish,
     SqlTransaction,
+    SqlTransactionUser,
     runSqlTransaction,
     H.SqlValue(..),
     H.IConnection,
@@ -55,7 +58,9 @@ module Data.SqlTransaction (
     Lock(..),
     runTestDb,
     catchSqlError,
-    commit 
+    commit,
+    dbWithLockBlock,
+    dbWithLockNonBlock 
 
 ) where 
 
@@ -76,9 +81,12 @@ import qualified Database.HDBC as H
 import qualified Data.HashMap.Strict as M
 import Database.HDBC.PostgreSQL as H
 import Data.Either 
+import qualified LockSnaplet as L
 
-newtype SqlTransaction c a = SqlTransaction {
-                unsafeRunSqlTransaction :: forall r. (c -> a -> IO (Either String r)) -> c -> IO (Either String r)
+type SqlTransaction c a = SqlTransactionUser L.Lock c a 
+
+newtype SqlTransactionUser l c a = SqlTransaction {
+                unsafeRunSqlTransaction :: forall r. ((c,l) -> a -> IO (Either String r)) -> (c,l) -> IO (Either String r)
         }
 {--
 - Derived from: 
@@ -97,21 +105,20 @@ commit = do
             liftIO . H.begin $ c
             return ()
 
-runSqlTransaction :: (MonadIO m, Applicative m) => SqlTransaction Connection a -> (String -> m a) -> Connection -> m a 
-runSqlTransaction xs f c = do
-                                x <- liftIO $ unsafeRunSqlTransaction xs (\_ a -> return (Right a)) c
+runSqlTransaction xs f c l = do
+                                x <- liftIO $ unsafeRunSqlTransaction xs (\_ a -> return (Right a)) (c,l)
                                 case x of 
                                     Left b -> liftIO (H.rollback c) *> f b <* liftIO (H.commit c)
                                     Right a -> liftIO (H.commit c) >> return a
 
-instance Functor (SqlTransaction c) where 
+instance Functor (SqlTransactionUser l c) where 
     fmap f m  = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\c a -> r c $ f a)
 
-instance Monad (SqlTransaction c) where 
+instance Monad (SqlTransactionUser l c) where 
     return a = SqlTransaction $ \r c -> r c a
     (>>=) m f = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\c a -> unsafeRunSqlTransaction (f a) r $ c )
 
-catchSqlError :: SqlTransaction c a -> (String -> SqlTransaction c a) -> SqlTransaction c a
+-- catchSqlError :: SqlTransaction c a -> (String -> SqlTransaction c a) -> SqlTransaction c a
 catchSqlError m f = SqlTransaction $ \r c -> do 
                                     x <- unsafeRunSqlTransaction m (\_ a -> return (Right a)) c
                                     case x of 
@@ -135,33 +142,46 @@ testCatch = do
 
 
  
-instance Applicative (SqlTransaction c) where 
+instance Applicative (SqlTransactionUser l c) where 
     pure = return 
     (<*>) f m = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\c a -> unsafeRunSqlTransaction f (\_ f' -> r c $ f' a) $ c)
 
-instance Alternative (SqlTransaction c) where 
+instance Alternative (SqlTransactionUser l c) where 
     empty = SqlTransaction $ \r c ->  (return $ Left "empty")
     (<|>) m n = catchSqlError m (const n) 
 
-instance MonadPlus (SqlTransaction c) where 
+instance MonadPlus (SqlTransactionUser l c) where 
         mzero = empty 
         mplus = (<|>)
    
-instance MonadReader c (SqlTransaction c) where 
-        ask = SqlTransaction $ \r c -> r c c
-        local f m = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\c a -> r (f c) a)
+instance MonadReader c (SqlTransactionUser l c) where 
+        ask = SqlTransaction $ \r c@(t,l) -> r c t
+        local f m = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\(c,l) a -> r (f c,l) a)
 
-instance MonadState c (SqlTransaction c) where 
+
+getUser = SqlTransaction $ \r c@(t,l) -> r c l 
+putUser a = SqlTransaction $ \r (c,_) -> r (c,a) ()
+
+dbWithLockNonBlock n a m = do 
+        l <- getUser 
+        L.withLockNonBlock l n a m 
+
+dbWithLockBlock n a m = do 
+        l <- getUser 
+        L.withLockBlock l n a m 
+
+
+instance MonadState c (SqlTransactionUser l c) where 
         get = ask 
-        put a = SqlTransaction $ \r c -> r a () 
+        put a = SqlTransaction $ \r (_,l) -> r (a,l) () 
 
-instance MonadError String (SqlTransaction c) where 
+instance MonadError String (SqlTransactionUser l c) where 
        throwError e = SqlTransaction $ \r c -> return (Left e)  
        catchError m f = catchSqlError m f 
                                
 
 
-instance MonadIO (SqlTransaction c) where 
+instance MonadIO (SqlTransactionUser l c) where 
     liftIO m = SqlTransaction $ \r c -> (m >>= r c)
 
 {--
@@ -195,20 +215,23 @@ atomical trans = do
 
 forkSqlTransaction m = do 
                 c <- ask
+                l <- getUser 
                 liftIO $ forkIO $ do 
-                    (unsafeRunSqlTransaction m) (\_ a -> return (Right a)) c
+                    (unsafeRunSqlTransaction m) (\_ a -> return (Right a)) (c,l)
                     return ()
 
 newFuture :: H.IConnection c => SqlTransaction c a -> SqlTransaction c (Future a)
 newFuture m = do 
         c <- ask 
+        l <- getUser 
         c' <- liftIO $ H.clone c 
         m1 <- emptyFuture  
         liftIO $ forkIO $ do 
-                a <- (unsafeRunSqlTransaction m)(\_ a -> return (Right a)) c'
+                a <- (unsafeRunSqlTransaction m)(\_ a -> return (Right a)) (c',l)
                 putMVar m1 a 
                 H.disconnect c' 
         return m1
+
 
 fillFuture :: Future a -> (Either String a) -> SqlTransaction c ()
 fillFuture m = liftIO . putMVar m 
@@ -226,7 +249,7 @@ readFuture f = do
                     Left e -> rollback e
                     Right a -> return a
 
-parSafe :: H.IConnection c => [SqlTransaction c a] -> SqlTransaction c [a]
+-- parSafe :: H.IConnection c => [SqlTransaction c a] -> SqlTransaction c [a]
 parSafe xs = do 
             ts <- forM xs $ \i -> do 
                     down <- liftIO $ newEmptyMVar 
@@ -414,7 +437,7 @@ testcon = connectPostgreSQL "host=db.graffity.me password=#*rl& user=deosx dbnam
 
 runTestDb m = do 
             c <- testcon 
-            a <- runSqlTransaction m (\x -> print x >> return undefined ) c
+            a <- runSqlTransaction m (\x -> print x >> return undefined ) c undefined
             H.disconnect c 
             return a
 

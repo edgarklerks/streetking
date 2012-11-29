@@ -220,8 +220,8 @@ getPlayers mid = do
           groupByRound = groupBy (\x y -> TR.round x == TR.round y)
 
 
-getResults :: L.Lock -> Integer -> SqlTransaction Connection [TR.TournamentResult] 
-getResults l mid = do
+getResults :: Integer -> SqlTransaction Connection [TR.TournamentResult] 
+getResults mid = do
                 tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament
                 mt <- milliTime
                 rs <- search ["tournament_id" |== (toSql mid)] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
@@ -229,7 +229,7 @@ getResults l mid = do
                                else do 
                                 ss <- filterM (step mt) rs 
                                 when (ss `sameLength` rs) $ 
-                                    L.withLockNonBlock l "tournament" mid $  
+                                    dbWithLockNonBlock "tournament" mid $  
                                         do  
                                                 xs <- search ["tournament_id" |== toSql (T.id tr)] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
                                                 forM_ xs $ setMutable . fromJust . TP.car_instance_id 

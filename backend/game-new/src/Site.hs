@@ -236,10 +236,9 @@ userData :: Application ()
 userData = do 
     x <- getJson >>= scheck ["id"]
     let m = updateHashMap x (def :: APM.AccountProfileMin)
-    l <- getLock 
 
     runDb $ do
-                userActions l $ fromJust $ APM.id m
+                userActions $ fromJust $ APM.id m
                 Task.run Task.User $ fromJust $ APM.id m
  
     n <- runCompose $ do 
@@ -254,9 +253,8 @@ userData = do
 userMe :: Application ()
 userMe = do 
     x <- getUserId
-    l <- getLock 
     n <- runDb $ do 
-            userActions l x
+            userActions x
             DBF.account_update_energy x 
             p <- (load x) :: SqlTransaction Connection (Maybe AP.AccountProfile)
             return p
@@ -667,11 +665,10 @@ garageCarReady = do
     gid <- getUserGarageId
     xs <- getJson >>= scheck ["id"]
     let cid = extract "id" xs :: Integer
-    lc <- getLock
     rs <- runDb $ do
             -- update actions
             let ?name = "garageCarReady"
-            personnelUpdate lc uid
+            personnelUpdate uid
             -- check if user owns the car
             aget ["garage_id" |== toSql gid] (rollback "Car not found in garage") :: SqlTransaction Connection CarInstance.CarInstance
             -- get result
@@ -688,11 +685,10 @@ garageActiveCarReady :: Application ()
 garageActiveCarReady = do 
     uid <- getUserId 
     gid <- getUserGarageId
-    lc <- getLock 
     rs <- runDb $ do
             -- update actions
             let ?name = "garageActiveCarReady"
-            personnelUpdate lc uid
+            personnelUpdate uid
             -- get user active car 
             ac <- aget ["garage_id" |== toSql gid, "active" |== toSql True] (rollback "Active car not found") :: SqlTransaction Connection CarInstance.CarInstance
             -- get result
@@ -947,10 +943,9 @@ garageParts = do
                 "account_id" +==| toSql uid
             )
 
-        lc <- getLock 
         let p = runDb $ do
             let ?name = "garageParts"
-            personnelUpdate lc uid 
+            personnelUpdate uid 
             ns <- search xs od l o
             return ns 
 
@@ -979,10 +974,9 @@ garagePartsWithPreview = do
             )
 
        
-        lc <- getLock 
         ps <- runDb $ do
             let ?name = "garagePartsWithPreview"
-            personnelUpdate lc uid 
+            personnelUpdate  uid 
             ns <- search xs od l o :: SqlTransaction Connection [GPT.GaragePart]
             cig <- loadCarInGarage pid $ rollback $ "preview car not found for id " ++ (show pid)
             previewWithPartList cig ns
@@ -994,11 +988,10 @@ garageCar :: Application ()
 garageCar = do 
         uid <- getUserId 
         (((l,o), xs),od) <- getPagesWithDTDOrdered ["active", "level"] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid)) 
-        lc <- getLock 
 --        ps <- runDb $ search xs [] l o :: Application [CIG.CarInGarage]
         let p = runDb $ do
             let ?name = "garageCar"
-            personnelUpdate lc uid 
+            personnelUpdate uid 
             ns <- searchCarInGarage xs od l o
             return ns 
         ns <- p :: Application [CIG.CarInGarage]
@@ -1011,10 +1004,9 @@ garageActiveCar :: Application ()
 garageActiveCar = do 
         uid <- getUserId 
         (((l,o), xs),od) <- getPagesWithDTDOrdered [] ("id" +== "car_instance_id" +&& "account_id"  +==| (toSql uid) +&& "active" +==| SqlBool True) 
-        lc <- getLock 
         let p = runDb $ do
             let ?name = "garageCarActive"
-            personnelUpdate lc uid 
+            personnelUpdate  uid 
 --            ns <- search xs od l o
             ns <- searchCarInGarage xs od l o
             return ns 
@@ -1042,9 +1034,8 @@ userAddSkill :: Application ()
 userAddSkill = do 
         uid <- getUserId 
         xs <- getJson
-        l <- getLock 
         u' <- runDb $ do 
-            userActions l uid
+            userActions uid
             u <- fromJust <$> load uid 
             let d = updateHashMap xs (def :: A.Account)
             let p = A.skill_acceleration d + A.skill_braking d + A.skill_control d + A.skill_reactions d + A.skill_intelligence d  
@@ -1140,10 +1131,9 @@ garagePersonnel = do
                     "salary" +>= "salarymin" +&&
                     "salary" +<= "salarymax" 
             )
-        lc <- getLock 
         let p = runDb $ do
             let ?name = "garagePersonnel"
-            personnelUpdate lc uid 
+            personnelUpdate uid 
 
             g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
             ns <- search (xs ++ ["garage_id" |== (toSql $ G.id g) ]) [Order ("personnel_instance_id",[]) True]  l o
@@ -1352,17 +1342,16 @@ cancelTaskPersonnel :: Application ()
 cancelTaskPersonnel = do
     uid <- getUserId
     xs <- getJson >>= scheck ["personnel_instance_id"]
-    l <- getLock 
-    r <- prc l uid xs
+    r <- prc  uid xs
     writeResult ("You succesfully canceled this persons task" :: String)
-        where prc l uid xs = runDb $ do
+        where prc  uid xs = runDb $ do
                g <- head <$> search ["account_id" |== toSql uid] [] 1 0 :: SqlTransaction Connection G.Garage 
                cm <- search ["garage_id" |== (toSql $ G.id g), "id" |== (toSql $ HM.lookup "personnel_instance_id" xs), "deleted" |== (toSql False)] [] 1 0 :: SqlTransaction Connection [PLI.PersonnelInstance]
                case cm of 
                         [] -> rollback "That is not your mechanic, friend"
                         [_] -> do
                             let ?name = "cancelTaskPersonnel"
-                            personnelUpdate l uid 
+                            personnelUpdate uid 
                             stopTask (extract "personnel_instance_id" xs) uid  
                             return ()
 
@@ -1524,9 +1513,8 @@ garageReports :: Application ()
 garageReports = do  
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
-        p <- getLock 
         ns <- runDb $ do
-            userActions p uid
+            userActions uid
             search xs [Order ("time",[]) False] l o 
         writeMapables (ns :: [GRP.GarageReport])
 
@@ -1540,10 +1528,9 @@ travelReports = do
 searchReports :: RP.Type -> Application ()
 searchReports t = do
         uid <- getUserId
-        lc <- getLock  
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid) +&& "type" +==| (toSql t))
         ns :: [RP.Report] <- runDb $ do
-            userActions lc uid
+            userActions uid
             search xs [Order ("time",[]) False] l o 
 --      BUG:  writeMapables ns -- toInRule wraps Data in ByteString so it ends up as a JSON string
         writeResult' ns
@@ -1604,15 +1591,15 @@ uploadCarImage = do
 
 -- time based actions for user account: update before any activity involving the account
 -- TODO: all Other time based actions, such as energy regeneration
-userActions :: SL.Lock -> Integer -> SqlTransaction Connection ()
-userActions l uid = do
+userActions :: Integer -> SqlTransaction Connection ()
+userActions uid = do
         Task.run Task.User uid
 --        DBF.garage_actions_account uid
         a <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
         t <- milliTime 
         let u = A.busy_until a
         let ?name = "userActions"
-        personnelUpdate l uid
+        personnelUpdate uid
         when (u > 0 && u <= t) $ do
 --            save $ a { A.busy_until = 0, A.busy_subject_id = 0, A.busy_type = 1 }
             -- do not overwrite record as it may have changed; use update instead
@@ -1627,7 +1614,7 @@ userActions l uid = do
 
 
 
-personnelUpdate l uid = SL.withLockNonBlock l "personnel" uid $ do 
+personnelUpdate uid = dbWithLockNonBlock "personnel" uid $ do 
                 t <- DBF.unix_timestamp
                 liftIO $ print $ "Im called from " <> show (t, ?name, uid)
                 g <- aget ["account_id" |== (toSql uid)] (rollback "cannot find garage") :: SqlTransaction Connection G.Garage 
@@ -1747,10 +1734,9 @@ racePractice = do
         uid <- getUserId
         xs <- getJson >>= scheck ["track_id"]
         let tid = extract "track_id" xs :: Integer
-        l <- getLock 
         rid <- runDb $ do
 
-            userActions l uid
+            userActions uid
 
             a <- aload uid (rollback "you dont exist, go away") :: SqlTransaction Connection A.Account
             let am = APM.toAPM a
@@ -1821,9 +1807,8 @@ raceChallengeWith p = do
         amt :: Integer <- max 0 <$> case tp of
                 "money" -> rextract "declare_money" xs
                 _ -> return 0 
-        l <- getLock 
         i <- runDb $ do
-            userActions l uid
+            userActions  uid
             Task.run Task.User uid
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
             let am = APM.toAPM a
@@ -1890,12 +1875,11 @@ raceChallengeAccept = do
                     return $ ChgT.name c
 
 
-        l <- getLock 
         rid <- runDb $ do
             -- TODO: get / search functions for track, user, car with task triggering
             
-            userActions l uid
-            userActions l $ rp_account_id $ Chg.challenger chg
+            userActions  uid
+            userActions  $ rp_account_id $ Chg.challenger chg
             Task.run Task.User uid
             Task.run Task.User $ rp_account_id $ Chg.challenger chg
 
@@ -2232,8 +2216,7 @@ tournamentResults = do
         uid <- getUserId 
         xs <- getJson >>= scheck ["tournament_id"] 
         let b = updateHashMap xs (def :: TP.TournamentPlayer) 
-        l <- getLock 
-        ys <- runDb $ getResults l (fromJust $ TP.tournament_id b)  
+        ys <- runDb $ getResults (fromJust $ TP.tournament_id b)  
         writeMapables ys 
 
 tournamentPlayers :: Application () 
