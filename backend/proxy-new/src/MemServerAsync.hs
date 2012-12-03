@@ -49,7 +49,7 @@ data ProtoConfig = PC {
         inDebug :: Bool 
     }
 
-type OutgoingChannel = TChan Proto
+type OutgoingChannel = TQueue Proto
 type Outgoing = Socket Req 
 type Answer = Socket Push 
 type Update = Socket Pull 
@@ -360,6 +360,17 @@ clientCommand n1 n2 p = withContext 1 $ \c ->
                 sendProto r p
                 x <- receiveProto r
                 print x 
+
+silentCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
+silentCommand n1 n2 p = withContext 1 $ \c -> 
+         withSocket c Req $ \r -> 
+         withSocket c Pull $ \d -> 
+            do 
+                ds <- bind d n1 
+                connect r n2 
+                sendProto r p
+                void $  receiveProto r
+
 
 
 
