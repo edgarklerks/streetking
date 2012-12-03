@@ -15,10 +15,11 @@ bla x y = modify (insert x y)
 p xs = snd $ flip runState empty $ do 
             forM_ xs $ \(x,y) -> bla x y
 
+-- 1000 power in -> 500 work out of it
 constants = p [
 
-        ("W/hp", 750.0),                    -- Watt per hp
-        ("pe", 0.5),                       -- power efficiency of car engine
+        ("W/hp", 746.0),                    -- Watt per hp
+        ("pe", 0.55),                       -- power efficiency of car engine
 
         ("g", 9.81),                        -- gravitational acceleration
         ("kmh", 1 / 3.6),                   -- km/h per m/s

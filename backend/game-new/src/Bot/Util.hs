@@ -59,12 +59,12 @@ runTest = liftIO . runTestTT
 
 -- | Run a SqlTransaction in the RandomM monad 
 runDb m = ask >>= \c -> (liftIO $ do 
-            a <- runSqlTransaction m  (\x -> print x >> return undefined ) c
+            a <- runSqlTransaction m  (\x -> print x >> return undefined ) c undefined
             return a)
 
 
 runDbRaw c m = liftIO $ do 
-            runSqlTransaction m (\x -> print x >> return undefined) c 
+            runSqlTransaction m (\x -> print x >> return undefined) c undefined 
 
 
 

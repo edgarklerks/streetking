@@ -163,6 +163,7 @@ import           Data.Event
 import qualified Data.Set as Set 
 import           System.IO.Unsafe 
 import qualified LockSnaplet as SL 
+import qualified Model.Diamonds as DM 
 
 import qualified Notifications as N 
 
@@ -589,6 +590,20 @@ carSell = do
                         save (x { CarInstance.garage_id = Nothing })
                         
                                          
+
+finishImprovement :: Application ()
+finishImprovement = do 
+        uid <- getUserId 
+        runDb $ do 
+            am <- loaddbConfig "finish_improvement_cost"
+            DM.transactionDiamonds uid (def {
+                        DM.amount = am,
+                        DM.type = "finish improvement",
+                        DM.type_id = 0
+                    })
+        return ()
+
+
 
 
 carTrash :: Application ()

@@ -24,7 +24,7 @@ use WWW::Mechanize;
 use JSON::XS;
 
 # Config 
-my $server = "http://localhost:9003";
+my $server = "http://192.168.1.229:9003";
 my $email = "edgar.klerks\@gmail.com";
 my $password = "wetwetwet";
 

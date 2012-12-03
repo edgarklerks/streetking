@@ -433,7 +433,7 @@ testLock = atomical $ do
                         liftIO $ print xs 
                         return ()
 
-testcon = connectPostgreSQL "host=db.graffity.me password=#*rl& user=deosx dbname=streetking_dev"
+testcon = connectPostgreSQL "host=192.168.1.241 password=wetwetwet user=postgres dbname=deosx"
 
 runTestDb m = do 
             c <- testcon 
