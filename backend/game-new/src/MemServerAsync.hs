@@ -61,7 +61,6 @@ outgoingManager = void  $ forkProto $ do
                 sl <- asks selfPull 
                 forever $ do 
                     ps <- takesDVar outgoingchannel
-                    liftIO $ print ps 
                     -- prevent circular packets 
                     unless (sl `inRoute` ps) $ toNodes (addRoute sl ps)
 

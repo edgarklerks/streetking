@@ -256,7 +256,7 @@ compressState ms = let tmk = _mapkey ms
 runQuery :: QueryChan -> Query -> IO Result 
 runQuery s x = do 
             un <- newEmptyTMVarIO 
-            atomically $ writeTChan s (x,un)
+            atomically $ writeTQueue s (x,un)
             atomically $ takeTMVar un 
 
 
@@ -316,7 +316,7 @@ data Query where
             deriving Show
 
 type Unique a = TMVar a
-type QueryChan = TChan (Query, Unique Result)
+type QueryChan = TQueue (Query, Unique Result)
 
 data Result where 
         Value :: B.ByteString -> Result 
@@ -366,7 +366,7 @@ queryManager fp ms qc = forkIO (sweeper ms) >> (forever $ do
                                                 storeSnapShot fp ms 
 
                             ct <- getMicroSeconds 
-                            (q,u) <- atomically $ readTChan qc 
+                            (q,u) <- atomically $ readTQueue qc 
                             case q of 
                                 Insert x y -> atomically $ do 
                                             s <- insertKeyValue ms (ct + _ttl ms) x y 
