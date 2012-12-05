@@ -1,9 +1,22 @@
 
 
-module Data.Car where
+module Data.Car (
+        Car (..),
+        pwr,
+        hlm,
+        tco,
+        cda,
+        dnf,
+        brp,
+        carInGarageCar,
+        carMinimalCar,
+        testCar, zeroCar, noobCar, leetCar, oneCar
+
+    ) where
 
 import Data.Constants
 import qualified Model.CarInGarage as CIG
+import qualified Model.CarMinimal as CMI
 
 data Car = Car {
     mass :: Double,     -- kg
@@ -23,6 +36,13 @@ dbCar m p t h b a n = Car (fromInteger m) (cast p) (cast t) (cast h) (cast b) (c
 carInGarageCar :: CIG.CarInGarage -> Car
 carInGarageCar gc = dbCar (CIG.weight gc) (CIG.power gc) (CIG.traction gc) (CIG.handling gc) (CIG.braking gc) (CIG.aero gc) (CIG.nos gc)
 
+carMinimalCar :: CMI.CarMinimal -> Car
+carMinimalCar gc = dbCar (CMI.weight gc) (CMI.power gc) (CMI.traction gc) (CMI.handling gc) (CMI.braking gc) (CMI.aero gc) (CMI.nos gc)
+
+
+zeroCar :: Car
+zeroCar = Car 1500 0 0 0 0 0 0
+
 noobCar :: Car
 noobCar = Car 1800 0.1 0.1 0.1 0.1 0.1 0.1
 
@@ -32,11 +52,11 @@ defaultCar = Car 1400 0.5 0.5 0.5 0.5 0.5 0.5
 leetCar :: Car
 leetCar = Car 1200 0.9 0.9 0.9 0.9 0.9 0.9
 
+oneCar :: Car
+oneCar = Car 1200 1 1 1 1 1 1
+
 testCar :: Car
 testCar = defaultCar
-
-nznCar :: Car
-nznCar = Car 1329 0.35 0.3 0.66 0.0061 0.3 0
 
 
 
@@ -64,9 +84,13 @@ cda = ((constant "cda0") +) . ((constant "cdaR") *) . normalizeProperty . aero
 dnf :: Car -> Double
 dnf = ((constant "df0") +) . ((constant "dfR") *) . aero
 
--- braking force
-brf :: Car -> Double
-brf = ((constant "bf0") +) . ((constant "bfR") *) . braking
+-- braking force -- TODO: eliminate
+--brf :: Car -> Double
+--brf = ((constant "bf0") +) . ((constant "bfR") *) . braking
+
+--braking force as a factor of the traction limit
+brp :: Car -> Double
+brp = ((constant "bp0") +) . ((constant "bpR") *) . braking
 
 
 -- some properties can run into negatives and must be normalized to avoid weird values

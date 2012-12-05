@@ -18,6 +18,12 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id, round)
+--import           Data.Racing 
+
+import Data.RaceParticipant
+import Data.RacingNew
+
+type RaceResultTuple = Maybe (RaceParticipant, RaceResult)
 
 $(genAll "TournamentResult" "tournament_result" 
     [
@@ -26,5 +32,9 @@ $(genAll "TournamentResult" "tournament_result"
         ("race_id", ''Id),
         ("participant1_id", ''Id),
         ("participant2_id", ''Id),
-        ("round", ''Integer)
+        ("round", ''Integer),
+        ("race_time1", ''Double),
+        ("race_time2", ''Double),
+        ("car1_id", ''Integer),
+        ("car2_id", ''Integer)
     ])

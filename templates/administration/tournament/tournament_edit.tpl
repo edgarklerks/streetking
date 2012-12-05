@@ -15,13 +15,14 @@
 			<div><label>minlevel:</label><input type="text" name="minlevel" value="[:0.minlevel]"/></div>
 			<div><label>name:</label><input type="text" name="name" value="[:0.name]"/></div>
 			<div><label>players:</label><input type="text" name="players" value="[:0.players]"/></div>
+			<div><label>tournament type id:</label><input type="text" name="tournament_type_id" list="tournament_type" value="[:0.tournament_type_id]"/></div>
 			<div>
 				<label>running:</label>
 				<!--<input type="text" id="running" name="running" value="[:0.running]"/>-->
 				[:eval OPTIONTRUEFALSE("[\"running\",\""+0.running+"\"]")]
 			</div>
 			<div><label>start_time:</label><input type="text" id="datepicker" name="start_time" value="[:0.start_time]"/><a href="#" class="button" iconnotext="ui-icon-clock" tabindex="-1" id="calendar">...</a></div>
-			<div><label>track_id:</label><input type="text" name="track_id" value="[:0.track_id]"/></div>
+			<div><label>track_id:</label><input type="text" name="track_id" list="track" value="[:0.track_id]"/></div>
 		</div>
 		<div class="edit-element-image-box">
 			<div class="edit-element-image-container edit-element-image-part" style='background-image:url([:eval IMAGESERVER("[\"tournament\",\""+0.id+"\",\"tournament\"]")])'>&nbsp;</div>

@@ -37,5 +37,6 @@ $(genAll "Tournament" "tournament" [
     ("name", ''String),
     ("done", ''Bool),
     ("running", ''Bool),
-    ("image", ''String)
+    ("image", ''String),
+    ("tournament_type_id", ''Integer)
     ])

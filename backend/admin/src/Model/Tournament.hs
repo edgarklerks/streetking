@@ -11,14 +11,19 @@ import qualified Data.Aeson as AS
 import           Data.InRules
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as B
-import           Data.Racing 
+--import           Data.Racing 
+import Data.RaceReward
 
 import qualified Data.HashMap.Strict as HM
 import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+
+
 type MRaceReward = Maybe RaceRewards 
+type MInteger = Maybe Integer
+
 $(genAll "Tournament" "tournament" [
     ("id", ''Id),
     ("car_id", ''Id),
@@ -32,5 +37,6 @@ $(genAll "Tournament" "tournament" [
     ("name", ''String),
     ("done", ''Bool),
     ("running", ''Bool),
-    ("image", ''String)
+    ("image", ''String),
+    ("tournament_type_id", ''Integer)
     ])

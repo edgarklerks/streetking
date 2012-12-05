@@ -15,7 +15,7 @@ import           Prelude hiding (id)
 import qualified Data.Aeson as AS
 import Data.Conversion
 import Data.Event 
-type Stream = [Event]
+type Stream = Maybe [Event]
 $(genAll "EventStream" "event_stream" 
     [
       ("id", ''Id)
@@ -24,14 +24,18 @@ $(genAll "EventStream" "event_stream"
     , ("stream", ''Stream)
     , ("active", ''Bool)
     ])
- 
+
+getEventStream uid = runTestDb $ do 
+                xs <- search ["account_id" |== (toSql uid)] [] 10000 0 :: SqlTransaction Connection [EventStream]
+                return xs
 
 emitEvent :: Integer -> Event -> SqlTransaction Connection ()
 emitEvent uid e = do 
             xs <- search ["account_id" |== toSql uid .&& "active" |== toSql True] [] 100000 0 :: SqlTransaction Connection [EventStream]
             forM_ xs $ \x -> do 
+                    
                     save (x {
-                        stream = e : stream x
+                        stream = ((e :) <$> stream x) <|> (Just [e]) 
                         })
         
 

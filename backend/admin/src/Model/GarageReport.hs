@@ -61,7 +61,8 @@ $(genAll "GarageReport" "garage_reports" [
                 ("improvement_change", ''MInteger),
                 ("wear", ''MInteger),
                 ("wear_change", ''MInteger),
-                ("task", ''String)
+                ("task", ''String),
+                ("part_id", ''Integer)
 
                 ])
 

@@ -9,6 +9,7 @@ import Control.Applicative
 import Control.Comonad
 import qualified Control.Monad.CatchIO as CIO 
 import Control.Arrow 
+import Control.Monad.Error 
 import Data.Maybe 
 import Data.Monoid
 import Text.Regex.TDFA.ByteString
@@ -245,3 +246,15 @@ smust xs (Map.keys -> z) | null (xs \\ z)  = return ()
 
 scheck :: (Show k, Data.Hashable.Hashable k, Eq k, CIO.MonadCatchIO m) => [k] -> Map.HashMap k v -> m (Map.HashMap k v)
 scheck xs z = let p = sallowed xs z in smust xs p >> return p
+
+
+assert :: (Error e, MonadError e m) => Bool -> String -> m ()
+assert p e = unless p (throwError (strMsg e))
+
+
+randomPick :: [a] -> IO a
+randomPick [x] = return x 
+randomPick (x:xs) = do 
+            b <- randomRIO (0,1 :: Int) 
+            if b == 1 then randomPick xs 
+                     else return x 

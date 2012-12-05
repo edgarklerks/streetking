@@ -5,9 +5,24 @@ module Data.Tournament (
         Tournament,
         runTournament,
         initTournament,
-        getResults 
+        getResults,
+        getPlayers,
+        processTournamentRace,
+        runTournamentRounds, 
+        loadTournamentFull,
+        testTournament,
+        loadTournament
+        
     ) where 
-
+{-- Change log:
+- 17-11-2012 
+- Edgar - added immutable flag set to addClownToTournament for car_instance 
+- Edgar - added immutable flag unset to getResults for car_instance  
+- Edgar - added bots to the tournament. This is a little bit shaky, because
+- a function return the raceparticipant and mutates the database.
+-
+-
+- --}
 import Control.Monad.Trans 
 import Model.TH
 import Model.TournamentPlayers as TP
@@ -23,9 +38,9 @@ import Data.List
 import qualified Data.Aeson as AS
 import qualified Data.Aeson.Parser as ASP 
 import Data.SqlTransaction
-import Model.Account as A 
 import Model.Transaction as TR  
 import Model.CarInstance  
+import Model.Functions as DBF 
 import Model.CarInGarage 
 import Data.Maybe 
 import Model.General 
@@ -50,8 +65,12 @@ import qualified Model.TrackDetails as TD
 import qualified Model.TrackMaster as TT
 import qualified Model.Report as RP 
 import qualified Model.RaceReward as RWD
-import           Data.Racing
+--import           Data.Racing
+import           Data.RacingNew
+import           Data.RaceParticipant
+import           Data.RaceReward
 import qualified Data.Task as Task
+import           Data.Event 
 import           Data.Track
 import           Data.Environment
 import           Model.General
@@ -59,11 +78,23 @@ import           Prelude hiding ((.),id)
 import           Data.Conversion 
 import           Data.Convertible 
 import qualified Model.TournamentResult as TR
+import qualified Model.TournamentPlayers as TP 
 import           GHC.Generics 
 import           Data.Text (Text) 
+import           Test.QuickCheck 
+import           System.Random 
+import           Data.Monoid 
+import qualified Notifications as N 
+import qualified Model.TournamentReport as TRP 
+import qualified Model.EventStream as ES 
+import           Control.Concurrent 
+import           Data.Tools
+import           Data.SqlTransaction
+import qualified LockSnaplet as L 
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
+
 
 instance AS.ToJSON TournamentTask where 
     toJSON a = AS.toJSON $ S.fromList [("RunTournament" :: Text, True)]
@@ -96,11 +127,12 @@ joinTournament cinst n acid = do
 
                     checkPrequisites ac (fromJust $ trn) cinst 
                     addClownToTournament ac (fromJust $ trn) cinst 
+                    
 
 
                 return () 
     where 
-            addClownToTournament :: Account -> Tournament -> Integer -> SqlTransaction Connection ()
+            addClownToTournament :: A.Account -> Tournament -> Integer -> SqlTransaction Connection ()
             addClownToTournament a t cinst = do 
                         transactionMoney (fromJust $ A.id a) (def {
                                     amount = -(T.costs t),
@@ -113,10 +145,12 @@ joinTournament cinst n acid = do
                             TP.account_id = A.id a, 
                             TP.tournament_id = T.id t 
                                     } :: TP.TournamentPlayer )
+                        setImmutable cinst 
                         return ()
+
 -- | check car, enough money, time prequisites
-checkPrequisites :: Account -> Tournament -> Integer -> SqlTransaction Connection () 
-checkPrequisites a (Tournament id cid st cs mnl mxl rw tid plys nm dn rn im) cinst = do 
+checkPrequisites :: A.Account -> Tournament -> Integer -> SqlTransaction Connection () 
+checkPrequisites a (T.Tournament id cid st cs mnl mxl rw tid plys nm dn rn im ttid) cinst = do 
         (n,t) <- numberOfPlayers (fromJust id)
         when dn $ rollback "this tournament is already done" 
         when rn $ rollback "tournament is already running"
@@ -145,8 +179,8 @@ $(genMapableRecord "TournamentFullData" [
         ])
                           
 
-milliTime :: IO Integer
-milliTime = floor <$> (*1000) <$> getPOSIXTime :: IO Integer
+milliTime :: SqlTransaction Connection Integer 
+milliTime = (*1000) <$> DBF.unix_timestamp 
 
 
 sameLength :: [a] -> [b] -> Bool 
@@ -154,23 +188,104 @@ sameLength (_:xs) (_:ys) = sameLength xs ys
 sameLength [] [] = True 
 sameLength _ _ = False 
 
+test_samelength_prop = property testSamelength 
+    where   testSamelength :: [Int] -> [Char] -> Bool 
+            testSamelength xs ys = (length xs == length ys) == (sameLength xs ys) && 
+                            (sameLength xs xs == sameLength ys ys)
+
+getPlayers :: Integer -> SqlTransaction Connection [[(AM.AccountProfileMin,AM.AccountProfileMin, Id)]]
+getPlayers mid = do 
+            tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament 
+            mt <- milliTime 
+            rs <- search ["tournament_id" |== (toSql mid)] [] 1000 0 :: SqlTransaction Connection [TR.TournamentResult]
+            -- fugly waterfall structure 
+            if (T.done tr) then returnAll rs 
+                           else returnSince mt rs  
+
+    where 
+          
+          step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
+          step mt (TR.TournamentResult _ tid rid _ _ _ _ _ _ _ ) = do 
+                                                r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
+                                                return (R.start_time r < mt)
+
+          returnAll = retrieveAccounts 
+          returnStart = return []  
+          returnSince mt rs = filterM (step mt) rs >>= retrieveAccounts 
+
+          retrieveAccounts :: [TR.TournamentResult] -> SqlTransaction Connection [[(AM.AccountProfileMin, AM.AccountProfileMin, Id)]]
+          retrieveAccounts  xs = forM (groupByRound xs) $ \rs -> do 
+                                                    forM rs $ \r -> (,,) <$> aload (fromJust $ TR.participant1_id r) (rollback "fuckfuckfuck i hate this world") <*> aload (fromJust $ TR.participant2_id r) (rollback "lololi") <*> pure (TR.race_id r)  
+                                                            
+          groupByRound :: [TR.TournamentResult] -> [[TR.TournamentResult]]
+          groupByRound = groupBy (\x y -> TR.round x == TR.round y)
+
+
 getResults :: Integer -> SqlTransaction Connection [TR.TournamentResult] 
 getResults mid = do
                 tr <- aload mid (rollback "cannot find tournament") :: SqlTransaction Connection T.Tournament
-                mt <- liftIO milliTime
-                rs <- search [] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
+                mt <- milliTime
+                rs <- search ["tournament_id" |== (toSql mid)] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
                 if (T.done tr) then return rs 
                                else do 
                                 ss <- filterM (step mt) rs 
-                                when (ss `sameLength` rs) $ save (tr { T.running = False, T.done = True}) >> return ()  
+                                when (ss `sameLength` rs) $ 
+                                    dbWithLockNonBlock "tournament" mid $  
+                                        do  
+                                                xs <- search ["tournament_id" |== toSql (T.id tr)] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
+                                                forM_ xs $ setMutable . fromJust . TP.car_instance_id 
+                                                toArchive (fromJust $ T.id tr) ss 
+                                                save (tr { T.running = False, T.done = True}) 
+
+                                                let winners = (\(x,y,z) -> x) <$> getWinners ss 
+                                                forM_ ss $ \r -> do 
+                                                            let car1 = TR.car1_id r 
+                                                            let car2 = TR.car2_id r 
+                                                            let account1 = fromJust $ TR.participant1_id r
+                                                            let account2 = fromJust $ TR.participant2_id r 
+
+                                                            rr1 <- loadRaceResult account1 (fromJust $ TR.race_id r)
+                                                            rr2 <- loadRaceResult account2 (fromJust $ TR.race_id r)
+                                                            healthLost account1 rr1 
+                                                            healthLost account1 rr2
+                                                            partsWear car1 rr1 
+                                                            partsWear car2 rr2 
+                                                            
+                                                            return ()
+                                                forM_ (winners `zip` [1..]) $ \(w,p) -> do 
+                                                            ES.emitEvent w (Data.Event.Tournament p mid (T.tournament_type_id tr)) 
+
+
                                 return ss 
         where step :: Integer -> TR.TournamentResult -> SqlTransaction Connection Bool 
-              step mt (TR.TournamentResult tid rid _ _ _ _ ) = do 
+              step mt (TR.TournamentResult _ tid rid _ _ _ _ _ _ _) = do 
                                                 r <- aload (fromJust rid) (rollback "cannot find race") :: SqlTransaction Connection R.Race  
-                                                return (R.start_time r < mid)
+                                                return (R.end_time r < mt)
                 
 
 
+loadRaceResult :: Integer -> Integer -> SqlTransaction Connection RaceResult 
+loadRaceResult uid rid = do 
+                r <- fromJust <$> load rid :: SqlTransaction Connection R.Race 
+                let rrs =  (R.data) r 
+                return $ head $ fmap rd_result $ filter step rrs 
+        where step x | AM.id (rd_user x) == Just uid = True
+                     | otherwise = False 
+
+toArchive :: Integer -> [TR.TournamentResult] -> SqlTransaction Connection ()
+toArchive mid xs = do 
+                tt <- milliTime
+                tr <- load mid :: SqlTransaction Connection (Maybe T.Tournament)
+                ss <- search ["tournament_id" |== (toSql mid)] [] 100000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
+                forM_ ss $ \(TP.account_id -> x) -> 
+                    void $ save (def {
+                            TRP.tournament_id  = mid,
+                            TRP.tournament_result = xs,
+                            TRP.tournament = tr,
+                            TRP.account_id = fromJust $ x,
+                            TRP.players = ss,
+                            TRP.created = tt 
+                        } :: TRP.TournamentReport)
 
 
 divideClowns :: Tournament -> SqlTransaction Connection [[TP.TournamentPlayer]]
@@ -218,27 +333,82 @@ testpnotone = property test
           test [] = True 
           test [x] = True 
           test xs = minimum (fmap length $ twothree xs) > 1
+
+
+unsort :: [a] -> IO [a] 
+unsort = foldM (\z x -> uninsert x z) []  
+        where uninsert a [] = return [a]
+              uninsert a ts@(x:xs) = do
+                        s <- randomIO 
+                        if s then return (a:ts)
+                             else uninsert a xs >>= \xs -> return (x:xs)
+
+fillRaceParticipant :: T.Tournament -> [RaceParticipant] -> SqlTransaction Connection [RaceParticipant]
+fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = do 
+                                                                    pure xs  
+                                                        | otherwise = do
+                                                              cs <- search ["prototype" |== toSql True .&& "prototype_available" |== toSql True] [] 1000 0 :: SqlTransaction Connection [CarInGarage]
+                                                              as <- search ["bot" |== toSql True] [] 1000 0 :: SqlTransaction Connection [A.Account]
+                                                              (xs<>) <$> replicateM (n - length xs) (createPlayers as cs)
+                where createPlayers :: [A.Account] -> [CarInGarage] -> SqlTransaction Connection RaceParticipant 
+                      createPlayers as cs = do 
+                            p <- liftIO $ randomPick as 
+                            c <- liftIO $ randomPick cs 
+                            am <- fromJust <$> load (fromJust $ A.id p) :: SqlTransaction Connection (AM.AccountProfileMin)
+                            let cm = fromInRule $ toInRule c :: CM.CarMinimal
+
+                            
+                            
+                            let bots = (def {
+                                rp_account = p,
+                                rp_account_min = am,
+                                rp_car = c,
+                                rp_car_min = cm 
+                                        })
+
+                            -- add players to tournament_players 
+
+                            save (def {
+                                    TP.car_instance_id = Model.CarInGarage.id c,
+                                    TP.account_id = A.id p, 
+                                    TP.tournament_id = T.id t,
+                                    TP.deleted = False 
+                                } :: TP.TournamentPlayer)
+                            -- commit player to database
+                            commit 
+                            return bots 
+ 
+
 -- runs all the tournament rounds  
-runTournamentRounds :: TournamentFullData -> SqlTransaction Connection [[(Integer, [(RaceParticipant, RaceResult)])]]  
-runTournamentRounds tfd = let tr = T.track_id . tournament $ tfd 
+runTournamentRounds :: t -> TournamentFullData -> SqlTransaction Connection [[(Integer, [(RaceParticipant, RaceResult)])]]  
+runTournamentRounds po tfd = 
+                          let tr = T.track_id . tournament $ tfd 
                               tid = T.id . tournament $ tfd
                               plys = tournamentPlayers tfd
                               rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid) _) =  mkRaceParticipant cid aid Nothing 
                               step tdif xs = do 
                                 races <- forM xs $ \xs -> do
-                                             processTournamentRace (fromJust tid + tdif) xs tr
+                                             processTournamentRace (tdif) xs tr 
                                 let (ps', ts) = split3 races 
                                 let ps = sortRounds ps'
                                 let tmax = maximum ts  
+
                                 if (one ps) 
                                         then return [races]
                                         else do rest <- step (tdif + tmax) (twothree ps) 
-                                                liftIO (print rest)
                                                 return $ races : rest
                          in do 
+                               forM_ plys $ \(TP.account_id -> pl) -> N.sendCentralNotification (fromJust $ pl) (
+                                                                                        N.tournamentStart {
+                                    N.tournament_id = fromJust $ tid 
+                                                                                                })
+
                                flip catchSqlError error $ do 
-                                   ys <- mapM rp plys
-                                   xs <- step 0 (twothree ys)
+                                   ys <- mapM rp plys >>= liftIO . unsort 
+                                   rs <- fillRaceParticipant (tournament tfd) ys
+                                   xs <- step 0 (twothree (rs))
+                                    -- commit the transaction to database
+                                    -- and start looping. 
                                    return $ fmap (fst . split3) $ xs 
 
 
@@ -251,24 +421,91 @@ split3 :: [(a,b,c)] -> ([(a,b)], [c])
 split3  = foldr step ([], [])
     where step (a,b,c) (ls,rs) = ((a,b):ls,c:rs)
 
+testEmitTournament = runTestDb $ ES.emitEvent 34 (Data.Event.Tournament 9 9 1)
+
+cons a = return () 
+                {--
+    x <- unix_timestamp  
+    liftIO $ print (x,a)
+    --}
+-- users: 36,34,33,71
+testTournament = runTestDb $ do 
+            b <- (*1000) <$> unix_timestamp 
+            -- Created a tournament 
+            cons "creating tournament"
+            tid <- save (def {
+                             start_time = Just b,
+                             costs = 0,
+                             minlevel = 0,
+                             maxlevel = 10000,
+                             rewards = Nothing,
+                             T.track_id = 12,
+                             players = 8,
+                             T.name = "auto tournament xxx"
+                    } :: T.Tournament)
+            -- finding users with useful car 
+            cons "searching cars"
+            rs <- search ["active" |== (toSql True) .&& "ready" |== (toSql True)] [] 100 0 :: SqlTransaction Connection [CarInGarage]
+            cons "joining tournament"
+            forM_ (take 2 rs) $ \r -> do 
+                            joinTournament (fromJust $ GC.id r) tid (GC.account_id r)
+            -- loaded tournament 
+            cons "loading tournament"
+            tf <- loadTournamentFull tid 
+            cons "saving tournament"
+            save ((tournament tf) {running = True})
+            cons "run tournament rounds"
+            xs <- runTournamentRounds undefined tf
+            cons xs
+            saveResultTree tid xs 
+            cons "saved tournament"
+            {--
+            whileM $ do 
+                cons "Getting tournament"
+                ps <- getResults tid
+                rs <- search ["tournament_id" |== (toSql tid)] [] 1000 0  :: SqlTransaction Connection [TR.TournamentResult] 
+                liftIO $ print (length ps, length rs) 
+                liftIO $ threadDelay 10000
+                return $ ps /= rs 
+            --}
+
+whileM :: Monad m => m Bool -> m ()
+whileM m = do
+        b <- m
+        if b then whileM m
+             else return ()
+
+
+
+
+
 
 sortRounds :: [(Integer,[(RaceParticipant, RaceResult)])]  -> [RaceParticipant]
 sortRounds [] = [] 
 sortRounds ((rid,ys):xs) = (fst . head) (sortBy (\x y -> compare (snd x) (snd y)) ys) : sortRounds xs 
 
+
+
+
 processTournamentRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)], Integer) 
-processTournamentRace t ps tid = do
+processTournamentRace t' ps tid = do
 
         let env = defaultEnvironment
         trk <- trackDetailsTrack <$> (agetlist ["track_id" |== toSql tid] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails])
         tdt <- aget ["track_id" |== toSql tid] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
- 
-          -- race participants
-        let rs = L.sortBy (\(_,a) (_,b) -> compare (raceTime a) (raceTime b)) $ map (\p -> (p, runRaceWithParticipant p trk env)) ps
+        rs' <- forM ps $ \p -> do
+                g <- liftIO $ newStdGen
+                case raceWithParticipant p trk g of
+                        Left e -> rollback e
+                        Right r -> return (p, r)
+        let rs = L.sortBy (\(_, a) (_, b) -> compare (raceTime a) (raceTime b)) rs'
 
         -- current time, finishing times, race time (slowest finishing time) 
---        t <- liftIO (floor <$> getPOSIXTime :: IO Integer)
-        let fin r = (t+) $ ceiling $ raceTime r  
+
+        t <- (+t') <$> milliTime
+        ct <- milliTime 
+            
+        let fin r = (t+) $ ceiling $ (*1000) $ raceTime r  
         let te = fin . snd . last $ rs
 
         -- save race data
@@ -317,34 +554,42 @@ tournamentTrigger i = do
                 x <- loadTournament i
                 tid <- Task.task RunTournament (fromJust $ T.start_time x) $ mkData $ do 
                         set "id" $ (T.id x)
-                void $ Task.trigger Task.Cron 0 tid  
+
+                void $ Task.trigger Task.Cron (fromJust $ T.id x) tid  
                 
-runTournament :: TK.Task -> SqlTransaction Connection Bool
-runTournament tk = return False <* (do
+runTournament :: TK.Task -> t -> SqlTransaction Connection Bool
+runTournament tk po = return False <* (do
                 let id = "id" .<< (TK.data tk) ::  Integer
-                liftIO (print id)
                 tf <- loadTournamentFull id  
+                xs <- runTournamentRounds po tf  
                 save ( (tournament tf) { running = True })
-                liftIO (print tf) 
-                xs <- runTournamentRounds tf  
-                liftIO (print xs)
                 saveResultTree id xs)
 
 saveResultTree :: Integer -> [[(Integer, [(RaceParticipant, RaceResult)])]] -> SqlTransaction Connection ()
-saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> 
-                            forM_ xs $ \(i, [x,y]) -> do 
+saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> forM_ xs (lmb r)
+
+            where lmb r (i, sortBy (\x y -> compare (snd x) (snd y)) -> (x:y:_)) = do 
                                 save (def {
                                     TR.tournament_id = Just tid,
                                     TR.race_id = Just i,
                                     TR.participant1_id = A.id $ rp_account $ fst x,
                                     TR.participant2_id = A.id $ rp_account $ fst y,
-                                    TR.round = r
-                                        } :: TR.TournamentResult)
+                                    TR.round = r,
+                                    -- TR.raceresult1 = Nothing -- Just x,
+                                    -- TR.raceresult2 = Nothing -- Just y
+                                    TR.race_time1 = raceTime $ snd x,
+                                    TR.race_time2 = raceTime $ snd y,
+                                    TR.car1_id =  rp_car_id $ fst x ,
+                                    TR.car2_id = rp_car_id $ fst y 
 
-initTournament = registerTask pred executeTask 
+
+                                        } :: TR.TournamentResult)
+                  lmb r xs =  return 0 
+
+initTournament po = registerTask pred (executeTask po)
           where pred t | "action" .< (TK.data t) == Just RunTournament = True
                        | otherwise = False 
-executeTask d | "action" .< (TK.data d) == Just RunTournament  = runTournament d *> liftIO (print "runtournament") *> return True  
+executeTask po d | "action" .< (TK.data d) == Just RunTournament  = runTournament d po *> return True  
 
 
 taskRewards :: Integer -> Integer -> RaceRewards -> Integer -> SqlTransaction Connection () 
@@ -368,6 +613,27 @@ loadTournament = load >=> \x -> when (isNothing x) (rollback "no such tournament
 
 loadPlayers :: Integer -> SqlTransaction Connection [TournamentPlayer] 
 loadPlayers i = search ["tournament_id" |== (toSql i) .&& "deleted" |== (toSql False)] [] 1000000 0 
+
+-- want this out of this function: 1324
+getWinners = removeSeen . sortBy (sortF) . splice 
+        where splice = foldr step [] 
+                where step x z = (fromJust $ TR.participant1_id x, getTime1 x, TR.round x) : (fromJust $ TR.participant2_id x, getTime2 x, TR.round x) : z
+                      getTime1 = TR.race_time1
+                      getTime2 = TR.race_time2
+              sortF :: (a,Double, Integer) -> (a, Double, Integer) -> Ordering 
+              sortF (_,ta,ra) (_,tb,rb) | ra > rb = GT 
+                                        | ra < rb = LT 
+                                        | ra == rb = (flip compare) ta tb
+              removeSeen :: [(Integer, Double, Integer)] -> [(Integer, Double, Integer)]
+              removeSeen  = reverse . foldr step [] 
+                    where step (p,d,i) z 
+                                    | [p] `isInfixOf` (fst3 <$> z) = z 
+                                    | otherwise = (p,d,i) : z
+                          fst3 (a,b,c) = a
+
+
+
+                
 
 newtype CartesianMap a b = CM {
         runCM :: [a -> b] 
@@ -616,3 +882,5 @@ unswap f g = g undefined
 
 ids :: (b -> a -> b) -> (b -> a -> b) 
 ids = swap . unswap  
+
+

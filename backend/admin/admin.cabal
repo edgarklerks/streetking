@@ -69,7 +69,8 @@ Executable admin
     MonadRandom,
     binary,
     filepath,
-    directory
+    directory,
+    quicklz
 
   if flag(development)
     build-depends:

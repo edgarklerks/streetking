@@ -1,15 +1,19 @@
 
-module Data.Driver where
+module Data.Driver (
+    Driver (..),
+    accountDriver
+) where
 
 import Data.Constants
 import qualified Model.Account as A
+import qualified Model.AccountProfile as AP
 
 data Driver = Driver {
-    skillAcceleration :: Double,
-    skillBraking :: Double,
-    skillControl :: Double,
-    skillIntelligence :: Double,
-    skillReactions :: Double
+    acceleration :: Double,
+    braking :: Double,
+    control :: Double,
+    intelligence :: Double,
+    reactions :: Double
 } deriving Show
 
 defaultDriver :: Driver
@@ -24,15 +28,22 @@ noobDriver = Driver 0.05 0.05 0.05 0.05 0.05
 leetDriver :: Driver
 leetDriver = Driver 0.8 0.8 0.8 0.8 0.8
 
+
+class ToDriver a where
+        toDriver :: a -> Driver
+
+instance ToDriver A.Account where
+        toDriver = accountDriver
+
 accountDriver :: A.Account -> Driver
-accountDriver a = Driver (m acc) (m brk) (m ctl) (m itl) (m rct)
+accountDriver a = Driver acc brk ctl itl rct
     where
         m = normalizeSkill 
-        acc = (fromInteger . A.skill_acceleration) a
-        brk = (fromInteger . A.skill_braking) a
-        ctl = (fromInteger . A.skill_control) a
-        itl = (fromInteger . A.skill_intelligence) a
-        rct = (fromInteger . A.skill_reactions) a
+        acc = m $ (fromInteger . A.skill_acceleration) a
+        brk = m $ (fromInteger . A.skill_braking) a
+        ctl = m $ (fromInteger . A.skill_control) a
+        itl = m $ (fromInteger . A.skill_intelligence) a
+        rct = m $ (fromInteger . A.skill_reactions) a
 
 skillCushionFactor :: Double
 skillCushionFactor = 40

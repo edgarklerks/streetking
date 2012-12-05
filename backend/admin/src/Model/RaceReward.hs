@@ -18,7 +18,8 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
-import           Data.Racing
+--import           Data.Racing
+import Data.RaceReward
 
 $(genAll "RaceReward" "race_rewards" [             
                     ("id", ''Id),

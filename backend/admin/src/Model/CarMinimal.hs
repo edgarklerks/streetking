@@ -18,6 +18,8 @@ import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
 import Data.Conversion
 
+import qualified Model.CarInGarage as CIG
+
 
 $(genAll "CarMinimal" "car_in_garage"
     [
@@ -40,3 +42,14 @@ $(genAll "CarMinimal" "car_in_garage"
         ("level", ''Integer),
         ("year", ''Integer)
     ])
+
+class ToCarMinimal a where
+        toCM :: a -> CarMinimal
+
+instance ToCarMinimal CIG.CarInGarage where
+        toCM x = let y = def :: CarMinimal in fromInRule $ project (toInRule y) (toInRule x) 
+
+
+--minify :: CIG.CarInGarage -> CarMinimal
+--minify = toCM
+

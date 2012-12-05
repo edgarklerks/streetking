@@ -10,7 +10,8 @@ module Data.Tournament (
         processTournamentRace,
         runTournamentRounds, 
         loadTournamentFull,
-        testTournament
+        testTournament,
+        loadTournament
         
     ) where 
 {-- Change log:
@@ -149,7 +150,7 @@ joinTournament cinst n acid = do
 
 -- | check car, enough money, time prequisites
 checkPrequisites :: A.Account -> Tournament -> Integer -> SqlTransaction Connection () 
-checkPrequisites a (T.Tournament id cid st cs mnl mxl rw tid plys nm dn rn im) cinst = do 
+checkPrequisites a (T.Tournament id cid st cs mnl mxl rw tid plys nm dn rn im ttid) cinst = do 
         (n,t) <- numberOfPlayers (fromJust id)
         when dn $ rollback "this tournament is already done" 
         when rn $ rollback "tournament is already running"
@@ -252,8 +253,7 @@ getResults mid = do
                                                             
                                                             return ()
                                                 forM_ (winners `zip` [1..]) $ \(w,p) -> do 
-                                                            cons $ "user: " <> (show w) <> " pos: " <> (show p) <> " tid:" <> (show mid)
-                                                            ES.emitEvent w (Data.Event.Tournament p mid) 
+                                                            ES.emitEvent w (Data.Event.Tournament p mid (T.tournament_type_id tr)) 
 
 
                                 return ss 
@@ -345,23 +345,17 @@ unsort = foldM (\z x -> uninsert x z) []
 
 fillRaceParticipant :: T.Tournament -> [RaceParticipant] -> SqlTransaction Connection [RaceParticipant]
 fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = do 
-                                                                    cons "do not attach bots"          
                                                                     pure xs  
                                                         | otherwise = do
-                                                              cons $ "tournament id:" <> (show (T.id t))
-                                                              cons $ "adding: " <> show (n - length xs) <> " bots"
                                                               cs <- search ["prototype" |== toSql True .&& "prototype_available" |== toSql True] [] 1000 0 :: SqlTransaction Connection [CarInGarage]
                                                               as <- search ["bot" |== toSql True] [] 1000 0 :: SqlTransaction Connection [A.Account]
                                                               (xs<>) <$> replicateM (n - length xs) (createPlayers as cs)
                 where createPlayers :: [A.Account] -> [CarInGarage] -> SqlTransaction Connection RaceParticipant 
                       createPlayers as cs = do 
-                            cons "Creating player"
                             p <- liftIO $ randomPick as 
                             c <- liftIO $ randomPick cs 
-                            cons (p,c)
                             am <- fromJust <$> load (fromJust $ A.id p) :: SqlTransaction Connection (AM.AccountProfileMin)
                             let cm = fromInRule $ toInRule c :: CM.CarMinimal
-                            cons "Created player"
 
                             
                             
@@ -371,8 +365,6 @@ fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = do
                                 rp_car = c,
                                 rp_car_min = cm 
                                         })
-                            cons "Constructed bot:"
-                            cons bots 
 
                             -- add players to tournament_players 
 
@@ -384,7 +376,6 @@ fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = do
                                 } :: TP.TournamentPlayer)
                             -- commit player to database
                             commit 
-                            cons "Added player to tournament"
                             return bots 
  
 
@@ -397,8 +388,7 @@ runTournamentRounds po tfd =
                               rp (TournamentPlayer (Just id) (Just aid) (Just tid) (Just cid) _) =  mkRaceParticipant cid aid Nothing 
                               step tdif xs = do 
                                 races <- forM xs $ \xs -> do
-                                             cons "process races"
-                                             processTournamentRace (tdif) xs tr <* cons "finished process"
+                                             processTournamentRace (tdif) xs tr 
                                 let (ps', ts) = split3 races 
                                 let ps = sortRounds ps'
                                 let tmax = maximum ts  
@@ -431,7 +421,7 @@ split3 :: [(a,b,c)] -> ([(a,b)], [c])
 split3  = foldr step ([], [])
     where step (a,b,c) (ls,rs) = ((a,b):ls,c:rs)
 
-testEmitTournament = runTestDb $ ES.emitEvent 34 (Data.Event.Tournament 9 9)
+testEmitTournament = runTestDb $ ES.emitEvent 34 (Data.Event.Tournament 9 9 1)
 
 cons a = return () 
                 {--

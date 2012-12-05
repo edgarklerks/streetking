@@ -1,4 +1,4 @@
-{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances,FunctionalDependencies, UndecidableInstances  #-} 
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances,FunctionalDependencies, UndecidableInstances, OverlappingInstances #-} 
 module Data.DVars where 
 
 import Control.Applicative
@@ -32,6 +32,11 @@ class CreateDVar t f where
    
 class EmptyDVar t f where 
     newEmptyDVar :: t (f a)
+
+class TryTakeDVar t f where 
+    tryTakeDVar :: f a -> t (Maybe a)
+
+
 
 class TakeDVar t f where 
     takeDVar :: f a -> t a 
@@ -69,6 +74,13 @@ instance ReadDVar STM TMVar where
         readDVar = readTMVar 
 instance MonadIO m => ReadDVar m TMVar where 
         readDVar = runDVar . readTMVar 
+
+instance TryTakeDVar STM TMVar where 
+        tryTakeDVar = tryTakeTMVar
+
+instance MonadIO m => TryTakeDVar m MVar where 
+        tryTakeDVar = runDVar . tryTakeMVar
+
 {-- TChan --}
 instance ReadDVar STM TChan where 
         readDVar = peekTChan
@@ -83,10 +95,11 @@ instance (MonadIO m) => WriteDVar m MVar where
                     case x of 
                         True -> putMVar m s  
                         False -> void $ swapMVar m s  
-instance WriteDVar STM TVar where 
-        writeDVar m s = writeTVar m s  
 instance (MonadIO m) => WriteDVar m TVar where 
         writeDVar m s = runDVar $ writeTVar m s 
+instance WriteDVar STM TVar where 
+        writeDVar m s = writeTVar m s  
+
 instance WriteDVar STM TChan where 
         writeDVar m s = do 
                 b <- isEmptyTChan m 
@@ -285,6 +298,49 @@ instance MonadIO IOVar where
                         a <- m 
                         newMVar a
 
+{-- TQUEUE --}
+
+
+instance ReadDVar STM TQueue where 
+        readDVar = peekTQueue
+instance MonadIO m => ReadDVar m TQueue where 
+        readDVar = runDVar . peekTQueue
+
+instance (MonadIO m) => EmptyDVar m TQueue where 
+            newEmptyDVar = runDVar $ newTQueue 
+instance EmptyDVar STM TQueue where 
+            newEmptyDVar = newTQueue
+
+instance (MonadIO m) => SwapDVar m TQueue where 
+            swapDVar m s = runDVar $ readTQueue m <* writeTQueue m s
+
+instance SwapDVar STM TQueue where 
+            swapDVar m s = readTQueue m <* writeTQueue m s
+
+instance TakeDVar STM TQueue where 
+            takeDVar m = readTQueue m 
+instance (MonadIO m) => TakeDVar m TQueue where 
+            takeDVar m = runDVar $ readTQueue m 
+
+
+{-- Write instances --}
+
+instance WriteDVar STM TQueue where 
+        writeDVar m s = do 
+                b <- isEmptyTQueue m 
+                case b of 
+                    True -> writeTQueue m s 
+                    False -> readTQueue m >> writeTQueue m s 
+instance (MonadIO m) => WriteDVar m TQueue where 
+        writeDVar m s = runDVar $ do 
+                            b <- isEmptyTQueue m
+                            case b of 
+                                True -> writeTQueue m s 
+                                False -> readTQueue m >> writeTQueue m s
+instance PutDVar STM TQueue where 
+            putDVar m s = writeTQueue m s
+instance (MonadIO m) => PutDVar m TQueue where 
+            putDVar m s = runDVar $ writeTQueue m s
 
 test :: Int -> IOVar Int
 test x = do 

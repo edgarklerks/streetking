@@ -40,13 +40,19 @@
 			<li><a href="#reward/get"  module="ACTION_LIST">Actions</a></li>
 			<li><a href="#reward/get"  module="RULE_LIST">Rules</a></li>
 		</ul>
+	</li>
+	<li>
+		<a href="#">Tournament</a>
+		<ul>
+			<li><a href="#tournament/get"  module="TOURNAMENT_LIST">Tournaments</a></li>
+			<li><a href="#tournament/get"  module="TOURNAMENT_TYPE_LIST">Tournament types</a></li>
+		</ul>
 	</li>	
 	<li>
 		<a href="#">Other</a>
 		<ul>
 			<li><a href="#account/get"  module="PROFILE_LIST">Manage profiles</a></li>
 			<li><a href="#garage/get"  module="GARAGE_LIST">Garages</a></li>
-			<li><a href="#tournament/get"  module="TOURNAMENT_LIST">Tournament</a></li>
 			<li><a href="#notification/get"  module="NOTIFICATION_LIST">Notification</a></li>
 			<li><a href="#challenge_type/get"  module="CHALLENGE_TYPE_LIST">Challenge types</a></li>
 			<li><a href="#config/get"  module="CONFIG_LIST">Game config</a></li>
