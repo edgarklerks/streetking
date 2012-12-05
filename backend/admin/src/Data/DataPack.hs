@@ -37,6 +37,7 @@ type Key = LB.ByteString
 newtype Data = Data {
              unData ::  HM.HashMap Key AS.Value
             } deriving (Show, Eq)
+
 type Pack = C.ByteString -- TODO: InRule support for ByteString.Lazy to allow Pack to be of this type
 
 -- empty data

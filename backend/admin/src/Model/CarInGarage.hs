@@ -18,11 +18,13 @@ import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
 import Data.Conversion
 
+type MInteger = Maybe Integer 
 
 $(genAll "CarInGarage" "car_in_garage"
     [
         ("id", ''Id),
         ("car_id", ''Integer),
+        ("manufacturer_id", ''Integer),
         ("manufacturer_name", ''String),
         ("manufacturer_picture", ''String),
         ("weight", ''Integer),
@@ -42,6 +44,7 @@ $(genAll "CarInGarage" "car_in_garage"
         ("total_price", ''Integer),
         ("account_id", ''Integer),
         ("level", ''Integer),
+        ("parts_level", ''MInteger),
         ("wear", ''Integer),
         ("improvement", ''Integer),
         ("active", ''Bool),
@@ -54,6 +57,7 @@ $(genAll "CarInGarage" "car_in_garage"
         ("prototype_claimable", ''Bool),
         ("car_color", ''String)
     ])
+
 {-
 instance AS.ToJSON CarInGarage where
         toJSON c = AS.toJSON $ HM.fromList $ [ 

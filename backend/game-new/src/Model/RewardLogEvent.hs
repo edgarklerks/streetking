@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
-module Model.RewardLog where 
+module Model.RewardLogEvent where 
 
 import           Data.SqlTransaction
 import           Database.HDBC
@@ -17,7 +17,7 @@ import Data.Conversion
 
 type MInteger = Maybe Integer 
 
-$(genAll "RewardLog" "reward_log"
+$(genAll "RewardLogEvent" "reward_log_event"
     [
           ("id", ''Id)
         , ("account_id", ''Id)
@@ -26,6 +26,7 @@ $(genAll "RewardLog" "reward_log"
         , ("money", ''Integer)
         , ("viewed", ''Bool)
         , ("experience", ''Integer)
-
+        , ("type_id", ''Integer)
+        , ("type", ''String)
     ])
 

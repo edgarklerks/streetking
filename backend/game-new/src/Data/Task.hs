@@ -315,7 +315,6 @@ executeTask t = let d = TK.data t in
                 Just EmitEvent -> do 
                         let ev = "event" .<< d
                         let uid = "account_id" .<< d
-                        liftIO $ print "event"
                         ES.emitEvent uid ev 
                         return True 
 

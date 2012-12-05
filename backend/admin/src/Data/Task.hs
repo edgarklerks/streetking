@@ -1,5 +1,10 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts, TemplateHaskell, ScopedTypeVariables, ViewPatterns, TypeSynonymInstances, FlexibleInstances #-}
-
+{-- 
+- Changelog
+- Edgar - default time from database 
+- Edgar - added emitEvent 
+-
+--}
 module Data.Task where
 
 import           Control.Applicative
@@ -17,6 +22,9 @@ import           Data.Attoparsec.Number
 import           Data.Time.Clock.POSIX
 import           Model.General 
 import           Data.DataPack
+import           Data.Account as DA
+import           Model.Functions
+import qualified Model.EventStream as ES 
 
 import qualified Model.Transaction as TR 
 import           Model.Transaction (transactionMoney)
@@ -32,6 +40,7 @@ import qualified Model.CarInstance as CI
 import qualified Model.Part as PM
 import qualified Model.PartInstance as PI
 import           Data.Chain
+import           Data.Event 
 
 -- TODO: static tasks
 -- -> have start time, updated time, end time; field "static" boolean
@@ -55,6 +64,7 @@ data Action =
     | TransferCar
     | EscrowCancel
     | EscrowRelease
+    | EmitEvent 
        deriving (Eq, Enum)
 
 
@@ -108,6 +118,16 @@ trackTime t trk uid tme  = do
         -- return unit for great justice
         return () 
 
+emitEvent :: Integer -> Event -> Integer -> SqlTransaction Connection ()
+emitEvent uid ev tm = do 
+        tid <- task EmitEvent tm $ mkData $ do 
+                    set "event" ev
+                    set "account_id" uid 
+                    set "time" tm 
+        trigger User uid tid 
+        return ()
+
+
 -- add or remove money from user account
 giveMoney :: Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
 giveMoney t uid amt tn tv = do
@@ -118,6 +138,7 @@ giveMoney t uid amt tn tv = do
             set "amount" amt
         trigger User uid tid
         return () 
+
 
 -- add or remove respect from user account
 giveRespect :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
@@ -204,7 +225,7 @@ runAll tp = Data.Task.run tp 0
 run :: Trigger -> Integer -> SqlTransaction Connection ()
 run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 
-        t <- liftIO $ floor <$> (1000 *) <$> getPOSIXTime
+        t <- (1000 *) <$> unix_timestamp
         
         cleanup $ t - 24 * 3600
 
@@ -270,12 +291,14 @@ executeTask t = let d = TK.data t in
                         return True 
    
                 Just GiveRespect ->do
-                        ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
-                        case ma of
-                            Nothing -> throwError "process: give respect: user not found"
-                            Just a -> do
-                                save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
-                                return True
+                        DA.addRespect ("account_id" .<< d) ("amount" .<< d)
+                        return True
+--                        ma <- load $ "account_id" .<< d :: SqlTransaction Connection (Maybe A.Account)
+--                        case ma of
+--                            Nothing -> throwError "process: give respect: user not found"
+--                            Just a -> do
+--                                save $ a { A.respect = (A.respect a) + ("amount" .<< d) }
+--                                return True
 
                 Just GivePart -> do
                         mp <- load $ "part_model_id" .<< d :: SqlTransaction Connection (Maybe PM.Part)
@@ -289,6 +312,12 @@ executeTask t = let d = TK.data t in
                         return True
 
                 Just GiveCar -> throwError "process: not implemented: GiveCar"
+                Just EmitEvent -> do 
+                        let ev = "event" .<< d
+                        let uid = "account_id" .<< d
+                        ES.emitEvent uid ev 
+                        return True 
+
 
                 -- TODO: use money transaction 
                 Just TransferMoney -> do

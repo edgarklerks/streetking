@@ -1,4 +1,4 @@
-{-# LANGUAGE ViewPatterns, RecordWildCards #-}
+{-# LANGUAGE ViewPatterns, RecordWildCards, ScopedTypeVariables #-}
 module Data.Reward where 
 
 
@@ -32,6 +32,8 @@ import Control.Monad.Trans
 import Data.Monoid hiding (Any, All) 
 import Data.Conversion
 import qualified Data.Account as DA
+import Data.List as List
+import qualified Model.RewardLogEvents as RLE 
 
 newtype Rewards = Rewards {
                     unRewards :: [Reward]
@@ -73,10 +75,10 @@ transform rw = Reward {
         }
 
 testRewards = transformRewards $ [
-             RL.RewardLog (Just 1) (Just 1) "1" "1" 1 True 2
-           , RL.RewardLog (Just 2) (Just 1) "2" "2" 2 True 3
-           , RL.RewardLog (Just 3) (Just 1) "1" "1" 3 True 4
-           , RL.RewardLog (Just 3) (Just 1) "1" "1" 3 True 6
+             RL.RewardLog (Just 1) (Just 1) "1" "1" 1 True 2    
+           , RL.RewardLog (Just 2) (Just 1) "2" "2" 2 True 3  
+           , RL.RewardLog (Just 3) (Just 1) "1" "1" 3 True 4  
+           , RL.RewardLog (Just 3) (Just 1) "1" "1" 3 True 6 
 
     ]
 transformRewards :: [RL.RewardLog] -> Rewards
@@ -112,7 +114,7 @@ checkRewardLog log = do
 activateRewards :: Integer -> SqlTransaction Connection () 
 activateRewards uid = do 
             xs <- runEventStream uid
-            forM_ xs $ \(n,e) -> 
+            forM_ xs $ \(n,e,ess) -> 
                 do
                     es <- search ["id" |== toSql e] [] 10000 0 :: SqlTransaction Connection [RW.RuleReward]
                     forM_ es $ \e -> do 
@@ -136,17 +138,50 @@ activateRewards uid = do
                                         -- void $ save $ ac { ACC.respect = ACC.respect ac + exp }
                                         void $ DA.addRespect uid exp
 
+                                        let (rids, tids, pids) = extractEvent ess 
+
                                         -- save to reward log 
-                                        void $ save $ def {
+                                        reward_id <- save $ def {
                                               RL.account_id = Just uid
                                             , RL.rule = RW.rule e
                                             , RL.name = RW.name e
                                             , RL.money = abs mny
                                             , RL.viewed = False 
-                                            , RL.experience = exp 
+                                            ,  RL.experience = exp 
                                             }
+                                        saveRewardLogEvent rids tids pids reward_id 
             return () 
 
+saveRewardLogEvent :: [Integer] -> [Integer] -> [Integer] -> Integer -> SqlTransaction Connection ()
+saveRewardLogEvent rs ts ps rewid = do 
+                forM_ rs $ \r -> do 
+
+                        save (def {
+                               RLE.type = "race",
+                               RLE.type_id = r,
+                               RLE.reward_log_id = rewid
+                            })
+                forM_ ts $ \t -> do 
+                        save (def {
+                                RLE.type = "tournament",
+                                RLE.type_id = t,
+                                RLE.reward_log_id = rewid 
+                                  })
+                forM_ ps $ \p -> do 
+                        save (def {
+                                RLE.type = "practice",
+                                RLE.type_id = p,
+                                RLE.reward_log_id = rewid
+                                  })
+
+
+extractEvent :: [Event] -> ([Integer], [Integer], [Integer])
+extractEvent xs = foldr step ([],[],[]) xs 
+        where step x (rs,ts,ps) = case x of 
+                                    Tournament _ i _ -> (rs,  i : ts, ps)
+                                    PracticeRace _ i -> (i : rs, ts, ps)
+                                    ChallengeRace _ _ i -> (rs,ts, i:ps) 
+                                    otherwise -> (rs,ts,ps) 
 
 loadRule :: Integer -> SqlTransaction Connection (String, Expr g Symbol, Bool)
 loadRule i = do 
@@ -158,22 +193,23 @@ loadRule i = do
                             Right a -> return (n,a, R.once x)
 
 
-runEventStream :: Integer -> SqlTransaction Connection [(String, Integer)]
+runEventStream :: Integer -> SqlTransaction Connection [(String, Integer, [Event])]
 runEventStream uid = do 
           es <- search ["account_id" |== toSql uid .&& "active" |== toSql True] [] 10000 0 :: SqlTransaction Connection [E.EventStream]
           xs <- forM es $ \e -> do 
                 (n,r,rb) <- loadRule (fromJust $ E.rule_id e)
-                let (xs, b) = matchEvent r (fromJust $ E.stream e <|> Just [])  
+                let stream = fromJust $ E.stream e <|> Just [] 
+                let (xs, b) = matchEvent r stream 
                 case b of 
                     False -> return []  
                     True -> do 
                             if rb 
                                 then do 
                                     save (e {E.stream = Just xs, E.active = False})
-                                    return [(n,fromJust $ E.rule_id e)]
+                                    return [(n,fromJust $ E.rule_id e, stream List.\\ xs)]
                                 else do 
                                     save (e {E.stream = Just xs})
-                                    return [(n,fromJust $ E.rule_id e)]
+                                    return [(n,fromJust $ E.rule_id e, stream List.\\ xs)]
                             
           return $ join xs 
 
@@ -271,7 +307,6 @@ matchSymbol :: Parser Symbol
 matchSymbol =  try tournamentI
            <|> tournamentS 
            <|> try levelI
-           <|> levelS 
            <|> try raceI 
            <|> raceS 
            <|> try practiceI
@@ -280,33 +315,57 @@ matchSymbol =  try tournamentI
 
 
 tournamentI :: Parser Symbol 
-tournamentI = string "T" *> 
-                        (TournamentI <$> 
-                            (try (Just <$> integer <* char ',') <|> pure Nothing)
-                            <*> integer)
+tournamentI = string "T" *> (uncurry3 TournamentI <$>  parseTriple)
 
 
 tournamentS :: Parser Symbol 
-tournamentS = string "T" *> pure TournamentS 
+tournamentS = string "T" *> pure (TournamentI Nothing Nothing Nothing)
 
 levelI :: Parser Symbol 
 levelI = string "L" *> (LevelI <$> integer)
 
-levelS :: Parser Symbol 
-levelS = string "L" *> pure LevelS 
 
 raceI :: Parser Symbol
-raceI = string "R" *> (RaceI <$> integer)
+raceI = string "R" *> (uncurry RaceI <$> parsePair)
 
 raceS :: Parser Symbol
-raceS = string "R" *> pure RaceS 
+raceS = string "R" *> pure (RaceI Nothing Nothing)
 
 practiceI :: Parser Symbol 
-practiceI = string "P" *> (PracticeI <$> integer) 
+practiceI = string "P" *> (PracticeI <$> parseArg) 
 
 practiceS :: Parser Symbol
-practiceS = string "P" *> pure PracticeS  
+practiceS = string "P" *> pure (PracticeI Nothing)
 
+
+uncurry3 :: (a -> b -> c -> d) -> (a,b,c) -> d
+uncurry3 f (a,b,c) = f a b c
+
+parseTriple :: Parser (Maybe Integer, Maybe Integer, Maybe Integer)
+parseTriple = do 
+        x <- parseArg 
+        char ','
+        y <- parseArg 
+        char ','
+        z <- parseArg 
+        return (x,y,z)
+
+
+
+parsePair :: Parser (Maybe Integer, Maybe Integer)
+parsePair = do 
+        x <- parseArg 
+        char ','
+        y <- parseArg 
+        return (x,y)
+
+parseArg :: Parser (Maybe Integer)
+parseArg = parseEmpty <|> parseInteger  
+
+    where parseEmpty :: Parser (Maybe Integer)
+          parseEmpty = char '_' *> pure Nothing 
+          parseInteger :: Parser (Maybe Integer)
+          parseInteger = Just <$> integer 
 
 integer :: Parser Integer 
 integer = read <$> many1 num 
@@ -328,4 +387,18 @@ testTournament =do
             print $ parse matchSymbol "" "L123"
             print $ parse matchSymbol "" "L"
               
-                
+
+eitherToMaybe :: Either a b -> Maybe b 
+eitherToMaybe (Left e) = Nothing 
+eitherToMaybe (Right a) = Just a 
+
+rewardAction :: Event -> SqlTransaction Connection [RW.RuleReward] 
+rewardAction sb = do 
+    xs <- search [] [] 1000000 0 :: SqlTransaction Connection [RW.RuleReward]
+    let ys =  flip fmap xs $ \rw -> 
+                let step x | match sb x = Just rw 
+                           | otherwise = Nothing 
+                in step =<< toOne  =<< eitherToMaybe (parse parseRule "" (RW.rule rw))
+
+    return $ catMaybes ys
+

@@ -154,7 +154,7 @@ internalError x = modifyResponse (setResponseCode 500) *> (CIO.throw $ UserError
 
 
 runCompose m = with sql $ withConnection $ \c -> do 
-                frp <- runComposeMonad m error c
+                frp <- runComposeMonad undefined m error c
                 frp `seq` return frp 
 
 

@@ -28,7 +28,7 @@
 				</div>
 			</div>
 			<div class="welcome-car-element-info-data-box">
-				<div class="welcome-car-element-info-data-name">Weight <span>[:eval floor(wear/100)]</span> kg</div>
+				<div class="welcome-car-element-info-data-name">Weight <span>[:weight_values.text]</span> kg</div>
 			</div>
 		</div>
 		<div class="welcome-car-element-buttons-box">

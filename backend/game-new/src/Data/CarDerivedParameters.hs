@@ -230,7 +230,7 @@ addParam i w p ps = case p of
 -- modify parameter for improvement and wear. improvement can add up to 50% and wear can reduce up to 50%. effects are multiplicative.
 -- parameter = parameter0 * (1 + 0.5 * (improvement / 10000.0)) * (1 - 0.5 * (wear / 10000.0));
 paramModified :: Double -> Double -> Double -> Double
-paramModified v i w = v * (1 + 0.5 * i) * (1 - 0.5 * w);
+paramModified v i w = v * (1 + 0.3 * i) * (1 - 0.5 * w);
 
 baseParameters :: CarPartMap -> CarBaseParameters
 baseParameters m = HM.foldr step zeroParams m

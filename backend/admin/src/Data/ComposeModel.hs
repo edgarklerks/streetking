@@ -9,7 +9,8 @@ module Data.ComposeModel(
         ComposeMonad,
         deep,
         abort,
-        liftDb
+        liftDb,
+        getComposeUser
     )where 
 
 import Data.SqlTransaction 
@@ -34,6 +35,7 @@ import Model.General
 import Data.Database
 import Data.Aeson 
 import Control.Monad.Cont 
+import qualified LockSnaplet as L 
 
 
 
@@ -51,9 +53,11 @@ instance Monoid ComposeMap where
 
 
 newtype ComposeMonad r c a = CM {
-                unCM  :: ContT r (ReaderT c (WriterT ComposeMap (SqlTransaction c))) a    
+                unCM  :: ContT r (ReaderT c (WriterT ComposeMap (SqlTransactionUser L.Lock c))) a    
             } deriving (Functor, Applicative, Monad, MonadReader c, MonadIO, MonadCont) 
 
+
+getComposeUser = CM $ lift $ lift $ lift getUser 
 
 instance MonadError String (ComposeMonad r c) where 
             throwError c = CM $ lift (throwError c)
@@ -87,7 +91,7 @@ instance Monoid (ComposeMonad r c ()) where
                                 r ()
 
                 
-unsafeRunCompose c (CM m) = runSqlTransaction (fmap Right . execWriterT $ runReaderT (runContT m (return))  c ) (return . Left) c 
+unsafeRunCompose l c (CM m) = runSqlTransaction (fmap Right . execWriterT $ runReaderT (runContT m (return)) c) (return . Left) c l
 
 
 
@@ -96,9 +100,9 @@ instance ToInRule Box where
 instance ToInRule ComposeMap where 
             toInRule = toInRule . fmap toInRule . unComposeMap 
 
-runComposeMonad :: (Applicative m, MonadIO m) => ComposeMonad a Connection a -> (String -> m (H.HashMap String InRule)) -> Connection -> m (H.HashMap String InRule)
-runComposeMonad m f c = do -- (ComposeMap xs)
-                                ts <- unsafeRunCompose c m 
+-- runComposeMonad :: (Applicative m, MonadIO m) => ComposeMonad a Connection a -> (String -> m (H.HashMap String InRule)) -> Connection -> m (H.HashMap String InRule)
+runComposeMonad l m f c = do -- (ComposeMap xs)
+                                ts <- unsafeRunCompose l c m 
                                 case ts of 
                                     Left s -> f s  
                                     Right (ComposeMap xs) -> return $ (fmap toInRule xs) 
@@ -108,7 +112,8 @@ runComposeMonad m f c = do -- (ComposeMap xs)
 deep :: String -> ComposeMonad a Connection a -> ComposeMonad r Connection ()
 deep s m = do 
             c <- ask
-            a <- liftIO $ unsafeRunCompose c m  
+            l <- getComposeUser 
+            a <- liftIO $ unsafeRunCompose l c m 
             case a of 
                 Right a -> label s a 
                 Left s -> throwError s
@@ -140,7 +145,7 @@ abort m = CM $ ContT $ \abort -> return m
 
 runTest m = do 
             c <- db 
-            runComposeMonad m error c
+            runComposeMonad (error "do not use") m error c
 
 expand :: ToInRule a => [(String, a)] -> ComposeMonad r c ()
 expand xs = forM_ xs $ \(s,x) -> label s x 

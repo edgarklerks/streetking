@@ -1,4 +1,10 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings, ViewPatterns #-}
+{-- Change log 
+- Edgar - added immutable predicate 
+- Edgar - added immutable setters and getters 
+- Edgar -- changed immutable flag to a quantity semaphore 
+-
+--}
 module Model.CarInstance where 
 
 import           Data.SqlTransaction
@@ -14,8 +20,10 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+import           Data.Maybe 
 
 type MInteger = Maybe Integer 
+
 
 $(genAll "CarInstance" "car_instance"
     [
@@ -23,10 +31,18 @@ $(genAll "CarInstance" "car_instance"
         ("car_id", ''Integer),
         ("garage_id", ''MInteger),
         ("deleted", ''Bool),
-        ("active", ''Bool),
         ("prototype", ''Bool),
-        ("prototype_name", ''String),
-        ("prototype_claimable", ''Bool),
-        ("prototype_available", ''Bool)
+        ("active", ''Bool),
+        ("immutable", ''Integer)
+
     ]
     )
+isMutable :: Integer -> SqlTransaction Connection Bool 
+isMutable = fmap ((==0) .  immutable . fromJust) . load 
+
+
+setImmutable :: Integer -> SqlTransaction Connection Integer 
+setImmutable = load >=> \(fromJust -> c) -> save (c { immutable = immutable c + 1})
+
+setMutable :: Integer -> SqlTransaction Connection Integer 
+setMutable = load >=> \(fromJust -> c) -> save (c { immutable = max 0 (immutable c - 1)})

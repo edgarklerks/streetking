@@ -283,18 +283,23 @@ list xs = InArray xs
 --
 --
 project :: InRule -> InRule -> InRule 
-project xs@(InObject _) (InObject sp)  = InObject $ mapWithKey step sp 
-            where step k x = case xs .> k of 
+project (InObject xs) (InObject ps) = InObject $ mapWithKey step xs
+            where step k x = case Map.lookup k ps of
                                     Nothing -> x
-                                    Just a -> project a x 
-project    (InArray xs) (InArray sp) = InArray $ stepBoth xs sp 
+                                    Just p -> project x p
+
+project (InArray xs) (InArray sp) = InArray $ stepBoth xs sp 
                         where stepBoth (x:xs) (s:sp) = project x s : stepBoth xs sp 
                               stepBoth []  sp = sp 
                               stepBoth xs  [] = []
+
 project a b = b 
 
-                
 
+{-- filterKey :: [String] -> InRule -> InRule 
+filterKey f obj = kfold
+--}
+--
 mapWithKey :: (k -> a -> b) -> Map.HashMap k a -> Map.HashMap k b 
 mapWithKey f xs = runIdentity $ Map.traverseWithKey step xs 
         where   step k = return . f k 

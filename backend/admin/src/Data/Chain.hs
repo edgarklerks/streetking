@@ -17,18 +17,20 @@ import Data.IORef
 import qualified Data.HashMap.Strict as S 
 import Control.Monad.Trans 
 import Debug.Trace 
+import Control.Concurrent.STM 
+
 
 {-# NOINLINE lolwut #-}
-lolwut :: IORef [(TK.Task -> Bool, TK.Task -> SqlTransaction Connection Bool)]
-lolwut = unsafePerformIO $ newIORef []  
+lolwut :: TVar [(TK.Task -> Bool, TK.Task -> SqlTransaction Connection Bool)]
+lolwut = unsafePerformIO $ newTVarIO []  
 
 
 registerTask :: (TK.Task -> Bool) -> (TK.Task -> SqlTransaction Connection Bool) -> IO ()
-registerTask f x = atomicModifyIORef lolwut (\xs -> ((f,x) : xs, ()))
+registerTask f x = atomically $ modifyTVar lolwut (\xs -> ((f,x) : xs))
 
 runTask :: TK.Task -> SqlTransaction Connection Bool 
 runTask t = do 
-             fs <- liftIO $ readIORef lolwut 
+             fs <- liftIO $ readTVarIO lolwut 
              let stepM [] = error "last shit not found"
                  stepM ((pred,f):fs) | pred t = traceShow t $ f t
                                      | otherwise = stepM fs 

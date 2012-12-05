@@ -21,6 +21,7 @@
 					<div class="report-element-info-data-name">Level: <span>[:tournament.minlevel] - [:tournament.maxlevel]</span></div>
 				</div>
 				<div class="report-element-infobar-container">
+					<div><input type="button" value="reward" class="button" reward_id="[:tournament_id]" r_type="tournament"></div>
 					<div><a href="#Tournament/idk?tournament_id=[:tournament_id]" class="button" module="TOURNAMENT_GO_RESULT">more</a></div>
 				</div>
 				<div class="clearfix"></div>

@@ -15,15 +15,18 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id, length)
 
+type MInteger = Maybe Integer
+type Data = Maybe String 
 $(genAll "Track" "track" 
     [
         ("id", ''Id),
-        ("city_id", ''Integer),
         ("name", ''String),
+        ("city_id", ''Integer),
         ("level", ''Integer),
-        ("energy_cost", ''Integer),
-        ("data", ''String),
+        ("data", ''Data),
         ("loop", ''Bool),
-        ("length", ''Double),
-        ("top_time_id", ''Id)
+        ("length", ''Integer),
+        ("top_time_id", ''MInteger),
+        ("energy_cost", ''Integer)
+        
     ])

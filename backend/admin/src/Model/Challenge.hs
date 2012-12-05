@@ -23,7 +23,8 @@ import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
-import qualified Data.Racing as RC
+--import qualified Data.Racing as RC
+import Data.RaceParticipant
 
 type MInteger = Maybe Integer
 
@@ -37,7 +38,7 @@ $(genAll "Challenge" "challenge" [
                     ("account_min", ''APM.AccountProfileMin),
 --                    ("car", ''CIG.CarInGarage),
                     ("car_min", ''CMI.CarMinimal),
-                    ("challenger", ''RC.RaceParticipant),
+                    ("challenger", ''RaceParticipant),
                     ("deleted", ''Bool),
  --                   ("escrow_id", ''MInteger),
                     ("amount", ''Integer)

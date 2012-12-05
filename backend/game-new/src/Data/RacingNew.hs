@@ -165,7 +165,6 @@ partsWear x rr = let speed  = fromRational $ toRational $ raceSpeedAvg rr * 3.6
                      rt =  raceTime rr 
                  in do 
                 wpm <- getKey "wearpm"
-                liftIO $ print wpm 
                 (Just c) <- load x :: SqlTransaction Connection (Maybe CIG.CarInGarage)
 
                 when (not $ CIG.prototype c) $ do 
@@ -173,7 +172,6 @@ partsWear x rr = let speed  = fromRational $ toRational $ raceSpeedAvg rr * 3.6
                     xs <- search ["car_instance_id" |==  toSql x ] [] 1000 0 :: SqlTransaction Connection [PI.PartInstance]
                     forM_ xs $ \c -> do 
                         s <- calcWear wpm speed rt (10000 - fromInteger (PI.wear c)) 
-                        liftIO $ print (floor s, rt)
                         save (c { PI.wear = PI.wear c + floor s})
 
 healthLost :: Integer -> RaceResult -> SqlTransaction Connection ()

@@ -1,5 +1,15 @@
 {-# LANGUAGE RankNTypes, GADTs, StandaloneDeriving, NoMonoLocalBinds, NoMonomorphismRestriction, GeneralizedNewtypeDeriving,OverloadedStrings, ScopedTypeVariables, DeriveGeneric, TypeSynonymInstances, FlexibleInstances, ImpredicativeTypes #-}
-module Data.MemState where  
+module Data.MemState (
+            MemState,
+            Query(..),
+            Result(..),
+            QueryChan,
+            runQuery,
+            newMemState,
+            queryManager
+            
+                     
+        ) where  
 
 import qualified Data.HashMap.Strict as H 
 import           Control.Monad.STM
@@ -23,15 +33,17 @@ data MemState = MS {
             lock :: MVar (),
             changes :: TVar Int 
         } 
-type MemMap = (H.HashMap B.ByteString (TVar B.ByteString))
+
+type MemMap = H.HashMap B.ByteString (TVar B.ByteString)
 type Snapshot = H.HashMap B.ByteString B.ByteString
+
 
 instance S.Serialize Snapshot where 
             put = S.put . H.toList
             get = H.fromList <$> S.get
 
 newQueryChan :: IO QueryChan 
-newQueryChan = newTChanIO
+newQueryChan = newTQueueIO
 
 addCounter :: MemState -> STM ()
 addCounter = flip modifyTVar (+1) . changes 
@@ -86,8 +98,8 @@ loadsnapshot m = foldM step (H.empty) (H.keys m)
                                         return $ H.insert i p x
 
 
-newMemState :: FilePath -> IO MemState 
-newMemState fp = do 
+newMemState :: t -> t -> FilePath -> IO MemState 
+newMemState _ _ fp = do 
            b <- doesFileExist fp  
            if b then mkstate fp 
                 else mknewstate  
@@ -152,11 +164,12 @@ instance S.Serialize Result where
 data Op = I | D | Q
 
 type Unique a = TMVar a
-type QueryChan = TChan (Query, Unique Result)
+type QueryChan = TQueue (Query, Unique Result)
 
+test :: IO a
 test = do 
-    m <- newMemState "asd"
-    n <- newTChanIO 
+    m <- newMemState undefined undefined "asd"
+    n <- newTQueueIO 
     forkIO $ queryManager "asd" m n
    
     forkIO $  iclient n 1 1000
@@ -167,6 +180,7 @@ test = do
     forever $ threadDelay 10000
 
 
+iclient :: (Enum a, Show a) => QueryChan -> a -> a -> IO ()
 iclient n p q = forM_ [p..q] $ \i -> runQuery n $ Insert (C.pack $ show i) (C.pack $ show i)
 
     
@@ -178,7 +192,7 @@ queryManager fp m c = let ms = unMS m
                         when (i > 1000) $ void $ forkIO $ do 
                                     atomically $ resetCounter m 
                                     storeSnapShot fp m 
-                        (q,u) <- atomically $ readTChan c
+                        (q,u) <- atomically $ readTQueue c
                         case q of 
                             Insert x y -> atomically $ do 
                                                 addCounter m 
@@ -203,6 +217,6 @@ queryManager fp m c = let ms = unMS m
 runQuery :: QueryChan   -> Query ->  IO Result 
 runQuery s x = do 
             un <- newEmptyTMVarIO 
-            atomically $ writeTChan s (x, un) 
+            atomically $ writeTQueue s (x, un) 
             atomically $ takeTMVar un 
 

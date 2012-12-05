@@ -505,4 +505,4 @@ loadPartModel n = do
                 let s = record ("part_"  ++ (show (Part.id p))) (10,10) 
                 s <- foldM step (record) ps  
 --}
-runl m = testdb >>= \x -> runSqlTransaction m error x <* disconnect x
+runl m = testdb >>= \x -> runSqlTransaction m error x undefined <* disconnect x

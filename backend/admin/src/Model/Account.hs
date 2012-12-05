@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TemplateHaskell, OverloadedStrings, ScopedTypeVariables, ViewPatterns, ScopedTypeVariables #-}
 module Model.Account where 
 
 import           Data.SqlTransaction
@@ -42,6 +42,7 @@ $(genAll "Account" "account" [
                     ("skill_unused", ''Integer),
                     ("city", ''Integer),
                     ("busy_type", ''Integer),
-                    ("busy_subject_id", ''Integer)
+                    ("busy_subject_id", ''Integer),
+                    ("free_car", ''Bool)
     ])
 

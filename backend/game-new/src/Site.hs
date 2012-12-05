@@ -92,6 +92,7 @@ import qualified Model.RaceDetails as RAD
 import qualified Model.EventStream as ES 
 import qualified Model.RaceReward as RWD
 import qualified Model.RewardLog as RL 
+import qualified Model.RewardLogEvent as RLE 
 import qualified Model.TournamentPlayers as TP 
 import qualified Model.Tournament as TR 
 import qualified Model.Tournament as TRM 
@@ -166,6 +167,7 @@ import qualified LockSnaplet as SL
 import qualified Model.Diamonds as DM 
 
 import qualified Notifications as N 
+import           Data.Decider 
 
 ------------------------------------------------------------------------------
 -- | Renders the front page of the sample site.
@@ -1391,7 +1393,7 @@ rextract k xs = case HM.lookup k xs of
 reportShopper :: Integer -> -- account_id, should exist and is a bigint 
                  SR.ShopReport -> -- ShopReport is a named parameter object (Model/ShopReport) 
                  SqlTransaction -- Executable and Composable Database Context for Forming Transactions 
-                    Connection -- Polymorphic Database Connection Descriptor.  
+                    Connection -- Monomorphic Database Connection Descriptor.  
                     () -- Resultant type of computation 
 reportShopper uid x = do -- syntactic sugar for heightening readability.  
                 -- some space to enforce enterprise ready deployability. 
@@ -1522,7 +1524,10 @@ travelReports = do
 searchReports :: RP.Type -> Application ()
 searchReports t = do
         uid <- getUserId
-        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid) +&& "type" +==| (toSql t))
+        tim <- runDb $ milliTime 
+        ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid) +&& "type" +==| (toSql t) +&& "time" +<=| (SqlInteger tim)
+        
+            )
         ns :: [RP.Report] <- runDb $ do
             userActions uid
             search xs [Order ("time",[]) False] l o 
@@ -1731,7 +1736,6 @@ racePractice = do
             userActions uid
 
             a <- aload uid (rollback "you dont exist, go away") :: SqlTransaction Connection A.Account
-            let am = APM.toAPM a
 
             -- check busy
             when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
@@ -1748,20 +1752,15 @@ racePractice = do
             g <- aget ["account_id" |== toSql uid] (rollback "garage not found") :: SqlTransaction Connection G.Garage 
             c <- getCarInGarage ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found")
 
-            -- TODO: active car reacy?
-            let cm = CMI.toCM c
-            
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
 
-
-            let y = RaceParticipant a am c cm Nothing
-            
             t <- milliTime 
-            (rid, rs) <- processRace t [y] tid 
-           
-            let etime = t + (maximum $ ceiling  . (*1000) . raceTime <$> (fmap snd rs))
-            Task.emitEvent uid (PracticeRace tid) etime 
+            (rid, rs) <- let y = RaceParticipant a (APM.toAPM a) c (CMI.toCM c) Nothing
+                         in processRace 1 t [y] tid 
+             
+            Task.emitEvent uid (PracticeRace tid rid) $  t + (maximum $ ceiling  . (*1000) . raceTime <$> (fmap snd rs))
+ 
             forM_ rs $ \r -> do 
                     healthLost (rp_account_id $ fst r) (snd r) 
                     partsWear (rp_car_id $ fst r) (snd r)  
@@ -1802,12 +1801,9 @@ raceChallengeWith p = do
             userActions  uid
             Task.run Task.User uid
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
-            let am = APM.toAPM a
 
             -- check busy
             when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
-
-            -- check track level
             t <- aget ["track_id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
             when (A.level a < TT.track_level t) $ rollback "Your are not ready for this track"
 
@@ -1816,9 +1812,8 @@ raceChallengeWith p = do
             when (A.energy a < ecost) $ rollback "You don't have enough energy, bro"
 
             c  <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car not found")
-            let cm = CMI.toCM c 
 
-            _  <- adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
+            adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
 
             -- apply energy cost
@@ -1827,6 +1822,9 @@ raceChallengeWith p = do
             me <- case amt > 0 of
                     True -> Just <$> Escrow.deposit uid amt
                     False -> return Nothing
+
+            let am = APM.toAPM a
+            let cm = CMI.toCM c 
 
             save $ (def :: Chg.Challenge) {
                     Chg.track_id = tid,
@@ -1844,8 +1842,6 @@ raceChallengeWith p = do
             return True
         writeResult i
 
-
-cons f = return () 
 
 
 raceChallengeAccept :: Application ()
@@ -1871,6 +1867,7 @@ raceChallengeAccept = do
             
             userActions  uid
             userActions  $ rp_account_id $ Chg.challenger chg
+
             Task.run Task.User uid
             Task.run Task.User $ rp_account_id $ Chg.challenger chg
 
@@ -1879,11 +1876,8 @@ raceChallengeAccept = do
                     True -> fmap Just $ Escrow.deposit uid $ Chg.amount chg
                     False -> return Nothing 
 
-            cons "wunk"
-            cons (me :: Maybe Integer)
 
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
---            am <- aget ["id" |== toSql uid] (rollback "account minimal not found") :: SqlTransaction Connection APM.AccountProfileMin
             let am = APM.toAPM a
 
             let tid = Chg.track_id chg
@@ -1906,37 +1900,20 @@ raceChallengeAccept = do
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
 
-            cons a
-            cons am
-            cons c
-            cons cm
-
             let y = RaceParticipant a am c cm me
           
-            cons "wghr"
-            cons y
-
             -- TODO: add user to accepts list
             -- when count(accepts) >= participants, start race
             -- fetch participants as array
             -- run race with array
 
-            -- get participants
-            let ps = [y, Chg.challenger chg]
-            cons ps 
             -- delete challenge
             foo <- save $ chg { Chg.deleted = True }
 
-            cons "kwun: " 
-            cons foo
-            
             -- process race
             t <- milliTime 
             CarInstance.setMutable (fromJust $ CMI.id $ Chg.car_min chg)
-            (rid, rs) <- processRace t ps (Chg.track_id chg)
-
-            cons "iwunk: " 
-            cons rid
+            (rid, rs) <- processRace 2 t [y, Chg.challenger chg] (Chg.track_id chg)
 
             forM_ (rs) $ \r -> do 
                     partsWear (rp_car_id $ fst r) (snd r)  
@@ -1945,12 +1922,15 @@ raceChallengeAccept = do
             let fin r = (t+) $ ceiling $ raceTime r 
             let t1 = (\(_,r) -> fin r) $ head rs
             let winner_id = rp_account_id $ fst $ head rs
-
+            let other_id = rp_account_id $ Chg.challenger chg
 
             forM_ rs $ \(p,r) -> do
-                cons "form" 
 
                 let isWinner = (rp_account_id p) == winner_id
+
+                if isWinner then Task.emitEvent (rp_account_id p) (ChallengeRace 1 tid rid) t1 
+                            else Task.emitEvent (rp_account_id p) (ChallengeRace 2 tid rid) t1 
+
  
                 -- task: transfer challenge objects
                 case chgt of
@@ -1981,14 +1961,11 @@ raceChallengeAccept = do
         writeResult rid
 
 
-processRace :: Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)]) 
-processRace t ps tid = do
+processRace :: Integer -> Integer -> [RaceParticipant] -> Integer -> SqlTransaction Connection (Integer, [(RaceParticipant, RaceResult)]) 
+processRace typid t ps tid = do
 
-        let env = defaultEnvironment
         trk <- trackDetailsTrack <$> (agetlist ["track_id" |== toSql tid] [] 1000 0 (rollback "track data not found") :: SqlTransaction Connection [TD.TrackDetails])
         tdt <- aget ["track_id" |== toSql tid] (rollback "track not found") :: SqlTransaction Connection TT.TrackMaster
-
-        cons "pral"
 
         -- race participants
         rs' <- forM ps $ \p -> do
@@ -1999,19 +1976,10 @@ processRace t ps tid = do
 
         let rs = List.sortBy (\(_, a) (_, b) -> compare (raceTime a) (raceTime b)) rs'
 
-        cons "laap"
-
-        cons rs
 
         -- current time, finishing times, race time (slowest finishing time) 
         let fin r = (t+) $ ceiling $ (1000 *) $ raceTime r  
-        let te = (\(_,r) -> fin r) $ last rs
-
-
-        cons "saving race..."
-        cons $ concat ["track id = ", show tid]
-        cons $ concat ["start time = ", show t]
-        cons $ concat ["end time = ", show te]
+        let te = fin $ snd $ last rs
 
         when (te > 9223372036854775808) $ rollback "finish time out of bounds"
 
@@ -2020,20 +1988,13 @@ processRace t ps tid = do
                     R.track_id = tid,
                     R.start_time = t,
                     R.end_time = te,
-                    R.type = 1,
-                    R.data = map (\(p,r) -> raceData p r) rs 
+                    R.type = typid,
+                    R.data = uncurry raceData <$> rs 
                 }
 
-        cons $ "saved race " ++ (show rid)
-
-        let winner_id = rp_account_id $ fst $ head rs
-
         forM_ rs $ \(p,r) -> do
-            
-                let uid = rp_account_id p
-                let ft = fin r
-                let isWinner = uid == winner_id
-
+                let uid = rp_account_id p  
+                let ft = fin r 
                 -- set account busy until user finish; subtract energy
                 update "account" ["id" |== toSql uid] [] [("busy_until", toSql ft), ("busy_subject_id", toSql rid), ("busy_type", SqlInteger 2)]
 
@@ -2052,6 +2013,7 @@ processRace t ps tid = do
                     set "track_data" tdt
                     set "participant" p
                     set "result" r
+                    set "type" typid
 
         -- return race id
         return (rid, rs)
@@ -2347,12 +2309,43 @@ reportIssue = do
         let b = updateHashMap xs (def :: SUP.Support)
         runDb $ save (b { SUP.account_id = uid })
         writeResult (1 :: Integer)
-        
+
+    
+
 getUserGarageId :: Application Integer
 getUserGarageId = do 
         uid <- getUserId 
         g <- runDb (aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage)
         return $ fromJust $ G.id g
+
+
+----
+-- runDb :: SqlTransaction ->  Application 
+--
+-- Application
+findRewards :: Application ()
+findRewards = do 
+        uid <- getUserId
+        js  <- getJson >>= scheck ["type", "id"]
+        let ttype = HM.lookupDefault "tournament" "type" js :: SqlValue 
+        case ttype of 
+            "tournament" -> tournamentRewards (convert $ HM.lookup ("id" :: String) js)
+            otherwise -> internalError "No such type"
+
+
+tournamentRewards :: Integer -> Application ()
+tournamentRewards tid = do 
+                xs <- runDb $ do 
+                        t <- loadTournament tid 
+                        let pos = [1 .. TR.players t]
+                        ys <- forM pos $ \p -> do  
+                                ys <- (getTournamentRewards t p)
+                                return $ ys 
+                        return $ HM.fromList ( (show <$> pos) `zip` ys)
+                writeResult $ xs 
+        where getTournamentRewards t p = do
+                    xs <- rewardAction (Tournament p (fromJust $ TRM.id t) (TRM.tournament_type_id t))
+                    return $ xs
 
 
 
@@ -2449,13 +2442,33 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Tournament/idk", tournamentPlayers),
                 ("/Tournament/report", tournamentReport),
                 ("/Reward/get", rewardLog),
+                ("/Reward/find", findRewards),
+                ("/Reward/event", getRewards),
                 ("/Support/send", reportIssue) 
           ]
+
+getRewards :: Application ()
+getRewards = do 
+        uid <- getUserId 
+        runDb $ activateRewards uid 
+        (((l,o), xs),od) <- getPagesWithDTDOrdered ["id"] (
+           "account_id" +==| (toSql uid) +&& 
+           "id" +== "id" +&& 
+           "type_id" +== "type_id" +&&
+           "type" +== "type"
+            ) 
+        xs <- runDb $ do 
+                rs <- search xs od l o :: SqlTransaction Connection [RLE.RewardLogEvent]
+                forM rs $ \r -> do 
+                       fromJust <$> load (fromJust $ RLE.id r) :: SqlTransaction Connection (RL.RewardLog)
+
+        writeResult (transformRewards xs) 
+
 rewardLog :: Application ()
 rewardLog = do 
         uid <- getUserId 
         runDb $ activateRewards uid 
-        (((l,o), xs),od) <- getPagesWithDTDOrdered ["id","name","viewed","experience","money"] (
+        (((l,o), xs),od) <- getPagesWithDTDOrdered ["id","name","viewed","experience","money", "tournament_id", "practice_id", "race_id"] (
            "account_id" +==| (toSql uid) +&&
            "id" +== "id" +&& 
 

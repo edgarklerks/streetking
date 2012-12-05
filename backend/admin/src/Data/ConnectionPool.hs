@@ -37,12 +37,12 @@ instance Show ConnectionBucket where
         show (Filled _) = " |*| "
                         
 newtype ConnectionPool = ConnectionPool {
-        unConnectionPool :: (TChan Pointer, TArray Int ConnectionBucket) 
+        unConnectionPool :: (TQueue Pointer, TArray Int ConnectionBucket) 
     }
 
 initConnectionPool :: Int -> (IO Connection) -> IO ConnectionPool 
 initConnectionPool n c = do 
-            x <- newTChanIO 
+            x <- newTQueueIO 
             (xs, s) <- foldM step ([],x) [0..n]
             at <- atomically $ newListArray (0,n) xs :: IO (TArray Int ConnectionBucket)
             let cp = ConnectionPool (s, at)
@@ -50,7 +50,7 @@ initConnectionPool n c = do
             return cp 
     where step (z,s) a = do 
                 x <- c
-                atomically $ writeTChan s a
+                atomically $ writeTQueue s a
                 return (((Filled x) : z), s)
 
 emptyConnectionBucket :: ConnectionPool -> Int -> Int -> STM ()
@@ -91,7 +91,7 @@ getConnection x = do
 returnConnection :: ConnectionPool -> ConnectionContext -> IO ()
 returnConnection t@(ConnectionPool (pt, ta)) (ConnectionContext (i,c)) = do 
     commit c
-    atomically $ (writeTChan pt i >> fillConnectionBucket t i)
+    atomically $ (writeTQueue pt i >> fillConnectionBucket t i)
                     
 
 unwrapContext :: ConnectionContext -> Connection
@@ -99,7 +99,7 @@ unwrapContext (ConnectionContext (i,c)) = c
 
 unsafeGetConnection :: ConnectionPool -> Int -> STM ConnectionContext  
 unsafeGetConnection t@(ConnectionPool (pt, ta)) e = do 
-                p <- readTChan pt
+                p <- readTQueue pt
                 (Filled x) <- readArray ta p  
                 emptyConnectionBucket t p e
                 return $ ConnectionContext (p, x) 

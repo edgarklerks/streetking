@@ -18,7 +18,8 @@ $(genAll "TrackDetails" "track_details" [
                     ("id", ''Id),
                     ("track_id", ''Integer),
                     ("radius", ''Double),
-                    ("length", ''Double)
+                    ("length", ''Double),
+                    ("segment", ''String)
     ]
     )
 

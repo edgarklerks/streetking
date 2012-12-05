@@ -14,14 +14,11 @@ import Data.Attoparsec.Number
 
 
 data Symbol where 
-    TournamentI :: Maybe Integer -> Integer -> Symbol 
-    TournamentS :: Symbol 
-    LevelS :: Symbol 
+     -- TournamentI :: pos -> id -> type id  
+    TournamentI :: Maybe Integer -> Maybe Integer -> Maybe Integer -> Symbol 
     LevelI :: Integer -> Symbol 
-    RaceS :: Symbol
-    RaceI :: Integer -> Symbol 
-    PracticeS :: Symbol
-    PracticeI :: Integer -> Symbol 
+    RaceI :: Maybe Integer -> Maybe Integer -> Symbol 
+    PracticeI :: Maybe Integer -> Symbol 
  deriving Show 
 
 
@@ -34,13 +31,13 @@ eventDecider = buildDecider match
  -- Elke regel heeft zijn eigen stream per gebruiker 
  -- die worden opgeslagen in de database
  -- streams worden parallel afgehandeld. 
-
+ -- position and then id 
 data Event where 
-    -- place and Id
-    Tournament :: Integer -> Integer -> Event 
+    -- pos and Id
+    Tournament :: Integer -> Integer -> Integer -> Event 
     -- Race practice  place 
-    PracticeRace :: Integer -> Event
-    ChallengeRace :: Integer -> Event 
+    PracticeRace :: Integer -> Integer -> Event
+    ChallengeRace :: Integer -> Integer -> Integer -> Event 
     -- Level 
     Level :: Integer -> Event      
         deriving (Show, Eq)
@@ -48,16 +45,16 @@ data Event where
 
 
 instance ToInRule Event where 
-    toInRule (Tournament p d) = InArray [InString "T", InInteger p, InInteger d]
-    toInRule (PracticeRace p) = InArray [InString "P", InInteger p]
-    toInRule (ChallengeRace p) = InArray [InString "R", InInteger p]
+    toInRule (Tournament p d t) = InArray [InString "T", InInteger p, InInteger d, InInteger t]
+    toInRule (PracticeRace p lid) = InArray [InString "P", InInteger p, InInteger lid]
+    toInRule (ChallengeRace p t lid) = InArray [InString "R", InInteger p, InInteger t, InInteger lid]
     toInRule (Level p) = InArray [InString "L", InInteger p]
 
 
 instance FromInRule Event where 
-    fromInRule (InArray [InString "T", InInteger p, InInteger d]) = Tournament p d 
-    fromInRule (InArray [InString "P", InInteger p]) = PracticeRace p 
-    fromInRule (InArray [InString "R", InInteger p]) = ChallengeRace p 
+    fromInRule (InArray [InString "T", InInteger p, InInteger d, InInteger t]) = Tournament p d t
+    fromInRule (InArray [InString "P", InInteger p, InInteger l]) = PracticeRace p l
+    fromInRule (InArray [InString "R", InInteger p, InInteger t, InInteger l]) = ChallengeRace p t l
     fromInRule (InArray [InString "L", InInteger p]) = Level p 
 
 
@@ -68,18 +65,31 @@ instance AS.ToJSON Event where
 
 instance AS.FromJSON Event where 
         parseJSON (AS.Array x) = case x V.! 0 of 
-                                    (AS.String "T") -> return $ Tournament (toInt $ x V.! 1) (toInt $ x V.! 2)
-                                    (AS.String "P") -> return $ PracticeRace (toInt $ x V.! 1) 
-                                    (AS.String "R") -> return $ ChallengeRace (toInt $ x V.! 1)
+                                    (AS.String "T") -> return $ Tournament (toInt $ x V.! 1) (toInt $ x V.! 2) (toInt $ x V.! 3)
+                                    (AS.String "P") -> return $ PracticeRace (toInt $ x V.! 1) (toInt $ x V.! 2) 
+                                    (AS.String "R") -> return $ ChallengeRace (toInt $ x V.! 1) (toInt $ x V.! 2) (toInt $ x V.! 3)
                                     (AS.String "L") -> return $ Level (toInt $ x V.! 1)
                                     otherwise -> mzero 
         parseJSON _ = mzero 
 
 toInt :: AS.Value -> Integer
 toInt (AS.Number (I x)) = x
+
+cmp :: Eq a => Maybe a -> a -> Bool 
+cmp Nothing _ = True 
+cmp (Just a) b | a == b = True 
+               | otherwise = False 
+
 instance Evaluate Event Symbol where 
-    match (Tournament pos id) (TournamentI Nothing ids) | id == ids = True
-    match (Tournament pos id) (TournamentI (Just p) ids) | id == ids && pos == p = True 
+    match (Tournament pos id type_id) (TournamentI x y z) = cmp x pos && cmp y id && cmp z type_id  
+    match (PracticeRace track_id _) (PracticeI x) = cmp x track_id 
+    match (ChallengeRace pos tid _) (RaceI x y) = cmp x pos && cmp y tid 
+    match (Level i) (LevelI p) = i == p
+    match _ _ = False  
+                                                                                
+{--    
+| id == ids = True
+    match (Tournament pos id type_id ) (TournamentI (Just p) ids) | id == ids && pos == p = True 
     match (Tournament _ _) (TournamentS ) = True 
     match (Level _) LevelS = True 
     match (Level n) (LevelI p) | n == p = True 
@@ -90,4 +100,4 @@ instance Evaluate Event Symbol where
     match _ _ = False 
 
 
-
+--}

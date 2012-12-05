@@ -4,6 +4,7 @@ module Data.Decider where
 import Data.Monoid hiding (Any, All) 
 import Control.Arrow 
 import Control.Category 
+import Control.Applicative
 
 data Expr g a where
     Any :: [Expr g a] -> Expr g a
@@ -27,14 +28,31 @@ data O
 class Evaluate a b where 
     match :: a -> b -> Bool 
 
+-- "[12[34]]"
+simpleRule = All[
+        One 1, One 2, All [
+                        One 3,
+                        One 4
+                ]]
+simpleRule2 = All [Any [All [One 1, One 2], One 3]]
 
+toOne :: Expr g a -> Maybe a 
+toOne (One a) = Just a 
+toOne (All [x]) = toOne x 
+toOne (Any xs) = foldr step (Nothing) xs
+        where step  x z = z <|> toOne x 
+toOne (FromTo 1 _ x) = toOne x
+toOne (From 1 x) = toOne x
+toOne (To x y) = toOne y
+toOne _ = Nothing 
 
 -- | Every expression gives rise to function 
 
 equalDecider = buildDecider (==) 
 
 -- The underlying arrow is Machine a b = [a] -> ([b], Bool) 
-
+-- deltaStream = xs - ys  
+--
 newtype Decider a = Decider {
             runDecider :: [a] -> ([a], Bool)          
         }
@@ -117,6 +135,7 @@ instance Category Machine where
 (.-) a b = Machine $ \xs -> let (as, bt) = runMachine a xs
                                 (bs, ct) = runMachine b as 
                             in  (bs, (bt && ct)) 
+
 
 
 

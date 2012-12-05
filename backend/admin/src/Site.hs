@@ -80,6 +80,7 @@ import           Data.ModelToSVG hiding (def, render, lines)
 import           Data.InRules 
 import qualified Model.Tournament as TRM 
 import qualified Data.Tournament as TRM 
+import qualified Model.TournamentType as TRMT
 import           Data.Conversion 
 import qualified Data.ByteString.Char8 as C 
 import           System.Directory
@@ -162,7 +163,7 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/car_instance_parts/get", getModel (def :: CIP.CarInstanceParts))
          , ("/market_parts/get", getModel (def :: MP.PartMarket))
          , ("/car_in_garage/get", getModel (def :: CIG.CarInGarage))
-         , ("/garage_part/get", getModel (def :: GP.GarageParts))
+         , ("/garage_part/get", getModel (def :: GP.GaragePart))
          , ("/car_instance/get", getModel (def :: CI.CarInstance))
          , ("/car_instance/put", putModel (def :: CI.CarInstance))
          , ("/car_instance/visual", visualCarInstance) 
@@ -210,6 +211,9 @@ routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
          , ("/personnel_instance/put", putModel (def :: PI.PersonnelInstance))
          , ("/part_type/get", getModel (def :: PT.PartType))
          , ("/part_type/put", putModel (def :: PT.PartType))
+         , ("/tournament_type/get", getModel (def ::  TRMT.TournamentType))
+         , ("/tournament_type/put", putModel (def :: TRMT.TournamentType))
+
          , ("/tournament/get", getModel (def :: TRM.Tournament))
          , ("/tournament/put", putTournament)
          , ("/notification/get", getModel (def :: NT.Notification))
