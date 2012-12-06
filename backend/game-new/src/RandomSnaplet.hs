@@ -1,34 +1,35 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, FlexibleContexts,OverloadedStrings, RankNTypes, ExistentialQuantification #-}
 module RandomSnaplet(
-    RandomConfig,
     HasRandom(..),
+    RandomConfig,
     Variate(..),
     getUniform,
     getUniformR,
     getUniqueKey,
     initRandomSnaplet,
-    l8,
     l16,
     l32,
-    l64
+    l64,
+    l8
 )where
 
-import System.Random.MWC
-import Control.Monad.Primitive
+
+import           Control.Applicative
+import           Control.Monad
+import           Control.Monad.Primitive
+import           Control.Monad.State 
+import           Control.Monad.Trans
+import           Data.Char 
+import           Data.Lens.Common
+import           Data.Lens.Template 
+import           Data.String 
+import           Data.Word 
+import           Snap.Core 
+import           Snap.Snaplet
+import           System.Random.MWC
 import qualified Data.ByteString as B 
 import qualified Data.ByteString.Char8 as C 
-import Data.String 
-import Data.Word 
-import Data.Char 
-import Control.Monad
-import Control.Applicative
-import Data.Lens.Template 
-import Data.Lens.Common
 import qualified Data.Vector as V
-import Control.Monad.Trans
-import Snap.Core 
-import Snap.Snaplet
-import Control.Monad.State 
 
 newtype Base64 a = Base64 {
                unBase64 :: B.ByteString 

@@ -1,10 +1,10 @@
 {-# LANGUAGE GADTs, TypeOperators, MultiParamTypeClasses, FlexibleInstances, NoMonomorphismRestriction #-}
 module Data.Decider where 
 
-import Data.Monoid hiding (Any, All) 
-import Control.Arrow 
-import Control.Category 
-import Control.Applicative
+import           Control.Applicative
+import           Control.Arrow 
+import           Control.Category 
+import           Data.Monoid hiding (Any, All) 
 
 data Expr g a where
     Any :: [Expr g a] -> Expr g a

@@ -179,8 +179,8 @@ extractEvent :: [Event] -> ([Integer], [Integer], [Integer])
 extractEvent xs = foldr step ([],[],[]) xs 
         where step x (rs,ts,ps) = case x of 
                                     Tournament _ i _ -> (rs,  i : ts, ps)
-                                    PracticeRace _ i -> (i : rs, ts, ps)
-                                    ChallengeRace _ _ i -> (rs,ts, i:ps) 
+                                    PracticeRace _ i -> ( rs, ts, i: ps)
+                                    ChallengeRace _ _ i -> (i : rs,ts, ps) 
                                     otherwise -> (rs,ts,ps) 
 
 loadRule :: Integer -> SqlTransaction Connection (String, Expr g Symbol, Bool)

@@ -1,25 +1,24 @@
 {-# LANGUAGE TemplateHaskell, OverloadedStrings, FlexibleContexts, NoMonomorphismRestriction #-}
 module NodeSnaplet where 
 
-import Config.ConfigFileParser 
-import MemServerAsync
-import Proto 
-import Data.Lens.Common 
-import Data.Lens.Template
-import Snap.Core 
-import Snap.Snaplet
-import Control.Monad.Trans
-import Control.Monad 
-import Control.Applicative
-import Control.Concurrent
-import Control.Monad.State
+import           Config.ConfigFileParser 
+import           Control.Applicative
+import           Control.Concurrent
+import           Control.Monad 
+import           Control.Monad.State
+import           Control.Monad.Trans
+import           Data.Lens.Common 
+import           Data.Lens.Template
+import           Data.MemTimeState
+import           MemServerAsync
+import           Proto 
+import           Snap.Core 
+import           Snap.Snaplet
+import           System.Random 
+import           System.ZMQ3 as Z  
 import qualified Data.Binary as B 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L 
-import Data.MemTimeState
-import System.Random 
-import Proto 
-import System.ZMQ3 as Z  
 
 data DHTConfig = DHC {
         _query :: MVar (),

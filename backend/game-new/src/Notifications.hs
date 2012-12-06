@@ -1,38 +1,37 @@
 {-# LANGUAGE GADTs, ScopedTypeVariables, ViewPatterns, RankNTypes, ImpredicativeTypes, NoMonomorphismRestriction #-}
 module Notifications (
       NotificationParam(..),
-      sendNotification,
+      carMarket,
+      carRepair,
+      levelUp,
+      partImprove,
+      partMarket,
+      partRepair,
+      raceStart,
+      returnCar, 
+      returnPart,
       sendBulk,
       sendCentralNotification,
-      carMarket,
-      partMarket,
-      levelUp,
-      partRepair,
-      carRepair,
-      raceStart,
-      partImprove,
-      tournamentStart,
-      returnPart,
-      returnCar 
+      sendNotification,
+      tournamentStart
     ) where 
 
-import Model.Notification as N
-import Model.PreLetter as L 
-import Model.General 
-import Application 
-import Data.Conversion 
-import Data.Convertible 
-import qualified Data.HashMap.Strict as HM 
-import Unsafe.Coerce 
-import Data.SqlTransaction 
--- import NotificationSnaplet 
-import Database.HDBC.PostgreSQL
-import Database.HDBC.SqlValue
-import Data.Database hiding (Value)
-import Data.Aeson 
+import           Application 
+import           Data.Aeson 
+import           Data.Conversion 
+import           Data.Convertible 
+import           Data.Database hiding (Value)
+import           Data.SqlTransaction 
+import           Database.HDBC.PostgreSQL
+import           Database.HDBC.SqlValue
+import           GHC.Read 
+import           Model.General 
+import           Model.Notification as N
+import           Model.PreLetter as L 
+import           Unsafe.Coerce 
 import qualified Data.ByteString.Lazy as L 
+import qualified Data.HashMap.Strict as HM 
 import qualified Data.Notifications as N 
-import GHC.Read 
 import qualified Text.Read.Lex as L 
 
 

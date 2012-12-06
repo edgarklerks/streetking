@@ -14,7 +14,7 @@
 					<div class="report-element-info-data-name">Race time: <span>[:eval SECONDSTOTIME(data.race_time)]</span></div>
 					<div class="report-element-info-data-name">Respect: <span>[:data.rewards.respect]</span></div>
 					<div class="report-element-info-data-name">Money: <span>[:data.rewards.money]</span></div>
-					<div><input type="button" value="reward" class="button" reward_id="[:data.race_id]" r_type="race"></div>
+					<div><input type="button" value="reward" class="button" reward_id="[:data.race_id]" r_type="[:data.type_name]"></div>
 					<div><input type="button" value="more info" class="button" rid="[:data.race_id]"></div>
 				</div>
 				<div class="clearfix"></div>

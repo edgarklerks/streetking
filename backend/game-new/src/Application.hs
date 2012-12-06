@@ -6,44 +6,44 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import Data.Lens.Template
-import Snap.Snaplet
-import ConfigSnaplet 
-import SqlTransactionSnaplet hiding (runDb)
-import qualified SqlTransactionSnaplet as ST 
-import Data.Aeson
+
+
 import           Data.Attoparsec.Lazy
-import Control.Monad.State
-import Data.SortOrder
-import Data.Database hiding (Value)
-import Model.General
-import Data.InRules
-import qualified Data.ByteString.Lazy.Char8 as L
-import qualified Data.ByteString.Char8 as B 
-import Snap.Core 
-import qualified Data.HashMap.Strict as S
-import Data.Conversion
-import qualified Control.Monad.CatchIO as CIO
-import Control.Applicative
-import Data.Typeable
-import Data.Monoid
-import Database.HDBC
-import Database.HDBC.PostgreSQL (Connection)
-import qualified Database.HDBC.PostgreSQL as DB 
-import qualified Database.HDBC as DB
 import           Data.DatabaseTemplate 
-import  Data.Convertible
-import RandomSnaplet as R 
-import NodeSnaplet as D 
-import Data.Role as R 
+import           Data.Convertible
+import           ConfigSnaplet 
+import           Control.Applicative
+import           Control.Monad.State
+import           Data.Aeson
+import           Data.ComposeModel  
+import           Data.Conversion
+import           Data.Database hiding (Value)
+import           Data.InRules
+import           Data.Lens.Template
+import           Data.MemState 
+import           Data.Monoid
+import           Data.Role as R 
+import           Data.SortOrder
+import           Data.Typeable
+import           Database.HDBC
+import           Database.HDBC.PostgreSQL (Connection)
+import           Model.General
+import           NodeSnaplet as D 
+import           NotificationSnaplet as N  
+import           Proto 
+import           RandomSnaplet as R 
+import           Snap.Core 
+import           Snap.Snaplet
+import           SqlTransactionSnaplet hiding (runDb)
+import qualified Control.Monad.CatchIO as CIO
 import qualified Data.Binary as BI 
-import Proto 
-import Data.MemState 
-import Data.ComposeModel  
-import NotificationSnaplet as N  
+import qualified Data.ByteString.Char8 as B 
+import qualified Data.ByteString.Lazy.Char8 as L
+import qualified Data.HashMap.Strict as S
+import qualified Database.HDBC as DB
+import qualified Database.HDBC.PostgreSQL as DB 
 import qualified LockSnaplet as L 
-
-
+import qualified SqlTransactionSnaplet as ST 
 
 
 
