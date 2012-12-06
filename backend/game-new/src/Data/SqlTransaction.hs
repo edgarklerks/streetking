@@ -1,86 +1,87 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving, FlexibleInstances, MultiParamTypeClasses, FunctionalDependencies, RankNTypes #-}
 module Data.SqlTransaction (
+
+	quickInsert,
+    Connection,
+    H.IConnection,
+    H.SqlValue(..),
+    H.Statement,
+    H.disconnect,
+    Lock(..),
+    SqlTransaction,
+    SqlTransactionUser,
     atomical,
-    prepare,
-    quickQuery,
-    quickQuery',
-    rollback,
-    waitWhen, 
-    waitUnless,
-    run,
-    getUser,
-    putUser,
-    sRun,
+    catchSqlError,
+    commit,
+    dbWithLockBlock,
+    dbWithLockNonBlock, 
+    doneFuture,
+    emptyFuture,
     execute,
     executeMany, 
     executeRaw,
-    sExecute,
-    sExecuteMany,
+    fetchAllRows',
+    fetchAllRows,
+    fetchAllRowsAL',
+    fetchAllRowsAL,
+    fetchAllRowsMap,
     fetchRow,
     fetchRowAl,
     fetchRowMap,
-    fetchAllRows,
-    fetchAllRows',
-    fetchAllRowsAL,
-    fetchAllRowsAL',
-    fetchAllRowsMap,
-    sFetchRow, 
-    sFetchAllRows,
-    sFetchAllRows',
+    fillFuture,
     finish,
-    SqlTransaction,
-    SqlTransactionUser,
-    runSqlTransaction,
-    H.SqlValue(..),
-    H.IConnection,
-    H.Statement,
-    H.disconnect,
-    sqlGetOne,
-    sqlGetRow,
-    sqlGetAll,
-    sqlGetAllAssoc,
-    sqlExecute,
-	quickInsert,
     forkSqlTransaction,
-    Connection,
-    withEncoding,
+    getUser,
+    lock,
     newFuture,
-    readFuture,
-    doneFuture,
-    emptyFuture,
     par2,
     par3,
     par4,
     parN,
     parSafe,
-    fillFuture,
-    lock,
-    Lock(..),
+    prepare,
+    putUser,
+    quickQuery',
+    quickQuery,
+    readFuture,
+    rollback,
+    run,
+    runSqlTransaction,
     runTestDb,
-    catchSqlError,
-    commit,
-    dbWithLockBlock,
-    dbWithLockNonBlock 
-
+    sExecute,
+    sExecuteMany,
+    sFetchAllRows',
+    sFetchAllRows,
+    sFetchRow, 
+    sRun,
+    sqlExecute,
+    sqlGetAll,
+    sqlGetAllAssoc,
+    sqlGetOne,
+    sqlGetRow,
+    waitUnless,
+    waitWhen, 
+    withEncoding
 ) where 
 
-import Data.Function 
-import Data.Functor
-import Control.Concurrent
-import Control.Applicative
-import Control.Monad 
-import Control.Monad.Error 
-import Control.Monad.Reader
-import Control.Monad.State 
-import Control.Monad.Trans
-import Data.Monoid
-import Data.Tools
-import Data.Convertible
-import Data.Map (Map)
-import qualified Database.HDBC as H
+
+import           Control.Applicative
+import           Control.Concurrent
+import           Control.Monad 
+import           Control.Monad.Error 
+import           Control.Monad.Reader
+import           Control.Monad.State 
+import           Control.Monad.Trans
+import           Data.Convertible
+import           Data.Either 
+import           Data.Function 
+import           Data.Functor
+import           Data.Map (Map)
+import           Data.Monoid
+import           Data.Tools
+import           Database.HDBC.PostgreSQL as H
 import qualified Data.HashMap.Strict as M
-import Database.HDBC.PostgreSQL as H
-import Data.Either 
+import qualified Database.HDBC as H
 import qualified LockSnaplet as L
 
 type SqlTransaction c a = SqlTransactionUser L.Lock c a 

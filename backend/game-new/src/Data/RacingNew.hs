@@ -1,70 +1,63 @@
 {-# LANGUAGE TemplateHaskell, FlexibleContexts, FlexibleInstances, TypeSynonymInstances, FunctionalDependencies, MultiParamTypeClasses, OverloadedStrings, RankNTypes, ViewPatterns #-}
-
-
 module Data.RacingNew (
-        RaceResult (..),
-        raceResult2FE,
-        SectionResult (..),
         RaceConfig (..),
-        SectionConfig (..),
         RaceData (..),
         RaceDataList,
         RaceM,
+        RaceResult (..),
+        SectionConfig (..),
         SectionM,
-        sectionConfig,
-        runSectionM,
-        runRaceM,
-        raceWithParticipant,
-        runRaceWithParticipant,
-        race,
-
-        raceData,
+        SectionResult (..),
         accelerationTime,
         brakingDistance,
+        healthLost,
         lateralAcceleration,
         partsWear,
-        healthLost,
+        race,
+        raceData,
+        raceResult2FE,
+        raceWithParticipant,
+        runRaceM,
+        runRaceWithParticipant,
+        runSectionM,
+        sectionConfig,
         testDefRace
     ) where
 
-import Model.TH
-import Model.General
-import Data.InRules
-import Data.Conversion
+import           Control.Applicative
+import           Control.Monad
+import           Control.Monad.Error 
+import           Control.Monad.Random
+import           Control.Monad.Reader
+import           Control.Monad.State
+import           Data.Constants
+import           Data.Conversion
+import           Data.Database
+import           Data.InRules
+import           Data.Maybe
+import           Data.SqlTransaction
+import           Data.Text
+import           Database.HDBC (toSql, fromSql)
+import           Model.Config (getKey) 
+import           Model.General
+import           Model.TH
+import           System.Random 
 import qualified Data.Aeson as AS
-import Data.Text
-import Data.Database
-import Data.SqlTransaction
-import Database.HDBC (toSql, fromSql)
-import Control.Applicative
-import Control.Monad
-import Control.Monad.Reader
-import Control.Monad.State
-import Control.Monad.Random
-import Data.Maybe
-import qualified Data.List as L
-
-import qualified Data.RaceParticipant as RP
-import qualified Data.RaceReward as RW
---import qualified Data.CarDerivedParameters as CDP
-import qualified Data.RaceSectionPerformance as P
 import qualified Data.Car as C
 import qualified Data.Driver as D
 import qualified Data.Environment as E
-import           Data.Constants
-
-import qualified Data.Track as T
+import qualified Data.List as L
+import qualified Data.RaceParticipant as RP
+import qualified Data.RaceReward as RW
+import qualified Data.RaceSectionPerformance as P
 import qualified Data.Section as S
-
+import qualified Data.Track as T
 import qualified Model.Account as A
 import qualified Model.AccountProfileMin as APM
 import qualified Model.CarInGarage as CIG
-import qualified Model.CarMinimal as CMI
 import qualified Model.CarInstance as CI
+import qualified Model.CarMinimal as CMI
 import qualified Model.PartInstance as PI 
-import Control.Monad.Error 
-import           Model.Config (getKey) 
-import           System.Random 
 
 type Speed = Double
 type Length = Double

@@ -7,175 +7,169 @@
 module Site
   ( Site.app
   ) where
+
 {-- Change log 
-- Edgar: Added unset immutable flag to cancelTournamentJoin
-- Edgar: Added set and unset immutable flag to challenge
-- Edgar: Added immutable predicate to buy and sell functions 
-- Edgar: personnelLock is a top-level TVAR should be inside a snaplet
--
+- EDGAR: Added unset immutable flag to cancelTournamentJoin
+- EDGAR: Added set and unset immutable flag to challenge
+- EDGAR: Added immutable predicate to buy and sell functions 
+- EDGAR: personnelLock is a top-level TVAR should be inside a snaplet
 ---}
 ------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+
+
+
+--import           Data.Racing
+import           Application
+import           ConfigSnaplet 
 import           Control.Applicative
-import           Data.Monoid
+import           Control.Arrow 
+import           Control.Concurrent 
+import           Control.Concurrent.STM 
 import           Control.Monad
-import           Data.Maybe
-import qualified Data.List as List
-import           Data.SqlTransaction
+import           Control.Monad.Random 
+import           Control.Monad.Trans
+import           Data.Car
+import           Data.Car
+import           Data.CarDerivedParameters
+import           Data.ComposeModel
+import           Data.Constants
+import           Data.Conversion
+import           Data.Convertible
+import           Data.DataPack
 import           Data.Database
 import           Data.DatabaseTemplate
+import           Data.Decider 
+import           Data.Driver
+import           Data.Environment
+import           Data.Event 
+import           Data.Hstore
+import           Data.Maybe
+import           Data.Monoid
+import           Data.RaceParticipant
+import           Data.RaceReward
+import           Data.RacingNew
+import           Data.Reward 
+import           Data.Section
+import           Data.SqlTransaction
+import           Data.String
+import           Data.Tiger
+import           Data.Time.Clock 
+import           Data.Time.Clock.POSIX
+import           Data.Tools
+import           Data.Tournament 
+import           Data.Track
 import           Database.HDBC (toSql, fromSql)
+import           Debug.Trace
+import           GHC.Exception (SomeException)
+import           Lua.Instances
+import           Lua.Monad
+import           Lua.Prim
+import           Model.General (Mapable(..), Default(..), Database(..), aload, adeny, aget, agetlist)
+import           Model.Transaction (transactionMoney)
+import           NodeSnaplet 
+import           NotificationSnaplet (initNotificationSnaplet, getPostOffice)
+import           RandomSnaplet (l32, initRandomSnaplet)
+import           Snap.Core
+import           Snap.Snaplet
+import           Snap.Util.FileServe
+import           Snap.Util.FileUploads
+import           SqlTransactionSnaplet (initSqlTransactionSnaplet)
+import           System.Directory
+import           System.FilePath.Posix
+import           System.IO.Unsafe 
+import qualified Control.Monad.CatchIO as CIO
+import qualified Data.Aeson as AS 
 import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.ByteString.Lazy.Char8 as LBC
-import qualified Data.Text.Encoding as T
+import qualified Data.CarReady as CR
+import qualified Data.Foldable as F
+import qualified Data.HashMap.Strict as HM
+import qualified Data.InRules as IR
+import qualified Data.List as List
+import qualified Data.MenuTree as MM 
+import qualified Data.Set as Set 
+import qualified Data.Task as Task
 import qualified Data.Text as T 
-import           Snap.Util.FileServe
-import           Snap.Util.FileUploads
-import           Snap.Core
-import qualified Data.Aeson as AS 
+import qualified Data.Text.Encoding as T
+import qualified Data.Tree as T
+import qualified LockSnaplet as SL 
 import qualified Model.Account as A 
 import qualified Model.AccountProfile as AP 
 import qualified Model.AccountProfileMin as APM
-import qualified Model.MenuModel as MM 
-import qualified Data.Tree as T
-import qualified Data.MenuTree as MM 
-import qualified Model.Garage as G 
-import qualified Model.Continent as Cont 
-import qualified Model.City as City
-import qualified Model.TrackDetails as TD
-import qualified Model.TrackMaster as TT
-import qualified Model.TrackCity as TCY
-import qualified Model.TrackContinent as TCN
-import qualified Model.TrackTime as TTM
-import qualified Model.Manufacturer as M 
 import qualified Model.Car as Car 
-import qualified Model.CarInstance as CarInstance 
-import qualified Model.CarInGarage as CIG 
-import qualified Model.CarMinimal as CMI 
 import qualified Model.Car3dModel as C3D
-import qualified Model.Part as Part 
-import qualified Model.PartMarket as PM 
-import qualified Model.PartMarketType as PMT
-import qualified Model.PartMarketPlaceType as PMPT
-import qualified Model.PartInstance as PI 
-import qualified Model.PartDetails as PD 
-import qualified Model.CarMarket as CM 
-import qualified Model.ManufacturerMarket as MAM 
-import qualified Model.MarketItem as MI 
-import qualified Model.Transaction as Transaction
-import           Model.Transaction (transactionMoney)
-import qualified Model.Escrow as Escrow
-import qualified Model.MarketPartType as MPT
-import qualified Model.GarageParts as GPT 
-import qualified Model.Config as CFG 
-import qualified Model.MarketPlace as MP
-import qualified Model.PartType as PT 
+import qualified Model.CarInGarage as CIG 
+import qualified Model.CarInstance as CarInstance 
 import qualified Model.CarInstanceParts as CIP
+import qualified Model.CarMarket as CM 
+import qualified Model.CarMinimal as CMI 
 import qualified Model.CarOptions as CO
 import qualified Model.CarOptionsExtended as COE
 import qualified Model.CarOwners as COW
-import qualified Model.MarketCarInstanceParts as MCIP
 import qualified Model.CarStockParts as CSP
+import qualified Model.Challenge as Chg
+import qualified Model.ChallengeAccept as ChgA
+import qualified Model.ChallengeExtended as ChgE
+import qualified Model.ChallengeType as ChgT
+import qualified Model.City as City
+import qualified Model.Config as CFG 
+import qualified Model.Continent as Cont 
+import qualified Model.Diamonds as DM 
+import qualified Model.Escrow as Escrow
+import qualified Model.EventStream as ES 
+import qualified Model.Functions as DBF
+import qualified Model.Garage as G 
+import qualified Model.GarageParts as GPT 
+import qualified Model.GarageReport as GRP
+import qualified Model.GarageReportInsert as GRPI
+import qualified Model.GeneralReport as GR 
+import qualified Model.Manufacturer as M 
+import qualified Model.ManufacturerMarket as MAM 
+import qualified Model.MarketCarInstanceParts as MCIP
+import qualified Model.MarketItem as MI 
+import qualified Model.MarketPartType as MPT
+import qualified Model.MarketPlace as MP
 import qualified Model.MarketPlaceCar as MPC
+import qualified Model.MenuModel as MM 
+import qualified Model.Part as Part 
+import qualified Model.PartDetails as PD 
+import qualified Model.PartInstance as PI 
+import qualified Model.PartMarket as PM 
+import qualified Model.PartMarketPlaceType as PMPT
+import qualified Model.PartMarketType as PMT
+import qualified Model.PartType as PT 
 import qualified Model.Personnel as PL
 import qualified Model.PersonnelDetails as PLD
 import qualified Model.PersonnelInstance as PLI
 import qualified Model.PersonnelInstanceDetails as PLID
+import qualified Model.PersonnelReport as PR 
 import qualified Model.PersonnelTaskType as PTT 
-import qualified Model.Challenge as Chg
-import qualified Model.ChallengeAccept as ChgA
-import qualified Model.ChallengeType as ChgT
-import qualified Model.ChallengeExtended as ChgE
-import qualified Model.Report as RP 
+import qualified Model.PreLetter as Not 
 import qualified Model.Race as R
 import qualified Model.RaceDetails as RAD
-import qualified Model.EventStream as ES 
 import qualified Model.RaceReward as RWD
+import qualified Model.Report as RP 
 import qualified Model.RewardLog as RL 
 import qualified Model.RewardLogEvent as RLE 
-import qualified Model.TournamentPlayers as TP 
+import qualified Model.ShopReport as SR 
+import qualified Model.Support as SUP 
 import qualified Model.Tournament as TR 
 import qualified Model.Tournament as TRM 
 import qualified Model.TournamentExtended as TRMEx
-import qualified Model.TournamentResult as TMR 
-import qualified Model.GeneralReport as GR 
-import qualified Model.ShopReport as SR 
-import qualified Model.GarageReport as GRP
-import qualified Model.GarageReportInsert as GRPI
-import qualified Model.PersonnelReport as PR 
-import qualified Model.TravelReport as TR 
-import qualified Model.Functions as DBF
-import qualified Model.Support as SUP 
+import qualified Model.TournamentPlayers as TP 
 import qualified Model.TournamentReport as TRP 
-import qualified Data.CarReady as CR
-import qualified Data.HashMap.Strict as HM
-import           Control.Monad.Trans
-import           Application
-import           Model.General (Mapable(..), Default(..), Database(..), aload, adeny, aget, agetlist)
-import           Data.Convertible
-import           Data.Time.Clock 
-import           Data.Time.Clock.POSIX
-import qualified Data.Foldable as F
-import           Data.Hstore
-
-import           Data.Conversion
-import qualified Data.InRules as IR
-import           Data.Tools
-import           System.FilePath.Posix
-import           System.Directory
-import           Data.String
-import           GHC.Exception (SomeException)
-import           Control.Concurrent.STM 
-
-import qualified Control.Monad.CatchIO as CIO
-import           Lua.Instances
-import           Lua.Monad
-import           Lua.Prim
-import           Debug.Trace
-import           Control.Monad.Random 
-import           Data.Constants
-import           Data.Car
-import           Data.Environment
---import           Data.Racing
-import           Data.RacingNew
-import           Data.CarDerivedParameters
-import           Data.RaceReward
-import           Data.RaceParticipant
-import           Data.Section
-import           Data.Track
-import           Data.Driver
-import           Data.Car
-import           Control.Concurrent 
-import           Data.ComposeModel
-import qualified Data.Task as Task
-import           Data.DataPack
-import qualified Model.PreLetter as Not 
-import           SqlTransactionSnaplet (initSqlTransactionSnaplet)
-import           NotificationSnaplet (initNotificationSnaplet, getPostOffice)
-import           ConfigSnaplet 
-import           RandomSnaplet (l32, initRandomSnaplet)
-import           NodeSnaplet 
-import           Data.Tiger
-import           Control.Arrow 
-import           Snap.Snaplet
-import           Data.Tournament 
-import           Data.Reward 
-import           Data.Event 
-import qualified Data.Set as Set 
-import           System.IO.Unsafe 
-import qualified LockSnaplet as SL 
-import qualified Model.Diamonds as DM 
-
+import qualified Model.TournamentResult as TMR 
+import qualified Model.TrackCity as TCY
+import qualified Model.TrackContinent as TCN
+import qualified Model.TrackDetails as TD
+import qualified Model.TrackMaster as TT
+import qualified Model.TrackTime as TTM
+import qualified Model.Transaction as Transaction
+import qualified Model.TravelReport as TR 
 import qualified Notifications as N 
-import           Data.Decider 
-
-------------------------------------------------------------------------------
--- | Renders the front page of the sample site.
---
--- The 'ifTop' is required to limit this to the top of a route.
--- Otherwise, the way the route table is currently set up, this action
--- would be given every request.
---
 
 type STQ a = SqlTransaction Connection a
 
@@ -1605,13 +1599,6 @@ userActions uid = do
             update "account" ["id" |== (toSql $ uid)] [] [("busy_until", SqlInteger 0), ("busy_subject_id", SqlInteger 0), ("busy_type", SqlInteger 1)]
             return ()
 
--- TODO: personnel actions here (improve, repair) i?
---
---
-
--- TODO: Horrible hack, toplevel tvar is like a global var 
-
-
 
 personnelUpdate uid = dbWithLockNonBlock "personnel" uid $ do 
                 t <- DBF.unix_timestamp
@@ -1918,19 +1905,27 @@ raceChallengeAccept = do
             forM_ (rs) $ \r -> do 
                     partsWear (rp_car_id $ fst r) (snd r)  
                     healthLost (rp_account_id $ fst r) (snd r)
+            -- 
 
             let fin r = (t+) $ ceiling $ raceTime r 
             let t1 = (\(_,r) -> fin r) $ head rs
             let winner_id = rp_account_id $ fst $ head rs
             let other_id = rp_account_id $ Chg.challenger chg
+            -- uid <-> other_id 
+            if winner_id == uid 
+                    then do             
+                        Task.emitEvent uid (ChallengeRace 1 tid rid) t1 
+                        Task.emitEvent other_id (ChallengeRace 2 tid rid) t1 
+                    else do 
+                        Task.emitEvent other_id (ChallengeRace 1 tid rid) t1 
+                        Task.emitEvent uid (ChallengeRace 2 tid rid) t1 
+            -- 
+
+
 
             forM_ rs $ \(p,r) -> do
 
                 let isWinner = (rp_account_id p) == winner_id
-
-                if isWinner then Task.emitEvent (rp_account_id p) (ChallengeRace 1 tid rid) t1 
-                            else Task.emitEvent (rp_account_id p) (ChallengeRace 2 tid rid) t1 
-
  
                 -- task: transfer challenge objects
                 case chgt of
@@ -2004,6 +1999,14 @@ processRace typid t ps tid = do
                 Task.trackTime ft tid uid (raceTime r)
 
                 -- store user race report -- TODO: determine relevant information
+                -- TODO race reports should have there own table. Ies
+                -- broken now. 
+                --
+                -- TODO: should not be hardcoded
+                --
+                let tpid 1 = "practice" :: String
+                    tpid 2 = "race" :: String 
+                    tpid n = "what?" :: String 
                 RP.report RP.Race uid ft $ mkData $ do
                     set "track_id" tid
                     set "race_id" rid
@@ -2011,9 +2014,10 @@ processRace typid t ps tid = do
                     set "finish_time" ft
                     set "race_time" $ raceTime r
                     set "track_data" tdt
-                    set "participant" p
+                    set "participant" (rp_account_min p)
                     set "result" r
                     set "type" typid
+                    set "type_name" (tpid typid)
 
         -- return race id
         return (rid, rs)

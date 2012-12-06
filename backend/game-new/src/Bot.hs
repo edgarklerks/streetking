@@ -2,54 +2,54 @@
 module Main where 
 
 
-import Data.SqlTransaction 
-import Snap.Core 
-import qualified Snap.Test as S 
-import Application hiding (runDb) 
-import Site 
-import Test.HUnit 
-import qualified Database.HDBC as H
-import Database.HDBC.SqlValue 
-import qualified Data.Tournament as TRM
-import Model.General 
-import qualified Model.Tournament as T 
-import Control.Monad.Trans 
-import Control.Applicative 
-import Data.Time.Clock.POSIX
-import System.Random 
-import Data.Foldable 
-import Prelude hiding (foldr, foldl)
-import Control.Monad.State hiding (foldM_, foldM, forM_, forM) 
-import Control.Monad.Reader hiding (foldM, foldM_, forM, forM_) 
-import Data.Aeson hiding (object) 
-import Snap.Snaplet 
-import Snap.Snaplet.Config
-import Data.Conversion 
-import Data.Monoid 
-import qualified Data.HashMap.Strict as S
+import           Application hiding (runDb) 
+import           Bot.Type 
+import           Bot.Util
+import           Control.Applicative 
+import           Control.Concurrent 
+import           Control.Concurrent.STM 
+import           Control.Monad.CatchIO 
+import           Control.Monad.Reader hiding (foldM, foldM_, forM, forM_) 
+import           Control.Monad.STM 
+import           Control.Monad.State hiding (foldM_, foldM, forM_, forM) 
+import           Control.Monad.Trans 
+import           Data.Aeson hiding (object) 
+import           Data.Conversion 
+import           Data.Database hiding (Value, Insert,Delete) 
+import           Data.DatabaseTemplate 
+import           Data.Foldable 
+import           Data.Maybe 
+import           Data.MemTimeState 
+import           Data.Monoid 
+import           Data.Notifications
+import           Data.SqlTransaction 
+import           Data.String 
+import           Data.Time.Clock.POSIX
+import           Database.HDBC.SqlValue 
+import           Model.Functions 
+import           Model.General 
+import           Prelude hiding (foldr, foldl)
+import           Site 
+import           Snap.Core 
+import           Snap.Snaplet 
+import           Snap.Snaplet.Config
+import           System.Environment
+import           System.Random 
+import           Test.HUnit 
+import           Test.QuickCheck 
+import           Test.QuickCheck.Monadic as Q  
+import           Test.QuickCheck.Test 
 import qualified Data.ByteString.Char8 as B 
 import qualified Data.ByteString.Lazy.Char8 as BL 
-import Data.String 
-import qualified Model.CarInGarage as CIG 
-import Data.Database hiding (Value, Insert,Delete) 
-import Data.DatabaseTemplate 
-import Data.Maybe 
-import Model.Functions 
-import Bot.Util
-import Bot.Type 
-import Test.QuickCheck 
-import Test.QuickCheck.Monadic as Q  
-import Data.Notifications
-import qualified Model.PreLetter as L 
-import Control.Monad.STM 
-import Control.Concurrent.STM 
-import qualified Data.IntMap as IM 
-import Test.QuickCheck.Test 
-import Control.Monad.CatchIO 
-import Control.Concurrent 
+import qualified Data.HashMap.Strict as S
 import qualified Data.InRules as I  
-import Data.MemTimeState 
-import System.Environment
+import qualified Data.IntMap as IM 
+import qualified Data.Tournament as TRM
+import qualified Database.HDBC as H
+import qualified Model.CarInGarage as CIG 
+import qualified Model.PreLetter as L 
+import qualified Model.Tournament as T 
+import qualified Snap.Test as S 
 
 {-- Quickcheck is useful for finding corner cases in 
 -   functions. You setup a 'law' for your function and
@@ -468,7 +468,6 @@ test_delete qc = monadicIO $ do
                     test <- Q.run $ runQuery qc (Delete k)
                     ps <- Q.run $ runQuery qc (Query k)
                     Q.assert (ps == NotFound && res == Empty && test == Empty) 
-                    
 
 test_query_insert qc = monadicIO $ do 
         k <- pick arbitrary
@@ -478,5 +477,9 @@ test_query_insert qc = monadicIO $ do
         Q.assert (res == Empty && test == Value v)
 
 
+-- Challenge test 
+--
+--
 
-    
+
+

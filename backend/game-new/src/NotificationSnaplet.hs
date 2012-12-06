@@ -11,22 +11,23 @@ module NotificationSnaplet (
         _po 
     ) where 
 
-import qualified Data.Notifications as N  
-import Control.Monad
-import Control.Applicative 
-import Data.SqlTransaction 
-import qualified SqlTransactionSnaplet as S 
-import Snap.Core 
-import Snap.Snaplet 
-import Data.Lens.Common
-import Data.Lens.Template 
-import Control.Concurrent 
-import Config.ConfigFileParser
-import qualified Data.ByteString.Char8 as B 
+
+import           Config.ConfigFileParser
+import           Control.Applicative 
+import           Control.Concurrent 
+import           Control.Monad
+import           Control.Monad.State 
+import           Control.Monad.Trans 
+import           Data.Lens.Common
+import           Data.Lens.Template 
+import           Data.SqlTransaction 
+import           Data.Typeable 
+import           Snap.Core 
+import           Snap.Snaplet 
 import qualified Control.Monad.CatchIO as CIO 
-import Data.Typeable 
-import Control.Monad.Trans 
-import Control.Monad.State 
+import qualified Data.ByteString.Char8 as B 
+import qualified Data.Notifications as N  
+import qualified SqlTransactionSnaplet as S 
 
 data NotificationError = NE B.ByteString 
             deriving (Typeable, Show)

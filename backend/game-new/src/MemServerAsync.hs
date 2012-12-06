@@ -1,52 +1,45 @@
 {-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RankNTypes,StandaloneDeriving, MultiParamTypeClasses, TypeSynonymInstances, ViewPatterns, LiberalTypeSynonyms, FunctionalDependencies, FlexibleContexts, FlexibleInstances, ExistentialQuantification, RankNTypes #-}
 module MemServerAsync where 
 
-import Data.MemTimeState 
-import System.ZMQ3 hiding (version)
-
-import Control.Monad
-import Control.Applicative
-import qualified Data.HashMap.Strict as H 
-import qualified Data.Serialize as S 
-import Data.Word 
-
-import Control.Monad.CC 
-import Control.Monad.Reader 
-import Control.Monad.Trans 
-
+import           Control.Applicative
+import           Control.Arrow 
+import           Control.Concurrent 
+import           Control.Concurrent.STM 
+import           Control.Monad
+import           Control.Monad.CC 
+import           Control.Monad.Error 
+import           Control.Monad.Reader 
+import           Control.Monad.Trans 
+import           Data.DVars
+import           Data.IORef 
+import           Data.List ((\\)) 
+import           Data.Maybe 
+import           Data.MemTimeState 
+import           Data.Typeable 
+import           Data.Word 
+import           GHC.Exception (SomeException)
+import           Proto 
+import           System.ZMQ3 hiding (version)
+import           Unsafe.Coerce 
 import qualified Control.Monad.CatchIO as CIO 
-
-import Control.Concurrent 
-import Control.Concurrent.STM 
-import Control.Arrow 
-
 import qualified Data.ByteString as B 
 import qualified Data.ByteString.Char8 as C
-
-import Data.List ((\\)) 
-import Data.DVars
-
-import Data.Typeable 
-import GHC.Exception (SomeException)
-import Proto 
-import Data.Maybe 
-import Unsafe.Coerce 
-import Control.Monad.Error 
-import Data.IORef 
+import qualified Data.HashMap.Strict as H 
+import qualified Data.Serialize as S 
 
 data ProtoConfig = PC {
-        version :: Int,
+        answers :: TVar (H.HashMap NodeAddr Answer),
+        context :: Context,
+        inDebug :: Bool, 
+        incoming :: Incoming,
+        memstate :: QueryChan, 
+        outgoing :: TVar (H.HashMap NodeAddr Outgoing),
+        outgoingchannel :: OutgoingChannel,
         self :: NodeAddr,
         selfPull :: NodeAddr, 
-        incoming :: Incoming,
-        outgoing :: TVar (H.HashMap NodeAddr Outgoing),
-        memstate :: QueryChan, 
-        context :: Context,
         updates :: Update, 
-        answers :: TVar (H.HashMap NodeAddr Answer),
-        outgoingchannel :: OutgoingChannel,
+        version :: Int
 --         listeners :: TVar (H.HashMap B.ByteString NodeAddr)
-        inDebug :: Bool 
     }
 
 type OutgoingChannel = TQueue Proto
