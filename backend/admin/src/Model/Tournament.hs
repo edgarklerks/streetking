@@ -23,6 +23,7 @@ import           Prelude hiding (id)
 
 type MRaceReward = Maybe RaceRewards 
 type MInteger = Maybe Integer
+type MString = Maybe String 
 
 $(genAll "Tournament" "tournament" [
     ("id", ''Id),
@@ -38,5 +39,6 @@ $(genAll "Tournament" "tournament" [
     ("done", ''Bool),
     ("running", ''Bool),
     ("image", ''String),
-    ("tournament_type_id", ''Integer)
+    ("tournament_type_id", ''Integer),
+    ("tournament_prices", ''MString)
     ])

@@ -19,7 +19,7 @@ import Data.Time.LocalTime
 import Data.Convertible
 import Data.Maybe
 import Control.Applicative
-import Data.Monoid -- hiding ((<>))
+import Data.Monoid hiding ((<>))
 import Control.Monad
 import Data.Pointed
 import Data.Copointed
@@ -60,7 +60,17 @@ newtype Readable = Readable {
         unReadable :: String 
     } deriving Show
 
- 
+-- InRule isn't a proper monoid, be carefull 
+instance Monoid InRule where 
+    mappend (InArray xs) (InArray ys) = InArray (xs `mappend` ys)
+    mappend (InObject xs) (InObject ys) = InObject (xs `mappend` ys)
+    mappend InNull s = s
+    mappend s InNull = s 
+    mappend s t = InArray [t,s] 
+    mempty = InNull 
+
+
+
 
 -- | Setters, getters, folds, unfolds and maps. 
 
@@ -194,13 +204,11 @@ ckey (Assoc _:xs) = 1 + ckey xs
 ckey (x:xs) = 0 + ckey xs 
 ckey _ = 0 
 
+
 -- | Fold through the structure 
 kfold :: (InKey -> InRule -> b -> b) -> InRule -> b -> b
 kfold f x z = pfold f' x z 
     where f' k x z = f (copoint (k :: IdentityMonoid InKey)) x z 
-
-
-
         
 -- | Find top level matching keyword 
 (.>) :: InRule -> String -> Maybe InRule
@@ -271,6 +279,7 @@ object = InObject . Map.fromList
 list :: [InRule] -> InRule 
 list xs = InArray xs 
 
+-- Laws : 
 --  shp (a `project` b) == shp b 
 --  a `project` (b `project` c) = (a `project` b) `project` c
 --  b `project` c = b, if shp c = b  
@@ -279,7 +288,7 @@ list xs = InArray xs
 --
 --  a `project` e = a, b `project` e = b
 -- 
--- 
+--isn't a proper monoi, be carefull 
 --
 --
 project :: InRule -> InRule -> InRule 

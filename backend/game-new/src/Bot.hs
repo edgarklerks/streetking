@@ -134,11 +134,6 @@ testHasCars = bracket testcon H.disconnect $ \c -> runRandomIO c $ do
                         ]
 
 
-
-
-
-
-
 {-- 
 -
 -               Unit tests for notifications 
@@ -276,14 +271,9 @@ instance Arbitrary Letter where
                L.from = Just $ frm 
             })
 
-
- 
-
 {-- 
--
 -               Unit tests for tournaments,
 -               no corner cases yet
--
 --}
 
 main = do 
@@ -330,7 +320,8 @@ testCreateTournament = do
                         T.track_id = 1,
                         T.players = 4, 
                         T.name = nm,
-                        T.image = "http://www.hallomall.com/media/catalog/product/cache/1/thumbnail/50x/9df78eab33525d08d6e5fb8d27136e95/j/u/justin_bieber_face_mask.jpg"
+                        T.image = "http://www.hallomall.com/media/catalog/product/cache/1/thumbnail/50x/9df78eab33525d08d6e5fb8d27136e95/j/u/justin_bieber_face_mask.jpg",
+                        T.tournament_type_id = 1
                 })
         c <- ask 
         runTest $ TestList [TestLabel "tournament exist" $ tournamentExist c nm ,
@@ -456,7 +447,7 @@ instance Arbitrary Query where
 
 test_query = do 
         ms <- newMemState (1000 * 1000 * 60 * 60) (6000 * 1000) "testshit" 
-        qc <- newTChanIO 
+        qc <- newTQueueIO 
         forkIO $ queryManager "testshit" ms qc
         quickCheck (test_query_insert qc)
         quickCheck (test_delete qc)
@@ -479,7 +470,8 @@ test_query_insert qc = monadicIO $ do
 
 -- Challenge test 
 --
---
+-- acceptChallenge have some ununphantomable problem, where 2 emitEvent stmts are
+-- runned 1.5 times. Player x get's double fun, player y gets once. This tries to reproduce the problem and identify the
+-- minimal program, which fucks up. 
 
-
-
+-- oh never mind, I had to do with a double event_stream entry

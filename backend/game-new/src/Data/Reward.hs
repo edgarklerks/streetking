@@ -1,39 +1,36 @@
 {-# LANGUAGE ViewPatterns, RecordWildCards, ScopedTypeVariables #-}
 module Data.Reward where 
 
-
-import Data.Event 
-
-import Model.EventStream
-import Model.Action
-import Data.Decider 
-
-import Text.Parsec.Combinator
-import Text.Parsec.Prim hiding ((<|>), many)
-import Text.Parsec.String
-import Text.Parsec.Char
-import Control.Applicative
-import qualified Model.Rule as R
-import qualified Model.Action as A 
-import qualified Model.Account as ACC 
-import qualified Model.EventStream as E 
-import Model.General 
-import Data.SqlTransaction 
-import Control.Monad 
-import Database.HDBC.SqlValue
-import Database.HDBC.PostgreSQL
-import Data.Database 
-import Data.Maybe 
-import qualified Model.RuleReward as RW 
-import System.Random 
-import qualified Model.RewardLog as RL 
-import qualified Model.Transaction as TR 
-import Control.Monad.Trans 
-import Data.Monoid hiding (Any, All) 
-import Data.Conversion
+import           Control.Applicative
+import           Control.Monad 
+import           Control.Monad.Trans 
+import           Data.Conversion
+import           Data.Database 
+import           Data.Decider 
+import           Data.Event 
+import           Data.List as List
+import           Data.Maybe 
+import           Data.Monoid hiding (Any, All) 
+import           Data.SqlTransaction 
+import           Database.HDBC.PostgreSQL
+import           Database.HDBC.SqlValue
+import           Model.Action
+import           Model.EventStream
+import           Model.General 
+import           System.Random 
+import           Text.Parsec.Char
+import           Text.Parsec.Combinator
+import           Text.Parsec.Prim hiding ((<|>), many)
+import           Text.Parsec.String
 import qualified Data.Account as DA
-import Data.List as List
+import qualified Model.Account as ACC 
+import qualified Model.Action as A 
+import qualified Model.EventStream as E 
+import qualified Model.RewardLog as RL 
 import qualified Model.RewardLogEvents as RLE 
+import qualified Model.Rule as R
+import qualified Model.RuleReward as RW 
+import qualified Model.Transaction as TR 
 
 newtype Rewards = Rewards {
                     unRewards :: [Reward]
@@ -147,7 +144,7 @@ activateRewards uid = do
                                             , RL.name = RW.name e
                                             , RL.money = abs mny
                                             , RL.viewed = False 
-                                            ,  RL.experience = exp 
+                                            , RL.experience = exp 
                                             }
                                         saveRewardLogEvent rids tids pids reward_id 
             return () 
@@ -243,7 +240,6 @@ testParseRule = do
 -- >5<6[TTT] -- means you need to get between 5 and 6 three tournaments -- you need to get 15 and 18
 -- tournaments 
 
-
 optimize (All [(All xs)]) = optimize $ All (optimize <$> xs) 
 optimize (Any [(Any xs)]) = optimize $ Any (optimize <$> xs)
 optimize (All [t]) = optimize t
@@ -262,7 +258,6 @@ joinSame xs = let (as,bs) = foldr splitAll ([],[]) xs
 
 parseRule :: Parser (Expr g Symbol)
 parseRule = optimize <$> (All <$> manyRules)
-
 
 
 manyRules :: Parser [Expr g Symbol]
@@ -349,8 +344,6 @@ parseTriple = do
         char ','
         z <- parseArg 
         return (x,y,z)
-
-
 
 parsePair :: Parser (Maybe Integer, Maybe Integer)
 parsePair = do 
