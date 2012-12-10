@@ -44,7 +44,7 @@
 				<a href="#Race/challengeCancel?challenge_id=[:challenge_id]" class="button car-info-button red-text" module="RACE_MONEY_CANCEL">cancel</a>
 			}
 			[:when (my_challange == false)]{
-				<a href="#Race/challengeAccept?challenge_id=[:challenge_id]" class="button car-info-button" module="RACE_MONEY_ACCPET">race</a>
+				<a href="#Race/challengeAccept?challenge_id=[:challenge_id]" class="button car-info-button" module="RACE_MONEY_ACCPET">accept</a>
 			}
 		</div>
 	</div>

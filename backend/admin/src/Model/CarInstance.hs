@@ -33,7 +33,11 @@ $(genAll "CarInstance" "car_instance"
         ("deleted", ''Bool),
         ("prototype", ''Bool),
         ("active", ''Bool),
-        ("immutable", ''Integer)
+        ("immutable", ''Integer),
+        ("prototype_name", ''String),
+        ("prototype_available", ''Bool),
+        ("prototype_claimable", ''Bool)
+
 
     ]
     )

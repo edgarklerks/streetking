@@ -8,39 +8,37 @@
 module Data.Task where
 
 import           Control.Applicative
+import           Control.Concurrent
 import           Control.Monad
 import           Control.Monad.Error
-import           Control.Concurrent
+import           Data.Account as DA
+import           Data.Attoparsec.Number
+import           Data.Chain
+import           Data.DataPack
+import           Data.Database
+import           Data.Default
+import           Data.Event 
 import           Data.List
 import           Data.Maybe
 import           Data.SqlTransaction
-import           Data.Database
-import           Database.HDBC (toSql) 
-import           Data.Default
-import qualified Data.Aeson as AS
-import           Data.Attoparsec.Number
 import           Data.Time.Clock.POSIX
-import           Model.General 
-import           Data.DataPack
-import           Data.Account as DA
+import           Database.HDBC (toSql) 
 import           Model.Functions
-import qualified Model.EventStream as ES 
-
-import qualified Model.Transaction as TR 
+import           Model.General 
 import           Model.Transaction (transactionMoney)
+import qualified Data.Aeson as AS
+import qualified Model.Account as A
+import qualified Model.CarInstance as CI
 import qualified Model.Escrow as Escrow
-
+import qualified Model.EventStream as ES 
 import qualified Model.Functions as Fun
+import qualified Model.Garage as G
+import qualified Model.Part as PM
+import qualified Model.PartInstance as PI
 import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
 import qualified Model.TrackTime as TTM
-import qualified Model.Account as A
-import qualified Model.Garage as G
-import qualified Model.CarInstance as CI
-import qualified Model.Part as PM
-import qualified Model.PartInstance as PI
-import           Data.Chain
-import           Data.Event 
+import qualified Model.Transaction as TR 
 
 -- TODO: static tasks
 -- -> have start time, updated time, end time; field "static" boolean
@@ -125,6 +123,7 @@ emitEvent uid ev tm = do
                     set "account_id" uid 
                     set "time" tm 
         trigger User uid tid 
+        liftIO $ print (uid,ev,tm) 
         return ()
 
 

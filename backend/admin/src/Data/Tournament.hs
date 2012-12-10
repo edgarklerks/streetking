@@ -23,74 +23,85 @@ module Data.Tournament (
 -
 -
 - --}
-import Control.Monad.Trans 
-import Model.TH
-import Model.TournamentPlayers as TP
-import Model.Tournament as T
-import Model.General 
-import Control.Arrow 
+--import           Data.Racing
+import           Control.Concurrent 
+import           Data.Conversion 
+import           Data.Convertible 
+import           Data.Environment
+import           Data.Event 
+import           Data.Monoid 
+import           Data.RaceParticipant
+import           Data.RaceReward
+import           Data.RacingNew
+import           Data.SqlTransaction
+import           Data.Text (Text) 
 import           Data.Time.Clock 
 import           Data.Time.Clock.POSIX
-import Control.Category as C 
-import Data.Convertible 
-import Data.InRules 
-import Data.List 
+import           Data.Tools
+import           Data.Track
+import           GHC.Generics 
+import           Model.General
+import           Prelude hiding ((.),id)
+import           System.Random 
+import           Test.QuickCheck 
+import           Control.Applicative
+import           Control.Arrow 
+import           Control.Category as C 
+import           Control.Monad 
+import           Control.Monad.Trans 
+import           Data.Chain 
+import           Data.Convertible 
+import           Data.DataPack 
+import           Data.Database
+import           Data.InRules 
+import           Data.List 
+import           Data.Maybe 
+import           Data.SqlTransaction
+import           Database.HDBC.SqlValue 
+import           Debug.Trace 
+import           GHC.Exts 
+import           Model.CarInGarage 
+import           Model.CarInstance  
+import           Model.Functions as DBF 
+import           Model.General 
+import           Model.General 
+import           Model.TH
+import           Model.Tournament as T
+import           Model.TournamentPlayers as TP
+import           Model.Transaction as TR  
+import           Test.QuickCheck as Q 
 import qualified Data.Aeson as AS
 import qualified Data.Aeson.Parser as ASP 
-import Data.SqlTransaction
-import Model.Transaction as TR  
-import Model.CarInstance  
-import Model.Functions as DBF 
-import Model.CarInGarage 
-import Data.Maybe 
-import Model.General 
-import Control.Monad 
-import Control.Applicative
-import Data.Database
-import Database.HDBC.SqlValue 
-import qualified Data.List as L
-import Test.QuickCheck as Q 
-import Data.Chain 
 import qualified Data.HashMap.Strict as S 
-import qualified Model.Task as TK
-import Data.DataPack 
-import Debug.Trace 
-import GHC.Exts 
+import qualified Data.List as L
+import qualified Data.Task as Task
+import qualified LockSnaplet as L 
 import qualified Model.Account as A 
 import qualified Model.AccountProfileMin as AM 
 import qualified Model.CarInGarage as GC 
 import qualified Model.CarMinimal as CM 
+import qualified Model.EventStream as ES 
+import qualified Model.Config as CFG
 import qualified Model.Race as R 
+import qualified Model.RaceReward as RWD
+import qualified Model.Report as RP 
+import qualified Model.Rule as RL 
+import qualified Model.Reward as RW 
+import qualified Model.Action as AC 
+import qualified Model.Task as TK
+import qualified Model.TournamentPlayers as TP 
+import qualified Model.TournamentReport as TRP 
+import qualified Model.TournamentResult as TR
 import qualified Model.TrackDetails as TD
 import qualified Model.TrackMaster as TT
-import qualified Model.Report as RP 
-import qualified Model.RaceReward as RWD
---import           Data.Racing
-import           Data.RacingNew
-import           Data.RaceParticipant
-import           Data.RaceReward
-import qualified Data.Task as Task
-import           Data.Event 
-import           Data.Track
-import           Data.Environment
-import           Model.General
-import           Prelude hiding ((.),id)
-import           Data.Conversion 
-import           Data.Convertible 
-import qualified Model.TournamentResult as TR
-import qualified Model.TournamentPlayers as TP 
-import           GHC.Generics 
-import           Data.Text (Text) 
-import           Test.QuickCheck 
-import           System.Random 
-import           Data.Monoid 
 import qualified Notifications as N 
-import qualified Model.TournamentReport as TRP 
-import qualified Model.EventStream as ES 
-import           Control.Concurrent 
-import           Data.Tools
-import           Data.SqlTransaction
-import qualified LockSnaplet as L 
+
+import Text.Parsec.String
+import Text.Parsec hiding ((<|>), optional)
+import Text.Parsec.Combinator hiding (optional)
+import Text.Parsec.Prim hiding ((<|>))
+import Text.Parsec.Char 
+
 
 data TournamentTask = RunTournament
             deriving (Eq, Show, Generic, Read)
@@ -150,7 +161,7 @@ joinTournament cinst n acid = do
 
 -- | check car, enough money, time prequisites
 checkPrequisites :: A.Account -> Tournament -> Integer -> SqlTransaction Connection () 
-checkPrequisites a (T.Tournament id cid st cs mnl mxl rw tid plys nm dn rn im ttid) cinst = do 
+checkPrequisites a (T.Tournament id cid st cs mnl mxl rw tid plys nm dn rn im ttid _) cinst = do 
         (n,t) <- numberOfPlayers (fromJust id)
         when dn $ rollback "this tournament is already done" 
         when rn $ rollback "tournament is already running"
@@ -631,17 +642,12 @@ getWinners = removeSeen . sortBy (sortF) . splice
                                     | otherwise = (p,d,i) : z
                           fst3 (a,b,c) = a
 
-
-
-                
-
 newtype CartesianMap a b = CM {
         runCM :: [a -> b] 
     }
 
 instance Functor (CartesianMap a) where 
         fmap f = CM . fmap (f.) . runCM 
-
 
 instance Category CartesianMap where 
         id = CM [C.id]
@@ -652,14 +658,12 @@ instance Arrow CartesianMap where
         first (CM fs) = CM [first f | f <- fs]
         second (CM fs) = CM [second f | f <- fs]
 
-
 instance ArrowChoice CartesianMap where 
         left (CM fs) = CM [left f | f <- fs]
         right (CM fs) = CM [right f | f <- fs] 
 
 instance ArrowZero CartesianMap where 
         zeroArrow = CM []
-
 
 instance ArrowLoop CartesianMap where 
         loop (CM fs) = CM $ [loop f | f <- fs]
@@ -677,10 +681,8 @@ test = proc x -> do
                 if z < 1 then returnA -< Nothing 
                          else returnA -< (Just z)
 
-
 runCartesianMap :: CartesianMap a b -> a -> [b]
 runCartesianMap (CM xs) f = fmap ( $ f ) xs
-
 
 newtype ListArrow a b = LA {
         unLA :: [a] -> [b]                  
@@ -700,7 +702,6 @@ instance Arrow ListArrow where
         first (LA f) = LA $ \(~xs) -> lazy $ (lazy $ f $ fst `lfmap` xs) `lzip` (lazy $ snd `lfmap` xs)  
         second (LA f) = LA $ \(~xs) -> (fst `lfmap` xs) `lzip` (lazy $ f $ lazy $  snd `lfmap` xs)
 
-
 lzip :: [a] -> [b] -> [(a,b)]
 lzip [] xs = [] 
 lzip ys [] = [] 
@@ -708,6 +709,7 @@ lzip ~(~x:xs) ~(~y:ys) = lazy (lazy x, lazy y) : lazy (lzip xs ys)
         
 lfmap f [] = [] 
 lfmap f ~(~x:xs) = lazy (f (lazy x)) : lfmap f xs 
+
 instance ArrowChoice ListArrow where 
         left (LA f) = LA (lefts f)
         right (LA f) = LA (rights f)
@@ -747,7 +749,6 @@ lefts f xs = let ~(~a,~d) = splitLR xs ([],[])
 runListArrow :: ListArrow a b -> [a] -> [b] 
 runListArrow (LA f) ~(~xs)= f xs 
 
-
 test2 :: ListArrow Double Double 
 test2 = proc x -> do 
             y <- arr (*2) -< x
@@ -765,14 +766,78 @@ testn = proc x -> do
                         y2 <- testn -< traceShow t2 $ t2
                         returnA -< traceShow (y1 + y2) $ y1 + y2 
 
-
 main = print (runListArrow testn [1..10])
 
-createTournament :: Tournament -> SqlTransaction Connection ()
+createTournament :: T.Tournament -> SqlTransaction Connection ()
 createTournament tr = do 
                 tid <- save tr  
+                createRules (tr {
+                    T.id = Just tid 
+                })
                 void $ tournamentTrigger tid 
 
+testRules = do 
+        t <- loadTournament 28
+        createRules (t {
+                T.tournament_prices = Just "0.5,0.5"
+            })
+
+createRules :: T.Tournament -> SqlTransaction Connection ()
+createRules tr = do 
+            p <- getKey "tournament_money_ratio" 
+            let fee = (T.costs tr * T.players tr ) * p
+            case (tournament_prices tr) <|> (Just "0.5,0.3,0.2") of 
+                    Nothing -> return ()
+                    Just s -> do
+                        let ks = getKeys s 
+                        case ks of 
+                            Left e -> rollback e
+                            Right ks -> do 
+                                when (sum ks /= 1) $ rollback "the sum of prizes is not one" 
+                                forM_ (ks `zip` [1..]) $ \(k,p) -> do 
+                                            let rl = RL.Rule {
+                                                        RL.id = Nothing, 
+                                                        RL.name = T.name tr ++ " pos " ++ (show p),
+                                                        RL.rule = "T" <> (show p) <> "," <> (show (fromJust $ T.id tr)) <> ",_",
+                                                        RL.once = True 
+                                                             }
+                                            let rw = RW.Reward {
+                                                        RW.id = Nothing,
+                                                        RW.experience = 0,
+                                                        RW.money = ceiling $ k * (fromRational $ toRational fee),
+                                                        RW.name = "tournament" <> " pos " <> (show p)
+                                                    }
+
+                                            let ac = AC.Action {
+                                                        AC.id = Nothing,
+                                                        AC.name = "tournament" <> " pos " <> (show p),
+                                                        AC.change = 100
+
+                                                    }
+                                            rl_id <- save rl
+                                            rw_id <- save rw
+                                            save (ac {
+                                                AC.rule_id = Just rl_id,
+                                                AC.reward_id = Just rw_id
+                                            })
+
+                                return ()
+
+getKeys :: String -> Either String [Double]
+getKeys nm = case parse parseKeys "" nm  of 
+                    Right a -> return a 
+                    Left a -> Left (show a)
+
+parseKeys :: Parser [Double]
+parseKeys = spaces *> (parseKey <* spaces) `sepBy` (char ',' <* spaces)
+
+parseKey :: Parser Double
+parseKey = read <$> (try parseDouble <|> parseInt)
+
+parseInt :: Parser String 
+parseInt = many1 (oneOf "1234567890") <* optional (char '.')
+
+parseDouble = (\x y -> x ++ "." ++ y) <$> parseInt <*> parseInt 
 
 newtype MultiState s a b = MS {
             runMS :: [(s,a)] -> [(s,b)] 
@@ -820,7 +885,6 @@ unzip3Either xs = foldr step ([], []) xs
         where step (s,Left a) (ls,xs) = ((s,a):ls,xs)
               step (s, Right a) (ls, xs) = (ls, (s,a):xs) 
             
-
 transform :: ([(s,a)] -> [(s,b)]) -> [(s, (a,d))] -> [(s,(b,d))]
 transform f xs = let (asss, ds) = unzip3' xs 
                  in zip3' (f asss) ds 
@@ -832,7 +896,6 @@ zip3' = zipWith (\(s,a) d -> (s, (a,d)))
 
 zip3'' :: [(s,a)] -> [d] -> [(s, (d,a))]
 zip3'' = zipWith (\(s,a) d -> (s, (d, a)))
-
 
 unzipWith :: (d -> (a,b)) -> [d] -> ([a],[b])
 unzipWith f xs = foldr step ([], []) xs 

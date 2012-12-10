@@ -15,6 +15,7 @@
 		<div><label class="list-element-data-label">players:</label><span>[:players]</span></div>
 		<div><label class="list-element-data-label">running:</label><span>[:running]</span></div>
 		<div><label class="list-element-data-label">start_time:</label><span>[:start_time]</span></div>
+		<div><label class="list-element-data-label">tournament_prices:</label><span>[:tournament_prices]</span></div>
 		<div><label class="list-element-data-label">track_id:</label><span>[:track_id]</span></div>
 	</div>
 	<div class="list-element-buttons-container">

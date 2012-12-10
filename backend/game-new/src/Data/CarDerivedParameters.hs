@@ -7,7 +7,11 @@ module Data.CarDerivedParameters (
         getCarInGarage,
         loadCarInGarage,
         previewWithPartList,
-        previewWithPart
+        previewWithPart,
+        searchCarMinified,
+        loadCarMinified,
+        getCarMinified
+
 ) where
 
 

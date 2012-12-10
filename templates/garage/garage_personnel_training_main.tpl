@@ -19,11 +19,11 @@
 			<div class="clearfix"></div>
 		</div>
 		<div class="training-staff-box-fields-box">
-			<div class="training-staff-radio-button-box"><input type="radio" name="level" factor="1" id="level_low" value="low" checked="checked"><label for="level_low">Low</label></div>
+			<div class="training-staff-radio-button-box"><input type="radio" name="level" factor="1" id="level_low" value="low" checked="checked"><label for="level_low">Low (1-4)%</label></div>
 			<div class="clearfix"></div>
-			<div class="training-staff-radio-button-box"><input type="radio" name="level" factor="1.5" id="level_medium" value="medium"><label for="level_medium">Medium</label></div>
+			<div class="training-staff-radio-button-box"><input type="radio" name="level" factor="1.5" id="level_medium" value="medium"><label for="level_medium">Medium (3-6)%</label></div>
 			<div class="clearfix"></div>
-			<div class="training-staff-radio-button-box"><input type="radio" name="level" factor="2" id="level_high" value="high"><label for="level_high">High</label></div>
+			<div class="training-staff-radio-button-box"><input type="radio" name="level" factor="2" id="level_high" value="high"><label for="level_high">High (5-8)%</label></div>
 			<div class="clearfix"></div>
 		</div>
 		<div class="training-staff-title-box training-staff-title-box-by-cost">

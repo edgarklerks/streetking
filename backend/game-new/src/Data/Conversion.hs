@@ -44,7 +44,8 @@ module Data.Conversion (
        pprints,
        object,
        list,
-       project
+       project,
+       keyFilter
 
 
 
@@ -67,7 +68,7 @@ import qualified Data.Attoparsec.Number as A
 import Data.Attoparsec
 import qualified Data.Text as T 
 import qualified Data.Text.Encoding as T
-import Test.QuickCheck
+import Test.QuickCheck hiding ((==>))
 import Data.Convertible
 import Control.Monad.State
 import qualified Data.Serialize as S
@@ -85,6 +86,7 @@ import Data.Time.LocalTime
 import Data.Fixed
 --import Codec.Compression.GZip
 import Data.Default 
+import Data.Monoid
 
 
 {-- Main file for loading all the instances + inrule tool --}
@@ -257,6 +259,17 @@ prop_find_all' x xs = lhs x xs  ==  rhs x xs
               rhs x xs = fmap convert (fromList xs .>> x)
 
 
-{-- More general instance --}
 
 
+keyFilter :: (String -> Bool) -> InRule -> InRule 
+keyFilter f xs = kfold step xs mempty 
+    where step k@(Assoc t) x z | f t = (t ==> x) `mappend` z
+                               | otherwise = z 
+          step k x z = x `mappend` z
+
+
+grumpyObject = 
+            ("test" ==> (1 :: Int)) <>
+            ("test2" ==> (2 :: Int)) <> 
+            ("test3" ==> (3 :: Int)) <>
+            (InArray [toInRule "a", toInRule "b"])

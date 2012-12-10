@@ -3,9 +3,9 @@ module Data.Constants (
     constant, ms2kmh, kmh2ms
 ) where
 
-import Data.HashMap.Strict as H
-import Control.Monad
-import Control.Monad.State 
+import           Control.Monad
+import           Control.Monad.State 
+import           Data.HashMap.Strict as H
 
 type Constants = HashMap String Double
 

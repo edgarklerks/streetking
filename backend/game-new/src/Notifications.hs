@@ -76,7 +76,8 @@ data NotificationParam where
                   ,   race_id :: Integer}
                   ->  NotificationParam 
 
-        TournamentStart :: {tournament_id :: Integer}
+        TournamentStart :: {tournament_id :: Integer
+                        , tournament_name :: String}
                         -> NotificationParam 
 
         CarMarket :: {car_id :: Integer, money :: Integer} -> NotificationParam 
@@ -92,7 +93,7 @@ instance Show NotificationParam where
         show (CarRepair _ _) = "CarRepair"
         show (PartImprove _ _) = "PartImprove"
         show (RaceStart _ _) = "RaceStart"
-        show (TournamentStart _) = "TournamentStart"
+        show (TournamentStart _ _) = "TournamentStart"
         show (CarMarket _ _) = "CarMarket"
         show (PartMarket _ _) = "PartMarket"
         show (ReturnCar _) = "ReturnCar"
@@ -180,7 +181,8 @@ raceStart = RaceStart {
             }
 tournamentStart :: NotificationParam 
 tournamentStart = TournamentStart {
-                    tournament_id = 0
+                    tournament_id = 0,
+                    tournament_name = "regular"
                 }
 
 partImprove :: NotificationParam 
@@ -206,7 +208,7 @@ isRaceStart (RaceStart _ _) = True
 isRaceStart _ = False 
 
 isTournamentStart :: NotificationParam -> Bool 
-isTournamentStart (TournamentStart _) = True 
+isTournamentStart (TournamentStart _ _) = True 
 isTournamentStart _ = False 
 
 isCarMarket :: NotificationParam -> Bool 

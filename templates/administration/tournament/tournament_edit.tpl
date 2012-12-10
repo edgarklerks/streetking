@@ -22,6 +22,7 @@
 				[:eval OPTIONTRUEFALSE("[\"running\",\""+0.running+"\"]")]
 			</div>
 			<div><label>start_time:</label><input type="text" id="datepicker" name="start_time" value="[:0.start_time]"/><a href="#" class="button" iconnotext="ui-icon-clock" tabindex="-1" id="calendar">...</a></div>
+			<div><label>tournament_prices:</label><input type="text" name="tournament_prices" value="[:0.tournament_prices]"/></div>
 			<div><label>track_id:</label><input type="text" name="track_id" list="track" value="[:0.track_id]"/></div>
 		</div>
 		<div class="edit-element-image-box">

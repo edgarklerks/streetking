@@ -400,7 +400,9 @@ runTournamentRounds po tfd =
                          in do 
                                forM_ plys $ \(TP.account_id -> pl) -> N.sendCentralNotification (fromJust $ pl) (
                                                                                         N.tournamentStart {
-                                    N.tournament_id = fromJust $ tid 
+                                    N.tournament_id = fromJust $ tid ,
+                                    N.tournament_name = T.name $ tournament tfd 
+
                                                                                                 })
 
                                flip catchSqlError error $ do 

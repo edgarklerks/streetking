@@ -1,14 +1,14 @@
 module Data.ConnectionPool where 
 
-import Control.Monad
-import Database.HDBC.PostgreSQL
-import Database.HDBC 
-import Control.Concurrent.STM 
-import Control.Concurrent.STM.TArray
-import Control.Concurrent 
-import Data.Array.MArray
-import Data.Time.Clock
-import Data.Time.Clock.POSIX
+import           Control.Concurrent 
+import           Control.Concurrent.STM 
+import           Control.Concurrent.STM.TArray
+import           Control.Monad
+import           Data.Array.MArray
+import           Data.Time.Clock
+import           Data.Time.Clock.POSIX
+import           Database.HDBC 
+import           Database.HDBC.PostgreSQL
 
 c = connectPostgreSQL "host=192.168.1.66 password=wetwetwet dbname=deosx user=graffiti"
 

@@ -6,8 +6,8 @@ module Data.Environment (
         environment
     ) where
 
-import Data.Constants
-import Data.Track
+import           Data.Constants
+import           Data.Track
 
 data Environment = Environment {
     mtraction :: Double,    -- traction multiplier due to weather conditions (i.e. frost, rain etc.)

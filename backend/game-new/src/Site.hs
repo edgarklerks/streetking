@@ -20,7 +20,6 @@ module Site
 
 
 
---import           Data.Racing
 import           Application
 import           ConfigSnaplet 
 import           Control.Applicative
@@ -199,7 +198,9 @@ salt = "blalalqa"
 userRegister :: Application () 
 userRegister = do 
         x <- getJson >>= scheck ["email", "password", "nickname"]
+
         -- TODO: nice error messages. also unique email address from database, add a check here.
+
         scfilter x [("email", email), ("password", minl 6), ("nickname", minl 3 `andcf` maxl 16)]
         i <- runDb $ do 
             p <- aget ["id" |== SqlInteger 0] (rollback "Account prototype not found") :: SqlTransaction Connection A.Account
@@ -241,7 +242,8 @@ userData = do
     n <- runCompose $ do 
                 action "user" ((load $ fromJust $ APM.id m) :: SqlTransaction Connection (Maybe APM.AccountProfileMin))
                 action "car" $ do
-                    xs <- search ["account_id" |== toSql (APM.id m) .&& "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CMI.CarMinimal]
+                    xs <- searchCarMinified ["account_id" |== toSql (APM.id m) .&& "active" |== toSql True] [] 1 0 :: SqlTransaction Connection [CMI.CarMinimal]
+                    
                     case xs of 
                         [] -> return Nothing
                         [x] -> return (Just x)
@@ -271,11 +273,11 @@ marketPlace = do
            puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
            ((l, o), xs) <- getPagesWithDTD (
                     "car_id" +== "car_id" +&&  
-                    "name" +== "part_type" +&& 
-                    "level" +>= "level-min" +&& 
                     "level" +<= "level-max" +&& 
-                    "price" +>= "price-min" +&&
+                    "level" +>= "level-min" +&& 
+                    "name" +== "part_type" +&& 
                     "price" +<= "price-max" +&&
+                    "price" +>= "price-min" +&&
 
                      ifdtd "me" (=="1") 
                                 ("account_id" +==| toSql uid) 
@@ -381,8 +383,6 @@ evalLua x xs = do
                         eval x
                         peekGlobal "res"
 
-
---         
 -- Second hand shop 
 marketSell :: Application ()
 marketSell = do 
@@ -393,7 +393,6 @@ marketSell = do
             x <- evalLua prg [
                           ("price", LuaNum (fromIntegral $ MI.price d))
                           ]
-
             -- -5.6 -> -5
             -- floor -5.6 -> -6
             -- ceil -5.6 -> -5
@@ -454,7 +453,6 @@ carBuy = do
             return cid
 
         writeResult ("You succesfully bought the car" :: String)
-
 
 carReturn :: Application ()
 carReturn = do 
@@ -699,8 +697,6 @@ garageActiveCarReady = do
             CR.carReady $ fromJust $ CarInstance.id ac
     writeResult rs 
 
-
-
 marketPlaceBuy :: Application ()
 marketPlaceBuy = do 
             uid <- getUserId
@@ -754,8 +750,6 @@ marketPlaceBuy = do
                                             })
 
             writeResult ("You bought the part" :: String) 
-
-
 
 marketReturn :: Application ()
 marketReturn = do 
@@ -893,12 +887,12 @@ marketPartTypes = do
    uid <- getUserId
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account)
    ((l, o), xs) <- getPagesWithDTD (
-            "name" +== "name" +&&  
-            "min_level" +<= "level-max" +&& 
             "max_level" +>= "level-min" +&&
-            "min_price" +<= "price-max" +&&
             "max_price" +>= "price-min" +&&
-            "min_level" +<=| (toSql $ A.level puser)
+            "min_level" +<= "level-max" +&& 
+            "min_level" +<=| (toSql $ A.level puser) +&&
+            "min_price" +<= "price-max" +&&
+            "name" +== "name" 
         )
    ns <- runDb (search xs [] l o) :: Application [PMT.PartMarketType]
    writeMapables ns  
@@ -1842,52 +1836,52 @@ raceChallengeAccept = do
         -- Change, had to break up to be able to send to the user. 
         -- This should be ok, it are only get actions 
 
+
         -- retrieve challenge
-        chg <- runDb $ (aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: SqlTransaction Connection Chg.Challenge)
-        chgt <- runDb $ do
-                    c <- (aget ["id" |== (toSql $ Chg.type chg)] (rollback $ "challenge type not found for id " ++ (show $ Chg.type chg)) :: SqlTransaction Connection ChgT.ChallengeType)
-                    return $ ChgT.name c
+        chg  <- runDb $ aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: Application Chg.Challenge
+        chgt <- runDb $ ChgT.name <$> 
+                                (aget ["id" |== (toSql $ Chg.type chg)] (rollback $ "challenge type not found for id " ++ (show $ Chg.type chg)) :: SqlTransaction Connection ChgT.ChallengeType)
 
 
         rid <- runDb $ do
             -- TODO: get / search functions for track, user, car with task triggering
             
             userActions  uid
-            userActions  $ rp_account_id $ Chg.challenger chg
+            userActions . rp_account_id $ Chg.challenger chg
 
             Task.run Task.User uid
-            Task.run Task.User $ rp_account_id $ Chg.challenger chg
+            Task.run Task.User . rp_account_id $ Chg.challenger chg
 
             -- pay race dues to escrow 
-            me <- case (Chg.amount chg) > 0 of
-                    True -> fmap Just $ Escrow.deposit uid $ Chg.amount chg
+            me <- case Chg.amount chg > 0 of
+                    True -> fmap Just . Escrow.deposit uid $ Chg.amount chg
                     False -> return Nothing 
 
 
-            a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
+            a  <- aget ["id" |== toSql uid] $ rollback "account not found" :: SqlTransaction Connection A.Account
             let am = APM.toAPM a
 
             let tid = Chg.track_id chg
 
             -- check busy
-            when ((A.busy_type a) /= 1) $ rollback "You are currently busy with something else"
+            when (A.busy_type a /= 1) $ rollback "You are currently busy with something else"
 
             -- check track level
-            t <- aget ["track_id" |== (SqlInteger $ tid)] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
-            when (A.level a < TT.track_level t) $ rollback "Your are not ready for this track"
+            track_master <- aget ["track_id" |== SqlInteger tid] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            when (A.level a < TT.track_level track_master) $ rollback "Your are not ready for this track"
 
             -- check user energy
-            let ecost = TT.energy_cost t * 10000
+            let ecost = TT.energy_cost track_master * 10000
             when (A.energy a < ecost) $ rollback "You don't have enough energy, bro"
 
 
-            c <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] (rollback "Active car minimal not found") 
-            let cm = CMI.toCM c 
+            c <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] $ rollback "Active car minimal not found" 
 
             -- apply energy cost
-            update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
+            update "account" ["id" |== toSql uid] [] [("energy", toSql $ A.energy a - ecost)]
 
-            let y = RaceParticipant a am c cm me
+
+            let y = RaceParticipant a am c (CMI.toCM c) me
           
             -- TODO: add user to accepts list
             -- when count(accepts) >= participants, start race
@@ -1898,20 +1892,19 @@ raceChallengeAccept = do
             foo <- save $ chg { Chg.deleted = True }
 
             -- process race
-            t <- milliTime 
+            current_time <- milliTime 
+
             CarInstance.setMutable (fromJust $ CMI.id $ Chg.car_min chg)
-            (rid, rs) <- processRace 2 t [y, Chg.challenger chg] (Chg.track_id chg)
+            (rid, rs) <- processRace 2 current_time [y, Chg.challenger chg] (Chg.track_id chg)
 
-            forM_ (rs) $ \r -> do 
-                    partsWear (rp_car_id $ fst r) (snd r)  
-                    healthLost (rp_account_id $ fst r) (snd r)
-            -- 
 
-            let fin r = (t+) $ ceiling $ raceTime r 
+            let fin  = (current_time+) . ceiling . raceTime  
             let t1 = (\(_,r) -> fin r) $ head rs
-            let winner_id = rp_account_id $ fst $ head rs
-            let other_id = rp_account_id $ Chg.challenger chg
-            -- uid <-> other_id 
+            let winner_id = rp_account_id . fst . head $ rs
+            let other_id = rp_account_id . Chg.challenger $ chg
+
+            -- BUG: TODO: one-and-a-half bug 
+
             if winner_id == uid 
                     then do             
                         Task.emitEvent uid (ChallengeRace 1 tid rid) t1 
@@ -1919,15 +1912,16 @@ raceChallengeAccept = do
                     else do 
                         Task.emitEvent other_id (ChallengeRace 1 tid rid) t1 
                         Task.emitEvent uid (ChallengeRace 2 tid rid) t1 
-            -- 
-
-
 
             forM_ rs $ \(p,r) -> do
 
-                let isWinner = (rp_account_id p) == winner_id
+                partsWear (rp_car_id p)  r
+                healthLost (rp_account_id p) r
+
+                let isWinner = rp_account_id p == winner_id
  
                 -- task: transfer challenge objects
+
                 case chgt of
                     "money" -> case rp_escrow_id p of
                             -- release money from escrow on winner finish
@@ -1939,18 +1933,19 @@ raceChallengeAccept = do
                     "car" -> case isWinner of
                             -- transfer car ownership on winner finish
                             True -> return ()
-                            False -> Task.transferCar t1 (rp_account_id p) winner_id (rp_car_id p)
+                            False -> Task.transferCar t1 (rp_account_id p) winner_id $ rp_car_id p
                     otherwise -> rollback $ "challenge type not supported: " ++ chgt
 
             return rid
 
-        let t = N.raceStart {
+        let raceStart = N.raceStart {
                     N.race_type = read $ chgt,
                     N.race_id = rid  
-
                 }
-        N.sendNotification uid t
-        N.sendNotification (rp_account_id $ Chg.challenger chg) t 
+
+
+        N.sendNotification uid raceStart 
+        N.sendNotification (rp_account_id . Chg.challenger $ chg) raceStart 
 
 
         writeResult rid
@@ -2171,6 +2166,22 @@ tournamentPlayers = do
         ys <- runDb $ getPlayers (fromJust $ TP.tournament_id b )
         writeResult ys 
 
+
+tournamentAllPlayers :: Application ()
+tournamentAllPlayers = do 
+        uid <- getUserId 
+        xs <- getJson >>= scheck ["tournament_id"]
+        let b = updateHashMap xs (def :: TP.TournamentPlayer)
+        ys <- runDb $ do 
+                        xs <- search ["deleted" |== (toSql False) .&& "tournament_id" |== (toSql $ TP.tournament_id b)] [] 100000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
+                        forM xs $ \t -> do 
+                            y <- aget ["id" |== (toSql $ TP.account_id t)] (rollback "goodbye cruel world") :: SqlTransaction Connection APM.AccountProfileMin 
+                            z <- aget ["id" |== (toSql $ TP.car_instance_id t)] (rollback "ahahaha player doesn't have sucky car") :: SqlTransaction Connection CMI.CarMinimal
+                            return $ HM.fromList $ [("user" :: String, toInRule y), ("car",toInRule z)]
+
+
+        writeResult ys 
+
 tournamentJoin :: Application ()
 tournamentJoin = do 
     uid <- getUserId
@@ -2358,97 +2369,98 @@ tournamentRewards tid = do
 routes :: Bool ->  [(C.ByteString, Handler App App ())]
 routes g = fmap (second (wrapErrors g)) $ [ 
                 ("/", index),
-                ("/User/login", userLogin),
-                ("/User/register", userRegister),
-                ("/User/data", userData),
-                ("/User/me", userMe),
-                ("/User/notification", userNotification),
-                ("/User/readNotification", readNotification), 
-                ("/User/archiveNotification", archiveNotification), 
-                ("/User/searchNotification", readArchive),
-                ("/User/testNotification", testNotification),
-                ("/User/currentRace", userCurrentRace),
-                ("/User/addSkill", userAddSkill),
-                ("/User/claimFreeCar", userClaimFreeCar),
-                ("/Market/manufacturer", marketManufacturer),
-                ("/Market/model", marketModel),
-                ("/Market/prototype", marketCarPrototype),
-                ("/Market/buy", marketBuy),
-                ("/Market/sell", marketSell),
-                ("/Market/return", marketReturn),
-                ("/Market/parts", marketParts),
-                ("/Market/partTypes", marketPartTypes),
-                ("/Market/usedPartTypes", marketPlacePartTypes),
-                ("/Market/buyCar", carMarketBuy),
-                ("/Market/cars", marketCars),
-                ("/Garage/car", garageCar),
-                ("/Car/model", loadModel),
-                ("/Car/trash", carTrash),
-                ("/Game/template", loadTemplate),
-                ("/Game/tree", loadMenu),
-                ("/Garage/parts", garageParts),
-                ("/Garage/partsPreviewed", garagePartsWithPreview),
-                ("/Market/allowedParts", marketAllowedParts),
-                ("/Market/place", marketPlace),
-                ("/Market/trash", marketTrash),
-                ("/Market/buySecond", marketPlaceBuy),
-                ("/Market/reports", shoppingReports),
-                ("/Car/buy", carBuy),
-                ("/Car/parts", carParts),
-                ("/Car/part", carPart),
-                ("/Car/sell", carSell),
                 ("/Car/activate", carActivate),
+                ("/Car/buy", carBuy),
                 ("/Car/deactivate", carDeactivate),
-                ("/Car/uploadImage", uploadCarImage),
-                ("/Car/image", downloadCarImage),
                 ("/Car/getOptions", carGetOptions),
+                ("/Car/image", downloadCarImage),
+                ("/Car/model", loadModel),
+                ("/Car/part", carPart),
+                ("/Car/parts", carParts),
+                ("/Car/sell", carSell),
                 ("/Car/setOptions", carSetOptions),
-                ("/Market/returnCar", carReturn),
-                ("/Market/carParts", marketCarParts),
-                ("/Garage/addPart", addPart),
-                ("/Garage/removePart", removePart),
-                ("/Garage/personnel", garagePersonnel),
-                ("/Garage/reports", garageReports),
-                ("/Garage/activeCar", garageActiveCar),
-                ("/Market/personnel", marketPersonnel),
-                ("/Personnel/hire", hirePersonnel),
-                ("/Personnel/fire", firePersonnel),
-                ("/Part/tasks", partTasks),
-                ("/Garage/carReady", garageCarReady),
-                ("/Garage/activeCarReady", garageActiveCarReady),
-                ("/Personnel/train", trainPersonnel),
-                ("/Personnel/task", taskPersonnel),
-                ("/Personnel/cancelTask", cancelTaskPersonnel),
-                ("/Personnel/reports", personnelReports),
-                ("/Continent/list", continentList),
+                ("/Car/trash", carTrash),
+                ("/Car/uploadImage", uploadCarImage),
                 ("/City/list", cityList),
                 ("/City/travel", cityTravel),
-                ("/Travel/reports", travelReports),
-                ("/Track/list", trackList),
-                ("/Track/here", trackHere),
-                ("/User/reports", userReports),
-                ("/Test/write", testWrite),
+                ("/Continent/list", continentList),
+                ("/Game/template", loadTemplate),
+                ("/Game/tree", loadMenu),
+                ("/Garage/activeCar", garageActiveCar),
+                ("/Garage/activeCarReady", garageActiveCarReady),
+                ("/Garage/addPart", addPart),
+                ("/Garage/car", garageCar),
+                ("/Garage/carReady", garageCarReady),
+                ("/Garage/parts", garageParts),
+                ("/Garage/partsPreviewed", garagePartsWithPreview),
+                ("/Garage/personnel", garagePersonnel),
+                ("/Garage/removePart", removePart),
+                ("/Garage/reports", garageReports),
+                ("/Market/allowedParts", marketAllowedParts),
+                ("/Market/buy", marketBuy),
+                ("/Market/buyCar", carMarketBuy),
+                ("/Market/buySecond", marketPlaceBuy),
+                ("/Market/carParts", marketCarParts),
+                ("/Market/cars", marketCars),
+                ("/Market/manufacturer", marketManufacturer),
+                ("/Market/model", marketModel),
+                ("/Market/partTypes", marketPartTypes),
+                ("/Market/parts", marketParts),
+                ("/Market/personnel", marketPersonnel),
+                ("/Market/place", marketPlace),
+                ("/Market/prototype", marketCarPrototype),
+                ("/Market/reports", shoppingReports),
+                ("/Market/return", marketReturn),
+                ("/Market/returnCar", carReturn),
+                ("/Market/sell", marketSell),
+                ("/Market/trash", marketTrash),
+                ("/Market/usedPartTypes", marketPlacePartTypes),
+                ("/Part/tasks", partTasks),
+                ("/Personnel/cancelTask", cancelTaskPersonnel),
+                ("/Personnel/fire", firePersonnel),
+                ("/Personnel/hire", hirePersonnel),
+                ("/Personnel/reports", personnelReports),
+                ("/Personnel/task", taskPersonnel),
+                ("/Personnel/train", trainPersonnel),
                 ("/Race/challenge", raceChallenge),
                 ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/challengeGet", searchRaceChallenge),
-                ("/Race/practice", racePractice),
-                ("/Race/reward", searchRaceReward),
-                ("/Race/reports", searchReports RP.Race),
                 ("/Race/details", getRaceDetails),
+                ("/Race/practice", racePractice),
+                ("/Race/reports", searchReports RP.Race),
+                ("/Race/reward", searchRaceReward),
                 ("/Race/search", raceSearch),
-                ("/Time/get", serverTime),
-                ("/Tournament/get", viewTournament),
-                ("/Tournament/join", tournamentJoin),
-                ("/Tournament/car", searchTournamentCar),
-                ("/Tournament/result", tournamentResults),
-                ("/Tournament/joined", tournamentJoined),
-                ("/Tournament/cancel", cancelTournamentJoin),
-                ("/Tournament/idk", tournamentPlayers),
-                ("/Tournament/report", tournamentReport),
-                ("/Reward/get", rewardLog),
-                ("/Reward/find", findRewards),
                 ("/Reward/event", getRewards),
-                ("/Support/send", reportIssue) 
+                ("/Reward/find", findRewards),
+                ("/Reward/get", rewardLog),
+                ("/Support/send", reportIssue), 
+                ("/Test/write", testWrite),
+                ("/Time/get", serverTime),
+                ("/Tournament/cancel", cancelTournamentJoin),
+                ("/Tournament/car", searchTournamentCar),
+                ("/Tournament/get", viewTournament),
+                ("/Tournament/idk", tournamentPlayers),
+                ("/Tournament/players", tournamentAllPlayers),
+                ("/Tournament/join", tournamentJoin),
+                ("/Tournament/joined", tournamentJoined),
+                ("/Tournament/report", tournamentReport),
+                ("/Tournament/result", tournamentResults),
+                ("/Track/here", trackHere),
+                ("/Track/list", trackList),
+                ("/Travel/reports", travelReports),
+                ("/User/addSkill", userAddSkill),
+                ("/User/archiveNotification", archiveNotification), 
+                ("/User/claimFreeCar", userClaimFreeCar),
+                ("/User/currentRace", userCurrentRace),
+                ("/User/data", userData),
+                ("/User/login", userLogin),
+                ("/User/me", userMe),
+                ("/User/notification", userNotification),
+                ("/User/readNotification", readNotification), 
+                ("/User/register", userRegister),
+                ("/User/reports", userReports),
+                ("/User/searchNotification", readArchive),
+                ("/User/testNotification", testNotification)
           ]
 
 getRewards :: Application ()

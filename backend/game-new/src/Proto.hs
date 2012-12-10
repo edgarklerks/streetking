@@ -1,16 +1,16 @@
 {-# LANGUAGE DeriveDataTypeable, FlexibleContexts, ScopedTypeVariables, RankNTypes #-}
 module Proto where 
 
-import           Data.MemTimeState 
-import qualified Data.Serialize as S
-import qualified Control.Monad.CatchIO as CIO
-import           Control.Monad.Error 
-import           Data.Word 
 import           Control.Applicative
-import           Data.Typeable
-import qualified Data.ByteString as B
+import           Control.Monad.Error 
 import           Data.Maybe 
-import GHC.Exception (SomeException)
+import           Data.MemTimeState 
+import           Data.Typeable
+import           Data.Word 
+import           GHC.Exception (SomeException)
+import qualified Control.Monad.CatchIO as CIO
+import qualified Data.ByteString as B
+import qualified Data.Serialize as S
 
 data Proto = TTLReq TTL Query 
            | Version Int Proto
@@ -23,6 +23,7 @@ data Proto = TTLReq TTL Query
            | DumpInfo 
            | Result Result 
     deriving Show 
+
 {-- Payload --}
 
 getResult :: Proto -> Maybe Result  

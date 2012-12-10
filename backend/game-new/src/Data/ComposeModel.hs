@@ -3,39 +3,39 @@
      MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
 
 module Data.ComposeModel(
-        action,
-        label,
-        runComposeMonad,
         ComposeMonad,
-        deep,
         abort,
+        action,
+        deep,
+        getComposeUser,
+        label,
         liftDb,
-        getComposeUser
+        runComposeMonad
     )where 
 
-import Data.SqlTransaction 
-import Data.Convertible 
+import           Control.Applicative
+import           Control.Arrow
+import           Control.Concurrent
+import           Control.Monad.Cont 
+import           Control.Monad.Error 
+import           Control.Monad.Reader
+import           Control.Monad.Writer 
+import           Data.Aeson 
+import           Data.Conversion 
+import           Data.Convertible 
+import           Data.Database
+import           Data.InRules
+import           Data.Monoid 
+import           Data.SqlTransaction 
+import           Database.HDBC.PostgreSQL
+import           Model.General
 import qualified Data.ByteString.Char8 as B 
 import qualified Data.ByteString.Lazy.Char8 as BL 
-import qualified Database.HDBC as DB
 import qualified Data.HashMap.Strict as H
-import Data.InRules
-import Data.Conversion 
-import Control.Monad.Writer 
-import Control.Monad.Reader
-import Data.Monoid 
-import Control.Arrow
-import Control.Applicative
-import Control.Monad.Error 
-import Database.HDBC.PostgreSQL
-import Control.Concurrent
+import qualified Database.HDBC as DB
+import qualified LockSnaplet as L 
 import qualified Model.Account as A 
 import qualified Model.Garage as G 
-import Model.General
-import Data.Database
-import Data.Aeson 
-import Control.Monad.Cont 
-import qualified LockSnaplet as L 
 
 
 
