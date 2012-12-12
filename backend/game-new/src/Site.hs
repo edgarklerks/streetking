@@ -1528,7 +1528,7 @@ garageReports = do
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
         ns <- runDb $ do
---            userActions uid
+            userActions uid
             search xs [Order ("time",[]) False] l o 
         writeMapables (ns :: [GRP.GarageReport])
 
@@ -1676,6 +1676,7 @@ partImprove uid pi = do
                                                                     N.improved = min (10^4) $ round (a * pr')
 
                                                                 })
+                            commit 
                                         
 
 
@@ -1705,6 +1706,7 @@ partRepair uid pi = do
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.repaired = max 0 $ round (a * pr') 
                                                                 })
+                            commit
  
                                               
 
@@ -1731,6 +1733,7 @@ carRepair uid pi = do
                     void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
                                         })
+                    commit 
 
                     when (PLID.task_end pi < s) $  do 
                             stopTaskCar (fromJust $ PLID.personnel_instance_id pi) (CIP.part_instance_id c) uid 
@@ -1738,6 +1741,7 @@ carRepair uid pi = do
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.repaired = max 0 $ round (a * pr') 
                                                                 })
+                            commit 
                                                  
 
 
