@@ -37,7 +37,7 @@ Executable game-new
     cereal,
     dataenc,
     directory,
-    stm,
+    stm >= 2.4.2,
     unordered-containers,
     CC-delcont,
     zeromq3-haskell,
