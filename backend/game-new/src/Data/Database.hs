@@ -22,7 +22,7 @@ import Database.HDBC.PostgreSQL
  -}
 
 dbconn ::  IO Connection
-dbconn = connectPostgreSQL "host=192.168.1.241 port=5432 dbname=deosx user=postgres password=wetwetwet"
+dbconn = connectPostgreSQL "host=192.168.1.77 port=5439 dbname=deosx user=postgres password=wetwetwet"
 
 doSql :: SqlTransaction Connection a -> IO a
 doSql t = dbconn >>= flip (runSqlTransaction t error) undefined

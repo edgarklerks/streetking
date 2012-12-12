@@ -1,8 +1,11 @@
-<div class="list-element-container">
+<div class="list-element-container notification-list-element-container">
 <!--
 	<div class="list-element-image-container">&nbsp;</div>
 -->
-	<div class="list-element-image-container list-element-image-part" >&nbsp;</div>
+	<div class="list-element-image-container notification-image-container backgound-blue">
+		<div class="white-icons notification-icons sk-icons-[:type]">&nbsp;</div>
+	</div>
+
 	<div class="list-element-data-container">
 		<div><label class="list-element-data-label">body:</label><span>[:body]</span></div>
 		<div><label class="list-element-data-label">id:</label><span>[:id]</span></div>

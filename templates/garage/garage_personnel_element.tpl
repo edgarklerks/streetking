@@ -7,6 +7,9 @@
 				[:when (requestParams.action_type == "market")]{<div>Price:&nbsp;<span>SK$&nbsp;[:price]</span></div>}
 				<div>Salary:&nbsp;<span>SK$&nbsp;[:salary]</span></div>
 				<div>Country:&nbsp;<img src="images/flags/[:country_shortname].png" alt="[:country_name]" title="[:country_name]" border="0"></div>
+				[:when ((task_name != "idle") & (requestParams.action_type == "own"))]{
+					<div>Busy:&nbsp;<span id="busy_till_[:personnel_id]">00:00:00</span></div>
+				}
 			</div>
 			<div class="personnel-element-vertical-line"></div>
 			<div class="personnel-element-infobar-container">

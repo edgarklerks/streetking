@@ -11,7 +11,6 @@ module Data.PriorityQueue (
         singleton,
         extractTill,
         extractTillWithKey
-
     ) where 
 
 import Data.Monoid 
@@ -131,7 +130,6 @@ safeHead _ = Nothing
 test_prio_minimal = property test 
     where test :: [(Int, Int)] -> Bool 
           test xs = fmap snd ( safeHead (L.sortBy (\x y -> compare (fst x) (fst y)) xs)) == headMin (fromList xs)
-
 
 test_prio_foldl = property test 
     where test :: [Int] -> Bool 

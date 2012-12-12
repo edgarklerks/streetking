@@ -1012,7 +1012,7 @@ loadTemplate = do
         let pth =  ("resources/static/" ++ C.unpack name ++ ".tpl")
         let dirs = splitDirectories pth
         if ".." `elem` dirs 
-            then internalError "do not hacked server"
+            then internalError "Hi my friend, I am a node based on snap 0.9, which is a haskell web framework to create webservers. I am compiled with GHC 7.4.2 You came by me through a load-balancing and security proxy. We have a this moment 3 backend nodes running. Our connection_pool holds at maximum 200 connections to the database. We are using prepared statements and don't allow to do direct queries by some typesystem trick. We use PostgreSQL 9.2.2 with a PGPool-II as load balancer and failover mechanism. Also .. cannot be used in this query and we basename it anyway. Disregards, I suck cock. Bye."
             else serveFileAs "text/plain" pth
 
 userAddSkill :: Application ()
@@ -1103,7 +1103,6 @@ marketPersonnel = do
         writeMapables ns 
 
 
-
 garagePersonnel :: Application ()
 garagePersonnel = do 
         uid <- getUserId 
@@ -1126,7 +1125,6 @@ garagePersonnel = do
         ns <- p :: Application [PLID.PersonnelInstanceDetails]
         writeMapables ns 
 
-
 partTasks :: Application ()
 partTasks = do 
     uid <- getUserId 
@@ -1141,7 +1139,6 @@ partTasks = do
                                 return ts
     ns <- ts :: Application [PLID.PersonnelInstanceDetails]
     writeMapables ns
-
 
 trainPersonnel :: Application ()
 trainPersonnel = do 
@@ -1177,7 +1174,6 @@ trainPersonnel = do
                                         })
                             return r
                                 where
-
                                     frm xs p1 p2 = case extract "type" xs of 
                                                     ("repair" :: String) -> abs (PLI.skill_repair p1 - PLI.skill_repair p2)
                                                     "engineering" -> abs ( PLI.skill_engineering p1 - PLI.skill_engineering p2 )
@@ -1278,7 +1274,7 @@ taskPersonnel = do
                                     GRP.part_instance_id = fromSql $ fromJust $ HM.lookup "subject_id" xs,
                                     GRP.personnel_instance_id = fromSql $ fromJust $ HM.lookup "personnel_instance_id" xs,
                                     GRP.task = fromSql $ fromJust $ HM.lookup "task" xs,
-                                    GRP.report_descriptor = "personnel_task"
+                                    GRP.report_descriptor = Just "personnel_task"
                                     })
                             r <- personnelStartTask (extract "personnel_instance_id" xs) (extract "task" xs) (extract "subject_id" xs)
                             return r
@@ -1317,11 +1313,6 @@ personnelStartTask pid tsk sid = do
                         return True 
 
 
-
-
-
-
-
 cancelTaskPersonnel :: Application ()
 cancelTaskPersonnel = do
     uid <- getUserId
@@ -1344,8 +1335,8 @@ stopTask pid uid = do
         pi <- aload pid $ rollback "personnel instance not found" :: SqlTransaction Connection PLI.PersonnelInstance
         -- stop task 
         save (def {
-                GRP.part_instance_id = PLI.task_subject_id pi,
-                GRP.personnel_instance_id = fromJust $ PLI.id pi 
+                GRP.part_instance_id = Just $ PLI.task_subject_id pi,
+                GRP.personnel_instance_id =  PLI.id pi 
             })
         save (pi {
                 PLI.task_id = 1,
@@ -1401,7 +1392,7 @@ reportPersonnel uid tr = do
 reportGarage :: Integer -> GRP.GarageReport -> SqlTransaction Connection ()
 reportGarage uid tr = do 
             save (tr {  
-                GRP.account_id = uid
+                GRP.account_id = Just uid
                 })
             return ()
 
@@ -1498,7 +1489,7 @@ garageReports = do
         uid <- getUserId 
         ((l,o),xs) <- getPagesWithDTD ("time" +>= "timemin" +&& "time" +<= "timemax" +&& "account_id" +==| (toSql uid))
         ns <- runDb $ do
-            userActions uid
+--            userActions uid
             search xs [Order ("time",[]) False] l o 
         writeMapables (ns :: [GRP.GarageReport])
 
@@ -1611,18 +1602,27 @@ personnelUpdate uid = dbWithLockNonBlock "personnel" uid $ do
 
             
 
+personnelUpdateBusy s id = do 
+                    p <- aload id (rollback "cannot find personnel") :: SqlTransaction Connection PLI.PersonnelInstance
+                    save (p {
+                            PLI.task_updated = s
+                        })
+
 -- partImprove :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partImprove uid pi = do
                 s <- milliTime
                 let ut = (min (PLID.task_end pi) s) - (PLID.task_updated pi)
                 let sk = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
+
                 atomical $ do 
                         (pr' :: Double) <- loaddbConfig "part_improve_rate" 
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "cannot find partinstance"
                         let p = fromJust p'             
                         let a = fromIntegral (sk * ut)
+-- (c_t - u_t) * a
+                        personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                         void $ save (p {
                                 PI.improvement = min (10^4) $ (PI.improvement p + round (a * pr'))
                             })
@@ -1634,11 +1634,10 @@ partImprove uid pi = do
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                             void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.improved = round (a * pr')
+                                                                    N.improved = min (10^4) $ round (a * pr')
 
                                                                 })
                                         
-
 
 
 -- partRepair :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
@@ -1654,6 +1653,7 @@ partRepair uid pi = do
                         when (isNothing p') $ rollback "part instance not found"
                         let p = fromJust p' 
                         let a = fromIntegral (sk * ut) 
+                        personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                         void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
                                         })
@@ -1664,7 +1664,7 @@ partRepair uid pi = do
                             stopTask (fromJust $ PLID.personnel_instance_id pi) uid
                             void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.repaired = round (a * pr') 
+                                                                    N.repaired = max 0 $ round (a * pr') 
                                                                 })
  
                                               
@@ -1681,22 +1681,23 @@ carRepair uid pi = do
             let sk = PLID.skill_repair pi 
             let sid = PLID.task_subject_id pi 
             atomical $ do 
-                    c' <- load sid :: SqlTransaction Connection (Maybe CIP.CarInstanceParts)
-                    when (isNothing c') $ rollback "cannot find car instance parts"
-                    let c = fromJust c' 
+                    c' <- search ["part_type_id" |== (SqlInteger 20) .&& "car_instance_id" |==  toSql sid] [] 1 0  :: SqlTransaction Connection [CIP.CarInstanceParts]
+                    when (null c') $ rollback "cannot find car instance parts"
+                    let c = head c' 
                     g' <- load (CIP.part_instance_id c) :: SqlTransaction Connection (Maybe PI.PartInstance)
                     when (isNothing g') $ rollback "cannot find part instance"
                     let p = fromJust g'
                     let a = fromIntegral (sk * ut)
+                    personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                     void $ save (p {
                                             PI.wear = max 0 $ PI.wear p - round (a * pr')
                                         })
 
                     when (PLID.task_end pi < s) $  do 
-                            stopTask (fromJust $ PLID.personnel_instance_id pi) uid
+                            stopTask (fromJust $ PLID.personnel_instance_id pi) uid 
                             void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.repaired = round (a * pr') 
+                                                                    N.repaired = max 0 $ round (a * pr') 
                                                                 })
                                                  
 

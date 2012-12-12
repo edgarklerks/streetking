@@ -38,9 +38,6 @@ import qualified Model.Account as A
 import qualified Model.Garage as G 
 
 
-
-
-
 data ComposeMap = ComposeMap {
                      unComposeMap :: H.HashMap String Box
                      }
@@ -67,7 +64,6 @@ instance MonadError String (ComposeMonad r c) where
                         Left s -> runContT (unCM (f s)) r 
                         Right a -> return a
 
-
 instance MonadWriter ComposeMap (ComposeMonad r c) where 
                 tell w = CM $ lift (tell w) 
                 listen _ = throwError "ComposeMonad doesn't support listen"
@@ -90,10 +86,7 @@ instance Monoid (ComposeMonad r c ()) where
                                 lift $ tell (a <> b)
                                 r ()
 
-                
 unsafeRunCompose l c (CM m) = runSqlTransaction (fmap Right . execWriterT $ runReaderT (runContT m (return)) c) (return . Left) c l
-
-
 
 instance ToInRule Box where 
             toInRule (Box b) = toInRule b
@@ -106,8 +99,6 @@ runComposeMonad l m f c = do -- (ComposeMap xs)
                                 case ts of 
                                     Left s -> f s  
                                     Right (ComposeMap xs) -> return $ (fmap toInRule xs) 
-
-
 
 deep :: String -> ComposeMonad a Connection a -> ComposeMonad r Connection ()
 deep s m = do 
@@ -139,9 +130,7 @@ label s x =  tell . ComposeMap . H.fromList $ [(s,Box x)]
 db :: IO Connection 
 db = connectPostgreSQL "user=deosx dbname=streetking_dev password=#*rl& host=db.graffity.me"
 
-
 abort m = CM $ ContT $ \abort -> return m 
-
 
 runTest m = do 
             c <- db 

@@ -434,7 +434,7 @@ testLock = atomical $ do
                         liftIO $ print xs 
                         return ()
 
-testcon = connectPostgreSQL "host=192.168.1.241 password=wetwetwet user=postgres dbname=deosx"
+testcon = connectPostgreSQL "host=192.168.1.77 port=5439 password=wetwetwet user=postgres dbname=deosx"
 
 runTestDb m = do 
             c <- testcon 

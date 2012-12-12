@@ -784,7 +784,7 @@ testRules = do
 
 createRules :: T.Tournament -> SqlTransaction Connection ()
 createRules tr = do 
-            p <- getKey "tournament_money_ratio" 
+            p <- CFG.getKey "tournament_money_ratio" 
             let fee = (T.costs tr * T.players tr ) * p
             case (tournament_prices tr) <|> (Just "0.5,0.3,0.2") of 
                     Nothing -> return ()
