@@ -236,7 +236,7 @@ loadTemplate = do
         let pth =  ("resources/static/" ++ C.unpack name ++ ".tpl")
         let dirs = splitDirectories pth
         if ".." `elem` dirs 
-            then internalError "do not hacked server"
+            then internalError "hi my friend, we are using snap 0.9 "
             else serveFileAs "text/plain" pth
 
 

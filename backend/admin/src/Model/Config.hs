@@ -16,6 +16,7 @@ import           Model.TH
 import           Prelude hiding (id)
 
 $(genAllId "Config" "game_config" "key" [
+    ("id", ''Id),
     ("key", ''String),
     ("value", ''String)
  ])

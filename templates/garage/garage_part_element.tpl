@@ -59,7 +59,7 @@
 		</div>
 		<div class="garage-part-element-buttons-container button-box-wider">
 			<a href="#Market/sell?part_instance_id=[:part_instance_id]" class="button" module="GARAGE_PART_SELL">sell<div>&nbsp;</div></a>
-			[:when (unique == false & floor(improvement/1000) < 100)]{<a href="#Personnel/task?subject_id=[:part_instance_id]&task=improve_part" class="button cmd-improve" module="GARAGE_TASK">improve<div>&nbsp;</div></a>}
+			[:when (unique == false & floor(improvement/100) < 100)]{<a href="#Personnel/task?subject_id=[:part_instance_id]&task=improve_part" class="button cmd-improve" module="GARAGE_TASK">improve<div>&nbsp;</div></a>}
 			[:when (wear > 0)]{<a href="#Personnel/task?subject_id=[:part_instance_id]&task=repair_part" class="button cmd-repair" module="GARAGE_TASK">repair<div>&nbsp;</div></a>}
 		</div>
 	</div>
