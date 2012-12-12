@@ -1270,14 +1270,31 @@ taskPersonnel = do
                case cm of 
                         [] -> rollback "That is not your mechanic, friend"
                         [_] -> do 
-                            reportGarage uid (def {
-                                    GRP.part_instance_id = fromSql $ fromJust $ HM.lookup "subject_id" xs,
-                                    GRP.personnel_instance_id = fromSql $ fromJust $ HM.lookup "personnel_instance_id" xs,
-                                    GRP.task = fromSql $ fromJust $ HM.lookup "task" xs,
-                                    GRP.report_descriptor = Just "personnel_task"
-                                    })
-                            r <- personnelStartTask (extract "personnel_instance_id" xs) (extract "task" xs) (extract "subject_id" xs)
-                            return r
+                            case extract "task" xs of 
+
+                                        ("repair_car" :: String) -> do -- car repair 
+                                            c' <- search ["part_type_id" |== (SqlInteger 20) .&& "car_instance_id" |==   (extract "subject_id" xs)] [] 1 0  :: SqlTransaction Connection [CIP.CarInstanceParts]
+                                            when (null c') $ rollback "car doesn't have part_instance"
+                                            liftIO $ print $ CIP.part_instance_id (head c')
+                                            reportGarage uid (def {
+                                                GRP.part_instance_id = Just $ CIP.part_instance_id (head c'),
+                                                GRP.personnel_instance_id = fromSql $ fromJust $ HM.lookup "personnel_instance_id" xs,
+                                                GRP.task = fromSql $ fromJust $ HM.lookup "task" xs,
+                                                GRP.report_descriptor = Just "personnel_task"
+                                                })
+                                            r <- personnelStartTask (extract "personnel_instance_id" xs) (extract "task" xs) (extract "subject_id" xs)
+                                            return r
+
+                                        otherwise -> do 
+
+                                            reportGarage uid (def {
+                                                GRP.part_instance_id = fromSql $ fromJust $ HM.lookup "subject_id" xs,
+                                                GRP.personnel_instance_id = fromSql $ fromJust $ HM.lookup "personnel_instance_id" xs,
+                                                GRP.task = fromSql $ fromJust $ HM.lookup "task" xs,
+                                                GRP.report_descriptor = Just "personnel_task"
+                                                })
+                                            r <- personnelStartTask (extract "personnel_instance_id" xs) (extract "task" xs) (extract "subject_id" xs)
+                                            return r
 
 personnelStartTask :: Integer -> String -> Integer -> SqlTransaction Connection Bool 
 personnelStartTask pid tsk sid = do 
@@ -1347,6 +1364,28 @@ stopTask pid uid = do
             })
         t <- DBF.unix_timestamp
         traceShow (t, ?name, pid) $ commit 
+
+
+stopTaskCar :: (?name :: String) => Integer -> Integer -> Integer -> SqlTransaction Connection () 
+stopTaskCar pid cpid uid = do  
+        pi <- aload pid $ rollback "personnel instance not found" :: SqlTransaction Connection PLI.PersonnelInstance
+        -- stop task 
+        liftIO $ print $ ?name 
+        liftIO $ print $ cpid 
+        save (def {
+                GRP.part_instance_id = Just cpid,
+                GRP.personnel_instance_id =  PLI.id pi 
+            })
+        save (pi {
+                PLI.task_id = 1,
+                PLI.task_subject_id = 0,
+                PLI.task_started = 0,
+                PLI.task_updated = 0,
+                PLI.task_end = 0
+            })
+        t <- DBF.unix_timestamp
+        traceShow (t, ?name, pid) $ commit 
+
 
 
         
@@ -1694,7 +1733,7 @@ carRepair uid pi = do
                                         })
 
                     when (PLID.task_end pi < s) $  do 
-                            stopTask (fromJust $ PLID.personnel_instance_id pi) uid 
+                            stopTaskCar (fromJust $ PLID.personnel_instance_id pi) (CIP.part_instance_id c) uid 
                             void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.repaired = max 0 $ round (a * pr') 
