@@ -12,7 +12,7 @@ Cabal-version:       >=1.2
 
 Flag development
   Description: Whether to build the server in development (interpreted) mode
-  Default: True  
+  Default: False 
 
 Executable proxy-new
   hs-source-dirs: src
@@ -39,7 +39,7 @@ Executable proxy-new
     mwc-random,
     cereal,
     directory,
-    stm,
+    stm >= 2.4,
     unordered-containers,
     binary,
     CC-delcont,
@@ -86,4 +86,4 @@ Executable proxy-new
                    
     else
       ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
-                   -fno-warn-orphans
+                   -fno-warn-orphans -rtsopts
