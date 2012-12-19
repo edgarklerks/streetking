@@ -145,11 +145,15 @@ transparent = do
 
 identify = do 
         b <- getOpParam "token"
+        liftIO $ print b
         u <- runDb $ (search ["token" |== toSql b] [] 1 0 :: SqlTransaction Connection [A.Application])
+        liftIO $ print u
         withTop roles $ 
             case u of 
                 [] -> internalError "need token"
-                [u] -> addRole "application_token" (Developer $ A.id u)  >> return ()
+                [u] -> do
+                    liftIO $ print u 
+                    addRole "application_token" (Developer $ A.id u)  >> return ()
 
 runDb x = with sql $ S.runDb internalError  x
 
