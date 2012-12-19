@@ -2,6 +2,8 @@
 	<div class="report-element-container-title">
 		[:when (task == "repair_part")]{Part repaired}
 		[:when (task == "improve_part")]{Part improved}
+		[:when (task == "repair_car")]{Car repair}
+		
 	</div>
 	<div class="report-element-container-inner">
 		<div class="report-element-image-container [:when (improvement > 0 & unique == false)]{report-element-image-container-improved}[:when (unique)]{report-element-image-container-unique} black-icons-100 [:when (part_type == "engine")]{report-element-[:part_type]-black}[:when (part_type != "engine")]{report-element-image-container-image}" [:when (part_type != "engine")]{style='background-image:url([:eval IMAGESERVER("[\"part\","+part_id+",\"" + part_type + "\"]")])'}>[:when (part_type != "engine")]{<div class="report-element-image-zoom element-image-zoom">&nbsp;</div>}</div>
@@ -49,37 +51,39 @@
 							</div>
 						</div>
 					}
-					[:when (parameter1_name)]{
+					[:when (task != "repair_car")]{
+						[:when (parameter1_name)]{
+							<div class="report-element-info-data-box">
+								<div class="report-element-info-data-name">[:parameter1_name]: <span>[:parameter1_values.text]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
+								<div class="report-element-progress-bar-box ui-corner-all-1px">
+									<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter1_values.bar]%"></div>
+								</div>
+							</div>
+						}
+						[:when (parameter2_name)]{
+							<div class="report-element-info-data-box">
+								<div class="report-element-info-data-name">[:parameter2_name]: <span>[:parameter2_values.text]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
+								<div class="report-element-progress-bar-box ui-corner-all-1px">
+									<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter2_values.bar]%"></div>
+								</div>
+							</div>
+						}
+						[:when (parameter3_name)]{
+							<div class="report-element-info-data-box">
+								<div class="report-element-info-data-name">[:parameter3_name]: <span>[:parameter3_values.text]</span> [:when (parameter3_unit != null)]{[:parameter3_unit]}</div>
+								<div class="report-element-progress-bar-box ui-corner-all-1px">
+									<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter3_values.bar]%"></div>
+								</div>
+							</div>
+						}
 						<div class="report-element-info-data-box">
-							<div class="report-element-info-data-name">[:parameter1_name]: <span>[:parameter1_values.text]</span> [:when (parameter1_unit != null)]{[:parameter1_unit]}</div>
+							<div class="report-element-info-data-name">Weight <span>[:when (weight)]{[:weight_values.text]}[:when (car_weight)]{[:car_weight]}</span> kg</div>
 							<div class="report-element-progress-bar-box ui-corner-all-1px">
-								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter1_values.bar]%"></div>
+								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:when (weight)]{[:weight_values.bar]}[:when (car_weight)]{[:eval ((car_weight/100)*100)]}%"></div>
 							</div>
 						</div>
 					}
-					[:when (parameter2_name)]{
-						<div class="report-element-info-data-box">
-							<div class="report-element-info-data-name">[:parameter2_name]: <span>[:parameter2_values.text]</span> [:when (parameter2_unit != null)]{[:parameter2_unit]}</div>
-							<div class="report-element-progress-bar-box ui-corner-all-1px">
-								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter2_values.bar]%"></div>
-							</div>
-						</div>
-					}
-					[:when (parameter3_name)]{
-						<div class="report-element-info-data-box">
-							<div class="report-element-info-data-name">[:parameter3_name]: <span>[:parameter3_values.text]</span> [:when (parameter3_unit != null)]{[:parameter3_unit]}</div>
-							<div class="report-element-progress-bar-box ui-corner-all-1px">
-								<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:parameter3_values.bar]%"></div>
-							</div>
-						</div>
-					}
-					<div class="report-element-info-data-box">
-						<div class="report-element-info-data-name">Weight <span>[:when (weight)]{[:weight_values.text]}[:when (car_weight)]{[:car_weight]}</span> kg</div>
-						<div class="report-element-progress-bar-box ui-corner-all-1px">
-							<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:when (weight)]{[:weight_values.bar]}[:when (car_weight)]{[:eval ((car_weight/100)*100)]}%"></div>
-						</div>
-					</div>
-					[:when (unique == false)]{
+					[:when ((unique == false) & (task != "repair_car"))]{
 						<div class="report-element-info-data-box">
 							<div class="report-element-info-data-name">Improve <span>[:eval floor(improvement/100)]</span> [:when (task == "improve_part")]{<span class="green">(+[:eval floor(improvement_change/100)])</span>} %</div>
 							<div class="report-element-progress-bar-box ui-corner-all-1px">
@@ -89,9 +93,9 @@
 						</div>
 					}
 					<div class="report-element-info-data-box">
-						<div class="report-element-info-data-name">Used <span>[:eval floor(wear/100)]</span> [:when (task == "repair_part")]{<span class="green">([:eval floor(wear_change/100)])</span>} %</div>
+						<div class="report-element-info-data-name">Used <span>[:eval floor(wear/100)]</span> [:when ((task == "repair_part") | (task == "repair_car"))]{<span class="green">([:eval floor(wear_change/100)])</span>} %</div>
 						<div class="report-element-progress-bar-box ui-corner-all-1px">
-							[:when (task == "repair_part")]{<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:eval floor(wear/100)]%"></div>}
+							[:when ((task == "repair_part") | (task == "repair_car"))]{<div class="report-element-progress-bar ui-corner-all-1px" style="width:[:eval floor(wear/100)]%"></div>}
 							<div class="report-element-progress-bar report-element-progress-used ui-corner-all-1px" style="width:[:eval floor((wear+wear_change)/100)]%"></div>
 						</div>
 					</div>

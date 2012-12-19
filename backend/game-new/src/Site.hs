@@ -434,7 +434,7 @@ carBuy = do
             cid <- instantiateCar mid uid
 
             -- get car model
-            car <- getCarInGarage ["prototype" |== toSql True, "prototype_available" |== toSql True] (rollback "Car prototype not found")
+            car <- getCarInGarage ["id" |== toSql mid, "prototype" |== toSql True, "prototype_available" |== toSql True] (rollback "Car prototype not found")
         
             -- create shopping report
             reportShopper uid (def {
@@ -1650,7 +1650,7 @@ personnelUpdateBusy s id = do
 -- partImprove :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partImprove uid pi = do
                 s <- milliTime
-                let ut = (min (PLID.task_end pi) s) - (PLID.task_updated pi)
+                let ut = max 0 $ (min (PLID.task_end pi) s) - (PLID.task_updated pi)
                 let sk = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
 
@@ -1661,22 +1661,24 @@ partImprove uid pi = do
                         let p = fromJust p'             
                         let a = fromIntegral (sk * ut)
 -- (c_t - u_t) * a
-                        personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
-                        void $ save (p {
-                                PI.improvement = min (10^4) $ (PI.improvement p + round (a * pr'))
-                            })
+                        let ci = round (a * pr')
+                        when (ci >=  1) $ do 
+                            personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
+                            void $ save (p {
+                                    PI.improvement = min (10^4) $ (PI.improvement p + round (a * pr'))
+                                })
 
                         -- needed to put data outside transaction 
-                        commit
-
-                        when (PLID.task_end pi < s) $ dbWithLockNonBlock "notification_personnel" uid $ do 
-                            stopTask (fromJust $ PLID.personnel_instance_id pi) uid
-                            void $ N.sendCentralNotification uid (N.partImprove {
+                            commit
+        
+                            when (PLID.task_end pi < s) $ dbWithLockNonBlock "notification_personnel" uid $ do 
+                                stopTask (fromJust $ PLID.personnel_instance_id pi) uid
+                                void $ N.sendCentralNotification uid (N.partImprove {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.improved = min (10^4) $ round (a * pr')
 
                                                                 })
-                            commit 
+                                commit 
                                         
 
 
@@ -1684,7 +1686,7 @@ partImprove uid pi = do
 partRepair uid pi = do 
                 s <- milliTime 
 
-                let ut = (min (PLID.task_end pi) s) - (PLID.task_updated pi)
+                let ut = max 0 $ (min (PLID.task_end pi) s) - (PLID.task_updated pi)
                 let sk = PLID.skill_repair pi 
                 let sid = PLID.task_subject_id pi 
                 atomical $ do 
@@ -1693,20 +1695,22 @@ partRepair uid pi = do
                         when (isNothing p') $ rollback "part instance not found"
                         let p = fromJust p' 
                         let a = fromIntegral (sk * ut) 
-                        personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
-                        void $ save (p {
-                                            PI.wear = max 0 $ PI.wear p - round (a * pr')
-                                        })
-                        -- Commit needed to put data outside transaction
-                        commit 
+                        let ci = round (a * pr')
+                        when (ci >= 0) $ do 
+                            personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
+                            void $ save (p {
+                                                PI.wear = max 0 $ PI.wear p - round (a * pr')
+                                            })
+                            -- Commit needed to put data outside transaction
+                            commit 
 
-                        when (PLID.task_end pi < s) $  do 
-                            stopTask (fromJust $ PLID.personnel_instance_id pi) uid
-                            void $ N.sendCentralNotification uid (N.partRepair {
+                            when (PLID.task_end pi < s) $  do 
+                                stopTask (fromJust $ PLID.personnel_instance_id pi) uid
+                                void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
                                                                     N.repaired = max 0 $ round (a * pr') 
                                                                 })
-                            commit
+                                commit
  
                                               
 
@@ -1729,13 +1733,14 @@ carRepair uid pi = do
                     when (isNothing g') $ rollback "cannot find part instance"
                     let p = fromJust g'
                     let a = fromIntegral (sk * ut)
-                    personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
-                    void $ save (p {
-                                            PI.wear = max 0 $ PI.wear p - round (a * pr')
-                                        })
-                    commit 
-
-                    when (PLID.task_end pi < s) $  do 
+                    let ci = round (a * pr')
+                    when (ci >= 0) $ do 
+                        personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
+                        void $ save (p {
+                                                PI.wear = max 0 $ PI.wear p - round (a * pr')
+                                            })
+                        commit 
+                        when (PLID.task_end pi < s) $  do 
                             stopTaskCar (fromJust $ PLID.personnel_instance_id pi) (CIP.part_instance_id c) uid 
                             void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,

@@ -7,7 +7,7 @@ import Language.Haskell.TH.Lib
 import Control.Monad
 import Data.Maybe 
 import Data.Default 
-import Database.HDBC 
+import Database.HDBC as HD 
 import Data.Database
 import Data.List
 import Control.Applicative
@@ -17,6 +17,39 @@ import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString as B
 import Model.Ansi 
 import Data.SqlTransaction
+import Model.GetViews  
+
+getDependencyPairs :: String -> Q [(String, String)]
+getDependencyPairs ns = do 
+                xs <- getDependencies ns
+                runIO $ putStrLn $ ns ++ " dependencies: "  
+                ys <- mapM getAnyColumn xs 
+                return $ xs `zip` ys 
+
+
+getDependencies :: String -> Q [String]
+getDependencies nm = do  
+        runIO $ do 
+                c <- dbconn 
+                views <- getViewsDependencies c
+                let dep = revertList views 
+                disconnect c 
+                case lookup nm dep of 
+                        Just xs -> return xs 
+                        Nothing -> return [] 
+
+getAnyColumn :: String -> Q String 
+getAnyColumn nm = runIO $ do 
+                    c <- dbconn 
+                    putStrLn nm 
+                    xs <- HD.quickQuery c  "select column_name from information_schema.columns where table_name = ? and column_name = 'id' limit 1" [toSql nm] 
+                    ys <- HD.quickQuery c  "select column_name from information_schema.columns where table_name = ? and column_name like '%id%' limit 1" [toSql nm] 
+                    zs <- HD.quickQuery c  "select column_name from information_schema.columns where table_name = ? limit 1" [toSql nm] 
+                    case xs ++ ys ++ zs of 
+                        [] -> error "table has no columns, wtf" <* disconnect c
+                        (x:xs) -> (return $ fromSql $ head x) <* disconnect c
+
+
 
 checkTables :: String -> [(String,Name)] -> Q ()
 checkTables tbl ps@(fmap fst -> xs) = do 
@@ -93,8 +126,17 @@ genRecord nm xs = sequence [dataD (cxt []) (mkName nm) [] [recC (mkName nm) tp] 
         tp = foldr step [] xs
         step (x,t) z = (varStrictType (mkName x) (strictType notStrict (conT t)))  : z 
 
+genDependenciesUpdate :: [(String, String)] -> String 
+genDependenciesUpdate xs = intercalate ";\n" $ worker xs
+    where worker ((t,c):xs) = ("update \"" ++ t ++ "\"  set \"" ++ c ++ "\"  = \"" ++ c ++ "\"") : worker xs 
+          worker [] = [] 
+
+
 genDatabase :: String -> String -> String -> [(String, Name)] ->  Q [Dec]
-genDatabase n tbl td xs = sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl td ++ saveDb tbl ++ searchDB tbl ++ deleteDb tbl ++ fieldsDb xs ++ tableDb tbl)]
+genDatabase n tbl td xs = do
+                ps <- getDependencyPairs tbl
+                runIO $ putStrLn (genDependenciesUpdate ps)
+                sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl td ++ saveDb tbl ++ searchDB tbl ++ deleteDb tbl ++ fieldsDb xs ++ tableDb tbl)]
 
 genInstance :: String -> [(String, Name)] -> Q [Dec] 
 genInstance nm xs = sequence [instanceD (cxt []) (appT (conT (mkName "Mapable")) (conT $ mkName nm)) (tmMap nm (fmap fst xs) ++ frmMap nm (fmap fst xs) ++ tmHashMap nm (fmap fst xs) ++ frmHashMap nm (fmap fst xs))]  
@@ -160,6 +202,7 @@ saveDb :: String -> [DecQ]
 saveDb n = [funD (mkName "save") [clausem]]
     where clausem = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") decs) []
           decs = appE (appE (varE $ mkName "upsert") (stringE n)) (appE (varE $ mkName "toHashMap") (varE $ mkName "i"))
+
 
 tmHashMap n xs = [funD (mkName "toHashMap") [clausem]]
     where clausem = clause [varP (mkName "a")] (decs xs) []

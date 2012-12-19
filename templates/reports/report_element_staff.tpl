@@ -15,11 +15,11 @@
 					[:when (report_descriptor == "train_personnel")]{
 						<div>Improve skill:&nbsp;<span>[:type]</span></div>
 					}
-					[:when (report_descriptor != "fire_personnel")]{
-						<div>Cost:&nbsp;<span class="red">SK$ [:cost]</span></div>
-					}
 					[:when (result != "success")]{
 						<div>Abilities increased:&nbsp;<span class="green">+[:result]</span></div>
+					}
+					[:when (report_descriptor != "fire_personnel")]{
+						<div>Cost:&nbsp;<span class="red">SK$ [:cost]</span></div>
 					}
 				</div>
 				<div class="report-element-vertical-line"></div>
