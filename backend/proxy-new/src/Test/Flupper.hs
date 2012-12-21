@@ -9,8 +9,8 @@ import Control.Applicative
 import Control.Concurrent
 
 
-testServer = TS "192.168.0.1" 9003
-bareServer = TS "127.0.0.1" 9003
+testServer = TS "127.0.0.1" 9003
+bareServer = TS "127.0.0.1" 9123
 
 main = do xs <- runTests test testServer 
           print xs 
