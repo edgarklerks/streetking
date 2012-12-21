@@ -60,14 +60,14 @@ sortAliasMap = fmap sortMostUnique
 
 sortMostUnique = sortBy func 
     where func a c = compare (toNum c) (toNum a) 
-          
+         
+
 toNum a | a == "id" = 800 
-        | "id" `isPrefixOf` a = 400 
-        | "_id" `isInfixOf` a = 200 
-        | "id" `isInfixOf` a  = 100
-        | "name" == a = 75 
+        | "_id" `isSuffixOf` a = 400 
+        | "name" == a = 100 
         | "name" `isInfixOf` a = 50 
         | otherwise = 1 
+
 buildAliasMap :: TANC -> ([String], AliasMap)
 buildAliasMap tnc = let (terrs, tps) = unzipEither $ unTP $ getTablePart tnc 
                         (serrs, sps) = unzipEither $ unSP $ getSelectPart tnc

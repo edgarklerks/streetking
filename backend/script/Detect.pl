@@ -36,9 +36,12 @@ my $ip = {};
 my $tcp = {};
 my $udp = {};
 
+if(!$ARGV[0]){
+    die "Usage: Detect.pl <network-device>"; 
+}
 
 my $err = '';
-my $dev = 'em0';
+my $dev = $ARGV[0];
 
 my $pcap = pcap_open_live($dev, 1024,1,10,\$err) 
     or die "can't open $dev: $err";
