@@ -1,4 +1,4 @@
-{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE ViewPatterns, BangPatterns, TransformListComp, MonadComprehensions, NoMonomorphismRestriction #-}
 module Model.GetViews where
 
 import Database.HDBC
@@ -10,6 +10,7 @@ import qualified Data.Map as M
 import Text.PrettyPrint hiding ((<>))
 import Control.Applicative
 import Data.Monoid 
+import Data.Tuple 
 import Control.Monad 
 import Data.List 
 import qualified Data.Set as S 
@@ -19,23 +20,281 @@ import Database.HsSqlPpp.Parser
 import Control.Monad.Error 
 import Data.Char 
 import qualified Data.HashMap.Strict as HM 
+import Data.Functor.Foldable
+import GHC.Exts
+import Control.Arrow hiding ((<+>))
+
+data ViewTables = VT {
+        table :: String,
+        table_alias :: String,
+        field :: String, 
+        field_alias :: String 
+    } deriving Show 
 
 
-getViewsDependenciesTANC :: Connection -> IO ()
+prepareUpdateStructure :: Connection -> IO [(TName, [(String, [String])])] 
+prepareUpdateStructure c = do 
+                xs <- getUpdateStructure c 
+                return $ map (step xs) (HM.keys xs)
+        where step xs tn = case HM.lookup tn xs of 
+                                Nothing -> error "oh fuck"
+                                Just vs -> (tn, map (step vs) (HM.keys vs))
+                    where step vs vn = case HM.lookup vn vs of 
+                                                Nothing -> error "oh fuck twice"
+                                                Just fs -> let bs = (toNum . fst <$> fs) 
+                                                           in if head bs >= 50 
+                                                                      then case head fs of  
+                                                                            (x,y) -> ("update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> "= ? ", [y])
+
+                                                                      else case fs of 
+                                                                            [(x,y)] -> ("update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> "= ? ", [y])
+                                                                            xs -> ( createStm xs , snd <$> xs)
+                                        where createStm ((x,y):xs) = "update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> " = ?;\n" <> createStm xs
+                                              createStm [] = [] 
+
+testUpdateStructure :: Connection -> IO ()
+testUpdateStructure c = do 
+                    xs <- getUpdateStructure c
+                    forM_ (HM.keys xs) $ \k -> do 
+                    case HM.lookup k xs of 
+                        Nothing -> putStrLn $ "Empty table: " ++ k
+                        Just vm@(HM.keys -> vs) -> do
+                                putStrLn $ "Table: " ++ k 
+                                forM_ vs $ \vn -> do
+                                        case HM.lookup vn vm of 
+                                                Nothing ->  putStrLn $ "Empty view: " ++ vn
+                                                Just xs -> do 
+                                                    -- get most appropiate 
+                                                    let bs = (toNum . fst <$> xs) 
+                                                    if head bs >= 50  
+                                                            then do 
+                                                                let alias = snd $ head xs 
+                                                                let field = fst $ head xs 
+
+                                                                putStrLn $ "   update " <> vn <> " set " <> alias <> "=" <> alias <> " where " <> alias <> " = :" <> (k <> "." <> field )
+                                                            else forM_ xs $ \(alias, field) -> putStrLn $ "   update " <> vn <> " set " <> alias <> "=" <> alias <> " where " <> alias <> " = :" <> (k <> "." <> field )
+
+
+
+sortBullshit :: (Functor f, Functor g) => f (g [(String,b)]) -> f (g [(String, b)])
+sortBullshit = (fmap . fmap) (sortBy (\(t,s) (t',s') -> compare (toNum t') (toNum t)))
+
+getUpdateStructure :: Connection -> IO (HM.HashMap TName (HM.HashMap VName [(String, String)]))  -- IO [(TName, VName, UpdateStructure)]
+getUpdateStructure c = sortBullshit <$> do 
+                    xs <- searchTables c View 
+                    yss <- forM (filter blacklist xs) $ loadQueryExpression c 
+                    return $ foldr step mempty (xs `zip` yss)
+        where step :: (VName, QueryExpr) -> HM.HashMap TName (HM.HashMap VName [(String,String)]) -> HM.HashMap TName (HM.HashMap VName [(String, String)]) 
+              step (vn, pqe -> qe) z = foldr step z (HM.keys qe) 
+                        where step tn z = case HM.lookup tn z  of 
+                                                    Nothing -> case HM.lookup tn qe of 
+                                                                        Nothing -> z 
+                                                                        Just fs -> HM.insert tn (HM.insert vn fs mempty) z
+                                                    Just vs -> case HM.lookup vn vs of 
+                                                                    Nothing -> case HM.lookup tn qe of 
+                                                                                        Nothing -> z 
+                                                                                        Just fs -> HM.insert tn (HM.insert vn fs vs) z 
+                                                                    Just fs -> case HM.lookup tn qe of 
+                                                                                        Nothing -> z 
+                                                                                        Just fs' -> HM.insert tn (HM.insert vn (fs ++ fs') vs) z  
+
+
+              pqe :: QueryExpr -> HM.HashMap TName [(String, String)] 
+              pqe = getViewTables . loadViewTables 
+                  --   let ls = getViewTables $ loadViewTables xs  
+                     
+
+-- case1 : No table name 
+-- ** case 1 a : Don't have fields -> Do Nothing 
+-- ** case 1 b : Have fields -> Add view name + fields 
+--
+-- case 2 : We have a table name 
+-- *** case 2 a : View doesn't exist yet 
+-- ***** case 2 a a : we don't have fields -> Do Nothing 
+-- ***** case 2 a b : we have fields -> Append fields to view name 
+-- *** case 2 b : View does exist 
+-- ***** case 2 b a : we don't have fields  -> Do Nothing 
+-- ***** case 2 b b : we have fields -> Append fields to view name 
+--
+--
+
+printViewTables :: [ViewTables] -> IO ()
+printViewTables  = putStrLn . render . foldr step mempty 
+        where step x z = text "table:" <+> text (table x) $+$ 
+                         text "table_alias" <+> text (table_alias x) $+$
+                         text "field" <+> text (field x) $+$
+                         text "field_alias" <+> text (field_alias x) $+$
+                         text "--------------------------------" $+$ z 
+                    
+getViewTables :: [ViewTables] -> HM.HashMap TName [(String, String)]
+getViewTables xs = g $ fmap pull $ sortBy f xs 
+    where f a b = compare (toNum $ field a) (toNum $ field b)
+          pull x = (table x, x)
+          g :: [(String, ViewTables)] -> HM.HashMap TName [(String, String)]
+          g xs = foldr step mempty xs 
+                where step (tn,vt) z = case HM.lookup tn z of
+                                            Nothing -> HM.insert tn [(field vt, field_alias vt)] z 
+                                            Just xs -> HM.insert tn ((field vt, field_alias vt) : xs) z 
+
+
+loadQueryExpression :: Connection -> String -> IO QueryExpr 
+loadQueryExpression c s = do 
+                def <- loadView c s 
+                return $ parseViewQuery def 
+
+loadViewTables :: QueryExpr -> [ViewTables]
+loadViewTables tr = let tableref = tablePart $ getNameComponentsTable tr 
+                        selectref = selectPart $ getNameComponentsSelect tr 
+                    in loadViewTables' tableref selectref 
+        where loadViewTables' :: [([NameComponent], [NameComponent])] -> [[NameComponent]] -> [ViewTables]
+              loadViewTables' ys xs = buildViewTables (viewTablesAlias ys) xs  
+
+
+createTrigger :: IO () 
+createTrigger = do 
+        c <- conn 
+        xs <- getViewsDependencies c
+        let ts = (fst <$> xs)
+        forM_ ts $ \t -> do
+            putStrLn $ "creating trigger on " ++ t     
+            putStrLn (tr t)
+            quickQuery c ("DROP TRIGGER "  ++ "empty_trigger_" ++ t ++ " ON " ++ t ++ ";") []  
+            quickQuery c (tr t) [] 
+
+    where tr t = 
+                 "CREATE TRIGGER empty_trigger_" ++ t ++ 
+                 " \nINSTEAD OF INSERT OR UPDATE ON " ++ t ++ " FOR EACH ROW " ++
+                 "\n EXECUTE PROCEDURE empty_trigger_for_instead_of();" 
+                
+type VName = String 
+
+type ViewsMap = HM.HashMap VName AliasMap 
+
+type AliasMap = HM.HashMap TName [String]
+
+-- TableName  -> (ViewName, Fields) 
+--  car_in_garage -> car_instance.id => part_instance.id 
+--
+type TablesMap = HM.HashMap TName (HM.HashMap VName [String])
+
+-- 
+-- ViewsMap :: VName -> AliasMap 
+-- AliasMap :: TName -> [String]
+--
+-- ViewsMap :: VName -> TName -> [String]
+--
+-- TName -> VName 
+--
+-- VName -> [String]
+--
+
+employees = 
+                [("a", "ms", 80),
+                 ("b", "ms", 50),
+                 ("c", "ed", 90),
+                 ("d", "ed", 75),
+                 ("e", "ms", 76)]
+
+
+
+testcomp = [ (name, dept, salary) | 
+                (name, dept, salary) <- employees,
+                then sortWith by dept, 
+                then group by dept using groupWith,
+                then sortWith by name 
+            ]
+
+
+
+updateTable :: Connection -> TName -> IO [String]
+updateTable c tn = do 
+            tm <- getTablesMap c
+            case HM.lookup tn tm of 
+                    Nothing -> return []
+                    Just vms -> return $ foldr (step vms) [] (HM.keys vms)
+    where step vms x z = case HM.lookup x vms  of 
+                                Nothing -> z 
+                                Just [] -> z 
+                                Just (a:xs) -> ("UPDATE " <> x <> " SET " <> a <> " = " <> a) : z 
+
+
+
+getTablesMap :: Connection -> IO TablesMap 
+getTablesMap c = do 
+        d <- getViewsDependenciesTANC c 
+        return $ buildTNameTable d
+
+
+buildTNameTable :: ViewsMap -> TablesMap
+buildTNameTable vm = transformTable $ do 
+                t <- HM.keys vm         
+                x <- getTNames t vm 
+                return (t,x, getFNames t x vm)
+
+    where transformTable :: [(VName, TName, [String])] -> TablesMap 
+          transformTable xs = foldr step mempty xs
+                where step :: (VName, TName, [String]) -> TablesMap -> TablesMap 
+                      step (vn, tn, flds) z = case HM.lookup tn z of
+                                                      Nothing -> HM.insert tn (HM.fromList [(vn, flds)]) z
+                                                      Just am -> case HM.lookup vn am of 
+                                                                            Nothing -> HM.adjust (HM.insert vn flds am <>) tn z 
+                                                                            Just xs -> HM.adjust (HM.insert vn (flds ++ xs) am <>) tn z
+
+getFNames :: VName -> TName -> ViewsMap -> [String] 
+getFNames vn tn vm = case HM.lookup vn vm of 
+                            Nothing -> []
+                            Just am -> HM.lookupDefault [] tn am 
+
+getTNames :: VName -> ViewsMap -> [TName]
+getTNames vn vm  = case HM.lookup vn vm of 
+                            Nothing -> [] 
+                            Just am -> HM.keys am 
+
+transform :: ViewsMap -> TablesMap 
+transform vm = foldr step mempty . HM.keys $ vm 
+    where step vn z = case HM.lookup vn vm of 
+                            (Just am) -> undefined  
+                            _ -> z
+
+
+getAliasViewFromTANC :: VName ->  IO ViewsMap 
+getAliasViewFromTANC v = do 
+                c <- conn 
+                xs <- getViewsDependenciesTANC c
+                return xs 
+
+
+-- compound :: Eq a => [(a, b)] -> [(a, [b])]
+compound xs = foldr step mempty xs 
+    where step (a,b) z = case HM.lookup a z of 
+                                    Nothing -> HM.insert a [b] z 
+                                    Just xs -> HM.adjust (b:) a z
+
+test :: [(a,b)] -> [(a,b)]
+test xs = xs 
+sortFirst :: (Ord t, Eq t) => (a -> t) -> [a] -> [a]
+sortFirst = sortWith
+
+lookupTableFieldInView :: ViewsMap -> TName -> VName -> [String]
+lookupTableFieldInView vm tn vn = maybe [] id $ do 
+                                            am <- HM.lookup tn vm 
+                                            HM.lookup vn am 
+
+
+getViewsDependenciesTANC :: Connection -> IO ViewsMap 
 getViewsDependenciesTANC c = do 
                    xs <- getViewsDependencies c
-                   (fmap fst xs) `forM_` \x -> do
+                   HM.fromList <$> (fmap fst xs) `forM` \x -> do
                            tv <- loadViewNC c x
-                           putStrLn $ "---------------------"
-                           putStrLn $ "table: " ++  x
-                           -- nameAlias 
-                           -- selectPart -- Is an internal stage  
-                           -- tablePart 
                            let (a,b) = buildAliasMap tv 
-                           printAliasMap b
-                           putStrLn $ "---------------------"
+                           return (x, b)
 
+siterate f !a = a : iterate f (f a)
 
+fiterate f a = unfoldr step a   
+    where step a = Just (a, f a) 
+
+elgotx = elgot product 
 printAliasMap :: AliasMap -> IO ()
 printAliasMap x = putStrLn $ render $ 
             text "alias map: " $+$
@@ -50,7 +309,6 @@ type TAlias = String
 --
 -- (alias, field)
 
-type AliasMap = HM.HashMap TName [String]
 
 filterAliasMap :: AliasMap -> AliasMap 
 filterAliasMap = HM.filterWithKey (\k v -> blacklist k)
@@ -191,6 +449,9 @@ blacklist x =  x `notElem` [
                            "reward_log",
                            "reward_log_events",
                            "shop_report",
+                           "shopping_reports",
+                           "garage_reports", 
+                           "personnel_reports",
                            "support",
                            "tournament_report",
                            "tournament_result",
@@ -199,7 +460,9 @@ blacklist x =  x `notElem` [
                            "track_details",
                            "track_section",
                            "transaction",
-                           "travel_report"
+                           "travel_report",
+                           "pg_buffercache",
+                           "pg_stat_statements"
                     ]
 data Type = Table 
           | View 
@@ -263,6 +526,45 @@ loadViewNC c ts = do
        def <- loadView c  ts
        return $ getNameComponents def
 
+buildViewTables :: HM.HashMap String TName -> [[NameComponent]] -> [ViewTables]
+buildViewTables ta = zipShit ta . viewFieldAlias
+    where zipShit :: HM.HashMap String TName -> [(String, String, String)] -> [ViewTables]
+          zipShit ta xs = foldr step [] xs 
+                    where step (a,f,fa) z = case HM.lookup a ta of 
+                                                    Nothing ->  z 
+                                                    Just tn -> (VT tn a f fa) : z
+
+viewFieldAlias :: [[NameComponent]] -> [(String, String, String)]
+viewFieldAlias [] = [] 
+viewFieldAlias ([getNC -> x,getNC -> y]:[getNC -> a]:xss) = (x,y,a) : viewFieldAlias xss 
+viewFieldAlias ([_, getNC -> x,getNC -> y]:[getNC -> a]:xss) = (x,y,a) : viewFieldAlias xss 
+viewFieldAlias ([getNC -> x, getNC -> y]:xss) = (x,y, y) : viewFieldAlias xss 
+viewFieldAlias ([_, getNC -> x, getNC -> y]:xss) = (x,y, y) : viewFieldAlias xss 
+viewFieldAlias (x:xss) = viewFieldAlias xss
+viewFieldAlias x = error $ "viewFieldAlias : " ++ (show x)
+
+
+
+getNC :: NameComponent -> String 
+getNC (Nmc a) = a 
+getNC (QNmc a) = a 
+getNC x = error $ "error getNC viewFieldAlias: " ++ (show x)
+
+viewTablesAlias :: [([NameComponent], [NameComponent])] -> HM.HashMap String TName 
+viewTablesAlias =   HM.fromList . fmap (swap <<< getNC *** getNC) . filterEmpty   
+            where getNC (chead -> Nmc a) = a 
+                  getNC (chead -> QNmc a) = a 
+                  getNC x = error $ show x 
+                  chead (x:xs) = x 
+                  chead _ = error "chead"
+                  filterEmpty :: [([NameComponent], [NameComponent])] -> [([NameComponent], [NameComponent])]
+                  filterEmpty = filter (\(x,y) -> not (null x || null y)) 
+
+loadViewNameComponents c ts = do 
+            def <- parseViewQuery <$> loadView c ts 
+            print $ getNameComponentsTable def
+            putStrLn "blablabla"
+            print $ getNameComponentsSelect def
 
 dumpRawTableRef  = print $ getTablesRef $ parseViewQuery testview 
 
@@ -309,7 +611,6 @@ getNameComponentsSelect b | isSelect b = let si = getSelectItemList b
             where step :: SelectItem -> [[NameComponent]] -> [[NameComponent]]
                   step (SelExp _ t) z = getNameComponentsFromScalarExpr t : z
                   step (SelectItem _ t xs) z = getNameComponentsFromScalarExpr t : ([xs] : z)
-                  step _ z = z
 getNameComponentsSelect (CombineQueryExpr _ _ _ _) =  mempty -- error (show x) -- mempty 
 getNameComponentsSelect x =  error (show x) -- mempty 
 
