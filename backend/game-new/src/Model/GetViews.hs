@@ -52,6 +52,8 @@ prepareUpdateStructure c = do
                                         where createStm ((x,y):xs) = "update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> " = ?;\n" <> createStm xs
                                               createStm [] = [] 
 
+
+
 testUpdateStructure :: Connection -> IO ()
 testUpdateStructure c = do 
                     xs <- getUpdateStructure c

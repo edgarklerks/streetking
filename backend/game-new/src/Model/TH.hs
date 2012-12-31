@@ -19,6 +19,18 @@ import Model.Ansi
 import Data.SqlTransaction
 import Model.GetViews  
 
+
+getUpdateStatements :: String -> Q [(String, [String])]
+getUpdateStatements nm = runIO $ do 
+                    c <- dbconn 
+                    xs <- prepareUpdateStructure c 
+                    disconnect c 
+                    case lookup nm xs of 
+                            Nothing -> return []
+                            Just xs -> return xs 
+            
+
+
 getDependencyPairs :: String -> Q [(String, String)]
 getDependencyPairs ns = do 
                 xs <- getDependencies ns
@@ -197,10 +209,25 @@ deleteDb tbl = [funD (mkName "delete") [clausem]]
             where table = appE (varE (mkName "table")) (stringE tbl)
                   trn x = appE (appE (varE (mkName "transaction")) (varE (mkName "sqlExecute"))) x 
 
+idq :: Q ()
+idq = return ()
+
+upsertWithTables :: [(String, [String])] -> Sql -> M.HashMap Sql Value -> SqlTransaction Connection Value 
+upsertWithTables xs t m = do 
+        x <- upsert t m 
+        forM_ xs $ \(stm, xs) -> do
+                let step x z = case HM.lookup x m of 
+                                        Nothing -> SqlNull : z 
+                                        Just a -> a : z 
+                HD.quickQuery stm $ foldr step [] xs 
+        return x
+
 
 saveDb :: String -> [DecQ]
-saveDb n = [funD (mkName "save") [clausem]]
-    where clausem = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") decs) []
+saveDb n = return $ do 
+            xs <- getUpdateStatements n  
+            funD (mkName "save") [clausem xs]
+    where clausem xs = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") decs) []
           decs = appE (appE (varE $ mkName "upsert") (stringE n)) (appE (varE $ mkName "toHashMap") (varE $ mkName "i"))
 
 
