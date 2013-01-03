@@ -16,8 +16,9 @@ import Data.InRules
 import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString as B
 import Model.Ansi 
-import Data.SqlTransaction
+import Data.SqlTransaction as S
 import Model.GetViews  
+import Control.Monad.Trans
 
 
 getUpdateStatements :: String -> Q [(String, [String])]
@@ -211,20 +212,38 @@ deleteDb tbl = [funD (mkName "delete") [clausem]]
 
 idq :: Q ()
 idq = return ()
-
-upsertWithTables :: [(String, [String])] -> Sql -> M.HashMap Sql Value -> SqlTransaction Connection Value 
+-- | Like upset with extra update statements 
+upsertWithTables :: [(String, [String])] -> Sql -> H.HashMap Sql Value -> SqlTransaction Connection Value 
 upsertWithTables xs t m = do 
         x <- upsert t m 
+        liftIO $ print "start upsert"
         forM_ xs $ \(stm, xs) -> do
-                let step x z = case HM.lookup x m of 
+                let step x z = case H.lookup x m of 
                                         Nothing -> SqlNull : z 
                                         Just a -> a : z 
-                HD.quickQuery stm $ foldr step [] xs 
+                forM_ xs $ \x -> do 
+                            liftIO $ print x  
+                liftIO $ print "start quickQuery"
+                liftIO $ print (stm, xs)
+                S.quickQuery stm $ foldr step [] xs 
         return x
 
 
-saveDb :: String -> [DecQ]
+
+-- | save i = mco $ upsertWithTables undefined tablename (toHashMap i)
+saveDb :: String -> [DecQ] 
 saveDb n = return $ do 
+            xs <- getUpdateStatements n 
+            runIO $ print xs 
+            funD (mkName "save") [clausem xs]
+    where clausem xs = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") (decs xs)) []
+          decs xs = appE (appE (appE (varE $ mkName "upsertWithTables") [|xs|]) (stringE n)) (appE (varE $ mkName "toHashMap") (varE $ mkName "i"))
+
+
+
+-- save i = mco (upsertWithTables n (toHashMap i)) 
+saveDb' :: String -> [DecQ]
+saveDb' n = return $ do 
             xs <- getUpdateStatements n  
             funD (mkName "save") [clausem xs]
     where clausem xs = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") decs) []
