@@ -44,12 +44,12 @@ prepareUpdateStructure c = do
                                                 Just fs -> let bs = (toNum . fst <$> fs) 
                                                            in if head bs >= 50 
                                                                       then case head fs of  
-                                                                            (x,y) -> ("update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> "= ? ", [y])
+                                                                            (y,x) -> ("update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> "= ? ", [y])
 
                                                                       else case fs of 
-                                                                            [(x,y)] -> ("update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> "= ? ", [y])
-                                                                            xs -> ( createStm xs , snd <$> xs)
-                                        where createStm ((x,y):xs) = "update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> " = ?;\n" <> createStm xs
+                                                                            [(y,x)] -> ("update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> "= ? ", [y])
+                                                                            xs -> ( createStm xs , fst <$> xs)
+                                        where createStm ((y,x):xs) = "update " <> vn <> " set " <> x <> " = " <> x <> " where " <> x <> " = ?;\n" <> createStm xs
                                               createStm [] = [] 
 
 
@@ -83,8 +83,11 @@ sortBullshit = (fmap . fmap) (sortBy (\(t,s) (t',s') -> compare (toNum t') (toNu
 
 getUpdateStructure :: Connection -> IO (HM.HashMap TName (HM.HashMap VName [(String, String)]))  -- IO [(TName, VName, UpdateStructure)]
 getUpdateStructure c = sortBullshit <$> do 
-                    xs <- searchTables c View 
-                    yss <- forM (filter blacklist xs) $ loadQueryExpression c 
+                    (filter blacklist -> xs) <- searchTables c View 
+                    yss <- forM xs $ loadQueryExpression c 
+                    liftIO $ print (length $ xs `zip` yss)
+                    liftIO $ print (length xs)
+                    liftIO $ print (length yss)
                     return $ foldr step mempty (xs `zip` yss)
         where step :: (VName, QueryExpr) -> HM.HashMap TName (HM.HashMap VName [(String,String)]) -> HM.HashMap TName (HM.HashMap VName [(String, String)]) 
               step (vn, pqe -> qe) z = foldr step z (HM.keys qe) 
