@@ -434,7 +434,7 @@ testLock = atomical $ do
                         liftIO $ print xs 
                         return ()
 
-adsn = "dbname=streetking_dev user=deosx password=#*rl& port=5432 host=172.22.0.250 sslmode=disable application_name=streetking_game keepalives=1 options='-c client_min_messages=ERROR'"
+adsn = "dbname=streetking_dev user=deosx password=#*rl& port=5432 host=r3.graffity.me sslmode=disable application_name=streetking_game keepalives=1 options='-c client_min_messages=ERROR'"
 testcon = connectPostgreSQL adsn   -- "host= port=5439 password=wetwetwet user=postgres dbname=deosx"
 
 runTestDb m = do 
