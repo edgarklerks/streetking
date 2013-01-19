@@ -2,7 +2,7 @@
 module MemServerAsync where 
 
 import Data.MemTimeState 
-import System.ZMQ3 hiding (version)
+import System.ZMQ3 hiding (version, context)
 
 import Control.Monad
 import Control.Applicative
@@ -351,7 +351,7 @@ waitOnResult l m = runCCT $ reset $ \p -> do
                                         
 
 clientCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
-clientCommand n1 n2 p = withContext 1 $ \c -> 
+clientCommand n1 n2 p = withContext $ \c -> 
          withSocket c Req $ \r -> 
          withSocket c Pull $ \d -> 
             do 
@@ -362,7 +362,7 @@ clientCommand n1 n2 p = withContext 1 $ \c ->
                 print x 
 
 silentCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
-silentCommand n1 n2 p = withContext 1 $ \c -> 
+silentCommand n1 n2 p = withContext $ \c -> 
          withSocket c Req $ \r -> 
          withSocket c Pull $ \d -> 
             do 
