@@ -56,7 +56,6 @@ import qualified Model.Notification as NN
 import qualified Model.PartMarket as MP
 import qualified Model.AccountGarage as AG 
 import           Snap.Util.FileServe
-import           Text.Templating.Heist 
 import           SqlTransactionSnaplet hiding (runDb)
 import qualified SqlTransactionSnaplet as S 
 import qualified Model.Part as P 
@@ -94,35 +93,8 @@ import           Control.Arrow (second)
 
 ------------------------------------------------------------------------------
 -- | Render login form
-handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
-handleLogin authError = heistLocal (bindSplices errs) $ H.render "login"
-  where
-    errs = [("loginError", textSplice c) | c <- maybeToList authError]
-
 
 ------------------------------------------------------------------------------
--- | Handle login submit
-handleLoginSubmit :: Handler App (AuthManager App) ()
-handleLoginSubmit =
-    loginUser "login" "password" Nothing
-              (\_ -> handleLogin err) (redirect "/")
-  where
-    err = Just "Unknown user or password"
-
-
-------------------------------------------------------------------------------
--- | Logs out and redirects the user to the site index.
-handleLogout :: Handler App (AuthManager App) ()
-handleLogout = logout >> redirect "/"
-
-
-------------------------------------------------------------------------------
--- | Handle new user form submit
-handleNewUser :: Handler App (AuthManager App) ()
-handleNewUser = method GET handleForm <|> method POST handleFormSubmit
-  where
-    handleForm = H.render "new_user"
-    handleFormSubmit = registerUser "login" "password" >> redirect "/"
 
 visualPartModel = do 
             xs <- getJson 
@@ -152,10 +124,8 @@ writeSVG s = writeAeson $ S.fromList  [("result" :: String, unlines $ drop 4 $ l
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = fmap (second enroute) $ [ ("/login",    with auth handleLoginSubmit)
-         , ("/logout",   with auth handleLogout)
-         , ("/account_garage/get", getModel (def :: AG.AccountGarage))
-         , ("/new_user", with auth handleNewUser)
+routes = fmap (second enroute) $ [ 
+          ("/account_garage/get", getModel (def :: AG.AccountGarage))
          , ("/car_model/get", getModel (def :: C.Car)) 
          , ("/car_model/put", putModel (def :: C.Car))
          , ("/parameter/get", getModel (def :: PT.ParameterTable))
@@ -258,7 +228,6 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
            initJsonFileAuthManager defAuthSettings sess "users.json"
     db <- nestSnaplet "sql" sql $ initSqlTransactionSnaplet "resources/server.ini"
     addRoutes routes
-    addAuthSplices auth
     return $ App h s a db
 
 

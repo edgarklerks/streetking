@@ -22,7 +22,7 @@ import Database.HDBC.PostgreSQL
  -}
 
 dbconn ::  IO Connection
-dbconn = connectPostgreSQL "host=192.168.1.241 port=5432 dbname=deosx user=postgres password=wetwetwet"
+dbconn = connectPostgreSQL "host=192.168.4.9 port=5432 dbname=postgres user=postgres password=wetwetwet" 
 
 doSql :: SqlTransaction Connection a -> IO a
 doSql t = dbconn >>= flip (runSqlTransaction t error) undefined
@@ -416,11 +416,9 @@ upsert t m = do
     let mi x = fromSql x :: Integer
     n <- mi <$> (transaction sqlGetOne $ Select (table t) [express "count(*)"] con [] NullLimit NullOffset)
     case n of
-        0 -> do
-            insert t [] $ M.toList (M.delete "id" m)
-        otherwise -> do
-            update t con [] $ M.toList m
-            return i 
+        0 -> insert t [] $ M.toList (M.delete "id" m)
+        otherwise -> i <$ update t con [] (M.toList m)
+
     where con = ["id" |== i]
           i = maybe SqlNull id (M.lookup "id" m)
 
