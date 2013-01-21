@@ -6,7 +6,7 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import Data.Lens.Template
+import Control.Lens
 import Snap.Snaplet
 import Snap.Snaplet.Heist
 import Snap.Snaplet.Auth
@@ -49,13 +49,8 @@ data App = App
     , _sql :: Snaplet SqlTransactionConfig
     }
 
-makeLens ''App
+makeLenses ''App
 
-instance HasHeist App where
-    heistLens = subSnaplet heist
-
-instance HasSqlTransaction App where 
-    sqlLens = subSnaplet sql
 
 
 ------------------------------------------------------------------------------
@@ -158,4 +153,6 @@ runCompose m = with sql $ withConnection $ \c -> do
                 frp `seq` return frp 
 
 
-runDb a = with sql $ ST.runDb error a
+runDb a = do
+    with sql $ ST.runDb (error "no locking installed") error a
+

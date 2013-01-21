@@ -1,28 +1,25 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
 module LockSnaplet (
-        initLock,
-        withLockBlock,
-        withLockNonBlock,
         Lock,
         getLock,
-        HasLock(..),
-        printLocks
+        initLock,
+        printLocks,
+        withLockBlock,
+        withLockNonBlock
     ) where 
 
-
-import Control.Monad
-import Control.Applicative
-import Control.Monad.Trans
-import Snap.Snaplet
-import Data.Lens.Common
-import Data.Lens.Template
-import Data.Text 
-import Control.Concurrent
-import Control.Concurrent.STM 
+import           Control.Applicative
+import           Control.Concurrent
+import           Control.Concurrent.STM 
+import           Control.Monad
+import           Control.Monad.State
+import           Control.Monad.Trans
+import           Data.Hashable  
+import           Control.Lens 
+import           Data.Monoid 
+import           Data.Text 
+import           Snap.Snaplet
 import qualified Data.Set as S
-import Data.Monoid 
-import Data.Hashable  
-import Control.Monad.State
 
 type Namespace = String 
 
@@ -51,6 +48,7 @@ setLockBlock l m a = do
                 if (mkKey m a `S.member` tv)
                     then return False 
                     else writeTVar s (S.insert (mkKey m a) tv) *> return True 
+
 
 withLockNonBlock :: (MonadIO m, Applicative m, Show a) => Lock -> Namespace -> a -> m () -> m ()
 withLockNonBlock l n a m = do 
@@ -86,8 +84,6 @@ mkKey :: (Show a, Show b) => a -> b -> Int
 mkKey m a = hashWithSalt (hash $ show m) (show a) 
 
 
-class HasLock b where 
-    lockLens :: Lens (Snaplet b) (Snaplet Lock)
 
 initLock :: SnapletInit b Lock 
 initLock = makeSnaplet "Lock" "lock snaplet" Nothing $ do 
