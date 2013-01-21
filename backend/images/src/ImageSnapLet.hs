@@ -1,7 +1,6 @@
 {-# LANGUAGE TemplateHaskell, OverloadedStrings, NoMonomorphismRestriction, OverloadedStrings, ViewPatterns #-}
 module ImageSnapLet (
     ImageConfig(..),
-    HasImageSnapLet(..),
     dumpdir,
     servdir,
     allowedTypes,
@@ -20,8 +19,7 @@ import Snap.Snaplet
 import Snap.Core
 import Snap.Util.FileUploads
 import Snap.Util.FileServe
-import Data.Lens.Common 
-import Data.Lens.Template
+import Control.Lens
 import Config.ConfigFileParser
 import System.Directory
 import          System.FilePath.Posix
@@ -47,10 +45,8 @@ data ImageConfig = IC {
         _magicctx :: Magic 
     } deriving (Show)
 
-class HasImageSnapLet b where 
-    imageLens :: Lens (Snaplet b) (Snaplet ImageConfig)
 
-makeLenses [''ImageConfig]
+makeLenses ''ImageConfig
 
 testConfig = IC "swup" "fnuk" ["test","test22"] 
 
