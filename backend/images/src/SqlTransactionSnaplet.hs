@@ -8,16 +8,14 @@ module SqlTransactionSnaplet (
     getDatabase,
     withConnection,
     runDb,
-    initSqlTransactionSnaplet,
-    HasSqlTransaction(..)
+    initSqlTransactionSnaplet
 ) where 
 
 import Control.Monad
 import Control.Applicative
 import Snap.Snaplet
 import Snap.Core 
-import Data.Lens.Common
-import Data.Lens.Template 
+import Control.Lens 
 import Config.ConfigFileParser
 import Control.Monad.State
 import qualified Data.Text as T
@@ -26,6 +24,7 @@ import qualified Control.Monad.CatchIO as CIO
 import qualified Database.HDBC.PostgreSQL as DB 
 import qualified Database.HDBC as DB 
 import Data.SqlTransaction
+import qualified LockSnaplet as L 
 
 
 data SqlTransactionConfig = STC {
@@ -34,10 +33,8 @@ data SqlTransactionConfig = STC {
         _dbcons :: Integer
     } 
 
-$(makeLenses [''SqlTransactionConfig])
+makeLenses ''SqlTransactionConfig
 
-class HasSqlTransaction b where 
-    sqlLens :: Lens (Snaplet b) (Snaplet SqlTransactionConfig) 
 
 getDatabase :: (MonadIO m, MonadState SqlTransactionConfig m) => m DCP.ConnectionContext
 getDatabase = gets _pool >>= liftIO . DCP.getConnection 
@@ -46,10 +43,10 @@ returnDatabase :: (MonadIO m, MonadState SqlTransactionConfig m) => DCP.Connecti
 returnDatabase x = gets _pool >>= \c -> liftIO (DCP.returnConnection c x) 
 
 -- runDb :: SqlTransaction Connection a ->
-runDb :: (Applicative m, CIO.MonadCatchIO m, MonadState SqlTransactionConfig m) => (String -> m a) -> SqlTransaction Connection a -> m a
-runDb e xs = withConnection $ \c -> do 
+runDb :: (Applicative m, CIO.MonadCatchIO m, MonadState SqlTransactionConfig m) => L.Lock -> (String -> m a) -> SqlTransaction Connection a -> m a
+runDb l e xs = withConnection $ \c -> do 
     liftIO $ DB.begin c 
-    frp <- runSqlTransaction xs e c 
+    frp <- runSqlTransaction xs e c l 
     liftIO $ DB.commit c 
     frp `seq` return frp
 

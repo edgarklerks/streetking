@@ -6,7 +6,7 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import Data.Lens.Template
+import Control.Lens 
 import Snap.Snaplet
 import Snap.Snaplet.Heist
 import Snap.Snaplet.Auth
@@ -26,22 +26,11 @@ data App = App
     , _img :: Snaplet ImageConfig 
     }
 
-makeLens ''App
+makeLenses ''App
 
-runDb a = with sql $ ST.runDb error a
+runDb a = with sql $ ST.runDb (error "no locking buildin") error a
 
 
-instance HasHeist App where
-    heistLens = subSnaplet heist
-
-instance HasConfig App where 
-    configLens = subSnaplet config 
-
-instance HasSqlTransaction App where 
-    sqlLens = subSnaplet sql 
-
-instance HasImageSnapLet App where 
-    imageLens = subSnaplet img 
 
 
 ------------------------------------------------------------------------------
