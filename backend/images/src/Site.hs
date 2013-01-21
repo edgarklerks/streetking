@@ -21,7 +21,6 @@ import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Snaplet.Heist
 import           Snap.Util.FileServe
-import           Text.Templating.Heist
 import           ConfigSnaplet
 import qualified Data.ByteString.Char8 as B
 import qualified SqlTransactionSnaplet as S (runDb)
