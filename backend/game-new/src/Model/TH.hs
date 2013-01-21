@@ -225,7 +225,7 @@ upsertWithTables xs t m = do
                             liftIO $ print x  
                 liftIO $ print "start quickQuery"
                 liftIO $ print (stm, xs)
-                S.quickQuery stm $ foldr step [] xs 
+                -- S.quickQuery stm $ foldr step [] xs 
         return x
 
 

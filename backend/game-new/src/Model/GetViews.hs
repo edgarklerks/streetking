@@ -838,13 +838,13 @@ removeIfZero ((t, xs):xss) | null xs = removeIfZero xss
 
 withConnection :: MonadIO m => (Connection -> m a) -> m a 
 withConnection m = do 
-            c <- liftIO $ connectPostgreSQL "host=192.168.1.77 dbname=deosx user=postgres port=5439 password=wetwetwet"
+            c <- liftIO $ connectPostgreSQL "host=192.168.4.9 dbname=postgres user=postgres port=5432 password=wetwetwet"
             a <- m c
             liftIO $ disconnect c
             return a
 
 conn :: IO Connection 
-conn = connectPostgreSQL' "host=192.168.1.77 dbname=deosx user=postgres port=5439 password=wetwetwet"
+conn = connectPostgreSQL' "host=192.168.4.9 dbname=postgres user=postgres port=5432 password=wetwetwet"
 
 
 
