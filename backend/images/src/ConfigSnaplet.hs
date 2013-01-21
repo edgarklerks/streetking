@@ -7,11 +7,9 @@ module ConfigSnaplet (
     C.Config(..),
     C.Sections,
     C.Section,
-    configLens,
     ConfigSnaplet(..),
     configDir,
-    configData,
-    HasConfig
+    configData
     ) where 
 
 import Control.Monad
@@ -20,8 +18,7 @@ import Control.Monad.Trans
 import Control.Monad.State 
 import Snap.Snaplet
 import Snap.Core 
-import Data.Lens.Common
-import Data.Lens.Template 
+import Control.Lens
 import Data.Text
 import qualified Config.ConfigFileParser as C
 
@@ -30,10 +27,7 @@ data ConfigSnaplet = ConfigSnaplet {
        _configData :: C.Sections 
  } deriving Show 
 
-$( makeLenses [''ConfigSnaplet])
-
-class HasConfig b where 
-    configLens :: Lens (Snaplet b) (Snaplet ConfigSnaplet)
+makeLenses ''ConfigSnaplet
 
 
 initConfig :: FilePath -> SnapletInit b ConfigSnaplet 
