@@ -4,8 +4,7 @@ module NodeSnaplet where
 import Config.ConfigFileParser 
 import MemServerAsync
 import Proto 
-import Data.Lens.Common 
-import Data.Lens.Template
+import Control.Lens hiding (Context)
 import Snap.Core 
 import Snap.Snaplet
 import Control.Monad.Trans
@@ -31,7 +30,7 @@ data DHTConfig = DHC {
     }
 
 class HasDHT b where 
-    dhtLens :: Lens (Snaplet b) (Snaplet DHTConfig) 
+    dhtLens :: SnapletLens (Snaplet b) (Snaplet DHTConfig) 
 
 
 sendQuery :: (MonadState DHTConfig m, MonadIO m) => Proto -> m Proto 
@@ -45,7 +44,7 @@ sendQuery r = do
                     res <- queryNode pc p rq a r 
                     return res 
 
-$(makeLenses [''DHTConfig])
+makeLenses ''DHTConfig
 
 initDHTConfig :: FilePath -> SnapletInit b DHTConfig
 initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnode" Nothing $ do 

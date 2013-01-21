@@ -1,6 +1,5 @@
 {-# LANGUAGE TemplateHaskell, FlexibleInstances, FlexibleContexts,OverloadedStrings, RankNTypes, ExistentialQuantification #-}
 module RandomSnaplet(
-    HasRandom(..),
     RandomConfig,
     Variate(..),
     getUniform,
@@ -20,8 +19,7 @@ import           Control.Monad.Primitive
 import           Control.Monad.State 
 import           Control.Monad.Trans
 import           Data.Char 
-import           Data.Lens.Common
-import           Data.Lens.Template 
+import           Control.Lens
 import           Data.String 
 import           Data.Word 
 import           Snap.Core 
@@ -42,10 +40,8 @@ data RandomConfig = RC {
             _length ::   L 
         }
 
-$(makeLenses [''RandomConfig])
+makeLenses ''RandomConfig
 
-class HasRandom b where 
-    randomLens :: Lens (Snaplet b) (Snaplet RandomConfig)
 
 
 initRandomSnaplet :: (Variate (Base64 a)) => a ->  SnapletInit b (RandomConfig)

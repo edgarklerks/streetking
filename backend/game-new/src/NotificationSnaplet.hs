@@ -18,8 +18,7 @@ import           Control.Concurrent
 import           Control.Monad
 import           Control.Monad.State 
 import           Control.Monad.Trans 
-import           Data.Lens.Common
-import           Data.Lens.Template 
+import           Control.Lens
 import           Data.SqlTransaction 
 import           Data.Typeable 
 import           Snap.Core 
@@ -38,15 +37,11 @@ data NotificationConfig = NC {
         _sql :: Snaplet (S.SqlTransactionConfig),
         _po :: N.PostOffice 
     }
-$(makeLenses [''NotificationConfig])
+makeLenses ''NotificationConfig
 
 getPostOffice = gets _po 
 
-class HasNotifications b where 
-    notificationLens :: Lens (Snaplet b) (Snaplet NotificationConfig) 
 
-instance S.HasSqlTransaction NotificationConfig where 
-        sqlLens = subSnaplet sql 
 
 runDb xs = do
         with sql $ S.runDb (error "no lock in notification system") internalError xs 

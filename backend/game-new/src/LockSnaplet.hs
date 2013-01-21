@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
 module LockSnaplet (
-        HasLock(..),
         Lock,
         getLock,
         initLock,
@@ -16,8 +15,7 @@ import           Control.Monad
 import           Control.Monad.State
 import           Control.Monad.Trans
 import           Data.Hashable  
-import           Data.Lens.Common
-import           Data.Lens.Template
+import           Control.Lens 
 import           Data.Monoid 
 import           Data.Text 
 import           Snap.Snaplet
@@ -86,8 +84,6 @@ mkKey :: (Show a, Show b) => a -> b -> Int
 mkKey m a = hashWithSalt (hash $ show m) (show a) 
 
 
-class HasLock b where 
-    lockLens :: Lens (Snaplet b) (Snaplet Lock)
 
 initLock :: SnapletInit b Lock 
 initLock = makeSnaplet "Lock" "lock snaplet" Nothing $ do 

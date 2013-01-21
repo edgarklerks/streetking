@@ -16,8 +16,7 @@ import Control.Monad
 import Control.Applicative
 import Snap.Snaplet
 import Snap.Core 
-import Data.Lens.Common
-import Data.Lens.Template 
+import Control.Lens
 import Config.ConfigFileParser
 import Control.Monad.State
 import qualified Data.Text as T
@@ -34,10 +33,10 @@ data SqlTransactionConfig = STC {
         _dbcons :: Integer
     } 
 
-$(makeLenses [''SqlTransactionConfig])
+makeLenses ''SqlTransactionConfig
 
 class HasSqlTransaction b where 
-    sqlLens :: Lens (Snaplet b) (Snaplet SqlTransactionConfig) 
+    sqlLens :: SnapletLens (Snaplet b) (Snaplet SqlTransactionConfig) 
 
 getDatabase :: (MonadIO m, MonadState SqlTransactionConfig m) => m DCP.ConnectionContext
 getDatabase = gets _pool >>= liftIO . DCP.getConnection 

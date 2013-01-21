@@ -6,7 +6,7 @@
 module Application where
 
 ------------------------------------------------------------------------------
-import Data.Lens.Template
+import Control.Lens
 import Snap.Snaplet
 import NodeSnaplet 
 import ProxySnaplet  
@@ -24,22 +24,8 @@ data App = App
     , _roles :: Snaplet (RoleSnaplet)
     }
 
-makeLens ''App
+makeLenses ''App
 
-instance HasProxy App where 
-    proxyLens = subSnaplet proxy 
-
-instance HasDHT App where 
-    dhtLens = subSnaplet node 
-
-instance HasSqlTransaction App where 
-    sqlLens = subSnaplet sql 
-
-instance HasRandom App where 
-    randomLens = subSnaplet rnd 
-    
-instance HasRoleSnaplet App where 
-    roleLens = subSnaplet roles 
 
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
