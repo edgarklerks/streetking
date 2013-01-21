@@ -217,7 +217,6 @@ loadTemplate = do
 -- | The application initializer.
 app :: SnapletInit App App
 app = makeSnaplet "app" "An snaplet example application." Nothing $ do
-    h <- nestSnaplet "" heist $ heistInit "templates"
     s <- nestSnaplet "sess" sess $
            initCookieSessionManager "site_key.txt" "sess" (Just 3600)
 
@@ -228,7 +227,7 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
            initJsonFileAuthManager defAuthSettings sess "users.json"
     db <- nestSnaplet "sql" sql $ initSqlTransactionSnaplet "resources/server.ini"
     addRoutes routes
-    return $ App h s a db
+    return $ App s a db
 
 
 putTournament :: Application () 

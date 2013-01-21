@@ -43,8 +43,8 @@ instance CIO.Exception ApplicationException
 
 
 data App = App
-    { _heist :: Snaplet (Heist App)
-    , _sess :: Snaplet SessionManager
+    { 
+      _sess :: Snaplet SessionManager
     , _auth :: Snaplet (AuthManager App)
     , _sql :: Snaplet SqlTransactionConfig
     }
