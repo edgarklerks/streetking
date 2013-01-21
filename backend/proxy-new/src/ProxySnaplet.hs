@@ -12,8 +12,7 @@ import Control.Monad.State
 import Data.Word 
 import Snap.Snaplet 
 import Snap.Core 
-import Data.Lens.Common
-import Data.Lens.Template 
+import Control.Lens
 import qualified Data.Text as T 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as C 
@@ -52,10 +51,10 @@ data ProxySnaplet = PS {
     } 
 
 
-$(makeLenses [''ProxySnaplet])
+makeLenses ''ProxySnaplet
 
 class HasProxy b where 
-    proxyLens :: Lens (Snaplet b) (Snaplet ProxySnaplet)
+    proxyLens :: SnapletLens (Snaplet b) (Snaplet ProxySnaplet)
 
 
 -- tiemvar:: Array Int a -> IO (() -> IO a)

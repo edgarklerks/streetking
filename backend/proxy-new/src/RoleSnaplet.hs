@@ -26,8 +26,7 @@ import Data.Word
 
 import Snap.Core
 import Snap.Snaplet
-import Data.Lens.Common
-import Data.Lens.Template
+import Control.Lens 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as C
 import Config.ConfigFileParser
@@ -52,15 +51,10 @@ data RoleSnaplet = RoleSnaplet {
 
     }
 
-$(makeLenses [''RoleSnaplet])
+makeLenses ''RoleSnaplet
 class HasRoleSnaplet b where 
-    roleLens :: Lens (Snaplet b) (Snaplet RoleSnaplet)
+    roleLens :: SnapletLens (Snaplet b) (Snaplet RoleSnaplet)
 
-instance HasDHT RoleSnaplet where 
-    dhtLens = subSnaplet dht 
-
-instance HasRandom RoleSnaplet where 
-    randomLens = subSnaplet random 
 
 may rs rr = do 
     ct <- getCookie "user_token"

@@ -19,7 +19,8 @@ import           Data.ComposeModel
 import           Data.Conversion
 import           Data.Database hiding (Value)
 import           Data.InRules
-import           Data.Lens.Template
+import           Control.Lens
+
 import           Data.MemState 
 import           Data.Monoid
 import           Data.Role as R 
@@ -69,7 +70,7 @@ data App = App
     , _slock :: Snaplet L.Lock 
     }
 
-makeLens ''App
+makeLenses ''App
 
 getUniqueKey :: Application (B.ByteString)
 getUniqueKey = with rnd $ R.getUniqueKey 
@@ -84,20 +85,6 @@ setRead uid letter = with notf $ N.setRead uid letter
 
 setArchive uid letter = with notf $ N.setArchive uid letter
 checkMailBox uid = with notf $ N.checkMailBox uid 
-instance HasDHT App where 
-    dhtLens = subSnaplet nde 
-
-instance HasConfig App where 
-    configLens = subSnaplet config 
-
-instance HasSqlTransaction App where 
-    sqlLens = subSnaplet db 
-
-instance HasRandom App where 
-    randomLens = subSnaplet rnd 
-
-instance L.HasLock App where 
-    lockLens = subSnaplet slock 
 ------------------------------------------------------------------------------
 type AppHandler = Handler App App
 

@@ -7,8 +7,7 @@ import           Control.Concurrent
 import           Control.Monad 
 import           Control.Monad.State
 import           Control.Monad.Trans
-import           Data.Lens.Common 
-import           Data.Lens.Template
+import           Control.Lens hiding (Context)
 import           Data.MemTimeState
 import           MemServerAsync
 import           Proto 
@@ -29,8 +28,6 @@ data DHTConfig = DHC {
         _pc :: ProtoConfig 
     }
 
-class HasDHT b where 
-    dhtLens :: Lens (Snaplet b) (Snaplet DHTConfig) 
 
 
 sendQuery :: (MonadState DHTConfig m, MonadIO m) => Proto -> m Proto 
@@ -44,7 +41,7 @@ sendQuery r = do
                     res <- queryNode pc p rq a r 
                     return res 
 
-$(makeLenses [''DHTConfig])
+makeLenses ''DHTConfig
 
 initDHTConfig :: FilePath -> SnapletInit b DHTConfig
 initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnode" Nothing $ do 

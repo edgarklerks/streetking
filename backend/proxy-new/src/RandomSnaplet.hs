@@ -22,8 +22,7 @@ import Data.Word
 import Data.Char 
 import Control.Monad
 import Control.Applicative
-import Data.Lens.Template 
-import Data.Lens.Common
+import Control.Lens
 import qualified Data.Vector as V
 import Control.Monad.Trans
 import Snap.Core 
@@ -41,10 +40,10 @@ data RandomConfig = RC {
             _length ::   L 
         }
 
-$(makeLenses [''RandomConfig])
+makeLenses ''RandomConfig
 
 class HasRandom b where 
-    randomLens :: Lens (Snaplet b) (Snaplet RandomConfig)
+    randomLens :: SnapletLens (Snaplet b) (Snaplet RandomConfig)
 
 
 initRandomSnaplet :: (Variate (Base64 a)) => a ->  SnapletInit b (RandomConfig)
