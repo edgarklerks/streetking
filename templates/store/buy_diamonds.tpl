@@ -141,5 +141,82 @@
 		<div class="shop-buy-diamonds-element-button-box">&nbsp;</div>
 		<div class="white-icons-100 marketplace-diamond marketplace-element-empty">&nbsp;</div>
 	</div>
+	<div class="marketplace-element-container backgound-darkgray">
+		<div class="marketplace-element-icon-container">
+			<div class="marketplace-diamond-icon">&nbsp;</div>
+			<div class="marketplace-element-info-amount">&nbsp;</div>
+			<div class="marketplace-element-info-name">&nbsp;</div>
+		</div>
+		<div class="marketplace-element-info-price">&nbsp;</div>
+		<div class="marketplace-element-info-discount">&nbsp;</div>
+		<div class="shop-buy-diamonds-element-button-box">&nbsp;</div>
+		<div class="white-icons-100 marketplace-diamond marketplace-element-empty">&nbsp;</div>
+	</div>
+	<div class="marketplace-element-container backgound-darkgray">
+		<div class="marketplace-element-icon-container">
+			<div class="marketplace-diamond-icon">&nbsp;</div>
+			<div class="marketplace-element-info-amount">&nbsp;</div>
+			<div class="marketplace-element-info-name">&nbsp;</div>
+		</div>
+		<div class="marketplace-element-info-price">&nbsp;</div>
+		<div class="marketplace-element-info-discount">&nbsp;</div>
+		<div class="shop-buy-diamonds-element-button-box">&nbsp;</div>
+		<div class="white-icons-100 marketplace-diamond marketplace-element-empty">&nbsp;</div>
+	</div>
+	<div class="marketplace-element-container backgound-darkgray">
+		<div class="marketplace-element-icon-container">
+			<div class="marketplace-diamond-icon">&nbsp;</div>
+			<div class="marketplace-element-info-amount">&nbsp;</div>
+			<div class="marketplace-element-info-name">&nbsp;</div>
+		</div>
+		<div class="marketplace-element-info-price">&nbsp;</div>
+		<div class="marketplace-element-info-discount">&nbsp;</div>
+		<div class="shop-buy-diamonds-element-button-box">&nbsp;</div>
+		<div class="white-icons-100 marketplace-diamond marketplace-element-empty">&nbsp;</div>
+	</div>
+	<div class="marketplace-element-container backgound-darkgray">
+		<div class="marketplace-element-icon-container">
+			<div class="marketplace-diamond-icon">&nbsp;</div>
+			<div class="marketplace-element-info-amount">&nbsp;</div>
+			<div class="marketplace-element-info-name">&nbsp;</div>
+		</div>
+		<div class="marketplace-element-info-price">&nbsp;</div>
+		<div class="marketplace-element-info-discount">&nbsp;</div>
+		<div class="shop-buy-diamonds-element-button-box">&nbsp;</div>
+		<div class="white-icons-100 marketplace-diamond marketplace-element-empty">&nbsp;</div>
+	</div>
+	<div class="marketplace-element-container backgound-darkgray">
+		<div class="marketplace-element-icon-container">
+			<div class="marketplace-diamond-icon">&nbsp;</div>
+			<div class="marketplace-element-info-amount">&nbsp;</div>
+			<div class="marketplace-element-info-name">&nbsp;</div>
+		</div>
+		<div class="marketplace-element-info-price">&nbsp;</div>
+		<div class="marketplace-element-info-discount">&nbsp;</div>
+		<div class="shop-buy-diamonds-element-button-box">&nbsp;</div>
+		<div class="white-icons-100 marketplace-diamond marketplace-element-empty">&nbsp;</div>
+	</div>
+	<div class="marketplace-element-container backgound-darkgray">
+		<div class="marketplace-element-icon-container">
+			<div class="marketplace-diamond-icon">&nbsp;</div>
+			<div class="marketplace-element-info-amount">&nbsp;</div>
+			<div class="marketplace-element-info-name">&nbsp;</div>
+		</div>
+		<div class="marketplace-element-info-price">&nbsp;</div>
+		<div class="marketplace-element-info-discount">&nbsp;</div>
+		<div class="shop-buy-diamonds-element-button-box">&nbsp;</div>
+		<div class="white-icons-100 marketplace-diamond marketplace-element-empty">&nbsp;</div>
+	</div>
+	<div class="marketplace-element-container backgound-darkgray">
+		<div class="marketplace-element-icon-container">
+			<div class="marketplace-diamond-icon">&nbsp;</div>
+			<div class="marketplace-element-info-amount">&nbsp;</div>
+			<div class="marketplace-element-info-name">&nbsp;</div>
+		</div>
+		<div class="marketplace-element-info-price">&nbsp;</div>
+		<div class="marketplace-element-info-discount">&nbsp;</div>
+		<div class="shop-buy-diamonds-element-button-box">&nbsp;</div>
+		<div class="white-icons-100 marketplace-diamond marketplace-element-empty">&nbsp;</div>
+	</div>
 	<div class="clearfix"></div>
 </div>
