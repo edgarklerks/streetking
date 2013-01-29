@@ -170,6 +170,7 @@ initProxy fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other sid
                                 p <- liftIO $ emptyAddresses
                                 liftIO $ initHeartBeat p c
                                 return (PS p) 
+
 initHeartBeat :: Addresses -> Address -> IO ThreadId   
 initHeartBeat p c = forkIO $ hotelManager c $ \b -> case b of 
                                                         Alive (parseAddress -> a) _ -> (atomically $ unlessAddress p a $ do 
