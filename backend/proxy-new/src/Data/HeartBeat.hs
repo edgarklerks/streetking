@@ -103,14 +103,14 @@ testHeartBeat = do
                 threadDelay 10000
                 case c of 
                     Left e -> error e
-                    Right () -> return (Nothing)
+                    Right () -> return Nothing
 
         checkin "http://192.168.4.9:9000" "tcp://127.0.0.1:2765" 
             $ \c -> do 
                 threadDelay 10000
                 case c of 
                     Left e -> error e
-                    Right () -> return (Nothing)
+                    Right () -> return Nothing
 
     
         

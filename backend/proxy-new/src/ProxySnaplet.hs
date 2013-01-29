@@ -5,51 +5,50 @@ module ProxySnaplet (
     ProxySnaplet,
     HasProxy(..)
  ) where 
-import Control.Monad
-import Control.Applicative
-import Control.Monad.Trans
-import Control.Monad.State 
-import Data.Word 
-import Snap.Snaplet 
-import Snap.Core 
-import Control.Lens
+import           Control.Monad
+import           Control.Applicative
+import           Control.Monad.Trans
+import           Control.Monad.State 
+import           Data.Word 
+import           Snap.Snaplet 
+import           Snap.Core 
+import           Control.Lens
 import qualified Data.Text as T 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as C 
-import Data.Maybe
-import Control.Arrow
+import           Data.Maybe
+import           Control.Arrow
 import qualified Data.Map as M 
+import qualified Data.ByteString as S
 
-import Control.Concurrent 
-import Control.Monad.Fix 
-import Control.Concurrent.Chan
+import           Control.Concurrent 
+import           Control.Monad.Fix 
+import           Control.Concurrent.Chan
 
-import Config.ConfigFileParser 
-import System.Random 
-import Data.Array.Base
-import Data.Array.IArray
-import System.IO.Unsafe
-import Network.HTTP.Enumerator as HE
-import Data.Enumerator as E 
+import           Config.ConfigFileParser 
+import           System.Random 
+import           Data.Array.Base
+import           Data.Array.IArray
+import           System.IO.Unsafe
+import           Network.HTTP.Enumerator as HE
+import           Data.Enumerator as E 
 import qualified Data.Enumerator.List as L
-import Data.List (genericLength)
-import Data.Char 
-import Data.IORef 
-import Snap.Internal.Http.Types as S
-import Blaze.ByteString.Builder
-import Blaze.ByteString.Builder.ByteString
-import Snap.Iteratee
-import Data.Monoid
-import NodeSnaplet 
+import           Data.List (genericLength)
+import           Data.Char 
+import           Data.IORef 
+import           Snap.Internal.Http.Types as S
+import           Blaze.ByteString.Builder
+import           Blaze.ByteString.Builder.ByteString
+import           Snap.Iteratee
+import           Data.Monoid
+import           NodeSnaplet 
 import qualified Snap.Iteratee as I 
-
 
 
 
 data ProxySnaplet = PS {
         _proxy :: IO (B.ByteString, Int)
     } 
-
 
 makeLenses ''ProxySnaplet
 
@@ -156,7 +155,6 @@ mvarEnum n f = do
                         Continue g -> do 
                             step <- lift $ runIteratee $ g $ Chunks a
                             mvarEnum n step 
-
 chanEnum :: Chan (Maybe [a]) -> Enumerator a IO b 
 chanEnum n f = do 
         p <- liftIO $ readChan n 
@@ -166,7 +164,7 @@ chanEnum n f = do
                         a -> returnI a 
             Just a -> case f of 
                         Continue g -> do 
-                            step <- lift $ runIteratee $ g $ Chunks a
+                            step <- lift . runIteratee . g . Chunks $ a
                             chanEnum n step
                         a -> returnI a 
 
@@ -189,25 +187,62 @@ chanIterator f = continue go
                         continue go
               go  EOF = liftIO (writeChan f Nothing) >> E.yield () EOF
 
-sendAbroad :: (MonadState ProxySnaplet m, MonadSnap m) => S.Request -> HE.Request IO -> m ()
-sendAbroad r rq = do 
---     liftIO $ consumeBody r  
-    (SomeEnumerator s) <- liftIO $ readIORef (rqBody r)
-    liftIO $ writeIORef (rqBody r) (SomeEnumerator enumEOF)
-    let r' = t rq s
-    resp <- getResponse
-    p <- liftIO $ newChan 
+sendAbroadElse rq = transformRequestBody (fumble rq)
+        where fumble :: HE.Request IO -> (forall a. Enumerator Builder IO a)
+              fumble rq = undefined 
 
-    liftIO $ withManager $ \m -> run_ $  http r' (\_ _ -> chanIterator p) m 
+-- Stream 1 (s1) contains the incoming request body  
+-- Stream 2 (s2) contains the incoming response body 
+--
+-- We move the client request body to the http enumerator by stream 1 
+-- From the http enumerator we move the response body to responseBody by stream 2
+-- Diagrams:
+--  
+--  client ----> proxy --s1--> backend 
+--   \----------/    \------s2-----/
+--
 
-    finishWith (setResponseBody (mapEnum toByteString fromByteString $ chanEnum p) resp) 
 
-    return ()
-    where   t :: HE.Request IO -> (forall a. Enumerator B.ByteString IO a) -> HE.Request IO
-            t r (p :: (forall a. Enumerator B.ByteString IO a)) =
+chanIteratorHttpManager rq s2 s1 = do 
+                            liftIO $ forkIO  $ withManager (run_ . http (createRequest rq (chanEnum s1)) (const . const $ chanIterator s2))
+                            chanIterator s1 
+    where   createRequest :: HE.Request IO -> (forall a. Enumerator B.ByteString IO a) -> HE.Request IO
+            createRequest r p =
                     let enum = mapEnum toByteString fromByteString p
                     in (r {requestBody = RequestBodyEnumChunked enum })
-        
+
+
+sendAbroad :: (MonadState ProxySnaplet m, MonadSnap m) => S.Request -> HE.Request IO -> m ()
+sendAbroad r rq = do 
+                    s1 <- liftIO newChan 
+                    s2 <- liftIO newChan 
+
+                    -- this function unfortunately reads the request body
+                    -- first and then we can get to the point of forming
+                    -- the response. Oh well.     
+                    --
+                    -- This can be fixed by expanding runRequestBody and
+                    -- change it enough to make it asynchronously enough 
+                    --
+                    -- But this dependends heavily on internals. 
+                    
+                    runRequestBody (chanIteratorHttpManager rq s2 s1)
+
+                    -- now we need to fork this to gain back previous
+                    -- performance. 
+                
+                    resp <- getResponse 
+
+                    finishWith $ 
+                        setResponseBody (mapEnum toByteString fromByteString . chanEnum $ s2) resp
+
+    
+    where   createRequest :: HE.Request IO -> (forall a. Enumerator B.ByteString IO a) -> HE.Request IO
+            createRequest r p =
+                    let enum = mapEnum toByteString fromByteString p
+                    in (r {requestBody = RequestBodyEnumChunked enum })
+
+
 -- runProxy :: (?proxyTransform :: B.ByteString -> B.ByteString) =>  (MonadState ProxySnaplet m, MonadSnap m) => m () 
 runProxy prs = do 
     ps <- gets _proxy

@@ -26,20 +26,21 @@ import           Data.Typeable
 import qualified Control.Monad.CatchIO as CIO 
 import qualified Data.ByteString.Char8 as B 
 import qualified Data.ByteString.Char8 as C 
-import Control.Applicative 
+import           Control.Applicative 
 import qualified Data.Aeson as A
-import Control.Monad 
+import           Control.Monad 
 import qualified Data.Role 
-import Control.Monad.State
-import Data.Database hiding (sql, Delete)
-import Data.SqlTransaction
-import Model.General
-import Data.Monoid 
-import Database.HDBC.SqlValue
+import           Control.Monad.State
+import           Data.Database hiding (sql, Delete)
+import           Data.SqlTransaction
+import           Model.General
+import           Data.Monoid 
+import           Database.HDBC.SqlValue
 import qualified Model.Application as A
-import  Control.Arrow (second)
-import Debug.Trace 
-import Data.List (tails, intercalate) 
+import           Control.Arrow (second)
+import           Debug.Trace 
+import           Data.List (tails, intercalate) 
+import           Control.Exception.Base
 ------------------------------------------------------------------------------
 import           Application
 
@@ -55,7 +56,7 @@ enroute x = do
         g <- rqMethod <$> getRequest 
         case g of 
             OPTIONS -> allowAll 
-            otherwise -> allowAll *> CIO.catch x (\(UserErrorE e) -> writeBS $ "{\"error\":\"" <> e <> "\"}")
+            otherwise -> allowAll *> let b = CIO.catch x (\(UserErrorE e) -> writeBS $ "{\"error\":\"" <> (e) <> "\"}") in CIO.catch b (\(SomeException e) -> writeBS $ "{\"error\":\"" <> (B.pack $ show e) <> "\"}")
 
 
 
@@ -63,12 +64,12 @@ enroute x = do
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
 routes = let ?proxyTransform = id in fmap (second enroute) $ [ 
-          ("/Application/identify", identify)
+           ("/Application/identify", identify)
          , ("/User/logout", return ())
          , ("/test", writeBS "Hello world")
-          ,("/Role/application", roleApp)
-          , ("/Role/user", roleUser)
-          , ("/crossdomain.xml", crossDomain)
+         , ("/Role/application", roleApp)
+         , ("/Role/user", roleUser)
+         , ("/crossdomain.xml", crossDomain)
          , ("/", transparent)
          ]
 
