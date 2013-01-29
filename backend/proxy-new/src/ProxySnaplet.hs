@@ -187,10 +187,6 @@ chanIterator f = continue go
                         continue go
               go  EOF = liftIO (writeChan f Nothing) >> E.yield () EOF
 
-sendAbroadElse rq = transformRequestBody (fumble rq)
-        where fumble :: HE.Request IO -> (forall a. Enumerator Builder IO a)
-              fumble rq = undefined 
-
 -- Stream 1 (s1) contains the incoming request body  
 -- Stream 2 (s2) contains the incoming response body 
 --
