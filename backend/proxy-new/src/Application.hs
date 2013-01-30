@@ -9,7 +9,7 @@ module Application where
 import Control.Lens
 import Snap.Snaplet
 import NodeSnaplet 
-import ProxySnaplet  
+import ProxyExtendableSnaplet  
 import RandomSnaplet 
 import SqlTransactionSnaplet
 import RoleSnaplet 

@@ -8,6 +8,7 @@ import Control.Applicative
 import Control.Monad 
 import Control.Concurrent 
 import Control.Concurrent.STM 
+import Control.Monad.Trans
 import qualified Data.ByteString as B
 
 {- | 
@@ -46,6 +47,8 @@ instance Serialize Beat where
 type ClientC = Either String () -> IO (Maybe B.ByteString) 
 type ServerC = Beat -> IO (Either String ()) 
 
+delay = 100000
+
 -- | check your self into a proxy and start heartbeating 
 checkin :: Address -> Address -> ClientC ->  IO  ()
 checkin org cp callback = withContext $ \c -> do 
@@ -74,7 +77,7 @@ checkin org cp callback = withContext $ \c -> do
                             t <- receive s 
                             case decode t of 
                                     Left _ -> error "cannot decode answer"
-                                    Right a -> callback a >>= keepTalking s 
+                                    Right a -> callback a >>= (\x -> threadDelay delay *> keepTalking s x)
 
 
 
