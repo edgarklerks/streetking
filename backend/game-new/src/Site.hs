@@ -22,6 +22,7 @@ module Site
 
 import           Application
 import           ConfigSnaplet 
+import qualified Config.ConfigFileParser as Config
 import           Control.Applicative
 import           Control.Arrow 
 import           Control.Concurrent 
@@ -43,6 +44,7 @@ import           Data.Decider
 import           Data.Driver
 import           Data.Environment
 import           Data.Event 
+import           Data.HeartBeat
 import           Data.Hstore
 import           Data.Maybe
 import           Data.Monoid
@@ -2552,6 +2554,17 @@ rewardLog = do
 
 initAll po = Task.initTask *> initTournament po  
 
+initHeartbeat = do 
+            cp <- liftIO $ Config.readConfig "resources/server.ini"
+            let (Just (StringC announce)) = Config.lookupConfig "Heartbeat" cp >>= Config.lookupVar "announce-address"
+            let (Just (StringC own)) = Config.lookupConfig "Heartbeat" cp >>= Config.lookupVar "own-address"
+            liftIO $ forkIO $ checkin own announce $ \x -> case x of 
+                                                                            Right () -> return $ Nothing 
+                                                                            Left e -> error e 
+
+
+
+
 ------------------------------------------------------------------------------
 -- | The application initializer.
 app :: Bool -> SnapletInit App App
@@ -2567,5 +2580,6 @@ app g = makeSnaplet "app" "An snaplet example application." Nothing $ do
     q <- nestSnaplet "slock" slock $ SL.initLock 
 
     liftIO $ initAll p 
+    initHeartbeat
     return $ App db c rnd dst notfs q 
 

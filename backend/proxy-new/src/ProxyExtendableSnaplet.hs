@@ -46,6 +46,7 @@ import           Network.HTTP.Types (QueryItem)
 import qualified Snap.Iteratee as I 
 import           Control.Concurrent.STM 
 import qualified Data.HashMap.Strict as S 
+import           Debug.Trace 
 
 
 {-- I need a datastructure, which can dynamicly be:
@@ -97,7 +98,7 @@ getNextEmpty a = do
                 mb <- getMaxBound a
                 b <- getBound a 
                 if b >= mb then return Nothing 
-                           else unsafeSuccBound a *> return (Just $ b + 1)
+                           else unsafeSuccBound a *> return (Just $ b)
                            
 
 unlessAddress :: Addresses -> (B.ByteString, Int) -> STM () -> STM () 
@@ -113,7 +114,7 @@ getMaxBound a = snd <$> getBounds (unsafeGetArray a)
 
 getPointer :: Addresses -> STM Int 
 getPointer a = do
-           (_,u) <- getBounds arr 
+           (u) <- getBound a
            p <- readTVar ptr 
            modifyTVar ptr (\x -> (x + 1) `mod` u)
            return p
@@ -127,8 +128,13 @@ unsafeSuccBound a = do
 
 
 unsafeGetAddress :: Addresses -> Int -> STM (B.ByteString, Int) 
-unsafeGetAddress a = fmap fromJust . readArray (unsafeGetArray a) 
-
+unsafeGetAddress a n = do 
+                p <- readArray (unsafeGetArray a) n
+                return (fromJust p)
+showAll :: Addresses -> STM ()
+showAll a = do 
+        xs <- getAssocs (unsafeGetArray a) 
+        traceShow xs $ return () 
 getAddress :: Addresses -> STM (B.ByteString, Int)
 getAddress a = getPointer a >>=  unsafeGetAddress a
 
@@ -165,14 +171,18 @@ initProxy :: FilePath -> SnapletInit b ProxySnaplet
 initProxy fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other side" Nothing $ do 
                                 xs <- liftIO $ readConfig fp 
 
-                                let (Just (StringC c)) = lookupConfig "proxy" xs >>= lookupVar "listener"
+                                let ps = lookupConfig "Heartbeat" xs >>= lookupVar "listener-address"
+                                let (Just (StringC c)) = ps 
 
                                 p <- liftIO $ emptyAddresses
                                 liftIO $ initHeartBeat p c
                                 return (PS p) 
 
 initHeartBeat :: Addresses -> Address -> IO ThreadId   
-initHeartBeat p c = forkIO $ hotelManager c $ \b -> case b of 
+initHeartBeat p c = do
+                print "Starting heart beat proxy"
+                forkIO $ hotelManager c $ \b -> do
+                                            case b of 
                                                         Alive (parseAddress -> a) _ -> (atomically $ unlessAddress p a $ do 
                                                                                                               void $ addAddress p a  
                                                                                                               return ()) *> return (Right ())

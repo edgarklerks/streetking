@@ -49,6 +49,7 @@ Executable game-new
     vector,
     primitive,
     mwc-random,
+    http-types,
     HDBC,
     ghc-prim,
     HDBC-postgresql,
