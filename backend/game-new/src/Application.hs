@@ -45,6 +45,7 @@ import qualified Database.HDBC as DB
 import qualified Database.HDBC.PostgreSQL as DB 
 import qualified LockSnaplet as L 
 import qualified SqlTransactionSnaplet as ST 
+import           LogSnaplet 
 
 
 
@@ -68,6 +69,7 @@ data App = App
     , _nde :: Snaplet DHTConfig 
     , _notf :: Snaplet N.NotificationConfig
     , _slock :: Snaplet L.Lock 
+    , _logcycle :: Snaplet Cycle 
     }
 
 makeLenses ''App

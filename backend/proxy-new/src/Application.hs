@@ -13,6 +13,7 @@ import ProxyExtendableSnaplet
 import RandomSnaplet 
 import SqlTransactionSnaplet
 import RoleSnaplet 
+import LogSnaplet 
 
 ------------------------------------------------------------------------------
 data App = App
@@ -22,6 +23,7 @@ data App = App
     , _sql :: Snaplet (SqlTransactionConfig)
     , _rnd :: Snaplet (RandomConfig)
     , _roles :: Snaplet (RoleSnaplet)
+    , _logcycle :: Snaplet (Cycle)
     }
 
 makeLenses ''App

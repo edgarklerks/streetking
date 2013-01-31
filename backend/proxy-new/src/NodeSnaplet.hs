@@ -19,6 +19,9 @@ import Data.MemTimeState
 import System.Random 
 import Proto 
 import System.ZMQ3 as Z  
+import LogSnaplet 
+import qualified Data.ExternalLog as E 
+import Control.Comonad 
 
 data DHTConfig = DHC {
         _query :: MVar (),
@@ -26,28 +29,33 @@ data DHTConfig = DHC {
         _addr :: NodeAddr, 
         _pull :: Socket Pull,
         _req :: Socket Req,
-        _pc :: ProtoConfig 
+        _pc :: ProtoConfig,
+        _logcycler :: Snaplet Cycle
     }
 
 class HasDHT b where 
     dhtLens :: SnapletLens (Snaplet b) (Snaplet DHTConfig) 
 
 
-sendQuery :: (MonadState DHTConfig m, MonadIO m) => Proto -> m Proto 
+
+makeLenses ''DHTConfig
+
+-- sendQuery :: (MonadState DHTConfig m, MonadSnap m) => Proto -> m Proto 
 sendQuery r = do
                  s <- gets _query 
                  a <- gets _addr
                  p <- gets _pull
                  rq <- gets _req 
                  pc <- gets _pc
+                 lc <- gets _logcycler 
+                 with logcycler $ logCycle "node_snaplet" "sendQuery"
                  liftIO $ withMVar s $ \_ -> do  
+                    
                     res <- queryNode pc p rq a r 
                     return res 
 
-makeLenses ''DHTConfig
-
-initDHTConfig :: FilePath -> SnapletInit b DHTConfig
-initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnode" Nothing $ do 
+-- initDHTConfig :: FilePath -> SnapletInit b DHTConfig
+initDHTConfig fp ls = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnode" Nothing $ do 
         xs <- liftIO $ readConfig fp  
         let (Just (StringC ctr)) = lookupConfig "DHT" xs >>= lookupVar "ctrl"
         let (Just (StringC upd)) = lookupConfig "DHT" xs >>= lookupVar "data"
@@ -56,7 +64,7 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
 
         let (Just (StringC svn)) = lookupConfig "DHT" xs >>= lookupVar "dump"
         
-        s <- liftIO $ startNode ctr upd svn 
+        s <- liftIO $ startNode (extract ls) ctr upd svn 
         p <- liftIO $ newMVar () 
         
         ctx <- liftIO $ Z.init 1  
@@ -70,14 +78,14 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
                 print "Dumping state"
                 void $ runQuery (memstate s) DumpState  
 
-        return $ DHC p ctx addr pu req s
+        return $ DHC p ctx addr pu req s ls 
 
 
 -- addBinary :: Binary a => a -> IO ()
-insertBinary :: (MonadIO m, MonadState DHTConfig m, B.Binary a) => B.ByteString -> a -> m Proto
+-- insertBinary :: (MonadIO m, MonadState DHTConfig m, B.Binary a) => B.ByteString -> a -> m Proto
 insertBinary k s = sendQuery (insert k (fromLazy s))
 
-lookupBinary :: (MonadIO m, MonadState DHTConfig m, B.Binary a) => B.ByteString -> m (Maybe a)
+-- lookupBinary :: (MonadIO m, MonadState DHTConfig m, B.Binary a) => B.ByteString -> m (Maybe a)
 lookupBinary k = do 
             x <- sendQuery (Proto.query 2 k)
             case getResult x of 

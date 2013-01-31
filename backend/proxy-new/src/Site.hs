@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, DeriveDataTypeable, ImplicitParams,NoMonomorphismRestriction #-}
+{-# LANGUAGE OverloadedStrings, DeriveDataTypeable, ImplicitParams,NoMonomorphismRestriction, TupleSections #-}
 
 ------------------------------------------------------------------------------
 -- | This module is where all the routes and handlers are defined for your
@@ -41,6 +41,8 @@ import           Control.Arrow (second)
 import           Debug.Trace 
 import           Data.List (tails, intercalate) 
 import           Control.Exception.Base
+import           LogSnaplet hiding (logCycle)
+import qualified LogSnaplet as LSS 
 ------------------------------------------------------------------------------
 import           Application
 
@@ -49,21 +51,21 @@ data ApplicationException = UserErrorE C.ByteString
 
 instance CIO.Exception ApplicationException
 
+logCycle x y = with logcycle $ LSS.logCycle x y    
 
-
-enroute x = do 
+enroute (n,x) = (B.pack n,) $ do 
 --         modifyRequest (setHeader "Content-Type" "application/x-www-form-urlencoded")
         g <- rqMethod <$> getRequest 
         case g of 
             OPTIONS -> allowAll 
-            otherwise -> allowAll *> let b = CIO.catch x (\(UserErrorE e) -> writeBS $ "{\"error\":\"" <> (e) <> "\"}") in CIO.catch b (\(SomeException e) -> writeBS $ "{\"error\":\"" <> (B.pack $ show e) <> "\"}")
+            otherwise -> allowAll *> logCycle "proxy_resources" n *> let b = CIO.catch x (\(UserErrorE e) -> writeBS $ "{\"error\":\"" <> (e) <> "\"}") in CIO.catch b (\(SomeException e) -> writeBS $ "{\"error\":\"" <> (B.pack $ show e) <> "\"}")
 
 
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = let ?proxyTransform = id in fmap (second enroute) $ [ 
+routes = let ?proxyTransform = id in fmap enroute $ [ 
            ("/Application/identify", identify)
          , ("/User/logout", return ())
          , ("/test", writeBS "Hello world")
@@ -86,13 +88,15 @@ app :: SnapletInit App App
 app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     p <- nestSnaplet "" sql $ initSqlTransactionSnaplet "resources/server.ini"  
     prx <- nestSnaplet "" proxy $ initProxy "resources/server.ini"
-    dht <- nestSnaplet "" node $ initDHTConfig "resources/server.ini"
+    ls <- nestSnaplet "" logcycle $ initLogSnaplet "resources/server.ini"
+    dht <- nestSnaplet "" node $ initDHTConfig "resources/server.ini" ls 
 
     rnd <- nestSnaplet "" rnd $ initRandomSnaplet l64  
-    ps <- nestSnaplet "" roles $ initRoleSnaplet rnd dht 
+    ps <- nestSnaplet "" roles $ initRoleSnaplet rnd dht ls 
+
     addRoutes routes
 
-    return $ App prx dht p rnd ps 
+    return $ App prx dht p rnd ps ls  
 
 
 split :: Eq a => a -> [a] -> [[a]]
@@ -136,6 +140,7 @@ getServerId  = foldr step []
 
 
 transparent = do
+        logCycle "proxy_resources" "transparent" 
         withRequest $ \req ->  checkPerm req *> do 
                                                   ns <- with roles $ getRoles "user_token"
                                                   ps <- with roles $ getRoles "application_token"

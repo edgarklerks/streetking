@@ -96,6 +96,7 @@ import qualified Data.Task as Task
 import qualified Data.Text as T 
 import qualified Data.Text.Encoding as T
 import qualified Data.Tree as T
+import           LogSnaplet (initLogSnaplet) 
 import qualified LockSnaplet as SL 
 import qualified Model.Account as A 
 import qualified Model.AccountProfile as AP 
@@ -2578,8 +2579,9 @@ app g = makeSnaplet "app" "An snaplet example application." Nothing $ do
     notfs <- nestSnaplet "notf" notf $ initNotificationSnaplet db (Just s) 
     p <- liftIO $ takeMVar s 
     q <- nestSnaplet "slock" slock $ SL.initLock 
+    ls <- nestSnaplet "" logcycle $ initLogSnaplet "resources/server.ini"
 
     liftIO $ initAll p 
     initHeartbeat
-    return $ App db c rnd dst notfs q 
+    return $ App db c rnd dst notfs q ls  
 

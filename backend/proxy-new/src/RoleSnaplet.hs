@@ -42,16 +42,19 @@ import qualified Crypto.Hash.Tiger as H
 
 import NodeSnaplet 
 import RandomSnaplet 
+import LogSnaplet 
 
 data RoleSnaplet = RoleSnaplet {
         runRS :: R.RolePair B.ByteString,
         _random :: Snaplet (RandomConfig),
-        _dht :: Snaplet (DHTConfig) 
+        _dht :: Snaplet (DHTConfig), 
+        _log_cycler :: Snaplet Cycle 
 
 
     }
 
 makeLenses ''RoleSnaplet
+
 class HasRoleSnaplet b where 
     roleLens :: SnapletLens (Snaplet b) (Snaplet RoleSnaplet)
 
@@ -63,7 +66,7 @@ may rs rr = do
     ct' <- getParam "user_token"
     at' <- getParam "application_token"
     st' <- getParam "server_token"
-
+    with log_cycler $ logCycle "role_snaplet" "may"
     xs <- gets runRS
     let ls = cookieValue <$> catMaybes [ct, at,st]
     let ls' = catMaybes [ct', at',st']
@@ -79,6 +82,7 @@ may rs rr = do
 
 getRoles k = do 
     ct <- fmap cookieValue <$> getCookie k
+    with log_cycler $ logCycle "role_snaplet" "getRoles"
     ct' <- getParam k 
     case (ct' <|> ct) of 
         Nothing -> return []
@@ -91,6 +95,8 @@ dropRoles s = error "not implemented"
 addRole s r = do 
     xs <- gets runRS 
     h <- with random $  getUniqueKey 
+
+    with log_cycler $ logCycle "role_snaplet" "addRole"
     let ck = Cookie s h Nothing Nothing (Just "/") False False
     with dht $ insertBinary h r
     modifyResponse . addResponseCookie $ ck 
@@ -102,11 +108,11 @@ withRoleState :: (MonadState RoleSnaplet m) => (R.RolePair B.ByteString -> m a) 
 withRoleState f = f =<< gets runRS
 
 
-initRoleSnaplet a s = makeSnaplet "RoleSnaplet" "User/Application role manager" Nothing $ do 
+initRoleSnaplet a s p = makeSnaplet "RoleSnaplet" "User/Application role manager" Nothing $ do 
   rso <- R.initRP "resources/roleSet.cfg" 
 --   a' <- nestSnaplet "rnd" random $ a 
 --   b <- nestSnaplet "nodesnaplet" dht $ s 
-  return (RoleSnaplet rso a s)
+  return (RoleSnaplet rso a s p)
 
 
 

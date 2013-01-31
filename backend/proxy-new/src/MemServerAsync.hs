@@ -33,6 +33,7 @@ import Data.Maybe
 import Unsafe.Coerce 
 import Control.Monad.Error 
 import Data.IORef 
+import qualified Data.ExternalLog as E
 
 data ProtoConfig = PC {
         version :: Int,
@@ -45,6 +46,7 @@ data ProtoConfig = PC {
         updates :: Update, 
         answers :: TVar (H.HashMap NodeAddr Answer),
         outgoingchannel :: OutgoingChannel,
+        cycler :: E.Cycle,
 --         listeners :: TVar (H.HashMap B.ByteString NodeAddr)
         inDebug :: Bool 
     }
@@ -55,11 +57,15 @@ type Answer = Socket Push
 type Update = Socket Pull 
 type Incoming = Socket Rep
 
+logCycleProto :: String -> String -> ProtoMonad p ()
+logCycleProto n m = asks cycler >>= \x -> liftIO (E.reportCycle x n m)
+
 -- | Handles outgoing requests to other nodes 
 outgoingManager :: ProtoMonad p ()
 outgoingManager = void  $ forkProto $ do 
                 sl <- asks selfPull 
                 forever $ do 
+                    logCycleProto "p2p" "outgoingManager"
                     ps <- takesDVar outgoingchannel
                     -- prevent circular packets 
                     unless (sl `inRoute` ps) $ toNodes (addRoute sl ps)
@@ -69,16 +75,21 @@ handleRequest :: (forall p. ProtoMonad p ())
 handleRequest = do 
             inc <- asks incoming 
             forever $ do 
+                logCycleProto "p2p" "handleRequest"
                 x <- receiveProto inc
+                logCycleProto "p2p" "handleRequest-proto"
                 casePayload (\x -> sendProto inc (result $ Empty))  (handleQuery inc) (handleCommand inc) x 
 
 handleUpdates :: ProtoMonad p ()
 handleUpdates = do 
         upd <- asks updates 
-        forever $ receiveProto upd >>= handleResult
+        forever $ 
+            logCycleProto "p2p" "handleUpdates" >>
+            receiveProto upd >>= handleResult
 
 handleCommand :: Sender a => Socket a -> Proto -> ProtoMonad p ()
 handleCommand s (fromJust . getCommand -> p) = do 
+            logCycleProto "p2p" "handleCommand"
             case p of 
                Sync -> do H.keys <$> readsDVar outgoing  >>= sendProto s . nodeList 
                NodeList xs -> forM_ xs connectToNode *> sendProto s (result Empty)
@@ -97,6 +108,7 @@ debug p = do
 connectToNode :: NodeAddr -> ProtoMonad p ()
 connectToNode ad = do 
             ps <- readsDVar outgoing 
+            logCycleProto "p2p" "connectToNode"
             unless (H.member ad ps) $ do 
                         s <- newConnectedSocket Req ad 
                         modifysDVar outgoing (H.insert ad s)
@@ -260,13 +272,13 @@ forkTimeout n m = do
 forkProto ::  (forall p. ProtoMonad p ()) -> ProtoMonad p ThreadId 
 forkProto m = (liftIO . forkIO . void . runProtoMonad m) =<< ask 
 
-newProtoConfig :: NodeAddr -> NodeAddr -> FilePath -> IO ProtoConfig 
-newProtoConfig addrs addr fp = do 
+newProtoConfig :: NodeAddr -> NodeAddr -> FilePath -> E.Cycle -> IO ProtoConfig 
+newProtoConfig addrs addr fp ls = do 
                 ctx <- System.ZMQ3.init 1
                 is <- socket ctx Rep 
                 bind is addrs
                 ps <- newDVar H.empty 
-                l <- newMemState (60 * 1000 * 1000 * 30) (6000 * 1000) fp  
+                l <- newMemState ls (60 * 1000 * 1000 * 30) (6000 * 1000) fp  
                 s <- newEmptyDVar  
                 ans <- newDVar H.empty 
                 pl <- socket ctx Pull 
@@ -284,7 +296,8 @@ newProtoConfig addrs addr fp = do
                             updates = pl,
                             answers = ans,
                             outgoingchannel = outc,
-                            inDebug = True 
+                            inDebug = True,
+                            cycler = ls 
                         }
 
 
@@ -292,13 +305,13 @@ topError :: (forall p. ProtoMonad p a) -> ProtoMonad p a
 topError m = catchProtoError m throwError
 
 
-startNode :: NodeAddr -> NodeAddr -> FilePath  -> IO ProtoConfig  
-startNode f g fp = let step = do 
+startNode :: E.Cycle -> NodeAddr -> NodeAddr -> FilePath  -> IO ProtoConfig  
+startNode cl f g fp = let step = do 
                             forkProto handleRequest 
                             outgoingManager 
                             handleUpdates
                     in do 
-                        c <- newProtoConfig f g fp
+                        c <- newProtoConfig f g fp cl
                         forkIO $ runProtoMonad step c *> pure ()
                         return c
 

@@ -58,7 +58,10 @@ import           Debug.Trace
 --}
 -- ptr, array, max bound, empty places 
 --
+
+
 type AddressBox = Maybe (B.ByteString, Int)
+
 newtype Addresses = Addresses {
             unAddresses :: (TVar Int, TArray Int AddressBox, TVar Int, TVar [Int])
     }
@@ -130,11 +133,18 @@ unsafeSuccBound a = do
 unsafeGetAddress :: Addresses -> Int -> STM (B.ByteString, Int) 
 unsafeGetAddress a n = do 
                 p <- readArray (unsafeGetArray a) n
+                showAll a 
                 return (fromJust p)
+
 showAll :: Addresses -> STM ()
 showAll a = do 
         xs <- getAssocs (unsafeGetArray a) 
         traceShow xs $ return () 
+
+
+testAddress =  do undefined  
+
+
 getAddress :: Addresses -> STM (B.ByteString, Int)
 getAddress a = getPointer a >>=  unsafeGetAddress a
 
