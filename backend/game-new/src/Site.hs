@@ -1875,7 +1875,24 @@ raceChallengeWith p = do
             return True
         writeResult i
 
+raceChallengeWithdraw :: Application ()
+raceChallengeWithdraw = do
+        
+        uid <- getUserId :: Application Integer
+        xs <- getJson >>= scheck ["challenge_id"]
+        let cid = extract "challenge_id" xs :: Integer
+        
+        -- search constraints
+        let p = ["id" |== toSql cid, "account_id" |== toSql uid, "deleted" |== toSql False]
+        
+        -- check challenge exists and owned
+        chg <- runDb $ aget p (rollback "challenge not found") :: Application Chg.Challenge
+        
+        -- delete
+        runDb $ update "challenge" p [] [("deleted", toSql True)]
 
+        writeResult ("challenge withdrawn" :: String)
+ 
 
 raceChallengeAccept :: Application ()
 raceChallengeAccept = do
@@ -1890,7 +1907,7 @@ raceChallengeAccept = do
 
 
         -- retrieve challenge
-        chg  <- runDb $ aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: Application Chg.Challenge
+        chg <- runDb $ aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: Application Chg.Challenge
         chgt <- runDb $ ChgT.name <$> 
                                 (aget ["id" |== (toSql $ Chg.type chg)] (rollback $ "challenge type not found for id " ++ (show $ Chg.type chg)) :: SqlTransaction Connection ChgT.ChallengeType)
 
@@ -2475,6 +2492,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Personnel/task", taskPersonnel),
                 ("/Personnel/train", trainPersonnel),
                 ("/Race/challenge", raceChallenge),
+                ("/Race/challengeWithdraw", raceChallengeWithdraw),
                 ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/details", getRaceDetails),
