@@ -1852,6 +1852,7 @@ raceChallengeWith p = do
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
 
+            -- transfer money to escrow
             me <- case amt > 0 of
                     True -> Just <$> Escrow.deposit uid amt
                     False -> return Nothing
@@ -1888,9 +1889,16 @@ raceChallengeWithdraw = do
         -- check challenge exists and owned
         chg <- runDb $ aget p (rollback "challenge not found") :: Application Chg.Challenge
         
-        -- delete
-        runDb $ update "challenge" p [] [("deleted", toSql True)]
-
+        runDb $ do
+            
+            -- refund challenge cost
+            case rp_escrow_id $ Chg.challenger chg of
+                Just eid -> Escrow.cancel eid
+                Nothing -> return ()
+            
+            -- delete challenge
+            update "challenge" p [] [("deleted", toSql True)]
+        
         writeResult ("challenge withdrawn" :: String)
  
 
