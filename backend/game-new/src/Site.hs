@@ -1785,6 +1785,10 @@ racePractice = do
             g <- aget ["account_id" |== toSql uid] (rollback "garage not found") :: SqlTransaction Connection G.Garage 
             c <- getCarInGarage ["active" |== SqlBool True, "garage_id" |== (toSql $ G.id g)] (rollback "active car not found")
 
+            -- check active car
+            r <- CR.carReady $ fromJust $ CIG.id c
+            unless (CR.ready r) $ rollback "Your car is not ready"
+
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
 
@@ -1848,6 +1852,10 @@ raceChallengeWith p = do
 
             adeny ["account_id" |== SqlInteger uid, "deleted" |== SqlBool False] (rollback "you're already challenging") :: SqlTransaction Connection [Chg.Challenge]
             n  <- aget ["name" |== SqlString tp] (rollback "unknown challenge type") :: SqlTransaction Connection ChgT.ChallengeType
+
+            -- check active car
+            r <- CR.carReady $ fromJust $ CIG.id c
+            unless (CR.ready r) $ rollback "Your car is not ready"
 
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
@@ -1929,7 +1937,7 @@ raceChallengeAccept = do
 
             c <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] $ rollback "Active car minimal not found" 
 
-            -- check car
+            -- check active car
             r <- CR.carReady $ fromJust $ CIG.id c
             unless (CR.ready r) $ rollback "Your car is not ready"
 
