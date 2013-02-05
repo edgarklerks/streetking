@@ -2381,7 +2381,30 @@ reportIssue = do
         runDb $ save (b { SUP.account_id = uid })
         writeResult (1 :: Integer)
 
-    
+ 
+
+raceChallengeWithdraw :: Application ()
+raceChallengeWithdraw = do
+        uid <- getUserId :: Application Integer
+        xs <- getJson >>= scheck ["challenge_id"]
+        let cid = extract "challenge_id" xs :: Integer
+
+        -- search constraints
+
+        let p = ["id" |== toSql cid, "account_id" |== toSql uid, "deleted" |== toSql False]
+
+        -- check challenge exists and owned
+
+        chg <- runDb $ aget p (rollback "challenge not found") :: Application Chg.Challenge
+
+        -- delete
+
+        runDb $ update "challenge" p [] [("deleted", toSql True)]
+
+        writeResult ("challenge withdrawn" :: String)
+ 
+
+   
 
 getUserGarageId :: Application Integer
 getUserGarageId = do 
@@ -2481,6 +2504,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Race/challenge", raceChallenge),
                 ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/challengeGet", searchRaceChallenge),
+                ("/Race/challengeWithdraw", raceChallengeWithdraw),
                 ("/Race/details", getRaceDetails),
                 ("/Race/practice", racePractice),
                 ("/Race/reports", searchReports RP.Race),
