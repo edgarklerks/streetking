@@ -2571,5 +2571,5 @@ app g = makeSnaplet "app" "An snaplet example application." Nothing $ do
     q <- nestSnaplet "slock" slock $ SL.initLock 
 
     liftIO $ initAll p 
-    return $ App db c rnd dst notfs q 
+    return $ App db c rnd dst notfs q undefined  
 
