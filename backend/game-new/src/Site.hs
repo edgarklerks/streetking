@@ -22,7 +22,6 @@ module Site
 
 import           Application
 import           ConfigSnaplet 
-import qualified Config.ConfigFileParser as Config
 import           Control.Applicative
 import           Control.Arrow 
 import           Control.Concurrent 
@@ -44,7 +43,6 @@ import           Data.Decider
 import           Data.Driver
 import           Data.Environment
 import           Data.Event 
-import           Data.HeartBeat
 import           Data.Hstore
 import           Data.Maybe
 import           Data.Monoid
@@ -96,7 +94,6 @@ import qualified Data.Task as Task
 import qualified Data.Text as T 
 import qualified Data.Text.Encoding as T
 import qualified Data.Tree as T
-import           LogSnaplet (initLogSnaplet) 
 import qualified LockSnaplet as SL 
 import qualified Model.Account as A 
 import qualified Model.AccountProfile as AP 
@@ -1852,7 +1849,6 @@ raceChallengeWith p = do
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
 
-            -- transfer money to escrow
             me <- case amt > 0 of
                     True -> Just <$> Escrow.deposit uid amt
                     False -> return Nothing
@@ -1876,31 +1872,7 @@ raceChallengeWith p = do
             return True
         writeResult i
 
-raceChallengeWithdraw :: Application ()
-raceChallengeWithdraw = do
-        
-        uid <- getUserId :: Application Integer
-        xs <- getJson >>= scheck ["challenge_id"]
-        let cid = extract "challenge_id" xs :: Integer
-        
-        -- search constraints
-        let p = ["id" |== toSql cid, "account_id" |== toSql uid, "deleted" |== toSql False]
-        
-        -- check challenge exists and owned
-        chg <- runDb $ aget p (rollback "challenge not found") :: Application Chg.Challenge
-        
-        runDb $ do
-            
-            -- refund challenge cost
-            case rp_escrow_id $ Chg.challenger chg of
-                Just eid -> Escrow.cancel eid
-                Nothing -> return ()
-            
-            -- delete challenge
-            update "challenge" p [] [("deleted", toSql True)]
-        
-        writeResult ("challenge withdrawn" :: String)
- 
+
 
 raceChallengeAccept :: Application ()
 raceChallengeAccept = do
@@ -1915,7 +1887,7 @@ raceChallengeAccept = do
 
 
         -- retrieve challenge
-        chg <- runDb $ aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: Application Chg.Challenge
+        chg  <- runDb $ aget ["id" |== toSql cid, "account_id" |<> toSql uid, "deleted" |== toSql False] (rollback "challenge not found") :: Application Chg.Challenge
         chgt <- runDb $ ChgT.name <$> 
                                 (aget ["id" |== (toSql $ Chg.type chg)] (rollback $ "challenge type not found for id " ++ (show $ Chg.type chg)) :: SqlTransaction Connection ChgT.ChallengeType)
 
@@ -1953,6 +1925,10 @@ raceChallengeAccept = do
 
 
             c <- getCarInGarage ["account_id" |== toSql uid .&& "active" |== toSql True] $ rollback "Active car minimal not found" 
+
+            -- check car
+            r <- CR.carReady $ fromJust $ CIG.id c
+            unless (CR.ready r) $ rollback "Your car is not ready"
 
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ A.energy a - ecost)]
@@ -2500,7 +2476,6 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Personnel/task", taskPersonnel),
                 ("/Personnel/train", trainPersonnel),
                 ("/Race/challenge", raceChallenge),
-                ("/Race/challengeWithdraw", raceChallengeWithdraw),
                 ("/Race/challengeAccept", raceChallengeAccept),
                 ("/Race/challengeGet", searchRaceChallenge),
                 ("/Race/details", getRaceDetails),
@@ -2581,17 +2556,6 @@ rewardLog = do
 
 initAll po = Task.initTask *> initTournament po  
 
-initHeartbeat = do 
-            cp <- liftIO $ Config.readConfig "resources/server.ini"
-            let (Just (StringC announce)) = Config.lookupConfig "Heartbeat" cp >>= Config.lookupVar "announce-address"
-            let (Just (StringC own)) = Config.lookupConfig "Heartbeat" cp >>= Config.lookupVar "own-address"
-            liftIO $ forkIO $ checkin own announce $ \x -> case x of 
-                                                                            Right () -> return $ Nothing 
-                                                                            Left e -> error e 
-
-
-
-
 ------------------------------------------------------------------------------
 -- | The application initializer.
 app :: Bool -> SnapletInit App App
@@ -2605,9 +2569,7 @@ app g = makeSnaplet "app" "An snaplet example application." Nothing $ do
     notfs <- nestSnaplet "notf" notf $ initNotificationSnaplet db (Just s) 
     p <- liftIO $ takeMVar s 
     q <- nestSnaplet "slock" slock $ SL.initLock 
-    ls <- nestSnaplet "" logcycle $ initLogSnaplet "resources/server.ini"
 
     liftIO $ initAll p 
-    initHeartbeat
-    return $ App db c rnd dst notfs q ls  
+    return $ App db c rnd dst notfs q 
 
