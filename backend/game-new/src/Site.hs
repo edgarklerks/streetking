@@ -78,6 +78,7 @@ import           SqlTransactionSnaplet (initSqlTransactionSnaplet)
 import           System.Directory
 import           System.FilePath.Posix
 import           System.IO.Unsafe 
+import qualified Config.ConfigFileParser as Config
 import qualified Control.Monad.CatchIO as CIO
 import qualified Data.Aeson as AS 
 import qualified Data.ByteString.Char8 as C
@@ -85,6 +86,7 @@ import qualified Data.ByteString.Lazy as LB
 import qualified Data.ByteString.Lazy.Char8 as LBC
 import qualified Data.CarReady as CR
 import qualified Data.Foldable as F
+import           Data.HeartBeat 
 import qualified Data.HashMap.Strict as HM
 import qualified Data.InRules as IR
 import qualified Data.List as List
@@ -95,6 +97,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Tree as T
 import qualified LockSnaplet as SL 
+import           LogSnaplet (initLogSnaplet)
 import qualified Model.Account as A 
 import qualified Model.AccountProfile as AP 
 import qualified Model.AccountProfileMin as APM
@@ -2553,6 +2556,23 @@ rewardLog = do
 
         writeResult (transformRewards xs) 
 
+initHeartbeat = do 
+
+            cp <- liftIO $ Config.readConfig "resources/server.ini"
+
+            let (Just (StringC announce)) = Config.lookupConfig "Heartbeat" cp >>= Config.lookupVar "announce-address"
+
+            let (Just (StringC own)) = Config.lookupConfig "Heartbeat" cp >>= Config.lookupVar "own-address"
+
+            liftIO $ forkIO $ checkin own announce $ \x -> case x of 
+
+                                                                            Right () -> return $ Nothing 
+
+                                                                            Left e -> error e 
+
+
+
+
 
 initAll po = Task.initTask *> initTournament po  
 
@@ -2569,7 +2589,9 @@ app g = makeSnaplet "app" "An snaplet example application." Nothing $ do
     notfs <- nestSnaplet "notf" notf $ initNotificationSnaplet db (Just s) 
     p <- liftIO $ takeMVar s 
     q <- nestSnaplet "slock" slock $ SL.initLock 
+    ls <- nestSnaplet "" logcycle $ initLogSnaplet "resources/server.ini"
+    initHeartbeat
 
     liftIO $ initAll p 
-    return $ App db c rnd dst notfs q undefined  
+    return $ App db c rnd dst notfs q ls  
 

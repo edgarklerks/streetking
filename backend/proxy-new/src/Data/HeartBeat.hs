@@ -47,7 +47,7 @@ instance Serialize Beat where
 
 type ClientC = Either String () -> IO (Maybe B.ByteString) 
 type ServerC = Beat -> IO (Either String ()) 
-
+-- 100000 microseconds -> 100 ms  
 delay = 100000
 
 -- | check your self into a proxy and start heartbeating 

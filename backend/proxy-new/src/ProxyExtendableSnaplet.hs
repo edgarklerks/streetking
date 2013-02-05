@@ -120,6 +120,7 @@ getMaxBound a = snd <$> getBounds (unsafeGetArray a)
 getPointer :: Addresses -> STM Int 
 getPointer a = do
            (u) <- getBound a
+           when (0 == u) $ error "u is null gotohel"
            p <- readTVar ptr 
            modifyTVar ptr (\x -> (x + 1) `mod` u)
            return p
