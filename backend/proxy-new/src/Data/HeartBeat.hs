@@ -10,6 +10,7 @@ import Control.Concurrent
 import Control.Concurrent.STM 
 import Control.Monad.Trans
 import qualified Data.ByteString as B
+import Data.ExternalLog (Cycle, reportCycle) 
 
 {- | 
 -
@@ -82,11 +83,12 @@ checkin org cp callback = withContext $ \c -> do
 
 
 -- | handle authorizations  by binding to the address  
-hotelManager :: Address -> ServerC -> IO ()
-hotelManager lp callback = withContext $ \c -> 
+hotelManager :: Cycle -> Address -> ServerC -> IO ()
+hotelManager cl lp callback = withContext $ \c -> 
                            withSocket c Rep $ \s -> do 
                                         bind s lp 
                                         forever $ do 
+                                            reportCycle cl "heartbeat" "hotelManager"
                                             a <- receive s  
                                             case (decode a) of 
                                                 Left msh -> send s [] (encode $ (Left msh :: Either String ()))
@@ -96,7 +98,7 @@ hotelManager lp callback = withContext $ \c ->
 
 testHeartBeat = do 
         forkIO 
-            $ hotelManager "tcp://*:2765" 
+            $ hotelManager undefined "tcp://*:2765" 
             $ \b -> case b of 
                         Alive who meta -> print who *> return (Right ()) 
                         Error -> print "error" *> return (Left "error received")

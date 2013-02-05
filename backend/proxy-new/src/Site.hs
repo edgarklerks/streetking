@@ -29,6 +29,7 @@ import qualified Data.ByteString.Char8 as C
 import           Control.Applicative 
 import qualified Data.Aeson as A
 import           Control.Monad 
+import           Control.Comonad (extract) 
 import qualified Data.Role 
 import           Control.Monad.State
 import           Data.Database hiding (sql, Delete)
@@ -87,8 +88,8 @@ crossDomain = do
 app :: SnapletInit App App
 app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     p <- nestSnaplet "" sql $ initSqlTransactionSnaplet "resources/server.ini"  
-    prx <- nestSnaplet "" proxy $ initProxy "resources/server.ini"
     ls <- nestSnaplet "" logcycle $ initLogSnaplet "resources/server.ini"
+    prx <- nestSnaplet "" proxy $ initProxy (extract ls) "resources/server.ini"
     dht <- nestSnaplet "" node $ initDHTConfig "resources/server.ini" ls 
 
     rnd <- nestSnaplet "" rnd $ initRandomSnaplet l64  

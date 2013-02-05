@@ -47,6 +47,7 @@ import qualified Snap.Iteratee as I
 import           Control.Concurrent.STM 
 import qualified Data.HashMap.Strict as S 
 import           Debug.Trace 
+import Data.ExternalLog (Cycle, reportCycle) 
 
 
 {-- I need a datastructure, which can dynamicly be:
@@ -67,7 +68,8 @@ newtype Addresses = Addresses {
     }
 
 data ProxySnaplet = PS {
-        _proxy :: Addresses 
+        _proxy :: Addresses,
+        _cycle_logr :: Cycle 
     } 
 
 emptyAddresses :: IO Addresses 
@@ -177,21 +179,21 @@ filterAddress a f = do
 
 
 {-- Initializes mini heartbeat handler and proxy server --}
-initProxy :: FilePath -> SnapletInit b ProxySnaplet 
-initProxy fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other side" Nothing $ do 
+initProxy :: Cycle -> FilePath -> SnapletInit b ProxySnaplet 
+initProxy cl fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other side" Nothing $ do 
                                 xs <- liftIO $ readConfig fp 
 
                                 let ps = lookupConfig "Heartbeat" xs >>= lookupVar "listener-address"
                                 let (Just (StringC c)) = ps 
 
                                 p <- liftIO $ emptyAddresses
-                                liftIO $ initHeartBeat p c
-                                return (PS p) 
+                                liftIO $ initHeartBeat cl p c
+                                return (PS p cl) 
 
-initHeartBeat :: Addresses -> Address -> IO ThreadId   
-initHeartBeat p c = do
+initHeartBeat :: Cycle -> Addresses -> Address -> IO ThreadId   
+initHeartBeat cl p c = do
                 print "Starting heart beat proxy"
-                forkIO $ hotelManager c $ \b -> do
+                forkIO $ hotelManager cl c $ \b -> do
                                             case b of 
                                                         Alive (parseAddress -> a) _ -> (atomically $ unlessAddress p a $ do 
                                                                                                               void $ addAddress p a  
@@ -255,7 +257,8 @@ sendAbroad r rq = do
 
                     -- now we need to fork this to gain back previous
                     -- performance. 
-                
+                    cl <- gets _cycle_logr
+                    liftIO $ reportCycle cl "proxy_snaplet" "sendAbroad"
                     resp <- getResponse 
 
                     finishWith $ 

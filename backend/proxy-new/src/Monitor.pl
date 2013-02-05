@@ -44,7 +44,8 @@ my @components = (
         'node_snaplet',
         "role_snaplet",
         "p2p",
-        "memstate"
+        "memstate",
+        "proxy_snaplet"
 );
 
 sub row {

@@ -91,7 +91,8 @@ handleCommand :: Sender a => Socket a -> Proto -> ProtoMonad p ()
 handleCommand s (fromJust . getCommand -> p) = do 
             logCycleProto "p2p" "handleCommand"
             case p of 
-               Sync -> do H.keys <$> readsDVar outgoing  >>= sendProto s . nodeList 
+               Sync -> do 
+                          H.keys <$> readsDVar outgoing  >>= \xs -> liftIO (print xs) *> (sendProto s . nodeList) xs
                NodeList xs -> forM_ xs connectToNode *> sendProto s (result Empty)
                StartSync -> sendUpstream sync *> sendProto s (result Empty) 
                DumpInfo -> do 
