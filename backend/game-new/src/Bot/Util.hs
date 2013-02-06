@@ -69,7 +69,7 @@ runDbRaw c m = liftIO $ do
 
 
 
-testcon = connectPostgreSQL "host=db.graffity.me password=#*rl& user=deosx dbname=streetking_dev"
+testcon = connectPostgreSQL "host=192.168.4.9 password=wetwetwet  user=postgres dbname=postgres"
 {--         
 -
 -
@@ -223,7 +223,7 @@ smallArgs = Args {
         maxSuccess = 10000,
         maxSize = 40,
         chatty = True,
-        maxDiscardRatio = 10 
+        maxDiscard = 10
     }
 
 instance Arbitrary IsomorphT where 
