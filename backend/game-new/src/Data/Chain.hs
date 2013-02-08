@@ -1,4 +1,7 @@
 {-# LANGUAGE MultiParamTypeClasses, TypeFamilies, RankNTypes, NoMonomorphismRestriction, GADTs, DeriveDataTypeable, OverloadedStrings, TemplateHaskell, TypeSynonymInstances, FlexibleInstances, OverlappingInstances, UndecidableInstances, TypeOperators  #-}
+{--- task chaining functions moved to Task module
+
+
 module Data.Chain (
         registerTask,
         runTask 
@@ -31,7 +34,7 @@ registerTask f x = atomically $ modifyTVar lolwut (\xs -> ((f,x) : xs))
 runTask :: TK.Task -> SqlTransaction Connection Bool 
 runTask t = do 
              fs <- liftIO $ readTVarIO lolwut 
-             let stepM [] = error "last shit not found"
+             let stepM [] = error $ "no handler for task action " ++ (show $ ("action" .< (TK.data t) :: Action) ) -- "last shit not found"
                  stepM ((pred,f):fs) | pred t = traceShow t $ f t
                                      | otherwise = stepM fs 
              stepM fs 
@@ -135,6 +138,10 @@ instance Number a => Number (Succ a) where
 
 minus :: Succ a -> a 
 minus = undefined 
+
+
+--}
+
 
 
 --}

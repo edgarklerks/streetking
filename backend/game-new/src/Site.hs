@@ -2057,13 +2057,13 @@ processRace typid t ps tid = do
         let fin r = (t+) $ ceiling $ (1000 *) $ raceTime r  
         let te = fin $ snd $ last rs
 
-        when (te > 9223372036854775808) $ rollback "finish time out of bounds"
+--        when (te > 9223372036854775808) $ rollback "finish time out of bounds"
 
         -- save race data
         rid <- save $ (def :: R.Race) {
                     R.track_id = tid,
                     R.start_time = t,
-                    R.end_time = te,
+                    R.end_time = te, 
                     R.type = typid,
                     R.data = uncurry raceData <$> rs 
                 }
@@ -2590,24 +2590,18 @@ rewardLog = do
         writeResult (transformRewards xs) 
 
 initHeartbeat = do 
-
             cp <- liftIO $ Config.readConfig "resources/server.ini"
-
             let (Just (StringC announce)) = Config.lookupConfig "Heartbeat" cp >>= Config.lookupVar "announce-address"
-
             let (Just (StringC own)) = Config.lookupConfig "Heartbeat" cp >>= Config.lookupVar "own-address"
-
             liftIO $ forkIO $ checkin own announce $ \x -> case x of 
-
                                                                             Right () -> return $ Nothing 
-
                                                                             Left e -> error e 
 
 
 
 
 
-initAll po = Task.initTask *> initTournament po  
+initAll po = Task.init *> initTournament po  
 
 ------------------------------------------------------------------------------
 -- | The application initializer.

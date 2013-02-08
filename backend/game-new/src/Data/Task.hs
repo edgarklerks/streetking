@@ -5,7 +5,31 @@
 - Edgar - added emitEvent 
 -
 --}
-module Data.Task where
+module Data.Task (
+
+        Data.Task.init,
+        registerHandler,
+        Data.Task.run,
+        runAll,
+
+        task,
+        trigger,
+
+        Action(..),
+        Trigger(..),
+        
+        trackTime,
+        emitEvent,
+        giveMoney,
+        transferMoney,
+        giveCar,
+        transferCar,
+        givePart,
+        giveRespect,
+        escrowCancel,
+        escrowRelease
+        
+    ) where
 
 import Prelude hiding (log)
 import           Control.Applicative
@@ -14,7 +38,7 @@ import           Control.Monad
 import           Control.Monad.Error
 import           Data.Account as DA
 import           Data.Attoparsec.Number
-import           Data.Chain
+-- import           Data.Chain
 import           Data.DataPack
 import           Data.Database
 import           Data.Default
@@ -42,6 +66,17 @@ import qualified Model.TrackTime as TTM
 import qualified Model.Transaction as TR 
 import qualified Model.TaskLog as TL
 
+import Data.Typeable 
+import Data.Aeson.TH 
+
+import System.IO.Unsafe 
+import Data.IORef 
+import qualified Data.HashMap.Strict as S 
+import Control.Monad.Trans 
+import Control.Concurrent.STM 
+import Debug.Trace 
+
+
 -- TODO: static tasks
 -- -> have start time, updated time, end time; field "static" boolean
 -- -> when fired, set updated time; only delete if past end time
@@ -49,6 +84,8 @@ import qualified Model.TaskLog as TL
 -- static tasks can be used for:
 -- -> personnel activity updates (repair, improvement, ...)
 -- -> user energy recovery 
+
+
 
 {-
  - Types
@@ -65,14 +102,7 @@ data Action =
     | EscrowCancel
     | EscrowRelease
     | EmitEvent 
-       deriving (Eq, Enum)
-
-
-
-
-
-
-
+       deriving (Eq, Enum, Show)
 
 instance AS.ToJSON Action where toJSON a = AS.toJSON $ fromEnum a
 instance AS.FromJSON Action where 
@@ -84,19 +114,42 @@ data Trigger =
     | User
     | Car
     | Part 
-    | Cron 
-        deriving (Eq, Enum)
-
+    | Cron
+    | Test
+        deriving (Eq, Enum, Show)
 
 {-
  - Logging
  -}
 
 log :: Data -> SqlTransaction Connection ()
-log d = do
+log d = do -- void $ forkSqlTransaction $ do
         t <- unix_millitime
         save $ (def :: TL.TaskLog) { TL.time = t, TL.entry = d }
         return ()
+
+{-
+ - Handler chaining
+ -}
+
+-- hold task handlers in the idiosyncratically named variable "lolwut"
+{-# NOINLINE lolwut #-}
+lolwut :: TVar [(TK.Task -> Bool, TK.Task -> SqlTransaction Connection Bool)]
+lolwut = unsafePerformIO $ newTVarIO []  
+
+-- register a new task handler
+registerHandler :: (TK.Task -> Bool) -> (TK.Task -> SqlTransaction Connection Bool) -> IO ()
+registerHandler f x = atomically $ modifyTVar lolwut (\xs -> ((f,x) : xs))
+
+-- attempt to process a task
+process :: TK.Task -> SqlTransaction Connection Bool 
+process t = do 
+             fs <- liftIO $ readTVarIO lolwut 
+             let stepM [] = error $ "no handler for task action: " ++ (show $ ("action" .< (TK.data t) :: Maybe Action) ) -- "last shit not found"
+                 stepM ((pred,f):fs) | pred t = traceShow t $ f t
+                                     | otherwise = stepM fs 
+             traceShow (length fs) $ stepM fs 
+
 
 {-
  - Set tasks 
@@ -286,7 +339,7 @@ wait t tp sid = w 0 $ Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
                 liftIO $ threadDelay $ 1000 * 50
                 w (n+1) test
 
-initTask = registerTask pred executeTask 
+init = registerHandler pred executeTask 
         where pred d = case "action" .< (TK.data d) of 
                             Just (x :: Action) -> True 
                             _ -> False 
@@ -397,8 +450,8 @@ executeTask t = let d = TK.data t in do
                 Just e -> throwError $ "process: unknown action: " ++ (show $ fromEnum e)
 
 
-process :: TK.Task -> SqlTransaction Connection Bool 
-process = runTask -- executeTask (undefined :: Zero) 
+--process :: TK.Task -> SqlTransaction Connection Bool 
+--process = runTask -- execute' (undefined :: Zero) 
 {-
  - Error handling
  -
