@@ -50,7 +50,7 @@ import Data.Database
 import Database.HDBC.SqlValue 
 import qualified Data.List as L
 import Test.QuickCheck as Q 
-import Data.Chain 
+-- import Data.Chain 
 import qualified Data.HashMap.Strict as S 
 import qualified Model.Task as TK
 import Data.DataPack 
@@ -589,7 +589,7 @@ saveResultTree tid xs = forM_ (xs `zip` [0..])  $ \(xs,r) -> forM_ xs (lmb r)
                                         } :: TR.TournamentResult)
                   lmb r xs =  return 0 
 
-initTournament po = registerTask pred (executeTask po)
+initTournament po = Task.registerHandler pred (executeTask po)
           where pred t | "action" .< (TK.data t) == Just RunTournament = True
                        | otherwise = False 
 executeTask po d | "action" .< (TK.data d) == Just RunTournament  = runTournament d po *> return True  
