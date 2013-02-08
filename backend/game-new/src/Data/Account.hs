@@ -47,7 +47,8 @@ checkLevel uid = do
                                         ("level", toSql $ nl), 
                                         ("skill_unused", toSql $ su), 
                                         ("max_energy", toSql en),
-                                        ("energy", toSql en)
+                                        ("energy", toSql en),
+                                        ("till", SqlInteger 0)
                                     ]
 
 

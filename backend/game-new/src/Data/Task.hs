@@ -293,7 +293,7 @@ run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 
         t <- unix_millitime
         
-        cleanup $ t - 7 * 24 * 3600
+        cleanup $ t - 7 * 24 * 3600 * 1000
 
         ss <- claim t tp sid 
         forM_ ss $ \s -> do
