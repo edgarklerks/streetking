@@ -1984,7 +1984,7 @@ raceChallengeAccept = do
             (rid, rs) <- processRace 2 current_time [y, Chg.challenger chg] (Chg.track_id chg)
 
 
-            let fin  = (current_time+) . ceiling . raceTime  
+            let fin  = (current_time+) . (1000 *) . ceiling . raceTime  
             let t1 = (\(_,r) -> fin r) $ head rs
             let winner_id = rp_account_id . fst . head $ rs
             let other_id = rp_account_id . Chg.challenger $ chg
@@ -2049,7 +2049,6 @@ processRace typid t ps tid = do
                         Right r -> return (p, r)
 
         let rs = List.sortBy (\(_, a) (_, b) -> compare (raceTime a) (raceTime b)) rs'
-
 
         -- current time, finishing times, race time (slowest finishing time) 
         let fin r = (t+) $ ceiling $ (1000 *) $ raceTime r  
