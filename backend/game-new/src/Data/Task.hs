@@ -7,6 +7,7 @@
 --}
 module Data.Task where
 
+import Prelude hiding (log)
 import           Control.Applicative
 import           Control.Concurrent
 import           Control.Monad
@@ -39,6 +40,7 @@ import qualified Model.Task as TK
 import qualified Model.TaskTrigger as TKT
 import qualified Model.TrackTime as TTM
 import qualified Model.Transaction as TR 
+import qualified Model.TaskLog as TL
 
 -- TODO: static tasks
 -- -> have start time, updated time, end time; field "static" boolean
@@ -85,6 +87,16 @@ data Trigger =
     | Cron 
         deriving (Eq, Enum)
 
+
+{-
+ - Logging
+ -}
+
+log :: Data -> SqlTransaction Connection ()
+log d = do
+        t <- unix_millitime
+        save $ (def :: TL.TaskLog) { TL.time = t, TL.entry = d }
+        return ()
 
 {-
  - Set tasks 
@@ -212,6 +224,8 @@ escrowRelease t eid uid = do
         return ()
 
 
+        
+
 {-
  - Trigger tasks 
  -}
@@ -224,9 +238,9 @@ runAll tp = Data.Task.run tp 0
 run :: Trigger -> Integer -> SqlTransaction Connection ()
 run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 
-        t <- (1000 *) <$> unix_timestamp
+        t <- unix_millitime
         
-        cleanup $ t - 24 * 3600
+        cleanup $ t - 7 * 24 * 3600
 
         ss <- claim t tp sid 
         forM_ ss $ \s -> do
@@ -238,11 +252,20 @@ run tp sid = void $ (flip catchError) (runFail tp sid) $ do
         
 -- mark a selection of tasks as claimed, and return them 
 claim :: Integer -> Trigger -> Integer -> SqlTransaction Connection [TK.Task] --[(Integer, Data)]
-claim t tp sid = Data.List.map (flip updateHashMap (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) sid
+claim t tp sid = do
+        xs <- Data.List.map (flip updateHashMap (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) sid
+--        log $ mkData $ do
+--                set "action" ("claim" :: String)
+--                set "tasks" xs
+        return xs
 
 -- unmark a task as claimed
 release :: TK.Task -> SqlTransaction Connection ()
-release s = void $ update "task" ["id" |== (toSql $ TK.id s)] [] [("claim", SqlInteger 0)]
+release s = do
+        log $ mkData $ do
+                set "action" ("release" :: String)
+                set "id" s
+        void $ update "task" ["id" |== (toSql $ TK.id s)] [] [("claim", SqlInteger 0)]
 
 -- mark a task as deleted
 remove :: TK.Task -> SqlTransaction Connection ()
@@ -262,12 +285,20 @@ wait t tp sid = w 0 $ Fun.tasks_in_progress t (toInteger $ fromEnum tp) sid
             when b $ do
                 liftIO $ threadDelay $ 1000 * 50
                 w (n+1) test
+
 initTask = registerTask pred executeTask 
         where pred d = case "action" .< (TK.data d) of 
                             Just (x :: Action) -> True 
                             _ -> False 
 
-executeTask t = let d = TK.data t in 
+executeTask :: TK.Task -> SqlTransaction Connection Bool 
+executeTask t = let d = TK.data t in do
+
+            log $ mkData $ do
+                    set "action" ("executing" :: String)
+                    set "id" $ TK.id t
+                    set "task" $ t
+ 
             case "action" .< d :: Maybe Action of
                 Just TrackTime -> do
                         save $ (def :: TTM.TrackTime) {

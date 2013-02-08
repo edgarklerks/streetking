@@ -158,6 +158,7 @@ checkPrequisites a (T.Tournament id cid st cs mnl mxl rw tid plys nm dn rn im tt
         when (isJust cid) $ do 
                     xs <- search ["car_id" |== (toSql $ cid) .&& "id" |== (toSql cinst) .&& "account_id" |== (toSql $ A.id a)] [] 1 0 :: SqlTransaction Connection [CarInGarage]
                     when (null xs) $ rollback "doesn't own correct car"
+
         when ( A.money a < cs ) $ rollback "you do not have enough money" 
         when (A.level a > mxl) $ rollback "your level is too high"
         when (A.level a < mnl) $ rollback "your level is not high enough"
