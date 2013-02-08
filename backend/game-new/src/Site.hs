@@ -1787,7 +1787,7 @@ racePractice = do
 
             -- check active car
             r <- CR.carReady $ fromJust $ CIG.id c
-            unless (CR.ready r) $ rollback "Your car is not ready"
+            unless (CR.ready r) $ rollback "Your car is not ready, brony"
 
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
@@ -1855,7 +1855,7 @@ raceChallengeWith p = do
 
             -- check active car
             r <- CR.carReady $ fromJust $ CIG.id c
-            unless (CR.ready r) $ rollback "Your car is not ready"
+            unless (CR.ready r) $ rollback "Your car is not ready, brony"
 
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ (A.energy a) - ecost)]
@@ -1961,7 +1961,7 @@ raceChallengeAccept = do
 
             -- check active car
             r <- CR.carReady $ fromJust $ CIG.id c
-            unless (CR.ready r) $ rollback "Your car is not ready"
+            unless (CR.ready r) $ rollback "Your car is not ready, brony"
 
             -- apply energy cost
             update "account" ["id" |== toSql uid] [] [("energy", toSql $ A.energy a - ecost)]
@@ -1988,8 +1988,6 @@ raceChallengeAccept = do
             let t1 = (\(_,r) -> fin r) $ head rs
             let winner_id = rp_account_id . fst . head $ rs
             let other_id = rp_account_id . Chg.challenger $ chg
-
-            -- BUG: TODO: one-and-a-half bug 
 
             if winner_id == uid 
                     then do             
@@ -2181,7 +2179,7 @@ searchRaceReward = do
         writeMapables rs
 
 milliTime :: SqlTransaction Connection Integer
-milliTime = (*1000) <$> DBF.unix_timestamp 
+milliTime = DBF.unix_millitime -- (*1000) <$> DBF.unix_timestamp 
 
 
 serverTime :: Application ()
@@ -2273,7 +2271,13 @@ tournamentJoin = do
     uid <- getUserId
     xs <- getJson >>= scheck ["car_instance_id", "tournament_id"] 
     let b = updateHashMap xs (def :: TP.TournamentPlayer) 
-    runDb $ joinTournament (fromJust $ TP.car_instance_id b) (fromJust $ TP.tournament_id b) uid 
+    runDb $ do
+
+            -- check active car
+            r <- CR.carReady $ fromJust $ TP.car_instance_id b
+            unless (CR.ready r) $ rollback "Your car is not ready, brony"
+
+            joinTournament (fromJust $ TP.car_instance_id b) (fromJust $ TP.tournament_id b) uid 
     writeResult (1 :: Int)
 
 {-- till here --}
