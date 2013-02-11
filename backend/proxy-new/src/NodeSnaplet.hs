@@ -18,7 +18,7 @@ import qualified Data.ByteString.Lazy as L
 import Data.MemTimeState
 import System.Random 
 import Proto 
-import System.ZMQ3 as Z  
+import System.ZMQ as Z  
 import LogSnaplet 
 import qualified Data.ExternalLog as E 
 import Control.Comonad 

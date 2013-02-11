@@ -42,7 +42,7 @@ Executable proxy-new
     unordered-containers,
     binary,
     CC-delcont,
-    zeromq3-haskell,
+    zeromq-haskell,
     parsec,
     containers,
     cryptohash,

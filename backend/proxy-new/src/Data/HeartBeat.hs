@@ -1,7 +1,7 @@
 {-# LANGUAGE GADTs #-}
 module Data.HeartBeat where 
 
-import System.ZMQ3
+import System.ZMQ
 import Data.Serialize
 import Data.Word 
 import Control.Applicative
@@ -52,7 +52,7 @@ delay = 100000
 
 -- | check your self into a proxy and start heartbeating 
 checkin :: Address -> Address -> ClientC ->  IO  ()
-checkin org cp callback = withContext $ \c -> do 
+checkin org cp callback = withContext 1 $ \c -> do 
                                  withSocket c Req $ \s -> do 
                                             connect s cp 
 
@@ -74,8 +74,8 @@ checkin org cp callback = withContext $ \c -> do
 
 
         where keepTalking s x = do 
-                            send s [] (encode $ Alive org x)
-                            t <- receive s 
+                            send s  (encode $ Alive org x) []
+                            t <- receive s [] 
                             case decode t of 
                                     Left _ -> error "cannot decode answer"
                                     Right a -> callback a >>= (\x -> threadDelay delay *> keepTalking s x)
@@ -84,16 +84,16 @@ checkin org cp callback = withContext $ \c -> do
 
 -- | handle authorizations  by binding to the address  
 hotelManager :: Cycle -> Address -> ServerC -> IO ()
-hotelManager cl lp callback = withContext $ \c -> 
+hotelManager cl lp callback = withContext 1 $ \c -> 
                            withSocket c Rep $ \s -> do 
                                         bind s lp 
                                         forever $ do 
                                             reportCycle cl "heartbeat" "hotelManager"
-                                            a <- receive s  
+                                            a <- receive s [] 
                                             case (decode a) of 
-                                                Left msh -> send s [] (encode $ (Left msh :: Either String ()))
+                                                Left msh -> send s  (encode $ (Left msh :: Either String ())) []
                                                 Right a -> do x <- callback a 
-                                                              send s [] (encode x)
+                                                              send s (encode x) []
 
 
 testHeartBeat = do 

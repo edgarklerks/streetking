@@ -1,6 +1,6 @@
 module Data.ExternalLog where 
 
-import System.ZMQ3
+import System.ZMQ
 import Control.Concurrent.STM 
 import Control.Concurrent 
 import Control.Monad
@@ -26,10 +26,10 @@ reportCycleSTM a group component = writeTQueue (cycleChannel a) (group, componen
 initCycle :: Address -> IO Cycle 
 initCycle a = do 
         q <- newTQueueIO 
-        tid <- forkIO $ withContext $ \c -> withSocket c Pub $ \s -> do 
+        tid <- forkIO $ withContext 1 $ \c -> withSocket c Pub $ \s -> do 
                 bind s a  
                 forever $ do 
                     (g, p) <- atomically $ readTQueue q
-                    send s [] (pack $ g <> " " <> p)
+                    send s (pack $ g <> " " <> p) []
         return $ Cycle q tid 
 
