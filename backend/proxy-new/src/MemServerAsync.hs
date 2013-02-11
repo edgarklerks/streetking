@@ -3,6 +3,7 @@ module MemServerAsync where
 
 import Data.MemTimeState 
 import System.ZMQ3 hiding (version, context)
+import qualified System.ZMQ3 as Z 
 
 import Control.Monad
 import Control.Applicative
@@ -27,7 +28,7 @@ import Data.List ((\\))
 import Data.DVars
 
 import Data.Typeable 
-import GHC.Exception (SomeException)
+import GHC.Exception (SomeException(..))
 import Proto 
 import Data.Maybe 
 import Unsafe.Coerce 
@@ -78,7 +79,7 @@ handleRequest = do
                 logCycleProto "p2p" "handleRequest"
                 x <- receiveProto inc
                 logCycleProto "p2p" "handleRequest-proto"
-                casePayload (\x -> sendProto inc (result $ Empty))  (handleQuery inc) (handleCommand inc) x 
+                catchProtoAll (casePayload (\x -> sendProto inc (result $ Empty)) (handleQuery inc) (handleCommand inc) x) $ \(SomeException e) -> specifiedFailure $ "handleRequest " ++ (show e)
 
 handleUpdates :: ProtoMonad p ()
 handleUpdates = do 
@@ -92,7 +93,7 @@ handleCommand s (fromJust . getCommand -> p) = do
             logCycleProto "p2p" "handleCommand"
             case p of 
                Sync -> do 
-                          H.keys <$> readsDVar outgoing  >>= \xs -> liftIO (print xs) *> (sendProto s . nodeList) xs
+                          H.keys <$> readsDVar outgoing  >>= (sendProto s . nodeList) 
                NodeList xs -> forM_ xs connectToNode *> sendProto s (result Empty)
                StartSync -> sendUpstream sync *> sendProto s (result Empty) 
                DumpInfo -> do 
@@ -157,11 +158,13 @@ sendAnswer :: NodeAddr -> Proto -> ProtoMonad p ()
 sendAnswer a pr = do 
             ps <- readsDVar answers 
             case H.lookup a ps of 
-                Just s -> forkTimeout 100000 $ sendProto s pr 
+                Just s -> forkTimeout 100000 $ catchProtoAll (sendProto s pr) 
+                                             $ \e -> specifiedFailure $ "sendAnswer " ++ (show e)
                 Nothing -> do 
                     s <- newConnectedSocket Push a 
                     modifysDVar answers (H.insert a s)
-                    forkTimeout 100000 $ sendProto s pr 
+                    forkTimeout 100000 $ catchProtoAll (sendProto s pr) 
+                                       $ \e -> specifiedFailure $ "sendAnswer " ++ show e
 
 newConnectedSocket :: SocketType a => a -> NodeAddr -> ProtoMonad p (Socket a)
 newConnectedSocket a addr = do 
@@ -250,6 +253,14 @@ catchProtoError m f = do
                             Right a -> return a
 
 
+catchProtoAll :: (forall p. ProtoMonad p a) -> (SomeException -> (forall p. ProtoMonad p a)) -> ProtoMonad p a
+catchProtoAll m f = do 
+                    g <- ask
+                    x <- liftIO $ CIO.catch (runProtoMonad m g) (\e -> runProtoMonad (f e) g)
+                    case x of 
+                        Left e -> f (SomeException e)
+                        Right a -> return a
+
 newtype ProtoMonad p a = PM {
                 unPM :: CCT p (ReaderT ProtoConfig (ErrorT ProtoException IO)) a 
             } deriving (Functor, Applicative, Monad, MonadDelimitedCont (Prompt p) (SubCont p (ReaderT ProtoConfig (ErrorT ProtoException IO))), MonadReader ProtoConfig, MonadIO) 
@@ -275,7 +286,7 @@ forkProto m = (liftIO . forkIO . void . runProtoMonad m) =<< ask
 
 newProtoConfig :: NodeAddr -> NodeAddr -> FilePath -> E.Cycle -> IO ProtoConfig 
 newProtoConfig addrs addr fp ls = do 
-                ctx <- System.ZMQ3.init 1
+                ctx <- Z.context 
                 is <- socket ctx Rep 
                 bind is addrs
                 ps <- newDVar H.empty 

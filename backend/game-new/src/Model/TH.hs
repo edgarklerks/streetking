@@ -216,15 +216,11 @@ idq = return ()
 upsertWithTables :: [(String, [String])] -> Sql -> H.HashMap Sql Value -> SqlTransaction Connection Value 
 upsertWithTables xs t m = do 
         x <- upsert t m 
-        liftIO $ print "start upsert"
         forM_ xs $ \(stm, xs) -> do
                 let step x z = case H.lookup x m of 
                                         Nothing -> SqlNull : z 
                                         Just a -> a : z 
-                forM_ xs $ \x -> do 
-                            liftIO $ print x  
-                liftIO $ print "start quickQuery"
-                liftIO $ print (stm, xs)
+                return ()
                 -- S.quickQuery stm $ foldr step [] xs 
         return x
 
@@ -234,7 +230,6 @@ upsertWithTables xs t m = do
 saveDb :: String -> [DecQ] 
 saveDb n = return $ do 
             xs <- getUpdateStatements n 
-            runIO $ print xs 
             funD (mkName "save") [clausem xs]
     where clausem xs = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") (decs xs)) []
           decs xs = appE (appE (appE (varE $ mkName "upsertWithTables") [|xs|]) (stringE n)) (appE (varE $ mkName "toHashMap") (varE $ mkName "i"))

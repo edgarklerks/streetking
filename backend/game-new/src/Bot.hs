@@ -79,6 +79,10 @@ import qualified Snap.Test as S
 -  prop_ we can automagicly run all the tests in this module  
 
 --}
+--
+--
+--
+--
 
 prop_dist_mul_mod = property work
     -- Positive a create only positive Num a  
