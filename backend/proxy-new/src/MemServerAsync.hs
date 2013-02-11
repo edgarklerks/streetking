@@ -2,8 +2,8 @@
 module MemServerAsync where 
 
 import Data.MemTimeState 
-import System.ZMQ3 hiding (version, context)
-import qualified System.ZMQ3 as Z 
+import System.ZMQ hiding (version)
+import qualified System.ZMQ as Z 
 
 import Control.Monad
 import Control.Applicative
@@ -88,7 +88,7 @@ handleUpdates = do
             logCycleProto "p2p" "handleUpdates" >>
             receiveProto upd >>= handleResult
 
-handleCommand :: Sender a => Socket a -> Proto -> ProtoMonad p ()
+handleCommand :: SType a => Socket a -> Proto -> ProtoMonad p ()
 handleCommand s (fromJust . getCommand -> p) = do 
             logCycleProto "p2p" "handleCommand"
             case p of 
@@ -122,7 +122,7 @@ sendUpstream :: Proto -> ProtoMonad p ()
 sendUpstream  = putsDVar outgoingchannel
 
 
-handleQuery :: Sender a => Socket a -> Proto -> ProtoMonad p () 
+handleQuery :: SType a => Socket a -> Proto -> ProtoMonad p () 
 handleQuery s p = do 
             let (Just rt) = headRoute p 
             let (Just query) = getQuery p 
@@ -166,14 +166,14 @@ sendAnswer a pr = do
                     forkTimeout 100000 $ catchProtoAll (sendProto s pr) 
                                        $ \e -> specifiedFailure $ "sendAnswer " ++ show e
 
-newConnectedSocket :: SocketType a => a -> NodeAddr -> ProtoMonad p (Socket a)
+newConnectedSocket :: SType a => a -> NodeAddr -> ProtoMonad p (Socket a)
 newConnectedSocket a addr = do 
                 ctx <- asks context 
                 s <- liftIO $ socket ctx a
                 liftIO $ connect s addr 
                 return s
 
-newBindedSocket :: SocketType a => a -> NodeAddr -> ProtoMonad p (Socket a)
+newBindedSocket :: SType a => a -> NodeAddr -> ProtoMonad p (Socket a)
 newBindedSocket a addr = do 
                 ctx <- asks context 
                 s <- liftIO $ socket ctx a 
@@ -214,12 +214,12 @@ toNodes p = do
 
 
 
-sendProto :: (Sender a, MonadIO m) => Socket a -> Proto -> m ()
-sendProto s = liftIO . send s [] . S.encode
+sendProto :: (SType a, MonadIO m) => Socket a -> Proto -> m ()
+sendProto s = liftIO . flip (send s) [] . S.encode
 
-receiveProto :: (MonadIO m, Receiver a) => Socket a -> m Proto   
+receiveProto :: (MonadIO m, SType a) => Socket a -> m Proto   
 receiveProto s  = do 
-                    x <- liftIO $ receive s 
+                    x <- liftIO $ receive s []  
                     case S.decode x of 
                             Left s -> error $ "problem decoding" ++ s
                             Right a -> return a
@@ -286,7 +286,7 @@ forkProto m = (liftIO . forkIO . void . runProtoMonad m) =<< ask
 
 newProtoConfig :: NodeAddr -> NodeAddr -> FilePath -> E.Cycle -> IO ProtoConfig 
 newProtoConfig addrs addr fp ls = do 
-                ctx <- Z.context 
+                ctx <- Z.init 1  
                 is <- socket ctx Rep 
                 bind is addrs
                 ps <- newDVar H.empty 
@@ -376,7 +376,7 @@ waitOnResult l m = runCCT $ reset $ \p -> do
                                         
 
 clientCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
-clientCommand n1 n2 p = withContext $ \c -> 
+clientCommand n1 n2 p = withContext 1 $ \c -> 
          withSocket c Req $ \r -> 
          withSocket c Pull $ \d -> 
             do 
@@ -387,7 +387,7 @@ clientCommand n1 n2 p = withContext $ \c ->
                 print x 
 
 silentCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
-silentCommand n1 n2 p = withContext $ \c -> 
+silentCommand n1 n2 p = withContext 1 $ \c -> 
          withSocket c Req $ \r -> 
          withSocket c Pull $ \d -> 
             do 
