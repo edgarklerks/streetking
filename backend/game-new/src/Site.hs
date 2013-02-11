@@ -2614,12 +2614,12 @@ app g = makeSnaplet "app" "An snaplet example application." Nothing $ do
     db <- nestSnaplet "sql" db $ initSqlTransactionSnaplet "resources/server.ini"
     rnd <- nestSnaplet "random" rnd $ initRandomSnaplet l32 
     addRoutes (routes g)
-    dst <- nestSnaplet "nde" nde $ initDHTConfig "resources/server.ini"
+    ls <- nestSnaplet "" logcycle $ initLogSnaplet "resources/server.ini"
+    dst <- nestSnaplet "nde" nde $ initDHTConfig "resources/server.ini" ls
     s <- liftIO $ newEmptyMVar 
     notfs <- nestSnaplet "notf" notf $ initNotificationSnaplet db (Just s) 
     p <- liftIO $ takeMVar s 
     q <- nestSnaplet "slock" slock $ SL.initLock 
-    ls <- nestSnaplet "" logcycle $ initLogSnaplet "resources/server.ini"
     initHeartbeat
 
     liftIO $ initAll p 
