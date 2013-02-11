@@ -136,7 +136,6 @@ unsafeSuccBound a = do
 unsafeGetAddress :: Addresses -> Int -> STM (B.ByteString, Int) 
 unsafeGetAddress a n = do 
                 p <- readArray (unsafeGetArray a) n
-                showAll a 
                 return (fromJust p)
 
 showAll :: Addresses -> STM ()

@@ -1015,7 +1015,7 @@ loadTemplate = do
         let pth =  ("resources/static/" ++ C.unpack name ++ ".tpl")
         let dirs = splitDirectories pth
         if ".." `elem` dirs 
-            then internalError "Hi my friend, I am a node based on snap 0.9, which is a haskell web framework to create webservers. I am compiled with GHC 7.4.2 You came by me through a load-balancing and security proxy. We have a this moment 3 backend nodes running. Our connection_pool holds at maximum 200 connections to the database. We are using prepared statements and don't allow to do direct queries by some typesystem trick. We use PostgreSQL 9.2.2 with a PGPool-II as load balancer and failover mechanism. Also .. cannot be used in this query and we basename it anyway. Disregards, I suck cock. Bye."
+            then internalError "Hi my friend, I am a node based on snap 0.10, which is a haskell web framework to create webservers. I am compiled with GHC 7.4.2 You came by me through a load-balancing and security proxy. We have a this moment 3 backend nodes running. Our connection_pool holds at maximum 200 connections to the database. We are using prepared statements and don't allow to do direct queries by some typesystem trick. We use PostgreSQL 9.2.2 with a PGPool-II as load balancer and failover mechanism. Also .. cannot be used in this query and we basename it anyway. Disregards that, I suck cock. Bye."
             else serveFileAs "text/plain" pth
 
 userAddSkill :: Application ()

@@ -48,6 +48,13 @@ my @components = (
         "proxy_snaplet"
 );
 
+
+print average(
+        [ [1,2],
+          [2,3],
+          [3,4]]);
+
+exit;
 sub row {
     my ($c1,$c2,$c3) = @_;
 
@@ -58,7 +65,60 @@ sub header {
      
     return sprintf("%20s\t%20s\t%20s\n", $c1, $c2, $c3); 
 }
+# Calculating forward averages is easily done with a comonadic interface 
+#
 
+sub take {
+    my ($n,$xs) = @_;
+    my $ps = [];
+    for my $x(@{$xs}){
+        if(!$n){
+            return $ps;
+        }
+        push @{$ps}, $x;
+        $n--;
+    }
+    return $ps;
+}
+sub average {
+    my ($xs) = @_;
+    for my $z(@{$xs}){
+        my ($x,$y)=@{$z};
+        print ($x,$y);
+    }
+
+}
+sub forwardAverage {
+    my ($xs) = @_;
+    return extend(sub {
+         my $s = shift;
+         return average(take(5, $s));
+        }, $xs);
+}
+sub extend {
+    my ($f, $xs) = @_;
+    my $res = [];
+    while(@{$xs}){
+        my $b =  $f->($xs);
+        push @{$res}, $b;
+        pop shift(@{$xs});
+    }
+    return $res;
+}
+
+sub getAverage {
+    my $list = shift;
+}
+
+sub runningAverage {
+    my ($values) = @_;
+    my $n = 3;
+    my $p = 0;
+    for(my $i = 0; $i < $n; $i++){
+        $p += $i;
+    }
+    return ($p / $n);
+}
 
 sub createWidgets {
     $window = new MainWindow;
