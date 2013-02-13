@@ -92,6 +92,14 @@ enumeratorToConduitSource f = do
                         return (tqueueSource x) 
 
 
+
+{-- 
+-   Some simple tests of utilities above
+-   There is error handling missing. Pipes can hang forever... 
+-   This is kinda bad. 
+-
+- --}
+
 testCtoE :: Show a => E.Enumerator a IO () -> IO ()
 testCtoE n = do 
         x <- enumeratorToConduitSource n 
