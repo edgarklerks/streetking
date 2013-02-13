@@ -2587,7 +2587,12 @@ rewardLog = do
             ) 
         xs <- runDb $ do 
                 xs <- search xs od l o :: SqlTransaction Connection [RL.RewardLog]
-                forM_ xs (checkRewardLog . fromJust . RL.id)
+                -- TODO: This is my fault, this code will be runned
+                -- a ziljion times if there are ziljion records. 
+                --
+                -- it should be replaced by an update based on DTD  
+                --
+                forkSqlTransaction $ forM_ xs (checkRewardLog . fromJust . RL.id)
                 return xs 
 
         writeResult (transformRewards xs) 

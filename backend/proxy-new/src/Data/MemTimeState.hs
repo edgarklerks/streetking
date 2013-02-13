@@ -33,7 +33,6 @@ import           Data.Time.Clock.POSIX
 import           Data.Foldable 
 import           Debug.Trace 
 import           Prelude hiding (foldr, foldl)
-import           Data.ExternalLog 
 
 
 
@@ -64,16 +63,9 @@ data MemState = MS {
               _changes :: TVar Int,
               _sweep :: Time,-- sweep every n seconds  
               _ttl :: Time,
-              _filelock :: TMVar (),
-              _cycle_logger :: Cycle 
+              _filelock :: TMVar ()
 
     }
-logCycle :: MemState -> String -> String -> IO ()
-logCycle ms n m = reportCycle (_cycle_logger ms) n m 
-
-logCycleSTM :: MemState -> String -> String -> STM ()
-logCycleSTM ms n m = reportCycleSTM (_cycle_logger ms) n m 
-
 
 unlockFile  :: MemState -> IO ()
 unlockFile ms = atomically $ putTMVar (_filelock ms) ()
@@ -176,8 +168,8 @@ sweep = mkLens out inp
     where out a = (_sweep a) 
           inp a b = return a 
 
-newMemState :: Cycle -> Time -> Time -> FilePath -> IO MemState 
-newMemState ls ttl sw fp = do 
+newMemState :: Time -> Time -> FilePath -> IO MemState 
+newMemState ttl sw fp = do 
             g <- newStdGen
             b <- doesFileExist fp 
             if b then mkstate g fp 
@@ -187,7 +179,7 @@ newMemState ls ttl sw fp = do
                         let b = S.decode nm :: Either String Snapshot 
                         case b of 
                             Left s -> error s 
-                            Right s -> rebuildState ls s ttl sw 
+                            Right s -> rebuildState s ttl sw  
               mknewstate g = atomically $ do 
                         mk <- newTVar mempty  
                         tm <- newTVar mempty  
@@ -195,7 +187,7 @@ newMemState ls ttl sw fp = do
                         chg <- newTVar 0 
                         g' <- newTVar g 
                         s <- newTMVar ()
-                        return $ MS mk tm mm g' chg sw ttl s ls 
+                        return $ MS mk tm mm g' chg sw ttl s 
 
 -- H.HashMap B.ByteString B.ByteString (=Snapshot)
 
@@ -226,8 +218,8 @@ buildTimeMap ct mm = return $ Q.fromList $ (repeat ct) `zip` (H.keys mm)
 
 
 
-rebuildState :: Cycle -> Snapshot -> Time -> Time -> IO MemState 
-rebuildState ls snp ttl sw = do 
+rebuildState :: Snapshot -> Time -> Time -> IO MemState 
+rebuildState snp ttl sw = do 
                     ct <- getMicroSeconds 
                     mk <- buildPointerMap snp   
                     mm <- buildMemMap (ct + ttl) mk snp  
@@ -239,7 +231,7 @@ rebuildState ls snp ttl sw = do
                     seed <- newTVarIO seed' 
                     chg <- newTVarIO 0 
                     p <- newTMVarIO () 
-                    return $ MS mk' tm' mm' seed chg sw ttl p ls 
+                    return $ MS mk' tm' mm' seed chg sw ttl p
 
 compressState :: MemState -> STM Snapshot 
 compressState ms = let tmk = _mapkey ms 
@@ -305,7 +297,6 @@ getCT ms p = do
 getValue :: MemState -> Time -> Key -> STM (Maybe Value)
 getValue ms ct k = do 
             p <- getPointer ms k 
-            logCycleSTM ms "memstate" "getValue" 
             case p of 
                 Nothing -> return Nothing 
                 Just p -> do 
@@ -368,7 +359,6 @@ instance S.Serialize Query where
 
 queryManager :: FilePath -> MemState -> QueryChan -> IO ()
 queryManager fp ms qc = forkIO (sweeper ms) >> (forever $ do 
-                            logCycle ms "memstate" "queryManager" 
                             atomically $ changes ~. (+1) $ ms   
                             i <- atomically $ ms ^. changes 
                             when (i `mod` 10000 == 0) $ void $ forkIO $ 
@@ -399,7 +389,6 @@ instance S.Serialize Snapshot where
 
 sweeper :: MemState -> IO () 
 sweeper ms = forever $ do 
-        logCycle ms "memstate" "sweeper" 
         threadDelay (fromIntegral $ _sweep ms) 
         ct <- getMicroSeconds 
         atomically $ do 

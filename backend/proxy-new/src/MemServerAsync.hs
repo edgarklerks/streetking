@@ -1,55 +1,45 @@
 {-# LANGUAGE DeriveDataTypeable, GeneralizedNewtypeDeriving, RankNTypes,StandaloneDeriving, MultiParamTypeClasses, TypeSynonymInstances, ViewPatterns, LiberalTypeSynonyms, FunctionalDependencies, FlexibleContexts, FlexibleInstances, ExistentialQuantification, RankNTypes #-}
 module MemServerAsync where 
 
-import Data.MemTimeState 
-import System.ZMQ3 hiding (version, context)
-import qualified System.ZMQ3 as Z 
-
-import Control.Monad
-import Control.Applicative
-import qualified Data.HashMap.Strict as H 
-import qualified Data.Serialize as S 
-import Data.Word 
-
-import Control.Monad.CC 
-import Control.Monad.Reader 
-import Control.Monad.Trans 
-
+import           Control.Applicative
+import           Control.Arrow 
+import           Control.Concurrent 
+import           Control.Concurrent.STM 
+import           Control.Monad
+import           Control.Monad.CC 
+import           Control.Monad.Error 
+import           Control.Monad.Reader 
+import           Control.Monad.Trans 
+import           Data.DVars
+import           Data.IORef 
+import           Data.List ((\\)) 
+import           Data.Maybe 
+import           Data.MemTimeState 
+import           Data.Typeable 
+import           Data.Word 
+import           GHC.Exception (SomeException)
+import           Proto 
+import           System.ZMQ3 hiding (version, context)
+import           Unsafe.Coerce 
 import qualified Control.Monad.CatchIO as CIO 
-
-import Control.Concurrent 
-import Control.Concurrent.STM 
-import Control.Arrow 
-
 import qualified Data.ByteString as B 
 import qualified Data.ByteString.Char8 as C
-
-import Data.List ((\\)) 
-import Data.DVars
-
-import Data.Typeable 
-import GHC.Exception (SomeException(..))
-import Proto 
-import Data.Maybe 
-import Unsafe.Coerce 
-import Control.Monad.Error 
-import Data.IORef 
-import qualified Data.ExternalLog as E
+import qualified Data.HashMap.Strict as H 
+import qualified Data.Serialize as S 
 
 data ProtoConfig = PC {
-        version :: Int,
+        answers :: TVar (H.HashMap NodeAddr Answer),
+        context :: Context,
+        inDebug :: Bool, 
+        incoming :: Incoming,
+        memstate :: QueryChan, 
+        outgoing :: TVar (H.HashMap NodeAddr Outgoing),
+        outgoingchannel :: OutgoingChannel,
         self :: NodeAddr,
         selfPull :: NodeAddr, 
-        incoming :: Incoming,
-        outgoing :: TVar (H.HashMap NodeAddr Outgoing),
-        memstate :: QueryChan, 
-        context :: Context,
         updates :: Update, 
-        answers :: TVar (H.HashMap NodeAddr Answer),
-        outgoingchannel :: OutgoingChannel,
-        cycler :: E.Cycle,
+        version :: Int
 --         listeners :: TVar (H.HashMap B.ByteString NodeAddr)
-        inDebug :: Bool 
     }
 
 type OutgoingChannel = TQueue Proto
@@ -58,15 +48,11 @@ type Answer = Socket Push
 type Update = Socket Pull 
 type Incoming = Socket Rep
 
-logCycleProto :: String -> String -> ProtoMonad p ()
-logCycleProto n m = asks cycler >>= \x -> liftIO (E.reportCycle x n m)
-
 -- | Handles outgoing requests to other nodes 
 outgoingManager :: ProtoMonad p ()
 outgoingManager = void  $ forkProto $ do 
                 sl <- asks selfPull 
                 forever $ do 
-                    logCycleProto "p2p" "outgoingManager"
                     ps <- takesDVar outgoingchannel
                     -- prevent circular packets 
                     unless (sl `inRoute` ps) $ toNodes (addRoute sl ps)
@@ -76,24 +62,18 @@ handleRequest :: (forall p. ProtoMonad p ())
 handleRequest = do 
             inc <- asks incoming 
             forever $ do 
-                logCycleProto "p2p" "handleRequest"
                 x <- receiveProto inc
-                logCycleProto "p2p" "handleRequest-proto"
-                catchProtoAll (casePayload (\x -> sendProto inc (result $ Empty)) (handleQuery inc) (handleCommand inc) x) $ \(SomeException e) -> specifiedFailure $ "handleRequest " ++ (show e)
+                casePayload (\x -> sendProto inc (result $ Empty))  (handleQuery inc) (handleCommand inc) x 
 
 handleUpdates :: ProtoMonad p ()
 handleUpdates = do 
         upd <- asks updates 
-        forever $ 
-            logCycleProto "p2p" "handleUpdates" >>
-            receiveProto upd >>= handleResult
+        forever $ receiveProto upd >>= handleResult
 
 handleCommand :: Sender a => Socket a -> Proto -> ProtoMonad p ()
 handleCommand s (fromJust . getCommand -> p) = do 
-            logCycleProto "p2p" "handleCommand"
             case p of 
-               Sync -> do 
-                          H.keys <$> readsDVar outgoing  >>= (sendProto s . nodeList) 
+               Sync -> do H.keys <$> readsDVar outgoing  >>= sendProto s . nodeList 
                NodeList xs -> forM_ xs connectToNode *> sendProto s (result Empty)
                StartSync -> sendUpstream sync *> sendProto s (result Empty) 
                DumpInfo -> do 
@@ -110,7 +90,6 @@ debug p = do
 connectToNode :: NodeAddr -> ProtoMonad p ()
 connectToNode ad = do 
             ps <- readsDVar outgoing 
-            logCycleProto "p2p" "connectToNode"
             unless (H.member ad ps) $ do 
                         s <- newConnectedSocket Req ad 
                         modifysDVar outgoing (H.insert ad s)
@@ -158,13 +137,11 @@ sendAnswer :: NodeAddr -> Proto -> ProtoMonad p ()
 sendAnswer a pr = do 
             ps <- readsDVar answers 
             case H.lookup a ps of 
-                Just s -> forkTimeout 100000 $ catchProtoAll (sendProto s pr) 
-                                             $ \e -> specifiedFailure $ "sendAnswer " ++ (show e)
+                Just s -> forkTimeout 100000 $ sendProto s pr 
                 Nothing -> do 
                     s <- newConnectedSocket Push a 
                     modifysDVar answers (H.insert a s)
-                    forkTimeout 100000 $ catchProtoAll (sendProto s pr) 
-                                       $ \e -> specifiedFailure $ "sendAnswer " ++ show e
+                    forkTimeout 100000 $ sendProto s pr 
 
 newConnectedSocket :: SocketType a => a -> NodeAddr -> ProtoMonad p (Socket a)
 newConnectedSocket a addr = do 
@@ -253,14 +230,6 @@ catchProtoError m f = do
                             Right a -> return a
 
 
-catchProtoAll :: (forall p. ProtoMonad p a) -> (SomeException -> (forall p. ProtoMonad p a)) -> ProtoMonad p a
-catchProtoAll m f = do 
-                    g <- ask
-                    x <- liftIO $ CIO.catch (runProtoMonad m g) (\e -> runProtoMonad (f e) g)
-                    case x of 
-                        Left e -> f (SomeException e)
-                        Right a -> return a
-
 newtype ProtoMonad p a = PM {
                 unPM :: CCT p (ReaderT ProtoConfig (ErrorT ProtoException IO)) a 
             } deriving (Functor, Applicative, Monad, MonadDelimitedCont (Prompt p) (SubCont p (ReaderT ProtoConfig (ErrorT ProtoException IO))), MonadReader ProtoConfig, MonadIO) 
@@ -284,13 +253,13 @@ forkTimeout n m = do
 forkProto ::  (forall p. ProtoMonad p ()) -> ProtoMonad p ThreadId 
 forkProto m = (liftIO . forkIO . void . runProtoMonad m) =<< ask 
 
-newProtoConfig :: NodeAddr -> NodeAddr -> FilePath -> E.Cycle -> IO ProtoConfig 
-newProtoConfig addrs addr fp ls = do 
-                ctx <- Z.context 
+newProtoConfig :: NodeAddr -> NodeAddr -> FilePath -> IO ProtoConfig 
+newProtoConfig addrs addr fp = do 
+                ctx <- System.ZMQ3.init 1
                 is <- socket ctx Rep 
                 bind is addrs
                 ps <- newDVar H.empty 
-                l <- newMemState ls (60 * 1000 * 1000 * 30) (6000 * 1000) fp  
+                l <- newMemState (60 * 1000 * 1000 * 30) (6000 * 1000) fp  
                 s <- newEmptyDVar  
                 ans <- newDVar H.empty 
                 pl <- socket ctx Pull 
@@ -308,8 +277,7 @@ newProtoConfig addrs addr fp ls = do
                             updates = pl,
                             answers = ans,
                             outgoingchannel = outc,
-                            inDebug = True,
-                            cycler = ls 
+                            inDebug = True 
                         }
 
 
@@ -317,13 +285,13 @@ topError :: (forall p. ProtoMonad p a) -> ProtoMonad p a
 topError m = catchProtoError m throwError
 
 
-startNode :: E.Cycle -> NodeAddr -> NodeAddr -> FilePath  -> IO ProtoConfig  
-startNode cl f g fp = let step = do 
+startNode :: NodeAddr -> NodeAddr -> FilePath  -> IO ProtoConfig  
+startNode f g fp = let step = do 
                             forkProto handleRequest 
                             outgoingManager 
                             handleUpdates
                     in do 
-                        c <- newProtoConfig f g fp cl
+                        c <- newProtoConfig f g fp
                         forkIO $ runProtoMonad step c *> pure ()
                         return c
 
@@ -376,7 +344,7 @@ waitOnResult l m = runCCT $ reset $ \p -> do
                                         
 
 clientCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
-clientCommand n1 n2 p = withContext $ \c -> 
+clientCommand n1 n2 p = withContext  $ \c -> 
          withSocket c Req $ \r -> 
          withSocket c Pull $ \d -> 
             do 
@@ -387,7 +355,7 @@ clientCommand n1 n2 p = withContext $ \c ->
                 print x 
 
 silentCommand :: NodeAddr -> NodeAddr -> Proto -> IO ()
-silentCommand n1 n2 p = withContext $ \c -> 
+silentCommand n1 n2 p = withContext  $ \c -> 
          withSocket c Req $ \r -> 
          withSocket c Pull $ \d -> 
             do 
