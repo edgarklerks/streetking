@@ -196,6 +196,15 @@ deriveParameters b = CarDerivedParameters {
                 C.nos = (car_nos b) * (car_nos_m b)
             }
 
+zeroParameters :: CarDerivedParameters
+zeroParameters = CarDerivedParameters {
+        car_acceleration = 0,
+        car_top_speed = 0,
+        car_cornering = 0,
+        car_stopping = 0,
+        car_nitrous = 0
+}
+
 type CarPartMap = HM.HashMap Integer PartData 
 
 garagePartsToMap :: [GP.GaragePart] -> CarPartMap
@@ -264,23 +273,15 @@ previewWithPart cig gp = head <$> previewWithPartList cig [gp]
 
 -- TODO: previewWithoutPart -> same stuff for removing attached parts
 
+-- TODO: wtf -- reload the car from database when we already have a car? this file is an unspeakable mess and needs to be cleaned up.
+
 previewWithPartList :: CIG.CarInGarage -> [GP.GaragePart] -> SqlTransaction Connection [PreviewPart]
 previewWithPartList cig gps = do
-
-        liftIO $ print "--- car in garage"
-        liftIO $ print $ show cig
-
         m <- carPartsToMap <$> search ["car_instance_id" |== toSql (CIG.id cig)] [] 1000 0 :: SqlTransaction Connection CarPartMap
-
---        liftIO $ print "--- car part parameter map"
---        liftIO $ print $ show m
-
-        let bs = map (\p -> baseParameters $ insertGaragePart p m) gps
-
---        liftIO $ print "--- replaced part parameter maps"
---        liftIO $ print $ show bs
-
-        let ds = map deriveParameters bs 
+        let ds = map (\p -> case GP.wear p > 9999 of
+                        True -> zeroParameters
+                        False -> deriveParameters $ baseParameters $ insertGaragePart p m
+                    ) gps
         return $ zipWith (\d p -> PreviewPart { part = p, params = d } ) ds gps
 
 -- doSql $ testPreview 442 ["part_type_id" |== SqlInteger 19]
