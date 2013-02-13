@@ -34,7 +34,7 @@ Executable game-new
     snap-core   == 0.9.*,
     snap-server == 0.9.*,
     snap-loader-static == 0.9.*,
-    text >= 0.11 && < 0.12,
+    text,
     time >= 1.1 && < 1.5,
     xmlhtml >= 0.1,
     cereal,

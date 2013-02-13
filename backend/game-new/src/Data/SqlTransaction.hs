@@ -214,9 +214,10 @@ atomical trans = do
                 liftIO (H.begin c)
                 return a
 
+forkSqlTransaction :: SqlTransaction Connection () -> SqlTransaction Connection ThreadId 
 forkSqlTransaction m = do 
-                c <- ask
-                l <- getUser 
+                c <- ask -- current database connection
+                l <- getUser -- user environment 
                 liftIO $ forkIO $ do 
                     (unsafeRunSqlTransaction m) (\_ a -> return (Right a)) (c,l)
                     return ()
