@@ -64,7 +64,7 @@ initDHTConfig fp ls = makeSnaplet "DistributedHashNodeSnaplet" "distributed hash
 
         let (Just (StringC svn)) = lookupConfig "DHT" xs >>= lookupVar "dump"
         
-        s <- liftIO $ startNode (extract ls) ctr upd svn 
+        s <- liftIO $ startNode ctr upd svn 
         p <- liftIO $ newMVar () 
         
         ctx <- liftIO $ Z.init 1  

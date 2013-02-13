@@ -49,7 +49,8 @@
 	</div>
 	<div class="clearfix"></div>
 	<div class="car-element-buttons-container">
-		[:when (requestParams.action == "Market/prototype/")]{<a href="#Car/buy?id=[:id]" class="button car-button" module="MARKETPLACE_NEWCAR_BUY">buy</a>}
+		<!--[:when (requestParams.action == "Market/prototype/")]{<a href="#Car/buy?id=[:id]" class="button car-button" module="MARKETPLACE_NEWCAR_BUY">buy</a>}-->
+		<a href="#Car/buy?id=[:id]" class="button car-button" module="MARKETPLACE_NEWCAR_BUY">buy</a>
 	</div>
 	<div class="clearfix"></div>
 </div>
