@@ -47,7 +47,7 @@ import qualified Model.CarInstanceParts as CIP
 
 import qualified Model.MarketPlaceCar as MPC
 
-import Data.CarReady
+import qualified Data.CarReady as CR
 import Debug.Trace
 import qualified Data.Car as C
 
@@ -129,8 +129,8 @@ searchCarInGarage :: Constraints -> Orders -> Integer -> Integer -> SqlTransacti
 searchCarInGarage cs os l o = do
         xs <- search cs os l o :: SqlTransaction Connection [CIG.CarInGarage]
         forM xs $ \x -> do
-                r <- (carReady . fromJust . CIG.id) x
-                case ready r of
+                r <- CR.ready <$> (CR.carReady . fromJust . CIG.id) x
+                case r of
                         True -> return $ withDerivedParameters x
                         False -> return $ withZeroParameters x
 
@@ -221,6 +221,9 @@ garagePartParams p = addParam i w (fromdbi <$> GP.parameter1 p, GP.parameter1_na
                                     i = fromdbi $ GP.improvement p
                                     w = fromdbi $ GP.wear p
 
+carToMap :: HM.HashMap Integer CIP.CarInstanceParts -> CarPartMap
+carToMap = HM.map (\p -> (CIP.weight p, carPartParams p) ) 
+
 carPartsToMap :: [CIP.CarInstanceParts] -> CarPartMap
 carPartsToMap ps = foldr insertCarPart HM.empty ps
 
@@ -272,16 +275,25 @@ previewWithPart :: CIG.CarInGarage -> GP.GaragePart -> SqlTransaction Connection
 previewWithPart cig gp = head <$> previewWithPartList cig [gp]
 
 -- TODO: previewWithoutPart -> same stuff for removing attached parts
+-- TODO: add part but still missing vital parts
 
--- TODO: wtf -- reload the car from database when we already have a car? this file is an unspeakable mess and needs to be cleaned up.
+-- TODO: do something about the horrible mix of types used here. 
 
 previewWithPartList :: CIG.CarInGarage -> [GP.GaragePart] -> SqlTransaction Connection [PreviewPart]
 previewWithPartList cig gps = do
-        m <- carPartsToMap <$> search ["car_instance_id" |== toSql (CIG.id cig)] [] 1000 0 :: SqlTransaction Connection CarPartMap
-        let ds = map (\p -> case GP.wear p > 9999 of
-                        True -> zeroParameters
-                        False -> deriveParameters $ baseParameters $ insertGaragePart p m
-                    ) gps
+        -- fetch CIP.CarInstanceParts for car 
+        ps <- search ["car_instance_id" |== toSql (CIG.id cig)] [] 1000 0 :: SqlTransaction Connection [CIP.CarInstanceParts]
+        -- construct map (part type id, part)
+        let m :: CR.Car = foldr (\p ms -> HM.insert (CIP.part_type_id p) p ms) HM.empty ps
+        -- transform part list for each suggested garage part: either put or replace, as appropriate. A CIP.CarInstancePart must be constructed from the GP.GaragePart. Fugly.
+        ds <- forM gps $ \gp -> let
+                    m' = HM.insert (GP.part_type_id gp) (def {CIP.wear = GP.wear gp}) m
+                in do
+                    r <- CR.ready <$> CR.carReadyState m'
+                    return $ case r of
+                        True -> deriveParameters $ baseParameters $ carToMap m'
+                        False -> zeroParameters
+        -- construct return type
         return $ zipWith (\d p -> PreviewPart { part = p, params = d } ) ds gps
 
 -- doSql $ testPreview 442 ["part_type_id" |== SqlInteger 19]
@@ -294,7 +306,7 @@ testPreview cid q = do
 
 
 
-derive :: R.RaceM a -> Car -> a
+derive :: R.RaceM a -> C.Car -> a
 derive m c = case R.runRaceM m g rc of
             Left err -> undefined -- derivation cannot return error
             Right r -> r
