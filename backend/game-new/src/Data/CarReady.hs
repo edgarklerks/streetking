@@ -1,8 +1,11 @@
 {-# LANGUAGE TemplateHaskell, OverloadedStrings  #-}
 
 module Data.CarReady (
+        Car,
         CarReadyState (..),
-        carReady
+        carReadyState,
+        carReady,
+        carFromParts
     ) where
 
 import Model.TH
@@ -32,7 +35,7 @@ type Types = [Type]
 type Part = CIP.CarInstanceParts
 type Parts = [Part]
 
-type Car = HM.HashMap Integer CIP.CarInstanceParts
+type Car = HM.HashMap Integer Part 
 
 $(genMapableRecord "CarReadyState" [
         ("ready", ''Bool),
