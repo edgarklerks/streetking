@@ -287,7 +287,20 @@ previewWithPartList cig gps = do
         let m :: CR.Car = foldr (\p ms -> HM.insert (CIP.part_type_id p) p ms) HM.empty ps
         -- transform part list for each suggested garage part: either put or replace, as appropriate. A CIP.CarInstancePart must be constructed from the GP.GaragePart. Fugly.
         ds <- forM gps $ \gp -> let
-                    m' = HM.insert (GP.part_type_id gp) (def {CIP.wear = GP.wear gp}) m
+                    m' = HM.insert (GP.part_type_id gp) (def {
+                            CIP.wear = GP.wear gp,
+                            CIP.improvement = GP.improvement gp,
+                            CIP.weight = GP.weight gp,
+                            CIP.parameter1 = GP.parameter1 gp,
+                            CIP.parameter2 = GP.parameter2 gp,
+                            CIP.parameter3 = GP.parameter3 gp,
+                            CIP.parameter1_name = GP.parameter1_name gp,
+                            CIP.parameter2_name = GP.parameter2_name gp,
+                            CIP.parameter3_name = GP.parameter3_name gp,
+                            CIP.parameter1_is_modifier = GP.parameter1_is_modifier gp,
+                            CIP.parameter2_is_modifier = GP.parameter2_is_modifier gp,
+                            CIP.parameter3_is_modifier = GP.parameter3_is_modifier gp
+                        }) m
                 in do
                     r <- CR.ready <$> CR.carReadyState m'
                     return $ case r of
