@@ -8,6 +8,7 @@
 			<div class="clearfix"></div>
 		</div>
 		<div class="track-info-track-image-box">
+			<div class="cars-small"></div>
 			<div class="track-info-track-image">
 				<img src='[:eval IMAGESERVER("[\"track\",\""+track_data.track_id+"\",\"track\"]")]' alt="" border="0" width="330" height="330" />
 			</div>
