@@ -24,6 +24,7 @@ Executable proxy-new
     bytestring >= 0.9.1,
     lens, 
     conduit,
+    http-conduit,
     heist >= 0.8,
     MonadCatchIO-transformers >= 0.2.1 && < 0.4,
     mtl >= 2 && < 3,
