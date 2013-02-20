@@ -12,7 +12,7 @@ Cabal-version:       >=1.2
 
 Flag development
   Description: Whether to build the server in development (interpreted) mode
-  Default: True 
+  Default: False 
 
 Executable admin
   hs-source-dirs: src
@@ -27,12 +27,12 @@ Executable admin
     data-lens-template,
     heist >= 0.8,
     MonadCatchIO-transformers >= 0.2.1 && < 0.4,
-    mtl >= 2 && < 3,
-    snap == 0.10.*,
+    mtl > 2,
+    snap == 0.11.*,
     snap-core   == 0.9.*,
     snap-server == 0.9.*,
     snap-loader-static == 0.9.*,
-    text >= 0.11 && < 0.12,
+    text,
     time >= 1.1 && < 1.5,
     xmlhtml >= 0.1,
     HDBC,
@@ -54,13 +54,11 @@ Executable admin
     template-haskell,
     haskell-src,
     aeson,
-    digestive-functors-heist,
     blaze-markup,
     blaze-html,
-    digestive-functors-snap,
-    digestive-functors,
     attoparsec,
     QuickCheck,
+    smallcheck,
     vector,
     data-object,
     base64-bytestring,

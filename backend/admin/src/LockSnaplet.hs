@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, PackageImports #-}
 module LockSnaplet (
         Lock,
         getLock,
@@ -12,8 +12,8 @@ import           Control.Applicative
 import           Control.Concurrent
 import           Control.Concurrent.STM 
 import           Control.Monad
-import           Control.Monad.State
-import           Control.Monad.Trans
+import "mtl"      Control.Monad.State
+import "mtl"          Control.Monad.Trans
 import           Data.Hashable  
 import           Control.Lens 
 import           Data.Monoid 

@@ -66,6 +66,7 @@ import qualified Model.Rule as RULE
 import qualified Model.Action as ACTION
 import qualified Model.RuleReward as RW  
 import qualified Model.Reward as REW 
+import qualified Model.MenuModel as Menu
 
 import           Model.General 
 import           Data.Monoid
@@ -196,6 +197,8 @@ routes = fmap (second enroute) $ [
          , ("/rule/put", putModel (def :: RULE.Rule))
          , ("/reward_log/get", getModel (def :: RL.RewardLog))
          , ("/Game/template", loadTemplate)
+         , ("/game/menu/get", getModel (def :: Menu.MenuModel))
+         , ("/game/menu/put", putModel(def :: Menu.MenuModel))
          , ("",          serveDirectory "static")
          ]
 
