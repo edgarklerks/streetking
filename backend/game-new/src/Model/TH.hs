@@ -17,10 +17,10 @@ import qualified Data.HashMap.Strict as H
 import qualified Data.ByteString as B
 import Model.Ansi 
 import Data.SqlTransaction as S
-import Model.GetViews  
+-- import Model.GetViews  
 import Control.Monad.Trans
 
-
+{--
 getUpdateStatements :: String -> Q [(String, [String])]
 getUpdateStatements nm = runIO $ do 
                     c <- dbconn 
@@ -50,7 +50,7 @@ getDependencies nm = do
                 case lookup nm dep of 
                         Just xs -> return xs 
                         Nothing -> return [] 
-
+--}
 getAnyColumn :: String -> Q String 
 getAnyColumn nm = runIO $ do 
                     c <- dbconn 
@@ -147,8 +147,9 @@ genDependenciesUpdate xs = intercalate ";\n" $ worker xs
 
 genDatabase :: String -> String -> String -> [(String, Name)] ->  Q [Dec]
 genDatabase n tbl td xs = do
-                ps <- getDependencyPairs tbl
-                runIO $ putStrLn (genDependenciesUpdate ps)
+--                ps <- getDependencyPairs tbl
+ --               runIO $ putStrLn (genDependenciesUpdate ps)
+ --
                 sequence [instanceD (cxt []) (appT (appT (conT (mkName "Database")) (conT (mkName "Connection"))) (conT (mkName n))) (loadDb tbl td ++ saveDb tbl ++ searchDB tbl ++ deleteDb tbl ++ fieldsDb xs ++ tableDb tbl)]
 
 genInstance :: String -> [(String, Name)] -> Q [Dec] 
@@ -229,7 +230,8 @@ upsertWithTables xs t m = do
 -- | save i = mco $ upsertWithTables undefined tablename (toHashMap i)
 saveDb :: String -> [DecQ] 
 saveDb n = return $ do 
-            xs <- getUpdateStatements n 
+--            xs <- getUpdateStatements n 
+            let xs = [] :: [(String,[String])]
             funD (mkName "save") [clausem xs]
     where clausem xs = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") (decs xs)) []
           decs xs = appE (appE (appE (varE $ mkName "upsertWithTables") [|xs|]) (stringE n)) (appE (varE $ mkName "toHashMap") (varE $ mkName "i"))
@@ -239,7 +241,8 @@ saveDb n = return $ do
 -- save i = mco (upsertWithTables n (toHashMap i)) 
 saveDb' :: String -> [DecQ]
 saveDb' n = return $ do 
-            xs <- getUpdateStatements n  
+  --          xs <- getUpdateStatements n  
+            let xs = [] :: [(String,[String])]
             funD (mkName "save") [clausem xs]
     where clausem xs = clause [(varP (mkName "i"))] (normalB $ appE (varE $ mkName "mco") decs) []
           decs = appE (appE (varE $ mkName "upsert") (stringE n)) (appE (varE $ mkName "toHashMap") (varE $ mkName "i"))

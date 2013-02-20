@@ -69,8 +69,8 @@ Executable proxy-new
     aeson,
     lens-family-core,
     QuickCheck,
---    http-conduit
-    http-enumerator
+    http-conduit
+--    http-enumerator
 
   if flag(development)
     build-depends:
