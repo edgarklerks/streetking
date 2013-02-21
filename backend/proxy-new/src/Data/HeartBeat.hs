@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTs, ScopedTypeVariables #-}
 module Data.HeartBeat where 
 
 import System.ZMQ3
@@ -11,6 +11,8 @@ import Control.Concurrent.STM
 import Control.Monad.Trans
 import qualified Data.ByteString as B
 import Data.ExternalLog (Cycle, reportCycle) 
+import qualified Control.Monad.CatchIO as CIO 
+import GHC.Exception
 
 {- | 
 -
@@ -84,11 +86,13 @@ checkin org cp callback = withContext $ \c -> do
 
 -- | handle authorizations  by binding to the address  
 hotelManager :: Cycle -> Address -> ServerC -> IO ()
-hotelManager cl lp callback = withContext $ \c -> 
+hotelManager a b c = CIO.catch  (hotelManager' a b c) (\(a :: SomeException) -> print "exception in heartbeat" *> print a)
+hotelManager' :: Cycle -> Address -> ServerC -> IO ()
+hotelManager' cl lp callback = withContext $ \c -> 
                            withSocket c Rep $ \s -> do 
                                         bind s lp 
                                         forever $ do 
-                                            reportCycle cl "heartbeat" "hotelManager"
+--                                            reportCycle cl "heartbeat" "hotelManager"
                                             a <- receive s  
                                             case (decode a) of 
                                                 Left msh -> send s [] (encode $ (Left msh :: Either String ()))

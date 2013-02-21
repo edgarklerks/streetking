@@ -90,7 +90,7 @@ app = makeSnaplet "app" "An snaplet example application." Nothing $ do
     p <- nestSnaplet "" sql $ initSqlTransactionSnaplet "resources/server.ini"  
     ls <- nestSnaplet "" logcycle $ initLogSnaplet "resources/server.ini"
     prx <- nestSnaplet "" proxy $ initProxy (extract ls) "resources/server.ini"
-    dht <- nestSnaplet "" node $ initDHTConfig "resources/server.ini" ls 
+    dht <- nestSnaplet "" node $ initDHTConfig "resources/server.ini"  
 
     rnd <- nestSnaplet "" rnd $ initRandomSnaplet l64  
     ps <- nestSnaplet "" roles $ initRoleSnaplet rnd dht ls 

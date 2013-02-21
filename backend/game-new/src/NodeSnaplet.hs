@@ -1,15 +1,16 @@
-{-# LANGUAGE TemplateHaskell, OverloadedStrings, FlexibleContexts, NoMonomorphismRestriction #-}
+{-# LANGUAGE TemplateHaskell, OverloadedStrings, FlexibleContexts, NoMonomorphismRestriction, ScopedTypeVariables #-}
 module NodeSnaplet where 
 
 import           Config.ConfigFileParser 
 import           Control.Applicative
 import           Control.Concurrent
+import           Control.Concurrent.STM
 import           Control.Monad 
 import           Control.Monad.State
 import           Control.Monad.Trans
 import           Control.Lens hiding (Context)
 import           Data.MemTimeState
-import           MemServerAsync
+import           MemServerAsyncMonadic
 import           Proto 
 import           Snap.Core 
 import           Snap.Snaplet
@@ -18,6 +19,9 @@ import           System.ZMQ3 as Z
 import qualified Data.Binary as B 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L 
+import qualified Control.Monad.CatchIO as CIO
+import           GHC.Exception
+import           System.ZMQ3.Monadic as M 
 
 data DHTConfig = DHC {
         _query :: MVar (),
@@ -29,6 +33,16 @@ data DHTConfig = DHC {
     }
 
 
+sendQuery' :: (MonadState DHTConfig m, MonadIO m) => Proto -> m Proto 
+sendQuery' r = do
+                 s <- gets _query 
+                 a <- gets _addr
+                 p <- gets _pull
+                 rq <- gets _req 
+                 pc <- gets _pc
+                 liftIO $ withMVar s $ \_ -> do  
+                        res <- runZMQ $ queryNode pc p rq a r 
+                        return res 
 
 sendQuery :: (MonadState DHTConfig m, MonadIO m) => Proto -> m Proto 
 sendQuery r = do
@@ -37,9 +51,18 @@ sendQuery r = do
                  p <- gets _pull
                  rq <- gets _req 
                  pc <- gets _pc
-                 liftIO $ withMVar s $ \_ -> do  
-                    res <- queryNode pc p rq a r 
-                    return res 
+                 liftIO $ withLock s  
+                    (do  
+                        res <- runZMQ $ queryNode pc p rq a r 
+                        return res 
+                    ) (do 
+                        return (Error "failed sending query in NodeSnaplet")
+                    )
+
+withLock :: (Applicative m, CIO.MonadCatchIO m, MonadIO m) => MVar () -> m a -> m a -> m a
+withLock m s r = do 
+            liftIO $ takeMVar m
+            CIO.catch (s <* liftIO ( putMVar m ())) (\(a :: SomeException) -> liftIO (print "problem NodeSnaplet" *> print a *> putMVar m ()) *> r) 
 
 makeLenses ''DHTConfig
 
@@ -53,10 +76,10 @@ initDHTConfig fp = makeSnaplet "DistributedHashNodeSnaplet" "distributed hashnod
 
         let (Just (StringC svn)) = lookupConfig "DHT" xs >>= lookupVar "dump"
         
-        s <- liftIO $ startNode ctr upd svn 
+        s <- liftIO $ runZMQ $ startNode ctr upd svn 
         p <- liftIO $ newMVar () 
         
-        ctx <- liftIO $ Z.init 1  
+        ctx <- liftIO $ Z.context 
         pu <- liftIO $ Z.socket ctx Pull
         liftIO $ Z.bind pu addr  
         
