@@ -20,11 +20,13 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 
+type MInteger = Maybe Integer
 
-
-$(genAll "TaskLog" "task_log" [             
+$(genAll "TaskLog" "task_log" [
                     ("id", ''Id),
                     ("time", ''Integer),
+                    ("activity", ''String),
+                    ("task_id", ''MInteger),
                     ("entry", ''Data)
    ])
 

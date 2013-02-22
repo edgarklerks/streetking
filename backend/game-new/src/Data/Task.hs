@@ -116,17 +116,31 @@ data Trigger =
     | Part 
     | Cron
     | Test
-        deriving (Eq, Enum, Show)
+        deriving (Eq, Enum)
+
+instance Show Trigger where
+    show Track = "Track"
+    show User = "User"
+    show Car = "Car"
+    show Part = "Part"
+    show Cron = "Cron"
+    show Test = "Test"
+    show a = "Trigger " ++ (show $ (fromEnum a))
+
+instance AS.ToJSON Trigger where toJSON a = AS.toJSON $ fromEnum a
+instance AS.FromJSON Trigger where 
+    parseJSON (AS.Number (I n)) = return $ toEnum $ fromInteger n
+    parseJSON _ = fail "parseJSON: improper type for Trigger"
+
 
 {-
  - Logging
  -}
 
-log :: Data -> SqlTransaction Connection ()
-log d = do -- void $ forkSqlTransaction $ do
+log :: String -> Maybe Integer -> Data -> SqlTransaction Connection ()
+log s mi d = void $ do -- void $ forkSqlTransaction $ do
         t <- unix_millitime
-        save $ (def :: TL.TaskLog) { TL.time = t, TL.entry = d }
-        return ()
+        save $ (def :: TL.TaskLog) { TL.time = t, TL.entry = d, TL.activity = s, TL.task_id = mi }
 
 {-
  - Handler chaining
@@ -166,13 +180,13 @@ trigger tpe sid tid = save $ (def :: TKT.TaskTrigger) { TKT.task_id = tid, TKT.t
 -- create a new track time entry for a user, possibly updating track top time as well
 trackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection () 
 trackTime t trk uid tme = void $ do
-
+        
         -- create the task: set action type, timestamp, and additional data fields (mixed types allowed)
         tid <- task TrackTime t $ mkData $ do
             set "track_id" trk
             set "account_id"  uid
             set "time" tme
-
+        
         -- create triggers for task execution: set trigger type, subject id, and task id
         -- a task can have more than one trigger, but will fire only once
         trigger Track trk tid
@@ -185,7 +199,7 @@ emitEvent uid ev tm = void $ do
                     set "account_id" uid 
                     set "time" tm 
         trigger User uid tid 
-        liftIO $ print (uid,ev,tm) 
+--        liftIO $ print (uid,ev,tm) 
 
 
 -- add or remove money from user account
@@ -294,18 +308,16 @@ run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 -- mark a selection of tasks as claimed, and return them 
 claim :: Integer -> Trigger -> Integer -> SqlTransaction Connection [TK.Task] --[(Integer, Data)]
 claim t tp sid = do
+        log "claim" Nothing $ mkData $ do
+                set "trigger" tp
+                set "subject" t
         xs <- Data.List.map (flip updateHashMap (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) sid
---        log $ mkData $ do
---                set "action" ("claim" :: String)
---                set "tasks" xs
         return xs
 
 -- unmark a task as claimed
 release :: TK.Task -> SqlTransaction Connection ()
 release s = do
-        log $ mkData $ do
-                set "action" ("release" :: String)
-                set "id" s
+        log "release" (TK.id s) emptyData
         void $ update "task" ["id" |== (toSql $ TK.id s)] [] [("claim", SqlInteger 0)]
 
 -- mark a task as deleted
@@ -335,10 +347,7 @@ init = registerHandler pred executeTask
 executeTask :: TK.Task -> SqlTransaction Connection Bool 
 executeTask t = let d = TK.data t in do
 
-            log $ mkData $ do
-                    set "action" ("executing" :: String)
-                    set "id" $ TK.id t
-                    set "task" $ t
+            log "execute" (TK.id t) emptyData
  
             case "action" .< d :: Maybe Action of
                 Just TrackTime -> do
