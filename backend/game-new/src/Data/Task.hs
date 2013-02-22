@@ -165,7 +165,7 @@ trigger tpe sid tid = save $ (def :: TKT.TaskTrigger) { TKT.task_id = tid, TKT.t
 
 -- create a new track time entry for a user, possibly updating track top time as well
 trackTime :: Integer -> Integer -> Integer -> Double -> SqlTransaction Connection () 
-trackTime t trk uid tme  = do
+trackTime t trk uid tme = void $ do
 
         -- create the task: set action type, timestamp, and additional data fields (mixed types allowed)
         tid <- task TrackTime t $ mkData $ do
@@ -178,62 +178,54 @@ trackTime t trk uid tme  = do
         trigger Track trk tid
         trigger User uid tid
 
-        -- return unit for great justice
-        return () 
-
 emitEvent :: Integer -> Event -> Integer -> SqlTransaction Connection ()
-emitEvent uid ev tm = do 
+emitEvent uid ev tm = void $ do 
         tid <- task EmitEvent tm $ mkData $ do 
                     set "event" ev
                     set "account_id" uid 
                     set "time" tm 
         trigger User uid tid 
         liftIO $ print (uid,ev,tm) 
-        return ()
 
 
 -- add or remove money from user account
 giveMoney :: Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
-giveMoney t uid amt tn tv = do
+giveMoney t uid amt tn tv = void $ do
         tid <- task GiveMoney t $ mkData $ do
             set "transaction_type_name" tn
             set "transaction_type_id" tv
             set "account_id" uid
             set "amount" amt
         trigger User uid tid
-        return () 
 
 
 -- add or remove respect from user account
 giveRespect :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
-giveRespect t uid amt  = do
+giveRespect t uid amt = void $ do
         tid <- task GiveRespect t $ mkData $ do
             set "account_id"  uid
             set "amount" amt
         trigger User uid tid
-        return ()
 
 -- create a new car instance and assign it to user garage
 giveCar :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
-giveCar t uid cid  = do
+giveCar t uid cid  = void $ do
         tid <- task GiveCar t $ mkData $ do
             set "account_id" uid
             set "car_model_id" cid
         trigger User uid tid
-        return ()
 
 -- create a new part instance and assign it to user garage
 givePart :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
-givePart t uid pid  = do
+givePart t uid pid  = void $ do
         tid <- task GivePart t $ mkData $ do
             set "account_id" uid
             set "part_model_id" pid
         trigger User uid tid
-        return ()
 
 -- remove money from one account and add it to another
 transferMoney :: Integer -> Integer -> Integer -> Integer -> String -> Integer -> SqlTransaction Connection ()
-transferMoney t suid tuid amt tn tv = do
+transferMoney t suid tuid amt tn tv = void $ do
         tid <- task TransferMoney t $ mkData $ do
             set "transaction_type_name" tn
             set "transaction_type_id" tv
@@ -242,11 +234,10 @@ transferMoney t suid tuid amt tn tv = do
             set "amount" amt
         trigger User suid tid
         trigger User tuid tid
-        return ()
 
 -- remove a car from one user's garage and add it to another's
 transferCar :: Integer -> Integer -> Integer -> Integer -> SqlTransaction Connection ()
-transferCar t suid tuid cid  = do
+transferCar t suid tuid cid  = void $ do
         tid <- task TransferCar t $ mkData $ do
             set "source_account_id" suid
             set "target_account_id" tuid
@@ -254,27 +245,24 @@ transferCar t suid tuid cid  = do
         trigger User suid tid
         trigger User tuid tid
         trigger Car cid tid
-        return ()
 
 -- cancel escrow account: return money to depositor 
 escrowCancel :: Integer -> Integer -> SqlTransaction Connection ()
-escrowCancel t eid = do
+escrowCancel t eid = void $ do
         me <- load eid
         uid <- case me of
             Nothing -> rollback $ "Task: escrowCancel: escrow account not found for id " ++ (show eid)
             Just e -> return $ Escrow.account_id e
         tid <- task EscrowCancel t $ mkData $ set "escrow_id" eid
         trigger User uid tid
-        return ()
 
 -- release escrow account: transfer money to target account 
 escrowRelease :: Integer -> Integer -> Integer -> SqlTransaction Connection ()
-escrowRelease t eid uid = do
+escrowRelease t eid uid = void $ do
         tid <- task EscrowRelease t $ mkData $ do 
             set "escrow_id" eid
             set "account_id" uid
         trigger User uid tid
-        return ()
 
 
         
