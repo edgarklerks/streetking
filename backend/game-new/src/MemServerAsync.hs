@@ -339,8 +339,16 @@ client' p r n req = do
                                  -- doesn't matter
                         t <- receiveProto p 
                         s =$ t 
-                n <- waitOnResult l s 
+                n <- tryTakeMVarT 1000 s 
                 return n 
+
+tryTakeMVarT  ::  Int -> MVar Proto -> IO Proto 
+tryTakeMVarT 0 _ = return (result Empty)
+tryTakeMVarT n m = do 
+            c <- tryTakeMVar m 
+            case c of 
+                Nothing -> threadDelay 1000 *> tryTakeMVarT (n - 1) m
+                Just a -> return a
 
 
 -- waitOnResult :: ThreadId -> MVar Proto -> IO Proto 
