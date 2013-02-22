@@ -2,19 +2,23 @@
 	{{? "SubMenu" in sk.nodes[i].content }}
 		<li class="li-main-menu-item">
 			<div module="{{=sk.nodes[i].content.SubMenu[1] }}" class="menu_item main-menu-item menu-{{= sk.nodes[i].content.SubMenu[0] }} {{= sk.nodes[i].content.SubMenu[2] }}">{{= sk.nodes[i].content.SubMenu[0] }}</div>
-
 	{{?? "MenuItem" in sk.nodes[i].content }}
 		<li class="li-main-menu-item">
 			<div module="{{=sk.nodes[i].content.MenuItem[1] }}" class="menu_item main-menu-item menu-{{= sk.nodes[i].content.MenuItem[0] }} {{= sk.nodes[i].content.MenuItem[2] }}">{{= sk.nodes[i].content.MenuItem[0] }}</div>
-	{{?? sk.nodes[i].nodes.length > 0 }}
+	{{?}}
+	{{? sk.nodes[i].nodes.length > 0 }}
 		<div class="sub-menu-container">
 			<ul class="sub-menu">
+				{{ for(var j = 0; j < sk.nodes[i].nodes.length; j++) { }}
+					<li class="li-sub-menu-item" module="{{= sk.nodes[i].nodes[j].content.MenuItem[1] }}">
+						<div class="menu_item {{= sk.nodes[i].nodes[j].content.MenuItem[2] }}">{{= sk.nodes[i].nodes[j].content.MenuItem[0] }}</div>  
+					</li>
+				{{ } }}
 			</ul>
-		</div>			
+		</div>	
 	{{?}}
 {{ } }}
 </li>
-
 
 
 

@@ -101,12 +101,8 @@ connectToNode ad = do
                         s <- newConnectedSocket Req ad 
                         modifysDVar outgoing (H.insert ad s)
 
-
-
-
 sendUpstream :: Proto -> ProtoMonad p ()
 sendUpstream  = putsDVar outgoingchannel
-
 
 handleQuery :: Sender a => Socket a -> Proto -> ProtoMonad p () 
 handleQuery s p = do 
@@ -125,7 +121,6 @@ handleQuery s p = do
                                 Nothing -> sendAnswer rt (result b)
                                 Just p -> sendAnswer rt (addRoutes p $ result b)
                     sendProto s (result Empty)
-
                x -> runMemQuery x >>= sendProto s . result 
 
 runMemQuery :: Query -> ProtoMonad r Result 
@@ -341,10 +336,19 @@ client' p r n req = do
                 x <- receiveProtoIO "client" r 
                 s <- newEmptyMVar 
                 l <- forkIO $ do 
+                                 -- doesn't matter
                         t <- receiveProto p 
                         s =$ t 
-                n <- waitOnResult l s 
+                n <- tryTakeMVarT 1000 s 
                 return n 
+
+tryTakeMVarT  ::  Int -> MVar Proto -> IO Proto 
+tryTakeMVarT 0 _ = return (result Empty)
+tryTakeMVarT n m = do 
+            c <- tryTakeMVar m 
+            case c of 
+                Nothing -> threadDelay 1000 *> tryTakeMVarT (n - 1) m
+                Just a -> return a
 
 
 -- waitOnResult :: ThreadId -> MVar Proto -> IO Proto 
@@ -382,8 +386,6 @@ silentCommand n1 n2 p = withContext  $ \c ->
                 connect r n2 
                 sendProtoIO "silentCommand" r p
                 void $  receiveProtoIO "silentCommand" r
-
-
 
 
 modifysDVar :: (MonadGetter m s, MonadIO m, ModifyDVar m f) => (s -> f b) -> (b -> b) -> m ()
