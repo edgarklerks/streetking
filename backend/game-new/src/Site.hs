@@ -1653,6 +1653,7 @@ personnelUpdateBusy s id = do
 partImprove uid pi = do
                 s <- milliTime
                 let ut = max 0 $ (min (PLID.task_end pi) s) - (PLID.task_updated pi)
+                let tl = max 0 $ (PLID.task_end pi) - s
                 let sk = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
 
@@ -1664,7 +1665,7 @@ partImprove uid pi = do
                         let a = fromIntegral (sk * ut)
 -- (c_t - u_t) * a
                         let ci = round (a * pr')
-                        when (ci >=  1) $ do 
+                        when (ci >= 1 || tl <= 0) $ do 
                             personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                             void $ save (p {
                                     PI.improvement = min (10^4) $ (PI.improvement p + round (a * pr'))
@@ -1687,8 +1688,8 @@ partImprove uid pi = do
 -- partRepair :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partRepair uid pi = do 
                 s <- milliTime 
-
                 let ut = max 0 $ (min (PLID.task_end pi) s) - (PLID.task_updated pi)
+                let tl = max 0 $ (PLID.task_end pi) - s
                 let sk = PLID.skill_repair pi 
                 let sid = PLID.task_subject_id pi 
                 atomical $ do 
@@ -1698,7 +1699,7 @@ partRepair uid pi = do
                         let p = fromJust p' 
                         let a = fromIntegral (sk * ut) 
                         let ci = round (a * pr')
-                        when (ci >= 0) $ do 
+                        when (ci >= 1 || tl <= 0) $ do 
                             personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                             void $ save (p {
                                                 PI.wear = max 0 $ PI.wear p - round (a * pr')
@@ -1724,7 +1725,8 @@ partRepair uid pi = do
 carRepair uid pi = do  
             s <- milliTime 
             (pr' :: Double) <- loaddbConfig "car_repair_rate" 
-            let ut = (min s $ PLID.task_end pi) - (PLID.task_updated pi)
+            let ut = max 0 $ (min s $ PLID.task_end pi) - (PLID.task_updated pi)
+            let tl = max 0 $ (PLID.task_end pi) - s
             let sk = PLID.skill_repair pi 
             let sid = PLID.task_subject_id pi 
             atomical $ do 
@@ -1736,7 +1738,7 @@ carRepair uid pi = do
                     let p = fromJust g'
                     let a = fromIntegral (sk * ut)
                     let ci = round (a * pr')
-                    when (ci >= 0) $ do 
+                    when (ci >= 1 || tl <= 0) $ do 
                         personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                         void $ save (p {
                                                 PI.wear = max 0 $ PI.wear p - round (a * pr')
