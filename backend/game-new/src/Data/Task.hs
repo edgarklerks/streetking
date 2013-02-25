@@ -308,9 +308,9 @@ run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 -- mark a selection of tasks as claimed, and return them 
 claim :: Integer -> Trigger -> Integer -> SqlTransaction Connection [TK.Task] --[(Integer, Data)]
 claim t tp sid = do
-        log "claim" Nothing $ mkData $ do
-                set "trigger" tp
-                set "subject" t
+--        log "claim" Nothing $ mkData $ do
+--                set "trigger" $ show tp
+--                set "subject" t
         xs <- Data.List.map (flip updateHashMap (def :: TK.Task)) <$> Fun.claim_tasks t (toInteger $ fromEnum tp) sid
         return xs
 
@@ -449,19 +449,22 @@ executeTask t = let d = TK.data t in do
 
 --process :: TK.Task -> SqlTransaction Connection Bool 
 --process = runTask -- execute' (undefined :: Zero) 
-{-
- - Error handling
- -
- - TODO: store error report in database, mark task as invalid and continue
- -}
 
 -- fail processing a task
 processFail :: TK.Task -> String -> SqlTransaction Connection Bool 
-processFail s e = return True 
+processFail s e = do
+         log "processing failure" (TK.id s) $ mkData $ do
+                set "error" e
+         return True 
 
 -- fail during task run
 runFail :: Trigger -> Integer -> String -> SqlTransaction Connection ()
-runFail tp sid e =  return ()
+runFail tp sid e =  do
+         log "trigger phase failure" Nothing $ mkData $ do
+                set "trigger" $ show tp
+                set "subject_id" sid
+                set "error" e
+         return ()
 
 
 
