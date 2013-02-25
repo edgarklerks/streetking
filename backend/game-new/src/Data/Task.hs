@@ -453,14 +453,16 @@ executeTask t = let d = TK.data t in do
 -- fail processing a task
 processFail :: TK.Task -> String -> SqlTransaction Connection Bool 
 processFail s e = do
-         log "processing failure" (TK.id s) $ mkData $ do
+         log "error" (TK.id s) $ mkData $ do
+                set "phase" ("processing" :: String)
                 set "error" e
          return True 
 
 -- fail during task run
 runFail :: Trigger -> Integer -> String -> SqlTransaction Connection ()
 runFail tp sid e =  do
-         log "trigger phase failure" Nothing $ mkData $ do
+         log "error" Nothing $ mkData $ do
+                set "phase" ("triggering" :: String)
                 set "trigger" $ show tp
                 set "subject_id" sid
                 set "error" e
