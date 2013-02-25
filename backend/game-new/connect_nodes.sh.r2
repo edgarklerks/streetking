@@ -1,5 +1,6 @@
 #!/bin/sh 
 
+# richard is een sukkel
 if [ ! -f setup-nodes ]; then 
         echo "need setup-nodes from src/setup-nodes.hs";
         exit;
