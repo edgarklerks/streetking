@@ -1653,6 +1653,7 @@ personnelUpdateBusy s id = do
 partImprove uid pi = do
                 s <- milliTime
                 let ut = max 0 $ (min (PLID.task_end pi) s) - (PLID.task_updated pi)
+                let tl = max 0 $ (PLID.task_end pi) - s
                 let sk = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
 
@@ -1664,7 +1665,7 @@ partImprove uid pi = do
                         let a = fromIntegral (sk * ut)
 -- (c_t - u_t) * a
                         let ci = round (a * pr')
-                        when (ci >=  1) $ do 
+                        when (ci >= 1 || tl <= 0) $ do 
                             personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                             void $ save (p {
                                     PI.improvement = min (10^4) $ (PI.improvement p + round (a * pr'))
@@ -1687,8 +1688,8 @@ partImprove uid pi = do
 -- partRepair :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
 partRepair uid pi = do 
                 s <- milliTime 
-
                 let ut = max 0 $ (min (PLID.task_end pi) s) - (PLID.task_updated pi)
+                let tl = max 0 $ (PLID.task_end pi) - s
                 let sk = PLID.skill_repair pi 
                 let sid = PLID.task_subject_id pi 
                 atomical $ do 
@@ -1698,7 +1699,7 @@ partRepair uid pi = do
                         let p = fromJust p' 
                         let a = fromIntegral (sk * ut) 
                         let ci = round (a * pr')
-                        when (ci >= 0) $ do 
+                        when (ci >= 1 || tl <= 0) $ do 
                             personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                             void $ save (p {
                                                 PI.wear = max 0 $ PI.wear p - round (a * pr')
@@ -1724,7 +1725,8 @@ partRepair uid pi = do
 carRepair uid pi = do  
             s <- milliTime 
             (pr' :: Double) <- loaddbConfig "car_repair_rate" 
-            let ut = (min s $ PLID.task_end pi) - (PLID.task_updated pi)
+            let ut = max 0 $ (min s $ PLID.task_end pi) - (PLID.task_updated pi)
+            let tl = max 0 $ (PLID.task_end pi) - s
             let sk = PLID.skill_repair pi 
             let sid = PLID.task_subject_id pi 
             atomical $ do 
@@ -1736,7 +1738,7 @@ carRepair uid pi = do
                     let p = fromJust g'
                     let a = fromIntegral (sk * ut)
                     let ci = round (a * pr')
-                    when (ci >= 0) $ do 
+                    when (ci >= 1 || tl <= 0) $ do 
                         personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
                         void $ save (p {
                                                 PI.wear = max 0 $ PI.wear p - round (a * pr')
@@ -1835,7 +1837,7 @@ raceChallengeWith p = do
                 _ -> return 0 
         i <- runDb $ do
             userActions  uid
-            Task.run Task.User uid
+--            Task.run Task.User uid
             a  <- aget ["id" |== toSql uid] (rollback "account not found") :: SqlTransaction Connection A.Account
 
             -- check busy
@@ -1925,13 +1927,14 @@ raceChallengeAccept = do
 
 
         rid <- runDb $ do
+
             -- TODO: get / search functions for track, user, car with task triggering
             
             userActions  uid
             userActions . rp_account_id $ Chg.challenger chg
 
-            Task.run Task.User uid
-            Task.run Task.User . rp_account_id $ Chg.challenger chg
+--            Task.run Task.User uid
+--            Task.run Task.User . rp_account_id $ Chg.challenger chg
 
             -- pay race dues to escrow 
             me <- case Chg.amount chg > 0 of
@@ -1988,6 +1991,7 @@ raceChallengeAccept = do
             let winner_id = rp_account_id . fst . head $ rs
             let other_id = rp_account_id . Chg.challenger $ chg
 
+            {-
             if winner_id == uid 
                     then do             
                         Task.emitEvent uid (ChallengeRace 1 tid rid) t1 
@@ -1995,29 +1999,37 @@ raceChallengeAccept = do
                     else do 
                         Task.emitEvent other_id (ChallengeRace 1 tid rid) t1 
                         Task.emitEvent uid (ChallengeRace 2 tid rid) t1 
+            -}
 
-            forM_ rs $ \(p,r) -> do
+            foldM_ (\k (p,r) -> do
 
-                partsWear (rp_car_id p)  r
-                healthLost (rp_account_id p) r
+                    -- apply wear
+                    partsWear (rp_car_id p)  r
 
-                let isWinner = rp_account_id p == winner_id
+                    -- apply energy loss
+                    healthLost (rp_account_id p) r
+
+                    -- task: emit race event
+                    Task.emitEvent (rp_account_id p) (ChallengeRace k tid rid) $ fin r
  
-                -- task: transfer challenge objects
+                    -- task: transfer challenge objects
+                    let isWinner = rp_account_id p == winner_id
+                    case chgt of
+                        "money" -> case rp_escrow_id p of
+                                -- release money from escrow on winner finish
+                                Just e -> do
+                                    case isWinner of
+                                        True -> Task.escrowCancel t1 e
+                                        False -> Task.escrowRelease t1 e winner_id 
+                                Nothing -> return () 
+                        "car" -> case isWinner of
+                                -- transfer car ownership on winner finish
+                                True -> return ()
+                                False -> Task.transferCar t1 (rp_account_id p) winner_id $ rp_car_id p
+                        otherwise -> rollback $ "challenge type not supported: " ++ chgt
 
-                case chgt of
-                    "money" -> case rp_escrow_id p of
-                            -- release money from escrow on winner finish
-                            Just e -> do
-                                case isWinner of
-                                    True -> Task.escrowCancel t1 e
-                                    False -> Task.escrowRelease t1 e winner_id 
-                            Nothing -> return () 
-                    "car" -> case isWinner of
-                            -- transfer car ownership on winner finish
-                            True -> return ()
-                            False -> Task.transferCar t1 (rp_account_id p) winner_id $ rp_car_id p
-                    otherwise -> rollback $ "challenge type not supported: " ++ chgt
+                    return $ k + 1
+                ) 1 rs
 
             return rid
 
@@ -2026,10 +2038,8 @@ raceChallengeAccept = do
                     N.race_id = rid  
                 }
 
-
         N.sendNotification uid raceStart 
         N.sendNotification (rp_account_id . Chg.challenger $ chg) raceStart 
-
 
         writeResult rid
 
