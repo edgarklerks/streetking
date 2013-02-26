@@ -2294,12 +2294,15 @@ wrapErrors g x = when g (void $ runDb (forkSqlTransaction $ Task.run Task.Cron 0
 
 userNotification :: Application ()
 userNotification = do 
-                uid <- getUserId 
+                uid <- getUserId
+                ys <- getJson
+                let lim = maybe 100 fromSql $ HM.lookup "limit" ys
+                let ofs = maybe 0 fromSql $ HM.lookup "offset" ys
                 xs <- runDb $ search [
                                  "to" |== toSql uid 
                              .&& "read" |== toSql False 
                              .&& "archive" |== toSql False
-                             ] [] 100 0 :: Application [Not.PreLetter] 
+                             ] [] lim ofs :: Application [Not.PreLetter] 
                 writeMapables xs 
 
 testNotification :: Application ()
