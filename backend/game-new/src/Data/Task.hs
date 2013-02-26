@@ -11,6 +11,7 @@ module Data.Task (
         registerHandler,
         Data.Task.run,
         runAll,
+        executeTask,
 
         task,
         trigger,
@@ -102,7 +103,20 @@ data Action =
     | EscrowCancel
     | EscrowRelease
     | EmitEvent 
-       deriving (Eq, Enum, Show)
+       deriving (Eq, Enum)
+
+instance Show Action where
+    show TrackTime = "TrackTime"
+    show GiveRespect = "GiveRespect"
+    show GiveMoney = "GiveMoney"
+    show GiveCar = "GiveCar"
+    show GivePart = "GivePart"
+    show TransferMoney = "TransferMoney"
+    show TransferCar = "TransferCar"
+    show EscrowCancel = "EscrowCancel"
+    show EscrowRelease = "EscrowRelease"
+    show EmitEvent = "EmitEvent"
+    show a = "Action " ++ (show $ fromEnum a)
 
 instance AS.ToJSON Action where toJSON a = AS.toJSON $ fromEnum a
 instance AS.FromJSON Action where 
@@ -125,7 +139,7 @@ instance Show Trigger where
     show Part = "Part"
     show Cron = "Cron"
     show Test = "Test"
-    show a = "Trigger " ++ (show $ (fromEnum a))
+    show a = "Trigger " ++ (show $ fromEnum a)
 
 instance AS.ToJSON Trigger where toJSON a = AS.toJSON $ fromEnum a
 instance AS.FromJSON Trigger where 
@@ -137,10 +151,10 @@ instance AS.FromJSON Trigger where
  - Logging
  -}
 
-log :: String -> Maybe Integer -> Data -> SqlTransaction Connection ()
-log s mi d = void $ do -- void $ forkSqlTransaction $ do
+log :: String -> TK.Task -> Data -> SqlTransaction Connection ()
+log s k d = void $ forkSqlTransaction $ void $ do
         t <- unix_millitime
-        save $ (def :: TL.TaskLog) { TL.time = t, TL.entry = d, TL.activity = s, TL.task_id = mi }
+        save $ (def :: TL.TaskLog) { TL.time = t, TL.entry = d, TL.activity = s, TL.task_id = TK.id k }
 
 {-
  - Handler chaining
@@ -158,12 +172,12 @@ registerHandler f x = atomically $ modifyTVar lolwut (\xs -> ((f,x) : xs))
 -- attempt to process a task
 process :: TK.Task -> SqlTransaction Connection Bool 
 process t = do 
-             fs <- liftIO $ readTVarIO lolwut 
-             let stepM [] = error $ "no handler for task action: " ++ (show $ ("action" .< (TK.data t) :: Maybe Action) ) -- "last shit not found"
-                 stepM ((pred,f):fs) | pred t = f t -- traceShow t $ f t
-                                     | otherwise = stepM fs 
---             traceShow (length fs) $ stepM fs 
-             stepM fs 
+        log "process" t emptyData
+        fs <- liftIO $ readTVarIO lolwut 
+        let stepM [] = throwError $ "no handler for task action: " ++ (show $ ("action" .< (TK.data t) :: Maybe Action) ) -- "last shit not found"
+            stepM ((pred,f):fs) | pred t = f t 
+                                | otherwise = stepM fs 
+        stepM fs 
 
 
 {-
@@ -294,9 +308,11 @@ runAll tp = Data.Task.run tp 0
 run :: Trigger -> Integer -> SqlTransaction Connection ()
 run tp sid = void $ (flip catchError) (runFail tp sid) $ do
 
+        -- NOTE: database errors are not caught
+        
         t <- unix_millitime
         
-        cleanup $ t - 7 * 24 * 3600 * 1000
+        cleanup t 
 
         ss <- claim t tp sid 
         forM_ ss $ \s -> do
@@ -316,29 +332,36 @@ claim t tp sid = do
 -- mark a task as completed
 resolve :: TK.Task -> SqlTransaction Connection ()
 resolve s = do
-        log "resolve" (TK.id s) emptyData
+        log "resolve" s emptyData
         update "task" ["id" |== (toSql $ TK.id s)] [] [("claim", SqlInteger 0), ("state", SqlString "done")]
-
+        
 -- mark a task as failed
 reject :: TK.Task -> SqlTransaction Connection ()
 reject s = do
-        log "reject" (TK.id s) emptyData
+        log "reject" s emptyData
         update "task" ["id" |== (toSql $ TK.id s)] [] [("claim", SqlInteger 0), ("state", SqlString "error")]
-                         
+        
 -- release a task to be fired again later
 release :: TK.Task -> SqlTransaction Connection ()
 release s = do
-        log "release" (TK.id s) emptyData
+        log "release" s emptyData
         void $ update "task" ["id" |== (toSql $ TK.id s)] [] [("claim", SqlInteger 0), ("state", SqlString "waiting")]
-
--- mark a task as deleted
---remove :: TK.Task -> SqlTransaction Connection ()
---remove s = void $ update "task" ["id" |== (toSql $ TK.id s)] [] [("deleted", SqlBool True)]
-
--- clean up completed tasks that are older than t 
+        
+-- clean up
 cleanup :: Integer -> SqlTransaction Connection ()
---cleanup t = void $ transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger t, "deleted" |== SqlBool True, "state" |== SqlString "done"]
-cleanup t = void $ transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger t, "state" |== SqlString "done"]
+cleanup t = void $ do
+        let old = t - 7 * 24 * 60 * 60 * 1000
+        let timeout = t - 60 * 60 * 1000
+        -- timeout unfinished claimed tasks
+        ss <- search ["state" |== toSql ("claimed" :: String), "claimed" |<= SqlInteger timeout] [] 100 0
+        forM ss $ \s -> do
+                log "error" s $ mkData $ do
+                        set "phase" ("cleanup" :: String)
+                        set "error" ("timeout after " ++ (show $ t - (TK.claimed s)) ++ " milliseconds" :: String)
+                reject s
+                 
+        -- delete old completed tasks
+        transaction sqlExecute $ Delete (table "task") ["time" |<= SqlInteger old, "state" |== SqlString "done"]
 
 -- wait until there are no running tasks
 wait :: Integer -> Trigger -> Integer -> SqlTransaction Connection () 
@@ -358,9 +381,7 @@ init = registerHandler pred executeTask
 
 executeTask :: TK.Task -> SqlTransaction Connection Bool 
 executeTask t = let d = TK.data t in do
-
-            log "execute" (TK.id t) emptyData
- 
+            
             case "action" .< d :: Maybe Action of
                 Just TrackTime -> do
                         save $ (def :: TTM.TrackTime) {
@@ -465,7 +486,7 @@ executeTask t = let d = TK.data t in do
 -- fail processing a task
 processFail :: TK.Task -> String -> SqlTransaction Connection () 
 processFail s e = do
-        log "error" (TK.id s) $ mkData $ do
+        log "error" s $ mkData $ do
                 set "phase" ("processing" :: String)
                 set "error" e
         reject s
@@ -473,7 +494,7 @@ processFail s e = do
 -- fail during task triggering
 runFail :: Trigger -> Integer -> String -> SqlTransaction Connection ()
 runFail tp sid e =  do
-         log "error" Nothing $ mkData $ do
+        log "error" def $ mkData $ do
                 set "phase" ("triggering" :: String)
                 set "trigger" $ show tp
                 set "subject_id" sid

@@ -24,7 +24,7 @@ $(genAll "Task" "task" [
                     ("id", ''Id),
                     ("time", ''Integer),
                     ("data", ''Data),
-                    ("deleted", ''Bool),
-                    ("state", ''String)
+                    ("state", ''String),
+                    ("claimed", ''Integer)
    ])
 
