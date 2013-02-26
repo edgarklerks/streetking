@@ -49,7 +49,8 @@ import Control.Applicative
 import Data.Database
 import Database.HDBC.SqlValue 
 import qualified Data.List as L
-import Test.QuickCheck as Q 
+import Test.QuickCheck as Q
+import Data.String
 -- import Data.Chain 
 import qualified Data.HashMap.Strict as S 
 import qualified Model.Task as TK
@@ -406,7 +407,7 @@ runTournamentRounds po tfd =
 
                                                                                                 })
 
-                               flip catchSqlError error $ do 
+                               flip catchSqlError (fail . show) $ do 
                                    ys <- mapM rp plys >>= liftIO . unsort 
                                    rs <- fillRaceParticipant (tournament tfd) ys
                                    xs <- step 0 (twothree (rs))
