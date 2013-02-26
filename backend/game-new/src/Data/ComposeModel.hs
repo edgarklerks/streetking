@@ -1,6 +1,6 @@
 {-# LANGUAGE RankNTypes, FlexibleInstances, FlexibleContexts,
      NoMonomorphismRestriction, ExistentialQuantification,
-     MultiParamTypeClasses, GeneralizedNewtypeDeriving #-}
+     MultiParamTypeClasses, GeneralizedNewtypeDeriving, OverloadedStrings #-}
 
 module Data.ComposeModel(
         ComposeMonad,
@@ -27,6 +27,7 @@ import           Data.Database
 import           Data.InRules
 import           Data.Monoid 
 import           Data.SqlTransaction 
+import           Data.String  
 import           Database.HDBC.PostgreSQL
 import           Model.General
 import qualified Data.ByteString.Char8 as B 
@@ -56,7 +57,7 @@ newtype ComposeMonad r c a = CM {
 
 getComposeUser = CM $ lift $ lift $ lift getUser 
 
-instance MonadError String (ComposeMonad r c) where 
+instance DB.IConnection c => MonadError SqlError (ComposeMonad r c) where 
             throwError c = CM $ lift (throwError c)
             catchError m f = CM $ ContT $ \r -> do 
                       x <- catchError (Right <$> runContT (unCM m) r) (return . Left)
@@ -64,20 +65,20 @@ instance MonadError String (ComposeMonad r c) where
                         Left s -> runContT (unCM (f s)) r 
                         Right a -> return a
 
-instance MonadWriter ComposeMap (ComposeMonad r c) where 
+instance DB.IConnection c => MonadWriter ComposeMap (ComposeMonad r c) where 
                 tell w = CM $ lift (tell w) 
                 listen _ = throwError "ComposeMonad doesn't support listen"
                 pass _ = throwError "ComposeMonad doesn't support pass"
 
-instance Alternative (ComposeMonad r c) where 
+instance DB.IConnection c => Alternative (ComposeMonad r c) where 
                 empty = throwError "empty alternative"
                 (<|>) m n = catchError m (const n)
 
-instance MonadPlus (ComposeMonad r c) where 
+instance DB.IConnection c => MonadPlus (ComposeMonad r c) where 
                 mzero = empty 
                 mplus = (<|>)
 
-instance Monoid (ComposeMonad r c ()) where 
+instance DB.IConnection c =>  Monoid (ComposeMonad r c ()) where 
                 mempty = empty 
                 mappend a b = CM $ ContT $ \r -> do 
                                 c <- ask 
@@ -86,6 +87,10 @@ instance Monoid (ComposeMonad r c ()) where
                                 lift $ tell (a <> b)
                                 r ()
 
+unsafeRunCompose
+  :: (Applicative m, MonadIO m, IConnection conn) =>
+     L.Lock
+     -> conn -> ComposeMonad a conn a -> m (Either String ComposeMap)
 unsafeRunCompose l c (CM m) = runSqlTransaction (fmap Right . execWriterT $ runReaderT (runContT m (return)) c) (return . Left) c l
 
 instance ToInRule Box where 
@@ -107,7 +112,7 @@ deep s m = do
             a <- liftIO $ unsafeRunCompose l c m 
             case a of 
                 Right a -> label s a 
-                Left s -> throwError s
+                Left s -> throwError (UError s)
 
 jumpDeep = abort () 
 
@@ -118,13 +123,13 @@ shift m = CM $ do
 liftDb :: SqlTransaction  c a -> ComposeMonad r c a 
 liftDb = CM . lift . lift  . lift 
 
-action :: (ToInRule a) => String -> SqlTransaction c a -> ComposeMonad r c a 
+action :: (DB.IConnection c, ToInRule a) => String -> SqlTransaction c a -> ComposeMonad r c a 
 action x s = do 
                 s' <- liftDb s 
                 label x s' 
                 return s'
 
-label :: (ToInRule a) => String -> a -> ComposeMonad r c ()
+label :: (DB.IConnection c, ToInRule a) => String -> a -> ComposeMonad r c ()
 label s x =  tell . ComposeMap . H.fromList $ [(s,Box x)]
 
 db :: IO Connection 
@@ -136,6 +141,6 @@ runTest m = do
             c <- db 
             runComposeMonad (error "do not use") m error c
 
-expand :: ToInRule a => [(String, a)] -> ComposeMonad r c ()
+expand :: (DB.IConnection c, ToInRule a) => [(String, a)] -> ComposeMonad r c ()
 expand xs = forM_ xs $ \(s,x) -> label s x 
 
