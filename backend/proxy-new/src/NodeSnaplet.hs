@@ -9,8 +9,8 @@ import           Control.Monad.State
 import           Control.Monad.Trans
 import           Control.Lens hiding (Context)
 import           Data.MemTimeState
-import           MemServerAsync
-import           Proto 
+import           MemServerAsyncTest
+import           ProtoExtended  
 import           Snap.Core 
 import           Snap.Snaplet
 import           System.Random 

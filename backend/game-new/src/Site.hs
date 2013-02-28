@@ -67,7 +67,7 @@ import           Lua.Monad
 import           Lua.Prim
 import           Model.General (Mapable(..), Default(..), Database(..), aload, adeny, aget, agetlist)
 import           Model.Transaction (transactionMoney)
-import           NodeSnaplet 
+import           NodeSnapletTest 
 import           NotificationSnaplet (initNotificationSnaplet, getPostOffice)
 import           RandomSnaplet (l32, initRandomSnaplet)
 import           Snap.Core

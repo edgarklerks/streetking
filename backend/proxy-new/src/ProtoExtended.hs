@@ -9,8 +9,13 @@ import           Data.Word
 import           Control.Applicative
 import           Data.Typeable
 import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as C 
 import           Data.Maybe 
 import GHC.Exception (SomeException)
+import           Data.Hashable 
+import           Data.Monoid
+import           Test.QuickCheck hiding (Result)
+
 
 data Proto = TTLReq TTL Query 
            | Version Int Proto
@@ -22,7 +27,8 @@ data Proto = TTLReq TTL Query
            | StartSync 
            | DumpInfo 
            | Result Result 
-    deriving Show 
+    deriving (Show, Eq)
+
 {-- Payload --}
 
 getResult :: Proto -> Maybe Result  
@@ -54,8 +60,6 @@ casePayload fres fquery fcmd p | isResult p = fres p
                                | isQuery p = fquery p
                                | isCommand p = fcmd p 
                                | otherwise = return ()
-
-
 
 {-- TTL Tools --}
 
@@ -154,6 +158,7 @@ sync = withVersion Sync
 
 startSync :: Proto 
 startSync = withVersion StartSync 
+
 instance S.Serialize NodeAddr where 
         put (Addr s) = S.put (0 :: Word8) *> S.put s 
         put (Local s) = S.put (1 :: Word8) *> S.put s
@@ -196,6 +201,11 @@ type TTL = Int
 data NodeAddr = Addr String 
               | Local String  
         deriving (Show, Eq)
+
+
+instance Hashable NodeAddr where 
+        hashWithSalt n (Addr x) = hashWithSalt n ("addr" <> x)  
+        hashWithSalt n (Local x) = hashWithSalt n ("local" <> x)  
 
 data ProtoException = VersionMisMatch Int Int 
                     | UnspecifiedFailure
@@ -247,4 +257,53 @@ instance Error ProtoException where
 
 
 
+{-- Decodable test --}
 
+iso_decode_test = property test 
+    where test :: Proto -> Bool 
+          test pr = case S.decode (S.encode pr) of 
+                            Left a -> False 
+                            Right a -> (a == pr)
+
+instance Arbitrary NodeAddr where 
+        arbitrary = do 
+                f <- elements [Addr, Local]
+                f <$> arbitrary 
+
+
+instance Arbitrary Proto where 
+        arbitrary = do 
+             f <- choose (0,9 :: Int)
+             case f of 
+                0 -> Version <$> arbitrary <*> arbitrary
+                1 -> Route <$> arbitrary <*> arbitrary
+                2 -> NodeList <$> arbitrary 
+                3 -> Advertisement <$> arbitrary
+                4 -> Error <$> arbitrary
+                5 -> pure Sync 
+                6 -> pure StartSync 
+                7 -> pure DumpInfo 
+                8 -> Result <$> arbitrary 
+                9 -> TTLReq <$> arbitrary <*> arbitrary 
+instance Arbitrary C.ByteString where 
+                arbitrary = C.pack <$> arbitrary
+
+
+instance Arbitrary Query where 
+        arbitrary = do 
+            f <- choose (0, 3 :: Int)
+            case f of 
+                0 -> Insert <$> arbitrary <*> arbitrary
+                1 -> Delete <$> arbitrary
+                2 -> Query <$> arbitrary
+                3 -> pure DumpState
+
+instance Arbitrary Result where
+                arbitrary = do 
+                    f <- choose (0,4 :: Int)
+                    case f of 
+                        0 -> Value <$> arbitrary
+                        1 -> pure NotFound 
+                        2 -> pure Empty 
+                        3 -> Except <$> arbitrary
+                        4 -> KeyVal <$> arbitrary <*> arbitrary

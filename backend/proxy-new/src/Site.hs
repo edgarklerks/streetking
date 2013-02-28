@@ -16,7 +16,7 @@ import qualified Data.Text as T
 import           Snap.Core
 import           Snap.Snaplet
 import           Snap.Util.FileServe
-import           NodeSnaplet
+import           NodeSnapletTest
 import           ProxyExtendableSnapletConduit 
 import           RoleSnaplet 
 import           SqlTransactionSnaplet (initSqlTransactionSnaplet)

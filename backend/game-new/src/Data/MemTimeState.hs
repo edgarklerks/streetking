@@ -313,7 +313,7 @@ data Query where
         Delete    :: Key -> Query 
         Query     :: Key -> Query  
         DumpState :: Query  
-            deriving Show
+            deriving (Show, Eq)
 
 type Unique a = TMVar a
 type QueryChan = TQueue (Query, Unique Result)
@@ -348,12 +348,14 @@ instance S.Serialize Query where
         put (Insert b x) = S.put (0 :: Word8) *> S.put b *> S.put x
         put (Delete b) = S.put (1 :: Word8) *> S.put b 
         put (Query b) = S.put (2 :: Word8) *> S.put b
+        put (DumpState) = S.put (3 :: Word8)
         get = do 
             b <- S.get :: S.Get Word8
             case b of 
                 0 -> Insert <$> S.get <*> S.get
                 1 -> Delete <$> S.get
                 2 -> Query <$> S.get 
+                3 -> pure DumpState 
 
 
 

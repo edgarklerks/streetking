@@ -1,9 +1,9 @@
 {-# LANGUAGE ViewPatterns #-}
 module Main where 
 
-import MemServerAsync 
+import MemServerAsyncTest 
 import Control.Monad 
-import Proto
+import ProtoExtended 
 import Control.Applicative
 import Control.Concurrent 
 import System.Random 

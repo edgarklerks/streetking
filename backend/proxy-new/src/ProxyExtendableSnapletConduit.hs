@@ -41,7 +41,7 @@ import           Blaze.ByteString.Builder
 import           Blaze.ByteString.Builder.ByteString
 import           Snap.Iteratee
 import           Data.Monoid
-import           NodeSnaplet 
+import           NodeSnapletTest
 import           Network.HTTP.Types (QueryItem, renderQuery)
 import qualified Snap.Iteratee as I 
 import           Control.Concurrent.STM 

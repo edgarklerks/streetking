@@ -40,7 +40,7 @@ import Control.Concurrent.STM
 
 import qualified Crypto.Hash.Tiger as H
 
-import NodeSnaplet 
+import NodeSnapletTest 
 import RandomSnaplet 
 import LogSnaplet 
 

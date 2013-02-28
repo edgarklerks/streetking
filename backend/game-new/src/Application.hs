@@ -21,7 +21,7 @@ import           Data.Database hiding (Value)
 import           Data.InRules
 import           Control.Lens
 
-import           Data.MemState 
+--- import           Data.MemState 
 import           Data.Monoid
 import           Data.Role as R 
 import           Data.SortOrder
@@ -29,9 +29,9 @@ import           Data.Typeable
 import           Database.HDBC
 import           Database.HDBC.PostgreSQL (Connection)
 import           Model.General
-import           NodeSnaplet as D 
+import           NodeSnapletTest as D 
 import           NotificationSnaplet as N  
-import           Proto 
+import           ProtoExtended 
 import           RandomSnaplet as R 
 import           Snap.Core 
 import           Snap.Snaplet
@@ -180,7 +180,7 @@ getPagesWithDTD d = do
 
 
 addRole i k =  with nde $ do 
-                    sendQuery (Proto.insert k rs) 
+                    sendQuery (ProtoExtended.insert k rs) 
         where rs = B.pack $ L.unpack $ BI.encode $ User (Just i) 
 
 

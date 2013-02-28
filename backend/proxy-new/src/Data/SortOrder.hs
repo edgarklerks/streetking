@@ -62,6 +62,8 @@ getSortOrder x = case parse startp "" x of
 
 startp :: Parser SortOrder
 startp = Col <$> stmp 
+
+
 stmp :: Parser [SortOrder]
 stmp = string "orderby" *> spaces *> (OrderBy <$> (idp <* spaces) <*> dirp) `sepBy1` (char ',' *> spaces) <|> pure []
 idp = many1 $ oneOf "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"

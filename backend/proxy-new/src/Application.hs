@@ -8,7 +8,7 @@ module Application where
 ------------------------------------------------------------------------------
 import Control.Lens
 import Snap.Snaplet
-import NodeSnaplet 
+import NodeSnapletTest 
 import ProxyExtendableSnapletConduit 
 import RandomSnaplet 
 import SqlTransactionSnaplet
