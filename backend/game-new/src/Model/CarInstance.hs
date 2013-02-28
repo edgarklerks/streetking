@@ -38,7 +38,11 @@ $(genAll "CarInstance" "car_instance"
     ]
     )
 isMutable :: Integer -> SqlTransaction Connection Bool 
-isMutable = fmap ((==0) .  immutable . fromJust) . load 
+isMutable c = do
+        -- cannot load Task here because Task loads CarInstance
+        -- --> need to separate Task structure from task payloads
+--        Task.run Task.Car c
+        (fmap ((==0) .  immutable . fromJust) . load) c
 
 
 setImmutable :: Integer -> SqlTransaction Connection Integer 
