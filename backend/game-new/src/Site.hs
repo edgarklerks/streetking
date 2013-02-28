@@ -1350,31 +1350,51 @@ cancelTaskPersonnel = do
                             stopTask (extract "personnel_instance_id" xs) uid  
                             return ()
 
-stopTask :: (?name :: String) => Integer -> Integer -> SqlTransaction Connection () 
-stopTask pid uid = do  
-        pi <- aload pid $ rollback "personnel instance not found" :: SqlTransaction Connection PLI.PersonnelInstance
-        -- stop task 
+stopTask :: Integer -> Integer -> SqlTransaction Connection () 
+stopTask pid uid = void $ do  
+        -- get personnel instance
+        pi <- aload pid $ rollback "personnel instance not found" :: SqlTransaction Connection PLID.PersonnelInstanceDetails
+        -- get "effective" task subject id
+        sid <- case PLID.task_name pi of
+                -- in case of repair_car, get the car part id that is attached to the car instance
+                "repair_car" -> do
+                        cs <- search ["part_type_id" |== (SqlInteger 20) .&& "car_instance_id" |== (toSql $ PLID.task_subject_id pi)] [] 1 0  :: SqlTransaction Connection [CIP.CarInstanceParts]
+                        when (null cs) $ rollback "stopTask: cannot find car instance part for car"
+                        return $ CIP.part_instance_id $ head cs
+                -- in all other cases, get the task_subject_id
+                _ -> return $ PLID.task_subject_id pi
+        
+        -- generate report
         save (def {
-                GRP.part_instance_id = Just $ PLI.task_subject_id pi,
-                GRP.personnel_instance_id =  PLI.id pi 
+                GRP.part_instance_id = Just sid,
+                GRP.personnel_instance_id =  PLID.personnel_instance_id pi
             })
-        save (pi {
+
+        -- stop task
+        update "personnel_instance" ["id" |== toSql (PLID.personnel_instance_id pi)] [] [
+                    ("task_id", SqlInteger 1),
+                    ("task_subject_id", SqlInteger 0),
+                    ("task_started", SqlInteger 0),
+                    ("task_updated", SqlInteger 0),
+                    ("task_end", SqlInteger 0)
+                ]
+{-
+            save (pi {
                 PLI.task_id = 1,
                 PLI.task_subject_id = 0,
                 PLI.task_started = 0,
                 PLI.task_updated = 0,
                 PLI.task_end = 0
             })
-        t <- DBF.unix_timestamp
-        traceShow (t, ?name, pid) $ commit 
+-}
 
-
-stopTaskCar :: (?name :: String) => Integer -> Integer -> Integer -> SqlTransaction Connection () 
+{-
+stopTaskCar :: Integer -> Integer -> Integer -> SqlTransaction Connection () 
 stopTaskCar pid cpid uid = do  
         pi <- aload pid $ rollback "personnel instance not found" :: SqlTransaction Connection PLI.PersonnelInstance
         -- stop task 
-        liftIO $ print $ ?name 
-        liftIO $ print $ cpid 
+--        liftIO $ print $ ?name 
+--        liftIO $ print $ cpid 
         save (def {
                 GRP.part_instance_id = Just cpid,
                 GRP.personnel_instance_id =  PLI.id pi 
@@ -1386,11 +1406,10 @@ stopTaskCar pid cpid uid = do
                 PLI.task_updated = 0,
                 PLI.task_end = 0
             })
-        t <- DBF.unix_timestamp
-        traceShow (t, ?name, pid) $ commit 
+--        t <- DBF.unix_timestamp
+--        traceShow (t, ?name, pid) $ commit 
 
-
-
+-}
         
 
 -- TODO: fromSql <$> HM.lookup k xs --> Maybe Value
@@ -1627,128 +1646,105 @@ userActions uid = do
 
 
 personnelUpdate uid = dbWithLockNonBlock "personnel" uid $ do 
-                t <- DBF.unix_timestamp
+                s <- milliTime
                 g <- aget ["account_id" |== (toSql uid)] (rollback "cannot find garage") :: SqlTransaction Connection G.Garage 
-                p <- search ["garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
-                case p of
-                    [] -> return () 
-                    xs -> forM_ xs $ \x -> case PLID.task_name x of 
-                                                "idle" -> return ()
-                                                "improve_part"  -> partImprove uid x 
-                                                "repair_part" -> partRepair uid x 
-                                                "repair_car"  -> carRepair uid x  
+                ps <- search ["garage_id" |== (toSql $ G.id g)] [] 1 0 :: SqlTransaction Connection [PLID.PersonnelInstanceDetails]
+                case length ps > 0 of
+                    False -> return () 
+                    True -> forM_ ps $ \p -> do
+                            let elapsed = max 0 $ (min (PLID.task_end p) s) - (PLID.task_updated p)
+                            let timeleft = max 0 $ (PLID.task_end p) - s
+                            case PLID.task_name p of 
+                                    "idle" -> return ()
+                                    "improve_part" -> partImprove uid p elapsed timeleft
+                                    "repair_part" -> partRepair uid p elapsed timeleft
+                                    "repair_car" -> carRepair uid p elapsed timeleft
+                            -- set task updated
+--                            save (p { PLID.task_updated = s })
+                            update "personnel_instance" ["id" |== (toSql $ PLID.personnel_instance_id p)] [] [("task_updated", toSql s)]
+                            -- if task finished, stop task and generate report
+                            when (timeleft <= 0) $ do
+                                    stopTask (fromJust $ PLID.personnel_instance_id p) uid
+--                            stopTaskCar (fromJust $ PLID.personnel_instance_id pi) (CIP.part_instance_id c) uid 
 
 
-            
-
-            
-
+{-
 personnelUpdateBusy s id = do 
                     p <- aload id (rollback "cannot find personnel") :: SqlTransaction Connection PLI.PersonnelInstance
                     save (p {
                             PLI.task_updated = s
                         })
+-}
 
 -- partImprove :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
-partImprove uid pi = do
-                s <- milliTime
-                let ut = max 0 $ (min (PLID.task_end pi) s) - (PLID.task_updated pi)
-                let tl = max 0 $ (PLID.task_end pi) - s
-                let sk = PLID.skill_engineering pi 
+partImprove uid pi elapsed timeleft = do
+                let skill = PLID.skill_engineering pi 
                 let sid = PLID.task_subject_id pi 
-
                 atomical $ do 
-                        (pr' :: Double) <- loaddbConfig "part_improve_rate" 
+                        (rate :: Double) <- loaddbConfig "part_improve_rate" 
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "cannot find partinstance"
-                        let p = fromJust p'             
-                        let a = fromIntegral (sk * ut)
--- (c_t - u_t) * a
-                        let ci = round (a * pr')
-                        when (ci >= 1 || tl <= 0) $ do 
-                            personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
-                            void $ save (p {
-                                    PI.improvement = min (10^4) $ (PI.improvement p + round (a * pr'))
-                                })
+                        let p = fromJust p'
+                        let a = fromIntegral (skill * elapsed)
+                        let effect = round (a * rate)
+                        void $ save $ p { PI.improvement = min (10^4) (PI.improvement p + effect) }
 
                         -- needed to put data outside transaction 
-                            commit
-        
-                            when (PLID.task_end pi < s) $ dbWithLockNonBlock "notification_personnel" uid $ do 
-                                stopTask (fromJust $ PLID.personnel_instance_id pi) uid
-                                void $ N.sendCentralNotification uid (N.partImprove {
-                                                                    N.part_id = convert $ PI.part_id p,
-                                                                    N.improved = min (10^4) $ round (a * pr')
+                        commit
 
-                                                                })
+                        when (timeleft <= 0) $ dbWithLockNonBlock "notification_personnel" uid $ do 
+                                void $ N.sendCentralNotification uid (N.partImprove {
+                                                                N.part_id = convert $ PI.part_id p,
+                                                                N.improved = min (10^4) effect
+                                                            })
                                 commit 
                                         
 
 
 -- partRepair :: Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
-partRepair uid pi = do 
-                s <- milliTime 
-                let ut = max 0 $ (min (PLID.task_end pi) s) - (PLID.task_updated pi)
-                let tl = max 0 $ (PLID.task_end pi) - s
-                let sk = PLID.skill_repair pi 
+partRepair uid pi elapsed timeleft = do 
+                let skill = PLID.skill_repair pi 
                 let sid = PLID.task_subject_id pi 
                 atomical $ do 
-                        (pr' :: Double) <- loaddbConfig "part_repair_rate" 
+                        (rate :: Double) <- loaddbConfig "part_repair_rate" 
                         p' <- load sid :: SqlTransaction Connection (Maybe PI.PartInstance)
                         when (isNothing p') $ rollback "part instance not found"
                         let p = fromJust p' 
-                        let a = fromIntegral (sk * ut) 
-                        let ci = round (a * pr')
-                        when (ci >= 1 || tl <= 0) $ do 
-                            personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
-                            void $ save (p {
-                                                PI.wear = max 0 $ PI.wear p - round (a * pr')
-                                            })
-                            -- Commit needed to put data outside transaction
-                            commit 
+                        let a = fromIntegral (skill * elapsed)
+                        let effect = round (a * rate)
+                        void $ save $ p { PI.wear = max 0 $ PI.wear p - effect }
 
-                            when (PLID.task_end pi < s) $  do 
-                                stopTask (fromJust $ PLID.personnel_instance_id pi) uid
-                                void $ N.sendCentralNotification uid (N.partRepair {
+                        -- Commit needed to put data outside transaction
+                        commit 
+
+                        when (timeleft <= 0) $  do 
+                                    void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.repaired = max 0 $ round (a * pr') 
+                                                                    N.repaired = max 0 effect
                                                                 })
-                                commit
+                                    commit
  
-                                              
-
-
-
-
-
 -- carRepair ::  Integer -> PLID.PersonnelInstanceDetails -> SqlTransaction Connection ()
-carRepair uid pi = do  
-            s <- milliTime 
-            (pr' :: Double) <- loaddbConfig "car_repair_rate" 
-            let ut = max 0 $ (min s $ PLID.task_end pi) - (PLID.task_updated pi)
-            let tl = max 0 $ (PLID.task_end pi) - s
-            let sk = PLID.skill_repair pi 
+carRepair uid pi elapsed timeleft = do 
+            let skill = PLID.skill_repair pi 
             let sid = PLID.task_subject_id pi 
             atomical $ do 
+                    (rate :: Double) <- loaddbConfig "car_repair_rate" 
                     c' <- search ["part_type_id" |== (SqlInteger 20) .&& "car_instance_id" |==  toSql sid] [] 1 0  :: SqlTransaction Connection [CIP.CarInstanceParts]
                     when (null c') $ rollback "cannot find car instance parts"
                     let c = head c' 
                     g' <- load (CIP.part_instance_id c) :: SqlTransaction Connection (Maybe PI.PartInstance)
                     when (isNothing g') $ rollback "cannot find part instance"
                     let p = fromJust g'
-                    let a = fromIntegral (sk * ut)
-                    let ci = round (a * pr')
-                    when (ci >= 1 || tl <= 0) $ do 
-                        personnelUpdateBusy s (fromJust $ PLID.personnel_instance_id pi)
-                        void $ save (p {
-                                                PI.wear = max 0 $ PI.wear p - round (a * pr')
-                                            })
-                        commit 
-                        when (PLID.task_end pi < s) $  do 
-                            stopTaskCar (fromJust $ PLID.personnel_instance_id pi) (CIP.part_instance_id c) uid 
+                    let a = fromIntegral (skill * elapsed)
+                    let effect = round (a * rate)
+                    void $ save $ p { PI.wear = max 0 $ PI.wear p - effect }
+
+                    commit 
+                    when (timeleft <= 0) $  do 
                             void $ N.sendCentralNotification uid (N.partRepair {
                                                                     N.part_id = convert $ PI.part_id p,
-                                                                    N.repaired = max 0 $ round (a * pr') 
+                                                                    N.repaired = max 0 effect
                                                                 })
                             commit 
                                                  

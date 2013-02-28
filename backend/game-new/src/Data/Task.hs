@@ -104,7 +104,8 @@ data Action =
     | TransferCar
     | EscrowCancel
     | EscrowRelease
-    | EmitEvent 
+    | EmitEvent
+    | MutabilizeCar
        deriving (Eq, Enum)
 
 instance Show Action where
@@ -118,6 +119,7 @@ instance Show Action where
     show EscrowCancel = "EscrowCancel"
     show EscrowRelease = "EscrowRelease"
     show EmitEvent = "EmitEvent"
+    show MutabilizeCar = "MutabilizeCar"
     show a = "Action " ++ (show $ fromEnum a)
 
 instance AS.ToJSON Action where toJSON a = AS.toJSON $ fromEnum a
@@ -163,7 +165,7 @@ foo e = do
 test :: SqlTransaction Connection ()
 test = void $ do
         catchError fali foo
-        c <- Data.SqlTransaction.get 
+--        c <- Data.SqlTransaction.get 
 --        liftIO $ DB.rollback c
 --        liftIO $ DB.commit c
         r <- follow
@@ -423,7 +425,11 @@ executeTask t = let d = TK.data t in do
                         Escrow.release ("escrow_id" .<< d) ("account_id" .<< d)
                         return True
 
-                Just e -> rollback $ "process: unknown action: " ++ (show $ fromEnum e)
+{-                Just MutabilizeCar -> do
+                        CI.setMutable ("car_instance_id" .<< d)
+                        return True
+-}
+                Just e -> rollback $ "process: unknown action: " ++ (show e)
 
 
 {-
@@ -530,5 +536,11 @@ escrowRelease t eid uid = void $ do
             set "escrow_id" eid
             set "account_id" uid
         trigger User uid tid
-
-
+{-
+-- set car mutable: decrement quantity semaphore
+setCarMutable :: Integer -> Integer -> SqlTransaction Connection ()
+setCarMutable t cid = void $ do
+        tid <- task MutabilizeCar t $ mkData $ do
+            set "car_instance_id" cid
+        trigger Car cid tid
+-}

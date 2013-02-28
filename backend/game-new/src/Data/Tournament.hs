@@ -235,7 +235,7 @@ getResults mid = do
                                     dbWithLockNonBlock "tournament" mid $  
                                         do  
                                                 xs <- search ["tournament_id" |== toSql (T.id tr)] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
-                                                forM_ xs $ setMutable . fromJust . TP.car_instance_id 
+--                                                forM_ xs $ setMutable . fromJust . TP.car_instance_id 
                                                 toArchive (fromJust $ T.id tr) ss 
                                                 save (tr { T.running = False, T.done = True}) 
 
@@ -567,6 +567,12 @@ runTournament tk po = return False <* (do
                 tf <- loadTournamentFull id  
                 xs <- runTournamentRounds po tf  
                 save ( (tournament tf) { running = True })
+
+                -- set cars mutable. alternatively, create a task to do this when the tournament finishes.
+                -- note that using a task also requires firing Car task triggers at least everywhere car mutability is used.
+                ps <- loadPlayers id
+                forM_ ps $ \p -> setMutable $ fromJust $ TP.car_instance_id p 
+           
                 saveResultTree id xs)
 
 saveResultTree :: Integer -> [[(Integer, [(RaceParticipant, RaceResult)])]] -> SqlTransaction Connection ()
