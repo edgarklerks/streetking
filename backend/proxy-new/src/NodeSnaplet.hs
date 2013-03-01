@@ -80,7 +80,19 @@ lookupBinary k = do
             case getResult x of 
                 (Just (NotFound)) -> return $ Nothing 
                 (Just (KeyVal k v)) -> return $ Just $ decodeL v 
-                (Just (Value k)) -> return $ Just $ decodeL k 
+                (Just (Value k)) -> return $ Just $ decodeL k
+               
+                -- J: non-exhaustive pattern error sometimes appears, testing
+                Nothing -> do
+                        liftIO $ print "lookupBinary: Nothing"
+                        return Nothing 
+                (Just (Empty)) -> do
+                        liftIO $ print "lookupBinary: Empty"
+                        return Nothing
+                (Just (Except s)) -> do
+                        liftIO $ print $ "lookupBinary: Except " ++ s
+                        return Nothing
+ 
             
 
 
