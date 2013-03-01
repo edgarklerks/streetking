@@ -1,1 +1,0 @@
-<div class="menu_item [:class]" module="[:name]">[:name]</div>
