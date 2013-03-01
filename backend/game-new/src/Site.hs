@@ -2202,7 +2202,9 @@ viewTournament = do
             "maxlevel" +>=| (toSql $ A.level a) +&& 
             "minlevel" +>= "minlevel" +&& 
             "maxlevel" +>= "maxlevel" +&& 
-            "name" +%% "name" +&& 
+            "name" +%% "name" +&&
+            "tournament_type" +== "tournament_type" +&&
+            "tournament_type_id" +== "tournament_type_id" +&&
             "track_id" +== "track_id" +&& 
             "players" +>= "minplayers" +&& 
             "players" +<= "maxplayers" +&&
