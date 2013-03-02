@@ -114,9 +114,9 @@ startNode (RP ppull preq pc_memstate debug) = do
                     ic_debug = debug,
                     ic_log = log
                     }
-            forkIO $ withFile "p2p.log" AppendMode $ \x ->  forever $ do
+{--            forkIO $ withFile "p2p.log" AppendMode $ \x ->  forever $ do
                     s <- atomically $ readTQueue log 
-                    hPutStrLn x s 
+                    hPutStrLn x s --}
 
             forkIO $ runProtoMonad ic_config incomingEngine
             forkIO $ runProtoMonad uc_config updateEngine
@@ -512,13 +512,41 @@ chainM xs = forM (chain xs) . uncurry
 
 chain :: [a] -> [(a,a)]
 chain t@(x:xs) = chain' x t
-    where chain t [x] = [(t,x)]
+    where chain' t [x] = [(t,x)]
           chain' t (x:y:xs) = (x,y) : chain' t (y:xs) 
 
 -- | query connections 
 
-queryNodes :: NodeConfigs -> [B.ByteString] -> IO ()
-queryNodes xs cs = undefined 
+queryNodes :: String -> NodeConfigs -> [B.ByteString] -> IO ()
+queryNodes p cs xs = forM_ (xs `zip` cycle cs) $ \(x,c) -> 
+                                            let (Addr addr) = pc_address . get_pc_config $ c
+                                            in clientCommand p addr (addRoute (Addr p) $ query 20 $ x) *> print ("QUERY  " ++ (show x) ++ " DONE")
+
+
+-- | Now put it all together 
+--
+
+runTest :: IO ()
+runTest = do 
+    xs <- setupNetwork [
+            ("tcp://127.0.0.1:8001",
+            "tcp://127.0.0.1:8002"),
+            ("tcp://127.0.0.1:8003",
+            "tcp://127.0.0.1:8004"),
+            ("tcp://127.0.0.1:8005",
+            "tcp://127.0.0.1:8006"),
+            ("tcp://127.0.0.1:8007",
+            "tcp://127.0.0.1:8008"),
+            ("tcp://127.0.0.1:8009",
+            "tcp://127.0.0.1:8010"),
+            ("tcp://127.0.0.1:8011",
+            "tcp://127.0.0.1:8012")
+        ]
+    g <- newStdGen
+    cs <- fillNodes (genBytestrings g 100) xs 
+    chainNodes "tcp://127.0.0.1:4001" xs 
+    queryNodes "tcp://127.0.0.1:4002" xs cs
+    return ()
 
 
 
