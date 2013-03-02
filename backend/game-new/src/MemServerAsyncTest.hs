@@ -19,6 +19,12 @@ import System.IO
 import ProtoExtended  
 
 import qualified Data.HashMap.Strict as H 
+{-- CHANGES:
+-
+- Edgar: Forgot receiving shit when upstream sending.
+-
+---}
+
 
 {-- This network is split up in three sections:
 -   * RequestEngine 
@@ -236,7 +242,7 @@ sendUpstream p = do
             rt <- asks pc_incoming
             let p' = addRoute rt $ predTTL p 
             let xs = H.elems pum 
-            forM_ xs $ \x -> sendProto x p' 
+            forM_ xs $ \x -> sendProto x p' *> receiveProto x  
 
  
 
