@@ -89,7 +89,7 @@ testTree = Node (Root) [
                     ]
                 ]
 
--- GENERATED START
+{-- GENERATED START
 
 isoProp = smallCheck 4 (property prop) 
     where prop :: Tree Menu -> Bool 
@@ -117,4 +117,4 @@ instance (Serial a) => Serial (Tree a) where
              | t0 <- alts2 rs d]
 
 -- GENERATED STOP
---
+--}
