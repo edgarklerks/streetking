@@ -77,12 +77,10 @@ insertBinary k s = sendQuery (insert k (fromLazy s))
 lookupBinary :: (MonadIO m, MonadState DHTConfig m, B.Binary a) => B.ByteString -> m (Maybe a)
 lookupBinary k = do 
             x <- sendQuery (Proto.query 2 k)
-            case getResult x of 
+            case getResult x of
                 (Just (NotFound)) -> return $ Nothing 
                 (Just (KeyVal k v)) -> return $ Just $ decodeL v 
                 (Just (Value k)) -> return $ Just $ decodeL k 
-            
-
 
 decodeL = B.decode . L.pack . B.unpack 
 fromLazy = B.pack . L.unpack . B.encode 
