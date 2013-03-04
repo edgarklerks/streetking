@@ -49,7 +49,8 @@ import Control.Applicative
 import Data.Database
 import Database.HDBC.SqlValue 
 import qualified Data.List as L
-import Test.QuickCheck as Q 
+import Test.QuickCheck as Q
+import Data.String
 -- import Data.Chain 
 import qualified Data.HashMap.Strict as S 
 import qualified Model.Task as TK
@@ -234,7 +235,7 @@ getResults mid = do
                                     dbWithLockNonBlock "tournament" mid $  
                                         do  
                                                 xs <- search ["tournament_id" |== toSql (T.id tr)] [] 1000 0 :: SqlTransaction Connection [TP.TournamentPlayer]
-                                                forM_ xs $ setMutable . fromJust . TP.car_instance_id 
+--                                                forM_ xs $ setMutable . fromJust . TP.car_instance_id 
                                                 toArchive (fromJust $ T.id tr) ss 
                                                 save (tr { T.running = False, T.done = True}) 
 
@@ -406,7 +407,7 @@ runTournamentRounds po tfd =
 
                                                                                                 })
 
-                               flip catchSqlError error $ do 
+                               flip catchSqlError (fail . show) $ do 
                                    ys <- mapM rp plys >>= liftIO . unsort 
                                    rs <- fillRaceParticipant (tournament tfd) ys
                                    xs <- step 0 (twothree (rs))
@@ -566,6 +567,12 @@ runTournament tk po = return False <* (do
                 tf <- loadTournamentFull id  
                 xs <- runTournamentRounds po tf  
                 save ( (tournament tf) { running = True })
+
+                -- set cars mutable. alternatively, create a task to do this when the tournament finishes.
+                -- note that using a task also requires firing Car task triggers at least everywhere car mutability is used.
+                ps <- loadPlayers id
+                forM_ ps $ \p -> setMutable $ fromJust $ TP.car_instance_id p 
+           
                 saveResultTree id xs)
 
 saveResultTree :: Integer -> [[(Integer, [(RaceParticipant, RaceResult)])]] -> SqlTransaction Connection ()

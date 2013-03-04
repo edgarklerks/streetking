@@ -1,4 +1,4 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving, FlexibleInstances, MultiParamTypeClasses, FunctionalDependencies, RankNTypes #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving, FlexibleInstances, MultiParamTypeClasses, FunctionalDependencies, RankNTypes, OverloadedStrings #-}
 module Data.SqlTransaction (
 
 	quickInsert,
@@ -31,6 +31,7 @@ module Data.SqlTransaction (
     fillFuture,
     finish,
     forkSqlTransaction,
+    get,
     getUser,
     lock,
     newFuture,
@@ -54,6 +55,7 @@ module Data.SqlTransaction (
     sFetchAllRows,
     sFetchRow, 
     sRun,
+    SqlError(..),
     sqlExecute,
     sqlGetAll,
     sqlGetAllAssoc,
@@ -79,15 +81,28 @@ import           Data.Functor
 import           Data.Map (Map)
 import           Data.Monoid
 import           Data.Tools
+import           Data.String 
 import           Database.HDBC.PostgreSQL as H
 import qualified Data.HashMap.Strict as M
 import qualified Database.HDBC as H
 import qualified LockSnaplet as L
+import qualified Control.Monad.CatchIO as CIO 
+import qualified GHC.Exception as E 
 
 type SqlTransaction c a = SqlTransactionUser L.Lock c a 
 
+data SqlError = UError String 
+              | DBError String 
+        deriving Show 
+
+instance Error SqlError where 
+        strMsg = UError 
+        noMsg = UError "failed"
+
+instance IsString SqlError where 
+    fromString = UError 
 newtype SqlTransactionUser l c a = SqlTransaction {
-                unsafeRunSqlTransaction :: forall r. ((c,l) -> a -> IO (Either String r)) -> (c,l) -> IO (Either String r)
+                unsafeRunSqlTransaction :: forall r. ((c,l) -> a -> IO (Either SqlError r)) -> (c,l) -> IO (Either SqlError r)
         }
 {--
 - Derived from: 
@@ -109,7 +124,8 @@ commit = do
 runSqlTransaction xs f c l = do
                                 x <- liftIO $ unsafeRunSqlTransaction xs (\_ a -> return (Right a)) (c,l)
                                 case x of 
-                                    Left b -> liftIO (H.rollback c) *> f b <* liftIO (H.commit c)
+                                    Left (UError b) -> liftIO (H.rollback c) *> f b <* liftIO (H.commit c)
+                                    Left (DBError b) -> f b <* liftIO (H.commit c)
                                     Right a -> liftIO (H.commit c) >> return a
 
 instance Functor (SqlTransactionUser l c) where 
@@ -119,21 +135,40 @@ instance Monad (SqlTransactionUser l c) where
     return a = SqlTransaction $ \r c -> r c a
     (>>=) m f = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\c a -> unsafeRunSqlTransaction (f a) r $ c )
 
--- catchSqlError :: SqlTransaction c a -> (String -> SqlTransaction c a) -> SqlTransaction c a
-catchSqlError m f = SqlTransaction $ \r c -> do 
-                                    x <- unsafeRunSqlTransaction m (\_ a -> return (Right a)) c
+catchSqlError :: H.IConnection c => SqlTransactionUser l c a -> (SqlError -> SqlTransactionUser l c a) -> SqlTransactionUser l c a
+catchSqlError m f = SqlTransaction $ \r c -> do -- IO  
+                                    x <- CIO.try (unsafeRunSqlTransaction m (\_ a -> return (Right a)) c) 
                                     case x of 
-                                        Left s -> unsafeRunSqlTransaction (f s) r c
-                                        Right a -> r c a
+                                        Left (E.SomeException e) -> do
+--                                                liftIO $ print "fookie"
+                                                H.rollback (fst c)
+                                                (unsafeRunSqlTransaction (f $ DBError $ show e) r c) -- <* (H.rollback (fst c) >> H.commit (fst c))
+                                        Right (Left e) -> do
+--                                                liftIO $ print "faaku"
+                                                H.rollback (fst c)
+                                                (unsafeRunSqlTransaction (f e) r c) -- <* (H.rollback (fst c) >> H.commit (fst c)) -- f a -> f b -> f a 
+                                        Right (Right a) -> r c a 
+
 
 testCatch :: SqlTransaction Connection () 
 testCatch = do 
             s <- catchSqlError (do 
                         liftIO $ print "in catch error"
                         rollback "suck me dick"
-                        return 0) (\e -> liftIO $ print e >> return 1)
+                        return 0) (\e -> liftIO $ print "catched it" >> return 1)
             liftIO $ print s
             return ()
+testCatch2 :: SqlTransaction Connection () 
+testCatch2 = do 
+            x <- return $ Just ( error "terrible" )
+            s <- catchSqlError (do 
+                        case x of 
+                          Just a -> a 
+                          Nothing -> undefined 
+                        return 0) (\e -> liftIO $ print ("catched it " ++ show e) >> return 1)
+            liftIO $ print s
+            return ()
+
 
 -- r :: c -> a -> IO (Either String r) 
 -- unsafeRunSqlTransaction :: SqlTransaction c a -> (c -> a -> IO (Either String r))  -> c -> IO (Either String r)
@@ -147,11 +182,11 @@ instance Applicative (SqlTransactionUser l c) where
     pure = return 
     (<*>) f m = SqlTransaction $ \r -> unsafeRunSqlTransaction m (\c a -> unsafeRunSqlTransaction f (\_ f' -> r c $ f' a) $ c)
 
-instance Alternative (SqlTransactionUser l c) where 
+instance H.IConnection c => Alternative (SqlTransactionUser l c) where 
     empty = SqlTransaction $ \r c ->  (return $ Left "empty")
     (<|>) m n = catchSqlError m (const n) 
 
-instance MonadPlus (SqlTransactionUser l c) where 
+instance H.IConnection c => MonadPlus (SqlTransactionUser l c) where 
         mzero = empty 
         mplus = (<|>)
    
@@ -176,7 +211,7 @@ instance MonadState c (SqlTransactionUser l c) where
         get = ask 
         put a = SqlTransaction $ \r (_,l) -> r (a,l) () 
 
-instance MonadError String (SqlTransactionUser l c) where 
+instance H.IConnection c => MonadError SqlError (SqlTransactionUser l c) where 
        throwError e = SqlTransaction $ \r c -> return (Left e)  
        catchError m f = catchSqlError m f 
                                
@@ -202,7 +237,7 @@ runSqlTransaction xs f c = do
 --instance Convertible a a where 
 --	safeConvert = Right . id
 
-type Future a = MVar (Either String a) 
+type Future a = MVar (Either SqlError a) 
 
 atomical :: SqlTransaction Connection a -> SqlTransaction Connection a 
 atomical trans = do 
@@ -229,13 +264,13 @@ newFuture m = do
         c' <- liftIO $ H.clone c 
         m1 <- emptyFuture  
         liftIO $ forkIO $ do 
-                a <- (unsafeRunSqlTransaction m)(\_ a -> return (Right a)) (c',l)
+                a <- (unsafeRunSqlTransaction m) (\_ a -> return (Right a)) (c',l)
                 putMVar m1 a 
                 H.disconnect c' 
         return m1
 
 
-fillFuture :: Future a -> (Either String a) -> SqlTransaction c ()
+fillFuture :: Future a -> (Either SqlError a) -> SqlTransaction c ()
 fillFuture m = liftIO . putMVar m 
 
 emptyFuture :: SqlTransaction c (Future a)
@@ -244,11 +279,11 @@ emptyFuture = liftIO newEmptyMVar
 doneFuture :: Future a -> SqlTransaction c Bool
 doneFuture = liftIO . isEmptyMVar
 
-readFuture :: Future a -> SqlTransaction c a
+readFuture :: H.IConnection c => Future a -> SqlTransaction c a
 readFuture f = do 
                 b <- liftIO $ readMVar f
                 case b of 
-                    Left e -> rollback e
+                    Left e -> throwError e
                     Right a -> return a
 
 -- parSafe :: H.IConnection c => [SqlTransaction c a] -> SqlTransaction c [a]
@@ -308,8 +343,8 @@ quickQuery s xs = ask >>= liftIO . flip (flip H.quickQuery s) xs
 quickQuery' :: H.IConnection c => String -> [H.SqlValue] -> SqlTransaction c [[H.SqlValue]]
 quickQuery' s xs = ask >>= liftIO . flip (flip H.quickQuery' s) xs 
 
-rollback :: String -> SqlTransaction m t 
-rollback = throwError 
+rollback :: H.IConnection m => String -> SqlTransaction m t 
+rollback = throwError . UError 
 
 run :: H.IConnection c => String -> [H.SqlValue] -> SqlTransaction c Integer  
 run s xs = ask >>= liftIO . flip (flip H.run s) xs
