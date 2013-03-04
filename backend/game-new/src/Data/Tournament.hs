@@ -346,10 +346,39 @@ unsort = foldM (\z x -> uninsert x z) []
                              else uninsert a xs >>= \xs -> return (x:xs)
 
 fillRaceParticipant :: T.Tournament -> [RaceParticipant] -> SqlTransaction Connection [RaceParticipant]
-fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = do 
-                                                                    pure xs  
-                                                        | otherwise = do
+fillRaceParticipant t@(fromInteger . T.players -> n) xs | length xs == n = pure xs 
+                                                        | otherwise = do 
                                                               cs <- search ["prototype" |== toSql True .&& "prototype_available" |== toSql True] [] 1000 0 :: SqlTransaction Connection [CarInGarage]
+                                                              as <- search ["bot" |== toSql True] [] 1000 0 :: SqlTransaction Connection [A.Account]
+                                                              (xs<>) <$> (createPlayers (n - length xs) as cs)
+                            where createPlayers :: Int -> [A.Account] -> [CarInGarage] -> SqlTransaction Connection [RaceParticipant]
+                                  createPlayers 0 _ _ = return [] 
+                                  createPlayers n as cs = do 
+                                    (p, as') <- liftIO $ randomPick' as 
+                                    (c, cs') <- liftIO $ randomPick' cs 
+                                    am <- fromJust <$> load (fromJust $ A.id p) :: SqlTransaction Connection AM.AccountProfileMin 
+                                    let cm = fromInRule $ toInRule c :: CM.CarMinimal 
+
+                                    let bots = (def {
+                                                rp_account = p,
+                                                rp_account_min = am,
+                                                rp_car = c, 
+                                                rp_car_min = cm 
+                                        }) 
+                                    save (def {
+                                        TP.car_instance_id = Model.CarInGarage.id c,
+                                        TP.account_id = A.id p,
+                                        TP.tournament_id = T.id t,
+                                        TP.deleted = False
+                                        })
+                                    commit
+                                    rest <- createPlayers (pred n) as' cs' 
+                                    return (bots : rest) 
+
+fillRaceParticipant' :: T.Tournament -> [RaceParticipant] -> SqlTransaction Connection [RaceParticipant]
+fillRaceParticipant' t@(fromInteger . T.players -> n) xs | length xs == n = pure xs  
+                                                         | otherwise = do
+                                                              cs <- search ["prototype" |== toSql True .&& "prototype_available" |== toSql True] [] 999 0 :: SqlTransaction Connection [CarInGarage]
                                                               as <- search ["bot" |== toSql True] [] 1000 0 :: SqlTransaction Connection [A.Account]
                                                               (xs<>) <$> replicateM (n - length xs) (createPlayers as cs)
                 where createPlayers :: [A.Account] -> [CarInGarage] -> SqlTransaction Connection RaceParticipant 

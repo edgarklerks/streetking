@@ -258,3 +258,14 @@ randomPick (x:xs) = do
             b <- randomRIO (0,1 :: Int) 
             if b == 1 then randomPick xs 
                      else return x 
+
+
+randomPick' :: [a] -> IO (a, [a])
+randomPick' [x] = return (x,[])
+randomPick' (x:xs) = do 
+            b <- randomRIO (0, 1 :: Int)
+            if b == 1 
+                    then do 
+                        (t,ts) <- randomPick' xs 
+                        return (t, x:ts) 
+                    else return (x,xs)
