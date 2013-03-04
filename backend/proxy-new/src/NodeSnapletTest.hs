@@ -61,7 +61,7 @@ createNodeTest ntp = do
        l <- liftIO $ newMemState (60 * 1000 * 1000 * 30) (6000 * 1000) (nt_dump ntp)
        qc <- liftIO $ newTQueueIO 
        liftIO $ forkIO $ queryManager (nt_dump ntp) l qc 
-       s <- liftIO $ startNode $ RP (nt_req ntp) (nt_pull ntp) qc True 
+       s <- liftIO $ startNode $ RP (nt_req ntp) (nt_pull ntp) qc False 
        return ()
 
 
