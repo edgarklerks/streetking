@@ -176,26 +176,25 @@ handleQuery s p =
                      (maybe 0 id -> ttl) = getTTL p 
                  in case query of 
                         Query b -> do
+                                sendProto s (result Empty)
                                 printDebug "got query"
                                 printDebug b  
                                 n <- runMemQuery (Query b)
                                 case n of 
                                     NotFound -> do 
+                                            printDebug "query not found"
                                             case ttl of 
-                                                0 -> return ()
+                                                0 -> printDebug "ttl dead" *> return ()
                                                 -- cannot be found here
                                                 -- send upstream and 
                                                 -- check if we are circular
-                                                _ -> toNodes p
+                                                _ -> printDebug "toNodes" *> toNodes p
                                     b -> case tailRoute p of 
                                             -- oh well we have the last bit 
-                                            Nothing -> sendAnswer rt (result b)
+                                            Nothing -> printDebug "end route, send last result" *> sendAnswer rt (result b)
                                             -- begin the route back 
-                                            Just r -> sendAnswer rt (addRoutes r $ result b)
-                                sendProto s (result Empty)
-
-                        x -> runMemQuery x *> sendProto s (result Empty) 
-
+                                            Just r -> printDebug "next routes , add to results" *> sendAnswer rt (addRoutes r $ result b)
+                        x -> sendProto s (result Empty) *> void (runMemQuery x)
 sendAnswer :: NodeAddr -> Proto -> RequestMonad ()
 sendAnswer xs p = asks pc_request_answer_chan >>= \c -> liftSTM (writeTQueue c (xs,p))
 
@@ -213,7 +212,8 @@ handleCommand s p =  case (fromJust . getCommand $ p) of
 connectToNode :: NodeAddr -> RequestMonad ()
 connectToNode t@(Addr n) = do 
                         ps <- asksTVar pc_upstream_map 
-                        unless (H.member t ps) $ do 
+                        slef <- asks pc_address
+                        unless (H.member t ps || slef == Addr n) $ do 
                             c <- asks pc_context
                             s <- liftIO $ socket c Req 
                             liftIO $ connect s n 
@@ -278,6 +278,7 @@ requestEngine  \_______/___ ue
  incomingEngine /      \
                         \ ue 
 --}
+--
 toClient :: NodeAddr -> Proto -> UpdateMonad ()
 toClient (Local _) pr = undefined 
 toClient t@(Addr na) pr = do 
@@ -419,7 +420,7 @@ instance PrintDebug IncomingMonad where
 
 
 instance PrintDebug IO where 
-    printDebug s = putStrLn ("IO: " ++ (show s))
+    printDebug s = return () --  putStrLn ("IO: " ++ (show s))
     
 
 clientCommand :: String -> String -> Proto -> IO ()

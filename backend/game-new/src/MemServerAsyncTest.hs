@@ -13,11 +13,8 @@ import Control.Concurrent.STM
 import qualified Data.Serialize as S 
 import GHC.Exception
 import qualified Control.Monad.CatchIO as CIO 
-import qualified Data.ByteString as B
 import Data.Maybe 
 import System.IO 
-import System.Random 
-import Data.Word
 
 import ProtoExtended  
 
@@ -71,7 +68,6 @@ type RequestMonad = ProtoMonad RequestConfig
 
 startNode :: ConfigParameters -> IO (RequestConfig, IncomingConfig, UpdateConfig)
 startNode (RP ppull preq pc_memstate debug) = do  
-
             tq <- newTQueueIO 
             log <- newTQueueIO 
 
@@ -114,9 +110,9 @@ startNode (RP ppull preq pc_memstate debug) = do
                     ic_debug = debug,
                     ic_log = log
                     }
-{--            forkIO $ withFile "p2p.log" AppendMode $ \x ->  forever $ do
+            forkIO $ withFile "p2p.log" AppendMode $ \x ->  forever $ do
                     s <- atomically $ readTQueue log 
-                    hPutStrLn x s --}
+                    hPutStrLn x s 
 
             forkIO $ runProtoMonad ic_config incomingEngine
             forkIO $ runProtoMonad uc_config updateEngine
@@ -180,26 +176,25 @@ handleQuery s p =
                      (maybe 0 id -> ttl) = getTTL p 
                  in case query of 
                         Query b -> do
+                                sendProto s (result Empty)
                                 printDebug "got query"
                                 printDebug b  
                                 n <- runMemQuery (Query b)
                                 case n of 
                                     NotFound -> do 
+                                            printDebug "query not found"
                                             case ttl of 
-                                                0 -> return ()
+                                                0 -> printDebug "ttl dead" *> return ()
                                                 -- cannot be found here
                                                 -- send upstream and 
                                                 -- check if we are circular
-                                                _ -> toNodes p
+                                                _ -> printDebug "toNodes" *> toNodes p
                                     b -> case tailRoute p of 
                                             -- oh well we have the last bit 
-                                            Nothing -> sendAnswer rt (result b)
+                                            Nothing -> printDebug "end route, send last result" *> sendAnswer rt (result b)
                                             -- begin the route back 
-                                            Just r -> sendAnswer rt (addRoutes r $ result b)
-                                sendProto s (result Empty)
-
-                        x -> runMemQuery x *> sendProto s (result Empty) 
-
+                                            Just r -> printDebug "next routes , add to results" *> sendAnswer rt (addRoutes r $ result b)
+                        x -> sendProto s (result Empty) *> void (runMemQuery x)
 sendAnswer :: NodeAddr -> Proto -> RequestMonad ()
 sendAnswer xs p = asks pc_request_answer_chan >>= \c -> liftSTM (writeTQueue c (xs,p))
 
@@ -217,7 +212,8 @@ handleCommand s p =  case (fromJust . getCommand $ p) of
 connectToNode :: NodeAddr -> RequestMonad ()
 connectToNode t@(Addr n) = do 
                         ps <- asksTVar pc_upstream_map 
-                        unless (H.member t ps) $ do 
+                        slef <- asks pc_address
+                        unless (H.member t ps || slef == Addr n) $ do 
                             c <- asks pc_context
                             s <- liftIO $ socket c Req 
                             liftIO $ connect s n 
@@ -282,6 +278,7 @@ requestEngine  \_______/___ ue
  incomingEngine /      \
                         \ ue 
 --}
+--
 toClient :: NodeAddr -> Proto -> UpdateMonad ()
 toClient (Local _) pr = undefined 
 toClient t@(Addr na) pr = do 
@@ -423,7 +420,7 @@ instance PrintDebug IncomingMonad where
 
 
 instance PrintDebug IO where 
-    printDebug s = putStrLn ("IO: " ++ (show s))
+    printDebug s = return () --  putStrLn ("IO: " ++ (show s))
     
 
 clientCommand :: String -> String -> Proto -> IO ()
@@ -436,117 +433,4 @@ clientCommand n1 n2 p = withContext  $ \c ->
                 sendProto r p
                 x <- receiveProto r
                 print x
-
-{-- Write some tests --}
-
-type NodeConfig = (RequestConfig, IncomingConfig, UpdateConfig)
-type NodeConfigs = [NodeConfig]
-
--- |  start up all the nodes 
-setupNetwork :: [(String, String)] -> IO NodeConfigs  
-setupNetwork xs = forM (xs `zip` [1..]) $ \((param_pull, param_req),i) -> do
-                                    let dumpname = show i ++ ".dump"
-                                    l <- newMemState (60 * 1000000) (6000 * 1000) (dumpname)
-                                    param_qc <- newTQueueIO 
-                                    forkIO $ queryManager dumpname l param_qc 
-
-                                    let cfg = RP {
-                                            param_pull,
-                                            param_req,
-                                            param_qc,
-                                            debug = False
-                                        }
-                                    startNode cfg
-
-               
--- | fill the network with some bogus data 
-fillNodes :: [B.ByteString] -> NodeConfigs -> IO [B.ByteString]
-fillNodes dts ncs = let bsp =  part 100 ncs dts 
-                        bs = concat $ snd <$> bsp 
-                    in do
-                        forM_ bsp $ \(nc, xs) -> fillNode nc xs 
-                        return bs 
-
-fillNode :: NodeConfig -> [B.ByteString] -> IO ()
-fillNode nc xs = forM_ xs $ \i -> runQuery (pc_memstate (get_pc_config nc)) (Insert i i)
-
-part :: Int -> [a] -> [b] -> [(a, [b])] 
-part n as bs = let cs = takePart n $ cycle bs 
-               in as `zip` cs
-
-
-genBytestrings :: RandomGen g => g -> Int -> [B.ByteString]
-genBytestrings g n = let xs = randomRs (0,255 :: Word8) g
-                     in  B.pack <$> takePart n xs  
-
-
-takePart :: Int -> [a] -> [[a]] 
-takePart n [] = [] 
-takePart n xs = (take n xs)  : takePart n (drop n xs)
-
-
--- | They are coming to take me away ho ho ho 
--- | To the funny farm, where life is beautiful 
--- | all the time and I am happy to so to nice young
--- | men in there clean white coats coming to take me 
--- | away ha ha ha 
-
--- | connect network with each other 
--- | 1 dimensional cyclic string topography 
-
-chainNodes :: String -> NodeConfigs -> IO ()
-chainNodes inp xs = chainM_  xs $ \a b -> do 
-                         connectNode inp a b  
-
-
-connectNode :: String -> NodeConfig -> NodeConfig -> IO ()
-connectNode inp (pc_address . get_pc_config -> (Addr n1)) (pc_address . get_pc_config -> (Addr n2)) = 
-                                                                                        clientCommand inp n1 (advertise $ Addr n2) *>
-                                                                                        clientCommand inp n2 (advertise $ Addr n1)
-
-chainM_ :: Monad m => [a] -> (a -> a -> m b) -> m ()
-chainM_ xs = forM_ (chain xs) . uncurry 
-
-chainM :: Monad m => [a] -> (a -> a -> m b) -> m [b] 
-chainM xs = forM (chain xs) . uncurry 
-
-chain :: [a] -> [(a,a)]
-chain t@(x:xs) = chain' x t
-    where chain' t [x] = [(t,x)]
-          chain' t (x:y:xs) = (x,y) : chain' t (y:xs) 
-
--- | query connections 
-
-queryNodes :: String -> NodeConfigs -> [B.ByteString] -> IO ()
-queryNodes p cs xs = forM_ (xs `zip` cycle cs) $ \(x,c) -> 
-                                            let (Addr addr) = pc_address . get_pc_config $ c
-                                            in clientCommand p addr (addRoute (Addr p) $ query 20 $ x) *> print ("QUERY  " ++ (show x) ++ " DONE")
-
-
--- | Now put it all together 
---
-
-runTest :: IO ()
-runTest = do 
-    xs <- setupNetwork [
-            ("tcp://127.0.0.1:8001",
-            "tcp://127.0.0.1:8002"),
-            ("tcp://127.0.0.1:8003",
-            "tcp://127.0.0.1:8004"),
-            ("tcp://127.0.0.1:8005",
-            "tcp://127.0.0.1:8006"),
-            ("tcp://127.0.0.1:8007",
-            "tcp://127.0.0.1:8008"),
-            ("tcp://127.0.0.1:8009",
-            "tcp://127.0.0.1:8010"),
-            ("tcp://127.0.0.1:8011",
-            "tcp://127.0.0.1:8012")
-        ]
-    g <- newStdGen
-    cs <- fillNodes (genBytestrings g 100) xs 
-    chainNodes "tcp://127.0.0.1:4001" xs 
-    queryNodes "tcp://127.0.0.1:4002" xs cs
-    return ()
-
-
 
