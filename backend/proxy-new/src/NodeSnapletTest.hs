@@ -128,6 +128,7 @@ lookupBinary k = do
                 (Just (NotFound)) -> return $ Nothing 
                 (Just (KeyVal k v)) -> return $ Just $ decodeL v 
                 (Just (Value k)) -> return $ Just $ decodeL k 
+                _ -> return Nothing 
             
 
 
