@@ -6,7 +6,65 @@
                 <a href="#Garage/car?car_instance_id={{=sk[0].id}}" class="button icon-text" module="GARAGE_CAR_INFO"><span class="icon-car-info"></span></a>
             </div>
             <div class="sk-line">&nbsp;</div>
-            <div class="">aaa</div>
+            <div class="showroom-element-data-field-box clearfix">
+                <div class="showroom-element-data-field-label">Top speed</div>
+                <div class="showroom-element-data-field-bar-box">
+                    <div class="showroom-element-data-field-bar-label">{{= sk[0].top_speed_values.text }} km/h</div>
+                    <div class="showroom-element-data-field-bar-container">
+                        <div class="showroom-element-data-field-bar bar-normal" style="width:{{= sk[0].top_speed_values.bar + '%'}}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sk-line">&nbsp;</div>
+            <div class="showroom-element-data-field-box clearfix">
+                <div class="showroom-element-data-field-label">Acceleration</div>
+                <div class="showroom-element-data-field-bar-box">
+                    <div class="showroom-element-data-field-bar-label">{{= sk[0].acceleration_values.text }}</div>
+                    <div class="showroom-element-data-field-bar-container">
+                        <div class="showroom-element-data-field-bar bar-normal" style="width:{{= sk[0].acceleration_values.bar + '%'}}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sk-line">&nbsp;</div>
+            <div class="showroom-element-data-field-box clearfix">
+                <div class="showroom-element-data-field-label">Braking</div>
+                <div class="showroom-element-data-field-bar-box">
+                    <div class="showroom-element-data-field-bar-label">{{= sk[0].stopping_values.text }}</div>
+                    <div class="showroom-element-data-field-bar-container">
+                        <div class="showroom-element-data-field-bar bar-normal" style="width:{{= sk[0].stopping_values.bar + '%'}}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sk-line">&nbsp;</div>
+            <div class="showroom-element-data-field-box clearfix">
+                <div class="showroom-element-data-field-label">Handling</div>
+                <div class="showroom-element-data-field-bar-box">
+                    <div class="showroom-element-data-field-bar-label">{{= sk[0].cornering_values.text }}</div>
+                    <div class="showroom-element-data-field-bar-container">
+                        <div class="showroom-element-data-field-bar bar-normal" style="width:{{= sk[0].cornering_values.bar + '%'}}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sk-line">&nbsp;</div>
+            <div class="showroom-element-data-field-box clearfix">
+                <div class="showroom-element-data-field-label">Weight</div>
+                <div class="showroom-element-data-field-bar-box">
+                    <div class="showroom-element-data-field-bar-label">{{= sk[0].weight_values.text }} kg</div>
+                    <div class="showroom-element-data-field-bar-container">
+                        <div class="showroom-element-data-field-bar bar-normal" style="width:{{= sk[0].weight_values.bar + '%'}}"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sk-line">&nbsp;</div>
+            <div class="showroom-element-data-field-box clearfix">
+                <div class="showroom-element-data-field-label">Used</div>
+                <div class="showroom-element-data-field-bar-box">
+                    <div class="showroom-element-data-field-bar-label">{{= Math.floor(sk[0].wear/100) }}%</div>
+                    <div class="showroom-element-data-field-bar-container">
+                        <div class="showroom-element-data-field-bar bar-normal" style="width:{{= Math.floor(sk[0].wear/100) + '%'}}"></div>
+                    </div>
+                </div>
+            </div>
             <div class="sk-line">&nbsp;</div>
             <div class="showroom-element-action-button-container clearfix">
                 {{? sk[0].active == false }}
