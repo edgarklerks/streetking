@@ -30,7 +30,7 @@ import           Control.Monad
 import           Control.Monad.Random 
 import           Control.Monad.Trans
 import           Data.Car
-import           Data.Car
+import           Data.Function
 import           Data.CarDerivedParameters
 import           Data.ComposeModel
 import           Data.Constants
@@ -2464,6 +2464,95 @@ tournamentRewards tid = do
                     return $ xs
 
 
+-- hiscore: take a worker that produces a list of mapables given an argument map, get user arguments, apply the worker and write the results
+-- e.g. hiscoreRespect = hiscore hsRespect
+hiscore :: Mapable a => (SqlMap -> SqlTransaction Connection [a]) -> Application ()
+hiscore w = do
+        m <- getJson
+        let lim = case HM.lookup "limit" m of
+                Nothing -> 10
+                Just x -> max (fromSql x) 100
+        let ofs = case HM.lookup "offset" m of
+                Nothing -> 0
+                Just x -> fromSql x
+        rs <- runDb $ (\x -> List.take lim $ List.drop ofs x) <$> w m
+        writeMapables rs
+
+hsRespect :: SqlMap -> SqlTransaction Connection [AP.AccountProfile]
+hsRespect m =
+        let
+                -- convenient foldM takes step function as last argument
+                foldM' a xs f = foldM f a xs
+                
+                -- filters: each filter takes the whole input map and produces either Nothing or a list of account profiles
+                -- the intersection of all generated lists shall be the result
+                filters :: [SqlMap -> SqlTransaction Connection (Maybe [AP.AccountProfile])]
+                filters = [
+
+                        (\m -> case HM.lookup "has_car_model" m of
+                                Nothing -> return Nothing
+                                Just cmid -> do
+
+                                        -- get unique garage ids for car instances for given model
+                                        gs <- (\xs -> List.nub $ map (fromJust . CarInstance.garage_id) xs) <$> search ["car_id" |== cmid, "deleted" |== toSql False, "garage_id" |> SqlInteger 0] [] 100000 0
+                                        -- get unique account ids for garages
+                                        as <- (\xs -> List.nub $ map G.account_id xs) <$> (forM gs $ \g -> aget ["id" |== toSql g] $ rollback $ "garage not found for " ++ (show g))
+
+                                        -- return account profiles
+                                        rs <- forM as $ \a -> aget ["id" |== toSql a] $ rollback $ "account profile not found for " ++ (show a)
+
+                                        return $ Just rs
+                            ),
+
+                        (\m -> case HM.lookup "in_city" m of
+                                Nothing -> return Nothing
+                                Just cid -> do
+
+                                        -- get account ids in city
+                                        as <- (map (fromJust . A.id)) <$> search ["city" |== toSql cid] [] 100000 0
+
+                                        -- get profiles for accounts
+                                        rs <- forM as $ \a -> aget ["id" |== toSql a] $ rollback $ "account profile not found for " ++ (show a)
+
+                                        return $ Just rs
+                                        
+                                
+                            ),
+
+                        (\m -> case HM.lookup "on_continent" m of
+                                Nothing -> return Nothing
+                                Just cid -> do
+
+                                        -- get city ids for continent
+                                        cs <- (map (fromJust . City.id)) <$> search ["continent_id" |== toSql cid] [] 100000 0
+                                        
+                                        -- get account ids from each city
+                                        ass <- forM cs $ \c -> (map (fromJust . A.id)) <$> search ["city" |== toSql c] [] 100000 0
+                                        let as = List.nub $ concat ass
+                                        
+                                        -- get profiles for accounts
+                                        rs <- forM as $ \a -> aget ["id" |== toSql a] $ rollback $ "account profile not found for " ++ (show a)
+
+                                        return $ Just rs
+                             )
+
+                    ]
+        in do
+
+            -- TODO: server side views. locally juggling potentially humongous lists is probably horribly inefficient.
+
+            -- get all accounts ordered by respect (!)
+            as <- search [] [order "respect" desc] 100000 0
+            -- get filter produced accounts
+            fs <- forM filters $ \f -> f m
+            -- filter accounts, left order seems to be preserved?
+            rs <- foldM' as fs $ \xs mf -> return $ maybe xs (List.intersectBy (on (==) AP.id) xs) mf
+            -- inversely order by respect
+            return $ List.sortBy (\a b -> on compare AP.respect b a) rs
+                        
+                
+                   
+
 
 ------------------------------------------------------------------------------
 -- | The application's routes.
@@ -2562,7 +2651,8 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/User/register", userRegister),
                 ("/User/reports", userReports),
                 ("/User/searchNotification", readArchive),
-                ("/User/testNotification", testNotification)
+                ("/User/testNotification", testNotification),
+                ("/Hiscore/respect", hiscore hsRespect)
           ]
 
 getRewards :: Application ()
