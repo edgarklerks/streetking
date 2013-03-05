@@ -328,7 +328,6 @@ runProxy prs = do
 
     -- gets proxy 
     
-
     ps <- gets _proxy
     (host,port) <- liftIO $ atomically $ getAddress ps 
     

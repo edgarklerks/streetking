@@ -2287,7 +2287,8 @@ tournamentJoin = do
     writeResult (1 :: Int)
 
 {-- till here --}
-wrapErrors g x = when g (void $ runDb (forkSqlTransaction $ Task.run Task.Cron 0 >> return ())) >>  CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
+wrapErrors g x = when g (void $ runDb (forkSqlTransaction $ Task.run Task.Cron 0 >> return ())) 
+              >>  CIO.catch (CIO.catch x (\(UserErrorE s) -> writeError s)) (\(e :: SomeException) -> writeError (show e))
 
 
 userNotification :: Application ()
