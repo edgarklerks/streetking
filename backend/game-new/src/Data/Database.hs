@@ -163,7 +163,7 @@ instance Expression Constraint where
             enc OpIContains x = toSql $ encWith '%' $ (fromSql x :: Sql)
             enc _ x = x
 
-data ConOp = OpLT | OpLTE | OpGT | OpGTE | OpEQ | OpNEQ | OpContains | OpIContains deriving Show
+data ConOp = OpLT | OpLTE | OpGT | OpGTE | OpEQ | OpNEQ | OpContains | OpIContains | OpInList deriving Show
 
 cLT :: Selection -> Value -> Constraint
 cLT = Constraint OpLT
@@ -189,6 +189,9 @@ cIn = Constraint OpContains
 
 cIni :: Selection -> Value -> Constraint
 cIni = Constraint OpIContains
+
+cInList :: Selection -> Value -> Constraint
+cInList = Constraint OpInList
 
 (|<) :: Sql -> Value -> Constraint
 (|<) a b = cLT (column a) b
@@ -222,6 +225,10 @@ infixl 4 |%
 (|%%) a b = cIni (column a) b
 infixl 4 |%%
 
+(|~) :: Sql -> Value -> Constraint
+(|~) a b = cInList (column a) b
+infixl 4 |~
+
 instance Expression ConOp where
     sql OpLT = "<"
     sql OpLTE = "<="
@@ -231,6 +238,7 @@ instance Expression ConOp where
     sql OpNEQ = "<>"
     sql OpContains = "like"
     sql OpIContains = "ilike"
+    sql OpInList = "in"
     values _ = []
 
 {- Order -}
