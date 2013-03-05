@@ -106,7 +106,7 @@ aget cs f = do
     ss <- search cs [] 1 0
     case ss of 
         [] -> f 
-        xs -> return $ head xs 
+        x:_ -> return x
 
 -- get list of records or run f if none found
 agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [a] -> SqlTransaction Connection [a]
