@@ -2478,7 +2478,7 @@ hiscore w = do
                 Just x -> fromSql x
         rs <- runDb $ (\x -> List.take lim $ List.drop ofs x) <$> w m
         writeMapables rs
-
+-- TODO: breaks if the server has over 9000 users.
 hsRespect :: SqlMap -> SqlTransaction Connection [AP.AccountProfile]
 hsRespect m =
         let

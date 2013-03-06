@@ -7,4 +7,4 @@ killall setup-nodes
 cd ../game-new/
 sh start-server.sh &
 cd ../proxy-new/
-./dist/build/proxy-new/proxy-new --no-compression -p $1 +RTS  -N1 -K512M   
+./dist/build/proxy-new/proxy-new --no-compression -p $1 +RTS  -N4 -K512M   
