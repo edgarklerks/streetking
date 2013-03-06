@@ -1,4 +1,4 @@
-{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE ViewPatterns, RankNTypes #-}
 module SleepSort where 
 
 import Control.Applicative
@@ -9,6 +9,10 @@ import Control.Monad
 import Control.Monad.Trans
 import Debug.Trace
 import System.IO.Unsafe
+import Control.Monad
+import Control.Monad.CC
+import Control.Monad.State 
+import Debug.Trace 
 
 
 data Data a = Stop Int | Data a
@@ -46,4 +50,17 @@ collect ch = atomically . (`runContT` return) $ callCC $ \k -> do
 
 
 
-                    
+type StateC r s = CCT r (State s) 
+
+runStateC :: (forall r. StateC r s a) -> s -> (a, s)
+runStateC m = runState (runCCT m)
+
+
+test :: StateC r Int Int 
+test = reset $ \s -> do 
+
+    reset $ \p -> (7*) <$> (shift p $ \n -> do 
+            (*3) <$> (shift s $ \k -> k (n (k (n (k (return 1)))))))
+
+
+
