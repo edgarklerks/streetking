@@ -364,7 +364,7 @@ queryNode pc p r n req =
                 case s of 
                   NotFound -> client' p r n req      
                   Value v -> return $ result (KeyVal a v)
-            Just a -> void $ client' p r n req *> return (result Empty)
+            Just a -> client' p r n req *> return (result Empty)
 
 
 
