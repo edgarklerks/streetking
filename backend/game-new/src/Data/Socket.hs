@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, ViewPatterns, OverloadedStrings, FlexibleInstances, MultiParamTypeClasses, RankNTypes, ImpredicativeTypes, ScopedTypeVariables #-}
+{-# LANGUAGE GADTs, ViewPatterns, OverloadedStrings, FlexibleInstances, MultiParamTypeClasses, RankNTypes, ImpredicativeTypes, ScopedTypeVariables, LiberalTypeSynonyms #-}
 module Data.Socket where 
 
 
@@ -27,6 +27,9 @@ pullSockSpec p = ServerSpec {
             closeConnection = True, 
             recvSize = 4096
     }
+-- generalized abstract data types 
+--
+
 
 data Stream a where 
         -- | Data messages 
@@ -39,6 +42,28 @@ data Stream a where
         Resend :: Stream a 
         Close :: Stream a 
     deriving (Show, Eq, Ord)
+
+data Term a where 
+    Plus :: Int -> Int -> Term Int 
+    String :: String -> Term String
+
+
+
+interpb :: (Read b) => Term a -> b
+interpb (Plus x y) = read $ show (x + y)
+interpb (String x) = read x 
+
+interp :: forall a. Term a -> a 
+interp (Plus x y) = x + y
+interp (String x) = x 
+
+
+data TermT a = PlusT Int Int 
+            | StringT String 
+
+interpT :: forall a. TermT a -> a 
+interpT (Plus x y) = x + y
+interpT (String x) = x 
 
 data StreamError = Missing [Int]
                  | HashBroken 
@@ -106,7 +131,7 @@ newtype Transcoder s e b a = Transcoder {
     }
 
 runTranscoder :: (Hashable a, Serialize a) => s -> (IO (Maybe (Stream a))) -> (Stream a -> IO ()) -> Transcoder s e a a -> IO (s, Either e a)
-runTranscoder s g f m = (floor <$> getPOSIXTime) >>= \tm -> unTranscoder m tm g f s  
+runTranscoder s g f m = (floor <$> getPOSIXTime) >>= \tm -> unTranscoder m (1000 * tm) g f s  
 
 instance Functor (Transcoder s e b) where 
         fmap f m = Transcoder $ \tm g p s -> 
@@ -158,13 +183,13 @@ addStream :: Stream b -> StreamTranscoder b ()
 addStream b = modify (insert b)   
                 
 getCurrentTime :: Transcoder s e b Int 
-getCurrentTime = Transcoder $ \tm f g s -> getPOSIXTime >>= \x -> return (s, Right $ floor x)
+getCurrentTime = Transcoder $ \tm f g s -> getPOSIXTime >>= \x -> return (s, Right $ floor (1000 * x))
 
 getStartTime :: Transcoder s e b Int 
 getStartTime = Transcoder $ \tm f g s -> return (s, Right tm)
 
 getDeltaTime :: Transcoder s e b Int 
-getDeltaTime = (-) <$> getStartTime <*> getCurrentTime 
+getDeltaTime = (-) <$> getCurrentTime <*> getStartTime 
 
 wait :: Transcoder s e b ()
 wait = Transcoder $ \tm f g s -> threadDelay 10000 *> return (s, Right ())
@@ -178,17 +203,26 @@ putError e = Transcoder $ \tm f g s -> return (s, Left e)
 getMessage :: StreamTranscoder a (Maybe (Stream a))
 getMessage = Transcoder $ \tm g p s -> g >>= \x -> return (s, Right x) 
 
+printInfo :: Show a => a -> Transcoder s e b () 
+printInfo xs = return () --  Transcoder $ \tm g p s -> print xs >> return (s, Right ())
+
+
+{-- stream receiver --}
+
 runStream :: (Hashable b, Serialize b) => Int -> StreamTranscoder b b
 runStream nt = do 
             str <- getMessage  
             case str of 
-                Nothing -> wait *> do 
-                            ts <- getDeltaTime 
-                            if ts > nt then S.get >>= checkCase nt . reassemble 
-                                       else runStream nt 
+                Nothing -> do 
+                        ts <- getDeltaTime 
+                        printInfo ts
+                        printInfo "nothing?"
+                        if ts > nt then S.get >>= checkCase nt . reassemble 
+                                   else runStream nt 
                 Just str -> do 
                     addStream str 
                     b <- streamMonotone 
+                    printInfo str 
                     case b of 
                         True -> S.get >>= checkCase nt  . reassemble 
                         False -> do 
@@ -198,16 +232,77 @@ runStream nt = do
 
 checkCase :: (Hashable b, Serialize b) => Int -> (Either StreamError b) -> StreamTranscoder b b 
 checkCase n  (Left bs) = case bs of 
-                                Missing xs -> controlMessage (Retry xs) *> runStream (n + n) 
-                                a -> controlMessage Close *> putError TimeoutError -- return (Left  TimeoutError) 
+                                Missing xs -> printInfo xs *> controlMessage (Retry xs) *> runStream (n + n) 
+                                NoHash -> controlMessage (Resend) *> runStream (n + n) -- error "no hash found"
+                                a -> printInfo a *> controlMessage Close *> putError TimeoutError -- return (Left  TimeoutError) 
 checkCase n  (Right as) = controlMessage Ok *> return as
 
-testStream :: IO ()
-testStream = do 
+testStream :: [(String, (String -> (TQueue (Stream String)) -> (TQueue (Stream String)) -> IO ()))]
+                -> IO ()
+testStream fs = forM_ fs $ \(s, f) -> do 
     dta <- newTQueueIO 
     ctrl <- newTQueueIO 
-    printInt =<< runStreamTranscoder (atomically . tryReadTQueue $ dta) (atomically . writeTQueue ctrl) (runStream 10)
-    return ()
+    print $ "running " ++ s ++ " test"
+    forkIO $ f (s :: String) dta ctrl 
+    print =<< runStreamTranscoder (atomically . tryReadTQueue $ dta) (atomically . writeTQueue ctrl) (runStream 500)
+
+
+runTests = testStream [
+                      ("perfect", mockStreamPerfect),
+                      ("missing", mockStreamMissing),
+                      ("broken", mockStreamBroken)
+                    ]
+
+type MockStream a = (Show a, Serialize a, Hashable a) => a -> (TQueue (Stream a)) -> (TQueue (Stream a)) -> IO ()
+
+mockStreamPerfect :: MockStream a -- (Show a, Serialize a, Hashable a) => a -> (TQueue (Stream a)) -> (TQueue (Stream a)) -> IO  () 
+mockStreamPerfect n inp outp = forM_ (disassemble 4 n) $ atomically . \x -> writeTQueue inp x 
+
+mockStreamMissing :: MockStream a -- (Show a, Serialize a, Hashable a) => a -> (TQueue (Stream a)) -> (TQueue (Stream a)) -> IO ()
+mockStreamMissing m inp outp = let ps = disassemble 4 m
+                                   (missing, wilsend) = (breakEvens ps) 
+                               in do 
+                                     forM_ missing $ atomically . writeTQueue inp
+                                     p <- atomically $ readTQueue outp 
+                                     case p of
+                                        Retry xs -> print "please retry" *> (forM_ xs $ \x -> (atomically $ writeTQueue inp (select x ps)))
+                                        Resend -> print "restart" *> mockStreamMissing m inp outp -- - error "shouldn't happen"
+                                        Ok -> return ()
+                                        Close -> error "want to close"
+
+mockStreamBroken :: MockStream a
+mockStreamBroken n inp outp = let ps = disassemble 4 n 
+                                  (missing, wilsend) = breakEvens ps 
+                              in do
+                                forM_ wilsend $ atomically . writeTQueue inp 
+                                p <- atomically $ readTQueue outp 
+                                case p of 
+                                    Retry xs -> print "please retry" *> (forM_ xs $ \x -> (atomically $ writeTQueue inp (select x ps)))
+                                    Resend -> print "restart" *> mockStreamMissing n inp outp 
+                                    Ok -> return ()
+                                    Close -> error "want to close"
+
+select :: Int -> [Stream a] -> Stream a
+select n w@(Packet t _ : xs) | n == t = head w 
+                             | otherwise = select n xs 
+select n (x:xs) = select n xs 
+select n [] = error "cannot happen?"
+
+                                     
+
+whileM :: Monad m => m Bool -> m ()
+whileM m = do 
+        b <- m 
+        when b $ whileM m 
+
+                                                                        
+                                   
+
+breakEvens :: [Stream a] -> ([Stream a], [Stream a])
+breakEvens xs =  be ([],[]) xs 
+    where  be (ps,ts) (t@(Packet n g):xs) | even n = be (ps, t:ts) xs
+           be (ps, ts) (t : xs) = be (t:ps, ts) xs
+           be (ps, ts) [] = (ps, ts)
 
 
 printInt :: ([Stream Int], Either StreamError Int)  -> IO ()
@@ -219,5 +314,8 @@ findCycle a f = reverse $ findCycle' S.empty [a] f
                                    in if b `S.member` n 
                                                then (b:(takeWhile (/=b) t) ++ [b]) 
                                                else b `seq` findCycle' (S.insert b n) (b:t) f 
+
+
+
 
 
