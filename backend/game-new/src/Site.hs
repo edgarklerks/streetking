@@ -926,7 +926,7 @@ garageParts = do
                 "level" +>= "level-min" +&&
                 "price" +>= "price-min" +&&
                 "price" +<= "price-max" +&& 
-
+                -- get parts that fit any car, i.e. generic parts
                 ifdtd "anycar" (=="1")
                     ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
                     ("car_id" +== "car_id") +&& 
