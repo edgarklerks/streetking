@@ -62,18 +62,19 @@ cars :: RelationM
 cars = view "car_in_garage" ["garage_id", "manufacturer_name", "name"]
 
 testBasic :: RelationM
-testBasic = account >> do
+testBasic = do
+        account
         select ("level" |>* SqlInteger 10) -- make selection
         project ["id", "nickname", "level", "respect"] -- get relevant columns
         rename [("id", "what"), ("nickname", "who"), ("level", "where"), ("respect", "how")] -- name columns
 
 testJoin :: RelationM
-testJoin = account >> do
-        rename [("id", "user_account_id")]
+testJoin = do
+        account >> rename [("id", "user_account_id")]
         join ("user_account_id" |==| "garage_account_id") $ garage >> rename [("id", "user_garage_id"), ("account_id", "garage_account_id")]
         join ("user_garage_id" |==| "car_garage_id") $ cars >> rename [("garage_id", "car_garage_id")]
         select ("level" |>* SqlInteger 10 <||> "nickname" |%%* "pikachu")
-        projectAs [("nickname", "who"), ("level", "level"), ("manufacturer_name", "mark"), ("name", "model")]
+        projectAs [("nickname", "name"), ("level", "level"), ("manufacturer_name", "mark"), ("name", "model")]
  
 
 {-
@@ -118,9 +119,6 @@ data Relation = Relation Schema Query
         deriving (Show)
 
 type RelationM = State Relation ()
-
-exec :: RelationM -> Relation
-exec = flip execState rempty
 
 
 -- Condition constructors
@@ -386,6 +384,9 @@ infixl 4 *%%*
 {-
  - Retrieval
  -}
+
+exec :: RelationM -> Relation
+exec = flip execState rempty
 
 query :: Relation -> Query 
 query r = trace (sql r) $ (sql r, values r)
