@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, ViewPatterns, OverloadedStrings, FlexibleInstances, MultiParamTypeClasses, RankNTypes, ImpredicativeTypes, ScopedTypeVariables, LiberalTypeSynonyms #-}
+{-# LANGUAGE GADTs, ViewPatterns, OverloadedStrings, FlexibleInstances, MultiParamTypeClasses, RankNTypes, ImpredicativeTypes, ScopedTypeVariables, LiberalTypeSynonyms, FlexibleContexts, NoMonomorphismRestriction #-}
 module Data.Socket where 
 
 
@@ -11,13 +11,16 @@ import Control.Concurrent
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import Data.Hashable 
-import Data.Serialize 
+import Data.Serialize as R 
 import Data.List 
 import Data.Monoid
 import Control.Monad.Error 
 import Control.Concurrent.STM 
 import qualified Data.Set as S 
 import Data.Time.Clock.POSIX 
+import Data.Word
+import Test.QuickCheck 
+import qualified Data.HashMap.Strict as HS
 
 pullSockSpec :: Int -> ServerSpec 
 pullSockSpec p = ServerSpec {
@@ -30,6 +33,8 @@ pullSockSpec p = ServerSpec {
 -- generalized abstract data types 
 --
 
+type StreamQueue a = TQueue (Stream a)
+type IndexedStreamQueue a = TQueue (Int, Stream a)
 
 data Stream a where 
         -- | Data messages 
@@ -43,27 +48,27 @@ data Stream a where
         Close :: Stream a 
     deriving (Show, Eq, Ord)
 
-data Term a where 
-    Plus :: Int -> Int -> Term Int 
-    String :: String -> Term String
+instance Serialize (Stream a) where 
+        put (Start a) = R.put (0x01 :: Word8) *> R.put a
+        put (Packet a b) = R.put (0x02 :: Word8) *> R.put a *> R.put b
+        put (End a) = R.put (0x03 :: Word8) *> R.put a
+        put (Retry xs) = R.put (0x04 :: Word8) *> R.put xs
+        put (Ok) = R.put (0x05 :: Word8)
+        put (Resend) = R.put (0x06 :: Word8)
+        put (Close) = R.put (0x07 :: Word8)
+        get = do 
+            b <- R.get :: Get Word8
+            case b of 
+                0x01 -> Start <$> R.get 
+                0x02 -> Packet <$> R.get <*> R.get 
+                0x03 -> End <$> R.get 
+                0x04 -> Retry <$> R.get 
+                0x05 -> pure Ok
+                0x06 -> pure Resend
+                0x07 -> pure Close 
+        
 
 
-
-interpb :: (Read b) => Term a -> b
-interpb (Plus x y) = read $ show (x + y)
-interpb (String x) = read x 
-
-interp :: forall a. Term a -> a 
-interp (Plus x y) = x + y
-interp (String x) = x 
-
-
-data TermT a = PlusT Int Int 
-            | StringT String 
-
-interpT :: forall a. TermT a -> a 
-interpT (Plus x y) = x + y
-interpT (String x) = x 
 
 data StreamError = Missing [Int]
                  | HashBroken 
@@ -237,8 +242,7 @@ checkCase n  (Left bs) = case bs of
                                 a -> printInfo a *> controlMessage Close *> putError TimeoutError -- return (Left  TimeoutError) 
 checkCase n  (Right as) = controlMessage Ok *> return as
 
-testStream :: [(String, (String -> (TQueue (Stream String)) -> (TQueue (Stream String)) -> IO ()))]
-                -> IO ()
+testStream :: [(String, MockStream String)] -> IO ()
 testStream fs = forM_ fs $ \(s, f) -> do 
     dta <- newTQueueIO 
     ctrl <- newTQueueIO 
@@ -317,5 +321,114 @@ findCycle a f = reverse $ findCycle' S.empty [a] f
 
 
 
+-- createSocketListener 
 
+data SeqPacket a = SeqPacket {
+            unSeqPacket :: (Int, Stream a)
+    } deriving (Show)
+
+instance Serialize (SeqPacket a) where 
+    put (SeqPacket (a,b)) = R.put a *> R.put b 
+    get = SeqPacket <$> ((,) <$> R.get <*> R.get)
+
+toBS :: (Hashable a, Serialize a) => SeqPacket a -> B.ByteString 
+toBS (SeqPacket (d,s)) = encode (d,s)
+
+fromBS :: (Hashable a, Serialize a) => B.ByteString -> Either String (SeqPacket a)
+fromBS b =  decode b
+
+
+
+receivePackets :: (Hashable a, Serialize a) => Address -> (SeqPacket a -> Address -> IO (Maybe (SeqPacket a))) -> IO [ThreadId]
+receivePackets addr f  = let spec = serverSpec {
+                    address = addr
+            } in dgramServer spec $ \(fromBS -> x) a -> do 
+                                case x of 
+                                    Left e -> return mempty
+                                    Right x -> do 
+                                        b <- f x a
+                                        case b of 
+                                            Just a -> return (pure $ toBS a)
+                                            Nothing -> return [] 
+
+
+
+maxChunkSize = 1024 * 1024
+
+sendPacket :: (Hashable a, Serialize a) => Address -> SeqPacket a -> IO (Either String (SeqPacket a))
+sendPacket addr seq =  withDgram addr $  (\x -> send x (toBS $ seq) *> (fromBS <$> recv x maxChunkSize))
+      
+
+testShit = do 
+     bxd <- newTQueueIO 
+     forkIO $ boxedManager bxd 
+
+
+     dta <- newTQueueIO :: IO (StreamQueue Int)
+     ctrl <- newTQueueIO :: IO (StreamQueue Int) 
+     receivePackets (IP "127.0.0.1" 8123) $ \(p :: SeqPacket Int) a -> case p of 
+                                                                                    (SeqPacket (s, n)) -> do 
+                                                                                                             atomically $ writeTQueue dta n 
+                                                                                                             return (Just $ SeqPacket (s, Ok)) 
+     forkIO $ forM_ [1..100 :: Int] $ \p -> do
+                let xs = disassemble 1 p 
+                ns <- forM xs $ \l -> sendPacket (IP "127.0.0.1" 8123) ((SeqPacket (p, l))) 
+                printBoxedQ bxd "packets" ns 
+                printBoxedQ bxd "transcoder" =<< runStreamTranscoder (atomically $ tryReadTQueue dta) (atomically . writeTQueue ctrl) (runStream 2000)
+
+
+
+
+multiShit = do
+        bxd <- newTQueueIO 
+        forkIO $ boxedManager bxd 
+
+
+        xs <- newTVarIO (HS.empty)
+
+
+        receivePackets (IP "127.0.0.1" 8712) $ \(p :: SeqPacket String) a -> case p of 
+                                                                            (SeqPacket (s, n)) -> do 
+                                                                                        printBoxedQ bxd "seqpacket" s
+                                                                                        bs <- atomically $ do 
+                                                                                                p <- readTVar xs 
+                                                                                                case HS.lookup s p of 
+                                                                                                        Nothing ->  do 
+                                                                                                            dta <- newTQueue :: STM (StreamQueue String)
+                                                                                                            ctrl <- newTQueue :: STM (StreamQueue String)
+                                                                                                            writeTVar xs $ HS.insert s (dta,ctrl) p  
+                                                                                                            return (Left (dta, ctrl))
+                                                                                                        Just a -> return (Right a)
+                                                                                        case bs of 
+                                                                                          Left (dta,ctrl) -> forkIO (printBoxedQ bxd "transcoder" =<< runStreamTranscoder (atomically $ tryReadTQueue dta) (atomically . writeTQueue ctrl) (runStream 5000)) *> atomically (writeTQueue dta n) *> return (Just $ SeqPacket (s, Ok))
+                                                                                                    
+                                                                                          Right (dta,ctrl) -> atomically (writeTQueue dta n) *> return (Just $ SeqPacket (s, Ok))
+
+                                                                                        
+        forM_ (show <$> [1..10 :: Int]) $ \l -> forkIO $ do 
+
+                                                           let xs = disassemble 4 l 
+                                                           forM_ xs $ \x -> sendPacket (IP "127.0.0.1" 8712) (SeqPacket (read l, x))
+
+                                                                                                            
+
+
+data Boxed = forall a. Show a => Box a
+
+testF :: (Hashable a, Serialize a) => StreamQueue a -> SeqPacket a -> Address -> IO (SeqPacket a)
+testF sq addr = undefined  
+
+printBoxedQ :: Show a => TQueue (Boxed, String) -> String -> a -> IO ()
+printBoxedQ tq lbl a = atomically $ writeTQueue tq (Box a, lbl)
+
+printBoxed' :: String -> Boxed -> IO ()
+printBoxed' lbl (Box a) = let n = length lbl `div` 2 
+                              b = putStrLn (replicate (20 - n) '=' ++ lbl ++ replicate (20 - n) '=' ++ replicate 1 '\n')
+                          in b *> print a *> putStr "\n" *> b
+
+
+boxedManager :: TQueue (Boxed,String) -> IO ()
+boxedManager c = forever $ do 
+                    (a,p) <- atomically $ readTQueue c
+                    printBoxed' p a
 
