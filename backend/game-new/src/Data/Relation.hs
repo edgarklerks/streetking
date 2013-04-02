@@ -1,13 +1,52 @@
 {-# LANGUAGE OverloadedStrings, FlexibleInstances, OverlappingInstances #-}
 
--- TODO
--- * Order
--- * non-recursive Relation structure
 
-module Data.View (
+-- folding over Relations
+-- intermediary representation -> symbol table
+
+module Data.Relation (
+    
+    Relation,
+    RelationM,
+
+    getResult,
+    getAssoc,
+    
+    toAssoc,
+    fromAssoc,
+
+    raw,
+    table,
+    view,
+    identity,
+    project,
+    projectAs,
+    select,
+    unite,
+    intersect,
+    diff,
+    cross,
+    rename,
+    join,
+    take,
+    drop,
+    sort,
+
+    Direction (..),
+    
+    (<&&>),
+    (<||>),
+
+    (|==|), (|>|), (|>=|), (|<>|), (|<|), (|<=|), (|%|), (|%%|),
+    (*==|), (*>|), (*>=|), (*<>|), (*<|), (*<=|), (*%|), (*%%|),
+    (|==*), (|>*), (|>=*), (|<>*), (|<*), (|<=*), (|%*), (|%%*),
+    (*==*), (*>*), (*>=*), (*<>*), (*<*), (*<=*), (*%*), (*%%*),
+
+    and, or, as, not, isnull, notnull
+
 ) where
 
-import           Prelude hiding (and, or, null, take, drop)
+import           Prelude hiding (and, or, take, drop, Ordering)
 import qualified Data.HashMap.Strict as HM
 import qualified Data.List as L
 import           Data.Maybe
@@ -18,11 +57,15 @@ import           Data.Tools hiding (join)
 import           Control.Applicative
 import           Control.Monad hiding (join)
 import           Control.Monad.State hiding (join)
+import           Data.Monoid
+import qualified Data.Foldable as F
 import           Debug.Trace
+
 
 {-
  - Testing
  -}
+
 
 dbconn ::  IO Connection
 dbconn = connectPostgreSQL "host=192.168.4.9 port=5432 dbname=postgres user=postgres password=wetwetwet" 
@@ -103,6 +146,7 @@ type Query = (Sql, [SqlValue])
 class ToSql a where sql :: a -> Sql
 class ToValues a where values :: a -> [SqlValue]
 
+type Number = Integer
 
 -- Relation constructors
 data Relation = Relation Schema Query
@@ -114,12 +158,16 @@ data Relation = Relation Schema Query
               | CrossProduct Relation Relation
               | Rename Key Key Relation
               | Join Condition Relation Relation
-              | Take Integer Relation
-              | Drop Integer Relation
+              | Take Number Relation
+              | Drop Number Relation
+              | Sort Orderings Relation
         deriving (Show)
 
 type RelationM = State Relation ()
 
+type Ordering = (Key, Direction)
+type Orderings = [Ordering] -- Note: nested selects with different order-by clauses do not have the expected cascading effect
+data Direction = Asc | Desc deriving (Show)
 
 -- Condition constructors
 data Condition = Always
@@ -217,6 +265,10 @@ take n = modify (Take n)
 drop :: Integer -> RelationM
 drop n = modify (Drop n)
 
+-- sort by one or more columns
+sort :: Orderings -> RelationM
+sort ss = modify (Sort ss)
+
 {-
  - Condition
  -}
@@ -242,8 +294,8 @@ as :: Sql -> [SqlValue] -> Condition
 as s xs = As (s, xs)
 
 -- unary
-null :: String -> Condition
-null = Null . VarColumn
+isnull :: String -> Condition
+isnull = Null . VarColumn
 
 notnull :: String -> Condition
 notnull = Not . Null . VarColumn
@@ -403,6 +455,7 @@ schema (Rename k1 k2 r) = map (\k -> case k == k1 of { True -> k2; False -> k })
 schema (Join _ r1 r2) = concat [schema r1, schema r2]
 schema (Take _ r) = schema r
 schema (Drop _ r) = schema r
+schema (Sort _ r) = schema r
 
 runQuery :: Query -> SqlTransaction Connection ResultAssoc
 runQuery (q, vs) = sqlGetAllAssoc q vs
@@ -410,7 +463,6 @@ runQuery (q, vs) = sqlGetAllAssoc q vs
 relationTransaction :: Relation -> SqlTransaction Connection Result
 relationTransaction r = fromAssoc (schema r) <$> relationTransactionAssoc r
 
--- earn the Java Badge of Honour
 relationTransactionAssoc :: Relation -> SqlTransaction Connection ResultAssoc
 relationTransactionAssoc = runQuery . query
 
@@ -424,10 +476,10 @@ instance ToSql Relation where
         
         -- select schema with zero rows and union with raw selection, the labels of which are discarded. note: number of columns must match number of keys.
 --        sql (Relation ks q) = concat ["(select ", commas $ map (("null as " ++) . quotes) ks, " where false) union (", sql q, ")"]
-        sql (Relation ks q) = concat ["select ", commas $ map quotes ks, " from (", sql q, ") x"]
+        sql (Relation s q) = concat ["select ", sql s, " from (", sql q, ") x"]
         
         -- select specific columns from relation
-        sql (Projection ks q) = concat ["select ", commas $ map quotes ks, " from (", sql q, ") x"]
+        sql (Projection s r) = concat ["select ", sql s, " from (", sql r, ") x"]
         
         -- select specific rows from relation
         sql (Selection c r) = concat ["select * from (", sql r, ") x where (", sql c, ")"]
@@ -444,6 +496,8 @@ instance ToSql Relation where
 
         sql (Take x r) = concat ["select * from (", sql r, ") x limit ?"]
         sql (Drop x r) = concat ["select * from (", sql r, ") x offset ?"]
+        
+        sql (Sort ss r) = concat ["select * from (", sql r, ") x order by ", sql ss]
 
 instance ToValues Relation where
         values (Relation _ q) = values q
@@ -457,6 +511,38 @@ instance ToValues Relation where
         values (Join c r1 r2) = concat [values r1, values r2, values c]
         values (Take x r) = concat [values r, [SqlInteger x]]
         values (Drop x r) = concat [values r, [SqlInteger x]]
+        values (Sort _ r) = values r
+
+instance ToSql Key where
+        sql = quotes
+
+instance ToValues Key where
+        values _ = []
+
+instance ToSql Schema where
+        sql = commas . (map sql)
+
+instance ToValues Schema where
+        values _ = []
+
+instance ToSql Orderings where
+        sql = commas . (map sql)
+
+instance ToValues Orderings where
+        values = concat . (map values)
+
+instance ToSql Ordering where
+        sql (k, d) = concat [sql k, " ", sql d]
+
+instance ToValues Ordering where
+        values _ = []
+
+instance ToSql Direction where
+        sql Asc = "asc"
+        sql Desc = "desc"
+
+instance ToValues Direction where
+        values _ = []
 
 instance ToSql Query where
         sql (q, _) = q

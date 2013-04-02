@@ -14,11 +14,21 @@ import           Model.TH
 import           Prelude hiding (id)
 import qualified Data.Aeson as AS
 import Data.Conversion
+import qualified Data.Relation as Rel
 
 $(genAll "Garage" "garage"
     [
         ("id", ''Id),
         ("account_id", ''Integer),
         ("name", ''String)
+    ])
+
+target = "garage"
+fs = [
+        ("id", ''Id),
+        ("account_id", ''Integer),
+        ("name", ''String)
     ]
-    )
+
+schema = map fst fs
+relation = Rel.view target schema

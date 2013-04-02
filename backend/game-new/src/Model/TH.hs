@@ -19,6 +19,7 @@ import Model.Ansi
 import Data.SqlTransaction as S
 -- import Model.GetViews  
 import Control.Monad.Trans
+import qualified Data.Relation as Rel
 
 {--
 getUpdateStatements :: String -> Q [(String, [String])]
@@ -94,6 +95,8 @@ isMaybe nm = do
  -
  --}
 
+{-
+
 genAll :: String -> String -> [(String, Name)] ->  Q [Dec]
 genAll nm tbl xs = do checkTables tbl xs
                       r <- genRecord nm xs  
@@ -105,6 +108,10 @@ genAll nm tbl xs = do checkTables tbl xs
                       fir <- genInstanceFromInRule nm xs
                       tir <- genInstanceToInRule nm xs
                       return $ r ++ i ++ d ++ x ++ fj ++ tj ++ fir ++ tir 
+-}
+
+genAll :: String -> String -> [(String, Name)] ->  Q [Dec]
+genAll nm tbl xs = genAllId nm tbl "id" xs
 
 genAllId :: String -> String -> String -> [(String, Name)] -> Q [Dec]
 genAllId nm tbl td xs = 
@@ -117,8 +124,9 @@ genAllId nm tbl td xs =
                       tj <- genInstanceToJSON nm xs
                       fir <- genInstanceFromInRule nm xs
                       tir <- genInstanceToInRule nm xs
- 
-                      return $ r ++ i ++ d ++ x ++ fj ++ tj ++ fir ++ tir 
+                      sch <- genRelationSchema xs
+                      rel <- genRelation tbl xs
+                      return $ concat [r, i, d, x, fj, tj, fir, tir, sch, rel]
 
 -- genMapableRecord :: String -> [(String, Name)] -> Q [Dec]
 genMapableRecord nm xs = do 
@@ -325,5 +333,15 @@ mkToInRule xs = funD (mkName "toInRule") [cls]
           vn = mkName "v"
           step x z = appE (appE (appE hinsert ((stringE x))) (appE start (appE (varE (mkName x)) (varE vn) ))) z
           hinsert = [|H.insert|]
+
+-- schema = map fst xs
+genRelationSchema :: [(String, Name)] -> Q [Dec]
+genRelationSchema xs = pure <$> valD (varP $ mkName "schema") (normalB $ return $ ListE $ map (LitE . StringL . fst) xs) []
+
+-- relation = Rel.Relation tbl schema
+genRelation :: String -> [(String, Name)] -> Q [Dec]
+genRelation tbl xs = pure <$> valD (varP $ mkName "relation") (normalB $ return $ (AppE (AppE (VarE $ mkName "Rel.view") (LitE (StringL tbl))) (ListE $ map (LitE . StringL . fst) xs ))) []
+
+
 
 
