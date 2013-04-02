@@ -21,6 +21,7 @@ Executable game-new
 
   Build-depends:
     base >= 4 && < 5,
+    boxes >= 0.1.2,
     bytestring >= 0.9.1,
     recursion-schemes,
     pretty,

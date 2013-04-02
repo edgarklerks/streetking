@@ -284,9 +284,10 @@ showTableWithHeader hs rss = showTableWithHeader' (map show hs) (map (map show) 
 
 showTableWithHeader' :: [String] -> [[String]] -> String
 showTableWithHeader' hs rss = let
-                cs = map (Box.vsep 0 Box.top) $ transpose $ map (map Box.text) rss
+                cs = map ( (Box.vsep 0 Box.top) . (map Box.text) ) $ transpose rss
                 hs' = map Box.text hs
-                ss = zipWith (\c h -> Box.text $ replicate (max (Box.cols c) (Box.cols h)) '-') cs hs' -- TODO: case empty cs
+                cs' = cs ++ ( replicate ((length hs) - (length cs)) (Box.text "") ) -- if empty rss, cs is empty. we need moar elements.
+                ss = zipWith (\c h -> Box.text $ replicate (max (Box.cols c) (Box.cols h)) '-') cs' hs'
             in renderTable [ss, hs', ss, cs]
 
 renderTable :: [[Box.Box]] -> String

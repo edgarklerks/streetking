@@ -19,14 +19,14 @@ module Site
 
 
 
-
+import           Prelude hiding (take, drop)
 import           Application
 import           ConfigSnaplet 
 import           Control.Applicative
 import           Control.Arrow 
 import           Control.Concurrent 
 import           Control.Concurrent.STM 
-import           Control.Monad
+import           Control.Monad hiding (join)
 import           Control.Monad.Random 
 import           Control.Monad.Trans
 import           Data.Car
@@ -34,10 +34,10 @@ import           Data.Function
 import           Data.CarDerivedParameters
 import           Data.ComposeModel
 import           Data.Constants
-import           Data.Conversion
+import           Data.Conversion hiding (project)
 import           Data.Convertible
 import           Data.DataPack
-import           Data.Database
+import           Data.Database hiding (select)
 import           Data.DatabaseTemplate
 import           Data.Decider 
 import           Data.Driver
@@ -56,7 +56,7 @@ import           Data.String
 import           Data.Tiger
 import           Data.Time.Clock 
 import           Data.Time.Clock.POSIX
-import           Data.Tools
+import           Data.Tools hiding (join)
 import           Data.Tournament 
 import           Data.Track
 import           Database.HDBC (toSql, fromSql)
@@ -96,6 +96,7 @@ import qualified Data.Task as Task
 import qualified Data.Text as T 
 import qualified Data.Text.Encoding as T
 import qualified Data.Tree as T
+import           Data.Relation
 import qualified LockSnaplet as SL 
 import           LogSnaplet (initLogSnaplet)
 import qualified Model.Account as A 
@@ -2467,6 +2468,7 @@ tournamentRewards tid = do
 
 -- hiscore: take a worker that produces a list of mapables given an argument map, get user arguments, apply the worker and write the results
 -- e.g. hiscoreRespect = hiscore hsRespect
+-- TODO: include offset and limit in workers
 hiscore :: Mapable a => (SqlMap -> SqlTransaction Connection [a]) -> Application ()
 hiscore w = do
         m <- getJson
@@ -2478,6 +2480,8 @@ hiscore w = do
                 Just x -> fromSql x
         rs <- runDb $ (\x -> List.take lim $ List.drop ofs x) <$> w m
         writeMapables rs
+
+
 -- TODO: breaks if the server has over 9000 users.
 hsRespect :: SqlMap -> SqlTransaction Connection [AP.AccountProfile]
 hsRespect m =
@@ -2553,6 +2557,64 @@ hsRespect m =
                         
                 
                    
+hiscore' :: (Mapable a) => (SqlMap -> Integer -> Integer -> SqlTransaction Connection [a]) -> Application ()
+hiscore' w = do
+        m <- getJson
+        lim <- min 10 <$> dextract 10 "limit" m
+        ofs <- max 0 <$> dextract 0 "offset" m
+        rs <- runDb $ w m lim ofs
+        writeMapables rs
+         
+-- use Relations to allow smoothish efficiency even with over 9000 users.
+hsRespect' :: SqlMap -> Integer -> Integer -> SqlTransaction Connection [AP.AccountProfile]
+hsRespect' m lim ofs = 
+        let
+                -- filters: each filter takes the whole input map and produces either Nothing or a list of account profiles <-- no longer; RelationM are produced and they can be chained
+                -- the intersection of all generated lists shall be the result
+                --
+                -- 1. we need relations for tables and views used. these can be generated.
+                -- 2. we need some way to typeify relations. 
+                filters :: [[RelationM]]
+                filters = [
+
+                        (case HM.lookup "has_car_model" m of
+                                Nothing -> []
+                                Just cmid -> [AP.relation >> do
+                                            -- add garage id
+                                            join ("id" |==| "account_id") $ G.relation >> projectAs [("id", "garage_id"), ("account_id", "account_id")]
+                                            -- add car id for cars in garage 
+                                            join ("garage_id" |==| "car_garage_id") $ CarInstance.relation >> do
+                                                    projectAs [("car_id", "car_model_id"), ("garage_id", "car_garage_id")]
+                                                    select $ "car_model_id" |==* cmid
+                                            -- foo <- schema -- TODO? schema :: State Relation Schema --> type RelationM = State Relation
+                                            -- TODO: there should be no duplicate records
+                                            -- 1. aggregation?
+                                            -- 2. implicit record distinction?
+                                            -- project to Account relation schema
+                                            project AP.schema
+                                    ]
+                            ),
+
+                        (case HM.lookup "in_city" m of
+                                Nothing -> []
+                                Just cid -> [AP.relation >> select ("city" |==* cid)]
+                            ),
+
+                        (case HM.lookup "on_continent" m of
+                                Nothing -> [] 
+                                Just cid -> [AP.relation >> do
+                                            join ("city" |==| "city_id") $ City.relation >> projectAs [("id", "city_id"), ("continent_id", "continent_id")]
+                                            select ("continent_id" |==* cid)
+                                            project AP.schema
+                                    ]
+                             )
+                    ]
+
+        in do
+                -- result is intersection of all result sets
+                xs <- getAssoc $ foldr (\n r -> r >> intersect n) AP.relation (concat filters) >> sort [("respect", Desc)] >> drop ofs >> take lim
+                return $ map (fromJust . fromHashMap) xs
+
 
 
 ------------------------------------------------------------------------------
