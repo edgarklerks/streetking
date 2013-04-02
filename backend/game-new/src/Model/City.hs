@@ -12,6 +12,7 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+import qualified Data.Relation as Rel
 
 import qualified Data.Aeson as AS
 import Data.Conversion
@@ -28,16 +29,4 @@ $(genAll "City" "city"
     ]
  )
 
-fs = [
-        ("id", ''Id),
-        ("continent_id", ''Integer),
-        ("level", ''Integer),
-        ("name", ''String),
-        ("data", ''String),
-        ("default", ''Bool)
-    ]
 
-target = "city"
-
-schema = map fst fs
-relation = Rel.view target schema

@@ -14,6 +14,7 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+import qualified Data.Relation as Rel
 
 $(genAllId "MarketPartType" "market_part_types" "car_id" [
     ("car_id", ''Id),

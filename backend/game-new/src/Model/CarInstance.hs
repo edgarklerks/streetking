@@ -20,6 +20,7 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+import qualified Data.Relation as Rel
 import           Data.Maybe 
 import qualified Data.Relation as Rel
 
@@ -53,17 +54,4 @@ setMutable :: Integer -> SqlTransaction Connection Integer
 setMutable = load >=> \(fromJust -> c) -> save (c { immutable = max 0 (immutable c - 1)})
 
 
-target = "car_instance"
-fs = [
-        ("id", ''Id),
-        ("car_id", ''Integer),
-        ("garage_id", ''MInteger),
-        ("deleted", ''Bool),
-        ("prototype", ''Bool),
-        ("active", ''Bool),
-        ("immutable", ''Integer)
 
-    ]
-
-schema = map fst fs
-relation = Rel.view target schema
