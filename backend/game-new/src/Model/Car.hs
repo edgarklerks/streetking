@@ -10,6 +10,7 @@ import           Database.HDBC
 import           Model.General
 import           Model.TH
 import           Prelude hiding (id)
+import qualified Data.Relation as Rel
 import           Data.Conversion
 import qualified Data.Aeson as AS
 import qualified Data.Map as M

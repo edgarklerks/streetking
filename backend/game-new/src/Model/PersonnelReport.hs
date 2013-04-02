@@ -15,6 +15,7 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
+import qualified Data.Relation as Rel
 
 type MInteger = Maybe Integer 
 type MString = Maybe String
