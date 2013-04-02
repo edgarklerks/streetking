@@ -276,18 +276,33 @@ marketPlace = do
            uid <- getUserId
            puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
            ((l, o), xs) <- getPagesWithDTD (
-                    "car_id" +== "car_id" +&&  
                     "level" +<= "level-max" +&& 
                     "level" +>= "level-min" +&& 
                     "name" +== "part_type" +&& 
                     "price" +<= "price-max" +&&
                     "price" +>= "price-min" +&&
 
-                     ifdtd "me" (=="1") 
+                    "weight" +<= "weight-max" +&&
+                    "weight" +>= "weight-min" +&&
+
+                    ifdtd "used" (=="1")
+                        ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
+                        ("wear" +<= "wear-max" +&& "wear" +>= "wear-min") +&&
+
+                    ifdtd "improved" (=="1")
+                        ("improvement" +<= "improvement-max" +&& "improvement" +>= "improvement-min" +&& "improvement" +>| (SqlInteger 0))
+                        ("improvement" +<= "improvement-max" +&& "improvement" +>= "improvement-min") +&&
+
+--                    "car_id" +== "car_id" +&&  
+                    ifdtd "anycar" (=="1")
+                        ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
+                        ("car_id" +== "car_id") +&& 
+
+                    ifdtd "me" (=="1") 
                                 ("account_id" +==| toSql uid) 
                                 ("account_id" +<>| toSql uid)
                     
-                    )
+                )
            ns <- runDb (search ( ("level" |<= (toSql $ A.level puser + 2)) : xs) [] l o) :: Application [MP.MarketPlace]
            writeMapables ns
 
@@ -875,13 +890,22 @@ marketParts = do
    uid <- getUserId
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account)
    ((l, o), xs) <- getPagesWithDTD (
-            "car_id" +== "car_id" +&& 
-            "name" +== "part_type" +&&  
-            "level" +<= "level-max" +&& 
-            "level" +>= "level-min" +&&
-            "price" +>= "price-min" +&&
-            "price" +<= "price-max" +&&
-            "level" +<=| (toSql $ A.level puser)
+
+                ifdtd "anycar" (=="1")
+                    ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
+                    ("car_id" +== "car_id") +&& 
+
+--                "car_id" +== "car_id" +&& 
+                "name" +== "part_type" +&&  
+                "level" +<= "level-max" +&& 
+                "level" +>= "level-min" +&&
+                "price" +>= "price-min" +&&
+                "price" +<= "price-max" +&&
+
+                "weight" +<= "weight-max" +&&
+                "weight" +>= "weight-min" +&&
+
+                "level" +<=| (toSql $ A.level puser)
             )
    ns <- runDb (search xs [] l o) :: Application [PM.PartMarket]
    writeMapables ns  
@@ -926,11 +950,23 @@ garageParts = do
                 "level" +<= "level-max" +&& 
                 "level" +>= "level-min" +&&
                 "price" +>= "price-min" +&&
-                "price" +<= "price-max" +&& 
+                "price" +<= "price-max" +&&
+
+                ifdtd "used" (=="1")
+                    ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
+                    ("wear" +<= "wear-max" +&& "wear" +>= "wear-min") +&&
+
+                ifdtd "improved" (=="1")
+                    ("improvement" +<= "improvement-max" +&& "improvement" +>= "improvement-min" +&& "improvement" +>| (SqlInteger 0))
+                    ("improvement" +<= "improvement-max" +&& "improvement" +>= "improvement-min") +&&
+
+                "weight" +<= "weight-max" +&&
+                "weight" +>= "weight-min" +&&
+
                 -- get parts that fit any car, i.e. generic parts
                 ifdtd "anycar" (=="1")
                     ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
-                    ("car_id" +== "car_id") +&& 
+                    ("car_id" +== "car_id") +&&
 
                     
                 "account_id" +==| toSql uid
@@ -960,9 +996,22 @@ garagePartsWithPreview = do
                 "price" +>= "price-min" +&&
                 "price" +<= "price-max" +&& 
 
+                ifdtd "used" (=="1")
+                    ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
+                    ("wear" +<= "wear-max" +&& "wear" +>= "wear-min") +&&
+
+                ifdtd "improved" (=="1")
+                    ("improvement" +<= "improvement-max" +&& "improvement" +>= "improvement-min" +&& "improvement" +>| (SqlInteger 0))
+                    ("improvement" +<= "improvement-max" +&& "improvement" +>= "improvement-min") +&&
+
+                "weight" +<= "weight-max" +&&
+                "weight" +>= "weight-min" +&&
+
+
                 ifdtd "anycar" (=="1")
                     ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
                     ("car_id" +== "car_id") +&& 
+
                 "account_id" +==| toSql uid
             )
 
