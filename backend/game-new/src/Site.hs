@@ -2465,7 +2465,7 @@ tournamentRewards tid = do
                     xs <- rewardAction (Tournament p (fromJust $ TRM.id t) (TRM.tournament_type_id t))
                     return $ xs
 
-
+{-
 -- hiscore: take a worker that produces a list of mapables given an argument map, get user arguments, apply the worker and write the results
 -- e.g. hiscoreRespect = hiscore hsRespect
 -- TODO: include offset and limit in workers
@@ -2555,19 +2555,19 @@ hsRespect m =
             -- inversely order by respect
             return $ List.sortBy (\a b -> on compare AP.respect b a) rs
                         
-                
+-}
                    
-hiscore' :: (Mapable a) => (SqlMap -> Integer -> Integer -> SqlTransaction Connection [a]) -> Application ()
-hiscore' w = do
+hiscore :: (Mapable a) => (SqlMap -> Integer -> Integer -> SqlTransaction Connection [a]) -> Application ()
+hiscore w = do
         m <- getJson
-        lim <- min 10 <$> dextract 10 "limit" m
+        lim <- min 100 <$> dextract 10 "limit" m
         ofs <- max 0 <$> dextract 0 "offset" m
         rs <- runDb $ w m lim ofs
         writeMapables rs
          
--- use Relations to allow smoothish efficiency even with over 9000 users.
-hsRespect' :: SqlMap -> Integer -> Integer -> SqlTransaction Connection [AP.AccountProfile]
-hsRespect' m lim ofs = 
+-- use Relations to allow serving over 9000 users.
+hsRespect :: SqlMap -> Integer -> Integer -> SqlTransaction Connection [AP.AccountProfile]
+hsRespect m lim ofs = 
         let
                 -- filters: each filter takes the whole input map and produces either Nothing or a list of account profiles <-- no longer; RelationM are produced and they can be chained
                 -- the intersection of all generated lists shall be the result
@@ -2597,14 +2597,14 @@ hsRespect' m lim ofs =
 
                         (case HM.lookup "in_city" m of
                                 Nothing -> []
-                                Just cid -> [AP.relation >> select ("city" |==* cid)]
+                                Just cid -> [AP.relation >> select ("city_id" |==* cid)]
                             ),
 
                         (case HM.lookup "on_continent" m of
                                 Nothing -> [] 
                                 Just cid -> [AP.relation >> do
-                                            join ("city" |==| "city_id") $ City.relation >> projectAs [("id", "city_id"), ("continent_id", "continent_id")]
-                                            select ("continent_id" |==* cid)
+                                            join ("city_city_id" |==| "city_id") $ City.relation >> projectAs [("id", "city_city_id"), ("continent_id", "city_continent_id")]
+                                            select ("city_continent_id" |==* cid)
                                             project AP.schema
                                     ]
                              )
@@ -2649,6 +2649,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/Garage/personnel", garagePersonnel),
                 ("/Garage/removePart", removePart),
                 ("/Garage/reports", garageReports),
+                ("/Hiscore/respect", hiscore hsRespect),
                 ("/Market/allowedParts", marketAllowedParts),
                 ("/Market/buy", marketBuy),
                 ("/Market/buyCar", carMarketBuy),
@@ -2714,8 +2715,7 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/User/register", userRegister),
                 ("/User/reports", userReports),
                 ("/User/searchNotification", readArchive),
-                ("/User/testNotification", testNotification),
-                ("/Hiscore/respect", hiscore hsRespect)
+                ("/User/testNotification", testNotification)
           ]
 
 getRewards :: Application ()

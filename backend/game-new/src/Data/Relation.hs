@@ -59,7 +59,7 @@ import           Control.Monad hiding (join)
 import           Control.Monad.State hiding (join)
 import           Data.Monoid
 import qualified Data.Foldable as F
-import           Debug.Trace
+--import           Debug.Trace
 
 
 {-
@@ -441,7 +441,8 @@ exec :: RelationM -> Relation
 exec = flip execState rempty
 
 query :: Relation -> Query 
-query r = trace (sql r) $ (sql r, values r)
+--query r = trace (sql r) $ (sql r, values r)
+query r = (sql r, values r)
 
 schema :: Relation -> Schema
 schema (Relation s _) = s
