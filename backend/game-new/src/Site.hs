@@ -285,6 +285,10 @@ marketPlace = do
                     "weight" +<= "weight-max" +&&
                     "weight" +>= "weight-min" +&&
 
+                    ifdtd "unique" (=="1")
+                        ("unique" +==| (toSql True))
+                        ("unique" +== "unique") +&&
+
                     ifdtd "used" (=="1")
                         ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
                         ("wear" +<= "wear-max" +&& "wear" +>= "wear-min") +&&
@@ -891,6 +895,10 @@ marketParts = do
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account)
    ((l, o), xs) <- getPagesWithDTD (
 
+                ifdtd "unique" (=="1")
+                    ("unique" +==| (toSql True))
+                    ("unique" +== "unique") +&&
+
                 ifdtd "anycar" (=="1")
                     ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
                     ("car_id" +== "car_id") +&& 
@@ -952,6 +960,10 @@ garageParts = do
                 "price" +>= "price-min" +&&
                 "price" +<= "price-max" +&&
 
+                ifdtd "unique" (=="1")
+                    ("unique" +==| (toSql True))
+                    ("unique" +== "unique") +&&
+
                 ifdtd "used" (=="1")
                     ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
                     ("wear" +<= "wear-max" +&& "wear" +>= "wear-min") +&&
@@ -995,6 +1007,10 @@ garagePartsWithPreview = do
                 "level" +>= "level-min" +&&
                 "price" +>= "price-min" +&&
                 "price" +<= "price-max" +&& 
+
+                ifdtd "unique" (=="1")
+                    ("unique" +==| (toSql True))
+                    ("unique" +== "unique") +&&
 
                 ifdtd "used" (=="1")
                     ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
