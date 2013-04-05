@@ -2014,8 +2014,11 @@ raceChallengeAccept = do
             -- check busy
             when (A.busy_type a /= 1) $ rollback "You are currently busy with something else"
 
-            -- check track level
+            -- check user location
             track_master <- aget ["track_id" |== SqlInteger tid] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            unless (fromJust (A.id a) == TT.city_id track_master) $ rollback "You are not in that city"
+
+            -- check track level
             when (A.level a < TT.track_level track_master) $ rollback "Your are not ready for this track"
 
             -- check user energy
