@@ -1146,6 +1146,8 @@ addPart = do
                 g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
                 -- get garage part instance record; any parts in cars are not found
                 p <- aget ["part_instance_id" |== toSql pid] (rollback "No such part in garage") :: SqlTransaction Connection GPT.GaragePart
+                -- check wear
+                when (GPT.wear p >= 10000) $ rollback "part cannot be installed; it is too worn"
                 -- add part to car
                 update "part_instance" ["id" |== toSql pid] [] [("car_instance_id", toSql cid), ("garage_id", SqlNull)]
                 -- remove all other parts of the same type from the car
