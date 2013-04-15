@@ -78,7 +78,9 @@ Executable game-new
     smallcheck,
     base64-bytestring,
     lens-family-core,
-    quicklz
+    quicklz,
+    network,
+    network-fancy
 
   if flag(development)
     build-depends:
