@@ -285,6 +285,10 @@ marketPlace = do
                     "weight" +<= "weight-max" +&&
                     "weight" +>= "weight-min" +&&
 
+                    ifdtd "unique" (=="1")
+                        ("unique" +==| (toSql True))
+                        ("unique" +== "unique") +&&
+
                     ifdtd "used" (=="1")
                         ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
                         ("wear" +<= "wear-max" +&& "wear" +>= "wear-min") +&&
@@ -891,6 +895,10 @@ marketParts = do
    puser <- fromJust <$> runDb (load uid) :: Application (A.Account)
    ((l, o), xs) <- getPagesWithDTD (
 
+                ifdtd "unique" (=="1")
+                    ("unique" +==| (toSql True))
+                    ("unique" +== "unique") +&&
+
                 ifdtd "anycar" (=="1")
                     ("car_id" +== "car_id" +|| "car_id" +==| toSql (0 :: Integer))
                     ("car_id" +== "car_id") +&& 
@@ -952,6 +960,10 @@ garageParts = do
                 "price" +>= "price-min" +&&
                 "price" +<= "price-max" +&&
 
+                ifdtd "unique" (=="1")
+                    ("unique" +==| (toSql True))
+                    ("unique" +== "unique") +&&
+
                 ifdtd "used" (=="1")
                     ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
                     ("wear" +<= "wear-max" +&& "wear" +>= "wear-min") +&&
@@ -995,6 +1007,10 @@ garagePartsWithPreview = do
                 "level" +>= "level-min" +&&
                 "price" +>= "price-min" +&&
                 "price" +<= "price-max" +&& 
+
+                ifdtd "unique" (=="1")
+                    ("unique" +==| (toSql True))
+                    ("unique" +== "unique") +&&
 
                 ifdtd "used" (=="1")
                     ("wear" +<= "wear-max" +&& "wear" +>= "wear-min" +&& "wear" +>| (SqlInteger 0))
@@ -1130,6 +1146,8 @@ addPart = do
                 g <- aget ["account_id" |== toSql uid] (rollback "Garage not found") :: SqlTransaction Connection G.Garage 
                 -- get garage part instance record; any parts in cars are not found
                 p <- aget ["part_instance_id" |== toSql pid] (rollback "No such part in garage") :: SqlTransaction Connection GPT.GaragePart
+                -- check wear
+                when (GPT.wear p >= 10000) $ rollback "part cannot be installed; it is too worn"
                 -- add part to car
                 update "part_instance" ["id" |== toSql pid] [] [("car_instance_id", toSql cid), ("garage_id", SqlNull)]
                 -- remove all other parts of the same type from the car
@@ -1540,21 +1558,21 @@ cityTravel = do
 cityList :: Application ()
 cityList = do 
         uid <- getUserId 
-        ((l,o),xs) <- getPagesWithDTD ("continent_id" +== "continent" +&& "city_level" +>= "levelmin" +&& "city_level" +<= "levelmax")
+        ((l,o),xs) <- getPagesWithDTD ("city_id" +== "id" +&& "continent_id" +== "continent" +&& "city_level" +>= "levelmin" +&& "city_level" +<= "levelmax")
         ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_level",[]) True] l o :: Application [TCY.TrackCity]
         writeMapables ns
 
 continentList :: Application ()
 continentList = do 
         uid <- getUserId 
-        ((l,o),xs) <- getPagesWithDTD ("continent_level" +>= "levelmin" +&& "continent_level" +<= "levelmax")
+        ((l,o),xs) <- getPagesWithDTD ("continent_id" +== "id" +&& "continent_level" +>= "levelmin" +&& "continent_level" +<= "levelmax")
         ns <- runDb $ search xs [Order ("continent_level",[]) True] l o :: Application [TCN.TrackContinent]
         writeMapables ns
 
 trackList :: Application ()
 trackList = do 
         uid <- getUserId 
-        ((l,o),xs) <- getPagesWithDTD ("city_id" +== "city" +&& "continent_id" +== "continent" +&& "track_level" +>= "levelmin" +&& "track_level" +<= "levelmax")
+        ((l,o),xs) <- getPagesWithDTD ("track_id" +== "id" +&& "city_id" +== "city" +&& "continent_id" +== "continent" +&& "track_level" +>= "levelmin" +&& "track_level" +<= "levelmax")
         ns <- runDb $ search xs [Order ("continent_id",[]) True, Order ("city_id",[]) True, Order ("track_level",[]) True] l o :: Application [TT.TrackMaster]
         writeMapables ns
 
@@ -1996,8 +2014,11 @@ raceChallengeAccept = do
             -- check busy
             when (A.busy_type a /= 1) $ rollback "You are currently busy with something else"
 
-            -- check track level
+            -- check user location
             track_master <- aget ["track_id" |== SqlInteger tid] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
+            unless (fromJust (A.id a) == TT.city_id track_master) $ rollback "You are not in that city"
+
+            -- check track level
             when (A.level a < TT.track_level track_master) $ rollback "Your are not ready for this track"
 
             -- check user energy
