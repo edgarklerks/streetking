@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, IncoherentInstances, RankNTypes, FlexibleContexts, ViewPatterns, ScopedTypeVariables #-}
+-- | This module implements a dynamic type system 
 module Data.InRules where
 
 
@@ -34,8 +35,9 @@ infixr 6 ==>
 infixr 6 .>
 infixl 6 .>>
 infixr 6 ..>
-
+-- | Map all the hash map keys 
 hmapKeys f xs = Map.foldrWithKey step Map.empty xs
+-- | Map over all the hash map values with a key
     where step k v a = Map.insert (f k) v a 
 hmapWithKey f xs = Map.foldrWithKey step Map.empty xs 
     where step k v a = Map.insert k (f k v) a
@@ -43,6 +45,7 @@ hmapWithKey f xs = Map.foldrWithKey step Map.empty xs
 -- think about adding timestamp without timezone as some kind of double
 -- with pretty print... 
 
+-- | Primitive type, a subset of this type is isomorph to json and yaml  
 data InRule = 
         InString !String
       | InByteString !B.ByteString
@@ -72,8 +75,7 @@ instance Monoid InRule where
 
 
 
--- | Setters, getters, folds, unfolds and maps. 
-
+-- | Data type used for viewing the type of a index   
 data InKey = Index Int 
            | None
            | Assoc String 
@@ -85,6 +87,7 @@ instance Monoid InKey where
     x `mappend` y = y 
     mempty = None
 
+-- | Identity monoid, doesn't exist in prelude or anywhere else 
 newtype IdentityMonoid a = IM { unIM :: a }
 
 instance Monoid a => Monoid (IdentityMonoid a) where 
@@ -101,21 +104,27 @@ instance Copointed (IdentityMonoid) where
 data PathState = Accept | Reject
     deriving Show 
 
+-- | One step of the automata. Automata can be in two states:
+-- | next step or final path  
 data PathStep a = Next (PathAcceptor a) | Final PathState
 
+-- | One machine step 
 newtype PathAcceptor a = PM {
         unPM :: a -> PathStep a 
     }
 
+-- | Path acceptor is a semigroup and acts semantically like a and operator 
 instance Semigroup (PathAcceptor a) where 
     (<>) (PM f) (PM g) = PM $ \a -> 
                 case f a of 
                     Final Accept -> Next (PM g)
                     Final Reject -> reject 
                     Next t -> Next t 
+-- | The always acceptor 
 accept :: PathStep a
 accept = Final Accept 
 
+-- | The always rejector 
 reject :: PathStep a
 reject = Final Reject 
 
@@ -126,6 +135,8 @@ rejector = PM $ \a -> reject
 -- |  Always accept the complete input stream (will always be false for finite streams and true for infinite ones) 
 continue = PM $ \a -> Next continue 
 
+-- | Alternate two acceptors. If the first rejects try the next. Behaves like an or 
+-- | operator 
 alter :: PathAcceptor a -> PathAcceptor a -> PathAcceptor a
 alter (PM g) (PM f) = PM $ \a -> 
             case g a of 
@@ -136,11 +147,11 @@ alter (PM g) (PM f) = PM $ \a ->
                         Final Accept -> accept 
                         Final Reject -> reject 
 
-
+-- | Creates a pointed acceptor  
 apoint a = PM $ \s -> if s == a then accept else reject 
 
 
-
+-- Run an acceptor against a stream of characters 
 runPath :: Eq a => PathAcceptor a -> [a] -> Bool 
 runPath x [] = False
 runPath x a = case unPM x (head a) of 
@@ -148,7 +159,7 @@ runPath x a = case unPM x (head a) of
                     Final Reject -> False 
                     Next t -> runPath t (tail a)
 
-
+-- | View the kind of a InRule 
 data KindView = TScalar 
              | TArray 
              | TObject 
@@ -226,7 +237,7 @@ kfold f x z = pfold f' x z
 (.>>) _ _ = []
 
 
-
+-- | Transform a string into a readable 
 readable :: String -> Readable 
 readable a = Readable a
 
@@ -243,9 +254,9 @@ asReadable (InByteString x) = readable (B.unpack x)
 asReadable (InBool x) = readable (show x)
 asReadable _ = error "Not an readable object"
 
--- Just InRules :P
 type InRules = [InRule]
- 
+
+-- Converting from and to an inrule  
 instance (FromInRule b) => Convertible InRule b where
 	safeConvert = Right . fromInRule 
 

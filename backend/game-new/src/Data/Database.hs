@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, ViewPatterns #-}
-
+-- | Primitive database data types for expression simple queries 
 module Data.Database where
 
 import Control.Applicative
@@ -16,10 +16,6 @@ import Database.HDBC.PostgreSQL
 -- multiple table selection
 -- -> Tables is a list
 -- -> constraints, selections each refer to specific table
-
-{-
- -  Testing
- -}
 
 dbconn ::  IO Connection
 dbconn = connectPostgreSQL "host=192.168.4.9 port=5432 dbname=postgres user=postgres password=wetwetwet" 

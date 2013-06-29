@@ -1,4 +1,5 @@
 {-# Language TypeSynonymInstances, FlexibleInstances, IncoherentInstances, ViewPatterns #-}
+-- | Tests and interface for InRules 
 module Data.Conversion (
        (.>),
        (.>>),

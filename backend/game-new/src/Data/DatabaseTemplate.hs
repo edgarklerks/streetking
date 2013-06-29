@@ -1,4 +1,15 @@
 {-# LANGUAGE ViewPatterns #-}
+-- | DSL for expression queries, which can extract data from 
+-- | a map and build a database contstraint from the DSL.
+-- | We have two operators a lifted one, which pulls the 
+-- | right side from the map and the left side is the field in the database.
+-- | "id" +== "user-id"
+-- | This generates id = 1 (if user_id contains 1)
+-- | We also have fixed operators, which don't pull up a value from the hash map, 
+-- | but have a fixed value
+-- | "id" +==| (toSql 12)
+-- | There also is an if statement:
+-- | ifdtd ("account" +==| 1)
 module Data.DatabaseTemplate where 
 
 import qualified Data.Database as D 
@@ -19,6 +30,7 @@ data DTD = Con D.ConOp String DTD
 
 orderedBy = OrderedBy 
 
+-- | Transform a DTD bottom up  
 transformDTD :: (DTD -> DTD) -> DTD -> DTD 
 transformDTD f z = p z 
     where 
@@ -30,6 +42,7 @@ transformDTD f z = p z
         p (If v p d e) = f $ If v p (transformDTD f d) (transformDTD f e)
         p (OrderedBy x y) = f $ OrderedBy (transformDTD f x) y
 
+-- | Filter certain DTD out 
 filterDTD :: (DTD -> Bool) -> DTD -> DTD 
 filterDTD f = transformDTD step 
     where 
@@ -39,12 +52,15 @@ filterDTD f = transformDTD step
 (+&&) = And 
 (+||) = Or 
 
+-- | Equal operator 
 (+==) x y = Con D.OpEQ x (Lift y)
 (+>=) x y = Con D.OpGTE x (Lift y)
 (+>) x y = Con D.OpGT x (Lift y)
 (+<) x y = Con D.OpLT x (Lift y)
 (+<=) x y = Con D.OpLTE x (Lift y)
+-- | Like 
 (+%) x y = Con D.OpContains x (Lift y)
+-- | ILike 
 (+%%) x y = Con D.OpIContains x (Lift y)
 (+<>) x y = Con D.OpNEQ x (Lift y)
 ifdtd = If

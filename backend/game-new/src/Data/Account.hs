@@ -17,7 +17,10 @@ import Model.General
 import Debug.Trace
 import Control.Monad 
 
-addRespect :: Integer -> Integer -> SqlTransaction Connection ()
+-- | Add respect to an user account, runs in the SqlTransaction monad.
+addRespect :: Integer -- ^ user id 
+	   -> Integer -- ^ respect amount
+           -> SqlTransaction Connection () 
 addRespect uid amt = do
         a <- aload uid (rollback $ "account not found for id " ++ (show uid)) :: SqlTransaction Connection A.Account
         update "account" ["id" |== (toSql $ uid)] [] [("respect", toSql $ (A.respect a) + amt)]
@@ -29,7 +32,9 @@ respFunc (fromInteger -> k) (fromInteger -> l) = floor $ k * ((l**2) + l) / 2
 levelFunc :: Integer -> Integer -> Integer
 levelFunc (fromInteger -> k) (fromInteger -> r) = floor $ (sqrt (k + 8 * r) - sqrt k ) / (2  * sqrt k)
 
-checkLevel :: Integer -> SqlTransaction Connection ()
+-- | Sets the level of the user 
+checkLevel :: Integer -- ^ the uid of the user 
+	   -> SqlTransaction Connection ()
 checkLevel uid = do
         k :: Integer <- CFG.getKey "respect_for_level"
         a <- aload uid (rollback $ "account not found for id " ++ (show uid)) :: SqlTransaction Connection A.Account

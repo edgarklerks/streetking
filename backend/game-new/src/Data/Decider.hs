@@ -1,4 +1,5 @@
 {-# LANGUAGE GADTs, TypeOperators, MultiParamTypeClasses, FlexibleInstances, NoMonomorphismRestriction #-}
+-- | This let the user build a regular expression engine, which also works with permutations of the expression.
 module Data.Decider where 
 
 import           Control.Applicative
@@ -6,6 +7,7 @@ import           Control.Arrow
 import           Control.Category 
 import           Data.Monoid hiding (Any, All) 
 
+-- | Expression language for a decider  
 data Expr g a where
     Any :: [Expr g a] -> Expr g a
     All :: [Expr g a] -> Expr g a 
@@ -50,13 +52,14 @@ toOne _ = Nothing
 
 equalDecider = buildDecider (==) 
 
--- The underlying arrow is Machine a b = [a] -> ([b], Bool) 
+-- | The underlying arrow is Machine a b = [a] -> ([b], Bool) 
 -- deltaStream = xs - ys  
 --
 newtype Decider a = Decider {
             runDecider :: [a] -> ([a], Bool)          
         }
 
+-- | A decider is a monoid, we can add several machines together 
 instance Monoid (Decider a) where 
         mempty = Decider $ \xs -> (xs, True) 
         mappend (Decider f) (Decider g) = Decider $ \xs -> let (xs', b) = f xs 
@@ -64,6 +67,7 @@ instance Monoid (Decider a) where
                                                                 True -> runDecider (Decider g) xs'
                                                                 False -> (xs, b)
 
+-- | Builds a decider from an expression
 buildDecider :: (a -> b -> Bool) -> Expr g b -> Decider a 
 buildDecider f (From from p) = Decider $ \xs -> 
                                       let (xs',b) = step xs 0
@@ -110,8 +114,8 @@ buildDecider f (Any ps) = Decider $ \xs -> step ps xs
                                         False -> step ps xs 
 
 
--- The most primitive building block. This is satisfy, when you build
--- a parser. We use member, because we need to allow all permutations  
+-- | The most primitive building block. This is satisfy, when you build
+-- | a parser. We use member, because we need to allow all permutations  
 member :: (a -> b -> Bool) -> b -> [a] -> ([a],Bool)
 member f x [] = ([], False)
 member f x (y:xs) | f y x = (xs, True)
@@ -123,8 +127,7 @@ accept f x [] = False
 accept f x (y:xs) | f y x = True
                   | otherwise = accept f x xs  
 
--- underline machine is actually very boring. It has some flapping 
-
+-- | underline machine is actually very boring. It has some flapping 
 newtype Machine a b = Machine {
                         runMachine :: [a] -> ([b], Bool)
                 }
