@@ -1,7 +1,10 @@
 {-# LANGUAGE RankNTypes, FlexibleInstances, FlexibleContexts,
      NoMonomorphismRestriction, ExistentialQuantification,
      MultiParamTypeClasses, GeneralizedNewtypeDeriving, OverloadedStrings #-}
-
+-- | This module is a writer like monad, which builds
+-- | a tree like map of InRules values from SqlTransaction 
+-- | Actions   
+-- | This is handy for building complex return objects 
 module Data.ComposeModel(
         ComposeMonad,
         abort,
@@ -38,23 +41,27 @@ import qualified LockSnaplet as L
 import qualified Model.Account as A 
 import qualified Model.Garage as G 
 
-
+-- | This is the tree like map (with its paths flattened)
 data ComposeMap = ComposeMap {
                      unComposeMap :: H.HashMap String Box
                      }
+-- | A box to contain an InRule  
 data Box = forall a. ToInRule a => Box a 
 
+-- | A ComposeMap is an monoid, we simply add the HashMap 
 instance Monoid ComposeMap where 
         mempty = ComposeMap  H.empty 
         mappend (ComposeMap m) (ComposeMap n) = ComposeMap $ m <> n
 
 
-
+-- | ComposeMonad, is a continutation monad to jump out of a composition
+-- | A Reader to store the connection 
+-- | And a writer to build up our map  
 newtype ComposeMonad r c a = CM {
                 unCM  :: ContT r (ReaderT c (WriterT ComposeMap (SqlTransactionUser L.Lock c))) a    
             } deriving (Functor, Applicative, Monad, MonadReader c, MonadIO, MonadCont) 
 
-
+-- | Function to get the user state  
 getComposeUser = CM $ lift $ lift $ lift getUser 
 
 instance DB.IConnection c => MonadError SqlError (ComposeMonad r c) where 
@@ -86,7 +93,7 @@ instance DB.IConnection c =>  Monoid (ComposeMonad r c ()) where
                                 b <-  lift $ lift $ (execWriterT (runReaderT (runContT  (unCM b) r) c))
                                 lift $ tell (a <> b)
                                 r ()
-
+-- | Run compose unsafely
 unsafeRunCompose
   :: (Applicative m, MonadIO m, IConnection conn) =>
      L.Lock
@@ -99,12 +106,14 @@ instance ToInRule ComposeMap where
             toInRule = toInRule . fmap toInRule . unComposeMap 
 
 -- runComposeMonad :: (Applicative m, MonadIO m) => ComposeMonad a Connection a -> (String -> m (H.HashMap String InRule)) -> Connection -> m (H.HashMap String InRule)
+-- | run Compose map safely 
 runComposeMonad l m f c = do -- (ComposeMap xs)
                                 ts <- unsafeRunCompose l c m 
                                 case ts of 
                                     Left s -> f s  
                                     Right (ComposeMap xs) -> return $ (fmap toInRule xs) 
 
+-- | run a compose map computation and store it under a label as leaf 
 deep :: String -> ComposeMonad a Connection a -> ComposeMonad r Connection ()
 deep s m = do 
             c <- ask
@@ -114,21 +123,25 @@ deep s m = do
                 Right a -> label s a 
                 Left s -> throwError (UError s)
 
+-- | Jump from a deep computation 
 jumpDeep = abort () 
 
 shift m = CM $ do 
     ContT $ \r -> do 
         runContT (m $ \u -> runContT (return u) r) return  
 
+-- | Lift an SqlTransaction into the ComposeMonad 
 liftDb :: SqlTransaction  c a -> ComposeMonad r c a 
 liftDb = CM . lift . lift  . lift 
 
+-- | Run an SqlTransaction action into the compose monad under a label
 action :: (DB.IConnection c, ToInRule a) => String -> SqlTransaction c a -> ComposeMonad r c a 
 action x s = do 
                 s' <- liftDb s 
                 label x s' 
                 return s'
 
+-- | Label the value 
 label :: (DB.IConnection c, ToInRule a) => String -> a -> ComposeMonad r c ()
 label s x =  tell . ComposeMap . H.fromList $ [(s,Box x)]
 

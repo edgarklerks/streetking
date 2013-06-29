@@ -1,8 +1,6 @@
 {-# LANGUAGE TemplateHaskell, FlexibleContexts, FlexibleInstances, TypeSynonymInstances, FunctionalDependencies, MultiParamTypeClasses, OverloadedStrings, RankNTypes, ScopedTypeVariables #-}
-
+-- | This module has some calculations for the derived parameters (these are the parameters used in the calculations)
 module Data.CarDerivedParameters ( 
---        withDerivedParameters,
---        withDerivedParametersMin
         searchCarInGarage,
         getCarInGarage,
         loadCarInGarage,
@@ -15,7 +13,6 @@ module Data.CarDerivedParameters (
 ) where
 
 
---import Control.Monad
 import Model.TH
 import Model.General
 import Data.InRules
@@ -51,15 +48,20 @@ import qualified Data.CarReady as CR
 import Debug.Trace
 import qualified Data.Car as C
 
+-- | BaseParameter gives the type for a car derived parameter
 type BaseParameter = Double
+-- | The modifier changes the baseparameter multiplicatively  
 type BaseParameterModifier = Double
 
+-- | Zero base parameter 
 zeroBaseParam :: BaseParameter
 zeroBaseParam = 0
 
+-- | The don't change anything parameter is 1 
 zeroBaseParamModifier :: BaseParameterModifier
 zeroBaseParamModifier = 1
 
+-- | Generate a mapable record for the base parameters
 $(genMapableRecord "CarBaseParameters" [
         ("car_mass", ''BaseParameter),
         ("car_power", ''BaseParameter),
@@ -76,6 +78,7 @@ $(genMapableRecord "CarBaseParameters" [
         ("car_nos_m", ''BaseParameterModifier)
     ])
 
+-- | The zero car base parameters 
 zeroParams :: CarBaseParameters
 zeroParams = CarBaseParameters {
         car_mass = zeroBaseParam,
@@ -92,7 +95,7 @@ zeroParams = CarBaseParameters {
         car_nos = zeroBaseParam,
         car_nos_m = zeroBaseParamModifier
     }
-
+-- | Derived parameters for car 
 $(genMapableRecord "CarDerivedParameters" [
         ("car_acceleration", ''Integer),
         ("car_top_speed", ''Integer),
@@ -101,13 +104,13 @@ $(genMapableRecord "CarDerivedParameters" [
         ("car_nitrous", ''Integer)
     ]) 
 
-
+-- | Derived parameters for part 
 $(genMapableRecord "PartParameter" [
         ("parameter", ''Double),
         ("parameter_name", ''String),
         ("parameter_is_modifier", ''Bool)
     ])
-
+-- | Derived parameters for preview (for the ui)
 $(genMapableRecord "PreviewPart" [
         ("part", ''GP.GaragePart),
         ("params", ''CarDerivedParameters)
@@ -117,15 +120,22 @@ type PreviewParts = [PreviewPart]
 
 type PartData = (Integer, [PartParameter])
 
+-- | Conversion to database (stored as integer)
 todbi :: Double -> Integer
 todbi = floor . (10000 *)
+-- | Retrieval from database (conversion to double)
 fromdbi :: Integer -> Double
 fromdbi = (/ 10000) . fromInteger
 
 type Speed = Double
 type Length = Double
 
-searchCarInGarage :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [CIG.CarInGarage]
+-- | Find a car in garage with derived parameters 
+searchCarInGarage :: Constraints -- ^ Database search constraints  
+		  -> Orders -- ^ Ordering 
+		  -> Integer -- ^ limit 
+		  -> Integer -- ^ offset 
+		  -> SqlTransaction Connection [CIG.CarInGarage]
 searchCarInGarage cs os l o = do
         xs <- search cs os l o :: SqlTransaction Connection [CIG.CarInGarage]
         forM xs $ \x -> do
@@ -133,21 +143,28 @@ searchCarInGarage cs os l o = do
                 case r of
                         True -> return $ withDerivedParameters x
                         False -> return $ withZeroParameters x
-
-getCarInGarage :: [Constraint] -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CIG.CarInGarage
+-- | get car in garage with default 
+getCarInGarage :: [Constraint] -- ^ Database search constraints 
+	       -> SqlTransaction Connection CIG.CarInGarage  -- ^ Default car 
+               -> SqlTransaction Connection CIG.CarInGarage
 getCarInGarage cs f = do
         xs <- searchCarInGarage cs [] 1 0
         case xs of
                 x:_ -> return x
                 otherwise -> f
-
+-- | Load a specific car 
 loadCarInGarage :: Integer -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CIG.CarInGarage
 loadCarInGarage i f = getCarInGarage ["id" |== toSql i] f
 
 --ptest :: (ToInRule a, ToInRule b, FromInRule b) => a -> b -> b 
 --ptest a b = fromInRule $ project (toInRule b) (toInRule a)
 
-searchCarMinified :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [CMI.CarMinimal]
+-- | Get a minified car 
+searchCarMinified :: Constraints -- ^ Database search constraints 
+		   -> Orders -- ^ Order 
+		   -> Integer -- ^ limit 
+  		   -> Integer -- ^ offset 
+		   -> SqlTransaction Connection [CMI.CarMinimal]
 searchCarMinified cs os l o = (map CMI.toCM) <$> searchCarInGarage cs os l o
 
 getCarMinified :: Constraints -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CMI.CarMinimal
@@ -156,7 +173,7 @@ getCarMinified cs f = CMI.toCM <$> getCarInGarage cs f
 loadCarMinified :: Integer -> SqlTransaction Connection CIG.CarInGarage -> SqlTransaction Connection CMI.CarMinimal
 loadCarMinified i f = CMI.toCM <$> loadCarInGarage i f
 
-
+-- | Add derived car parameters 
 withDerivedParameters :: CIG.CarInGarage -> CIG.CarInGarage
 withDerivedParameters cig = cig {
         CIG.acceleration = todbi $ derive acceleration car,
@@ -166,7 +183,7 @@ withDerivedParameters cig = cig {
         CIG.nitrous = todbi $ derive nitrous car
     }
         where car = carInGarageCar cig
-
+-- | Add zero parameters 
 withZeroParameters :: CIG.CarInGarage -> CIG.CarInGarage
 withZeroParameters cig = cig {
         CIG.acceleration = 0,
@@ -177,7 +194,7 @@ withZeroParameters cig = cig {
     }
         where car = carInGarageCar cig
 
-
+-- Derive derived parameters from base parameters 
 deriveParameters :: CarBaseParameters -> CarDerivedParameters
 deriveParameters b = CarDerivedParameters {
         car_acceleration = todbi $ derive acceleration car,
@@ -196,23 +213,25 @@ deriveParameters b = CarDerivedParameters {
                 C.nos = (car_nos b) * (car_nos_m b)
             }
 
+-- | Zero car derived parameters 
 zeroParameters :: CarDerivedParameters
 zeroParameters = CarDerivedParameters {
         car_acceleration = 0,
-        car_top_speed = 0,
-        car_cornering = 0,
-        car_stopping = 0,
-        car_nitrous = 0
+			 car_top_speed = 0,
+			 car_cornering = 0,
+			 car_stopping = 0,
+			 car_nitrous = 0
 }
 
 type CarPartMap = HM.HashMap Integer PartData 
-
+-- | Map garage parts to map 
 garagePartsToMap :: [GP.GaragePart] -> CarPartMap
 garagePartsToMap ps = foldr insertGaragePart HM.empty ps
 
+-- | Insert garage part into map 
 insertGaragePart :: GP.GaragePart -> CarPartMap -> CarPartMap
 insertGaragePart p m = HM.insert (GP.part_type_id p) (GP.weight p, garagePartParams p) m
-
+-- | Get garage part params 
 garagePartParams :: GP.GaragePart -> [PartParameter] 
 garagePartParams p = addParam i w (fromdbi <$> GP.parameter1 p, GP.parameter1_name p, GP.parameter1_is_modifier p) $
                      addParam i w (fromdbi <$> GP.parameter2 p, GP.parameter2_name p, GP.parameter2_is_modifier p) $
@@ -220,13 +239,15 @@ garagePartParams p = addParam i w (fromdbi <$> GP.parameter1 p, GP.parameter1_na
                             where
                                     i = fromdbi $ GP.improvement p
                                     w = fromdbi $ GP.wear p
-
+-- | Change car to map 
 carToMap :: HM.HashMap Integer CIP.CarInstanceParts -> CarPartMap
 carToMap = HM.map (\p -> (CIP.weight p, carPartParams p) ) 
 
+-- | Change car parts to map 
 carPartsToMap :: [CIP.CarInstanceParts] -> CarPartMap
 carPartsToMap ps = foldr insertCarPart HM.empty ps
 
+-- | Insert a car part into a carpartmap 
 insertCarPart :: CIP.CarInstanceParts -> CarPartMap -> CarPartMap
 insertCarPart p m = HM.insert (CIP.part_type_id p) (CIP.weight p, carPartParams p) m
 
@@ -243,11 +264,12 @@ addParam i w p ps = case p of
         (Just v, Just n, Just m) -> (PartParameter { parameter = paramModified v i w, parameter_name = n, parameter_is_modifier = m }) : ps
         otherwise -> ps
 
--- modify parameter for improvement and wear. improvement can add up to 50% and wear can reduce up to 50%. effects are multiplicative.
--- parameter = parameter0 * (1 + 0.5 * (improvement / 10000.0)) * (1 - 0.5 * (wear / 10000.0));
+-- | modify parameter for improvement and wear. improvement can add up to 50% and wear can reduce up to 50%. effects are multiplicative.
+-- | parameter = parameter0 * (1 + 0.5 * (improvement / 10000.0)) * (1 - 0.5 * (wear / 10000.0));
 paramModified :: Double -> Double -> Double -> Double
 paramModified v i w = v * (1 + 0.3 * i) * (1 - 0.5 * w);
 
+-- | Get base parameters from car map 
 baseParameters :: CarPartMap -> CarBaseParameters
 baseParameters m = HM.foldr step zeroParams m
     where

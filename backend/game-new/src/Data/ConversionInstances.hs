@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, IncoherentInstances, RankNTypes, FlexibleContexts, ViewPatterns, ScopedTypeVariables #-}
+-- | Instances for conversions 
 module Data.ConversionInstances where 
 {-- Changelog
 - Edgar - added gzip to the object encode / decoding instances 

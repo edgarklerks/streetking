@@ -1,5 +1,6 @@
 {-# LANGUAGE GADTs, FlexibleContexts, FlexibleInstances,
  MultiParamTypeClasses, OverloadedStrings #-}
+-- | Event expression matcher primitives 
 module Data.Event where 
 
 import Data.Decider

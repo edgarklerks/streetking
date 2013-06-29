@@ -1,3 +1,4 @@
+-- | Small module for logging to an external party 
 module Data.ExternalLog where 
 
 import System.ZMQ3

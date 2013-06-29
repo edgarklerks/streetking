@@ -1,4 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
+-- | Not finished and depredicated
+-- | TODO: Remove   
 module Data.Borg where 
 
 
