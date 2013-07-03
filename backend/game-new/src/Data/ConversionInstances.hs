@@ -1,9 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, IncoherentInstances, RankNTypes, FlexibleContexts, ViewPatterns, ScopedTypeVariables #-}
 -- | Instances for conversions 
+--   Edgar - added gzip to the object encode / decoding instances 
 module Data.ConversionInstances where 
-{-- Changelog
-- Edgar - added gzip to the object encode / decoding instances 
---}
 import Data.InRules
 import qualified Data.Aeson as A
 import qualified Data.Aeson.Parser as A
@@ -298,23 +296,29 @@ instance (Hashable k, Eq k, A.FromJSON v, A.FromJSON k) => A.FromJSON (Map.HashM
 
 instance Default (Map.HashMap k v) where 
             def = Map.empty 
+-- | Convert an sql value to a InRule and decode a binary blob 
+-- The pipeline looks like this:
+--
+-- @
 -- decode :: (SqlValue -> Either error B.ByteString)
 -- S.decode :: (B.ByteString -> Either error InRule)
--- base64
---  |
--- \ / 
--- decode
---  | binary gzip data 
--- \|/
--- quicklz 
---  | serialized data 
--- \/
--- S.decode 
---   |
---  \|/
---  InRule 
+-- @
+--
+--     base64
+--      |
+--     \ / 
+--    decode
+--      | binary gzip data 
+--     \|/
+--    quicklz 
+--      | serialized data 
+--     \/
+--    'S.decode' 
+--       |
+--      \|/
+--     InRule 
 
-
+-- | Convert an SqlValue to a InRule 
 convFromSql :: SqlValue -> InRule  
 convFromSql (SqlString s) = toInRule s
 convFromSql (SqlByteString  s) = case (S.decode <=< (fmap decompress . decode)) s of 
@@ -335,7 +339,7 @@ convFromSql (SqlLocalTime  s) =  toInRule ( s::LocalTime )
 convFromSql (SqlUTCTime  s) = toInRule s
 convFromSql SqlNull = InNull
 
-
+-- | Convert a InRule to a SqlValu 
 convSql ::  InRule -> SqlValue
 convSql (InNumber r) 
     | denominator r == 1 = toSql (numerator r)
@@ -349,13 +353,15 @@ convSql (InString s) =  toSql s
 convSql (InByteString s) = toSql s
 convSql r = SqlByteString (encode $ compress $ S.encode r)  
 
-
+-- | Put a word in a 'S.Put' monad 
 put8 :: Word8 -> S.Put 
 put8 = S.put 
 
+-- | Change a integer into a Word64 
 toWord64 :: Int -> Word64 
 toWord64 = fromIntegral
 
+-- | Put a word in a 'S.Put' monad 
 put8b :: Word8 -> B.Put 
 put8b = B.put 
 
@@ -441,12 +447,12 @@ instance S.Serialize InRule where
                 
 
 
-
+-- | Serialize a hashmap, internal helper function 
 serializeHashMap xs = let ys = Map.toList xs
                       in S.put (toWord64 $ length ys) *> 
                             forM_ ys (\(k,v) -> 
                                 S.put k *> S.put v)
--- Dirty fallback strategy
+-- | Dirty fallback strategy
 instance FromInRule (Readable) where 
     fromInRule = asReadable
 

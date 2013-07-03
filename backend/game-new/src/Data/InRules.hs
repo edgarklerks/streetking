@@ -37,8 +37,9 @@ infixl 6 .>>
 infixr 6 ..>
 -- | Map all the hash map keys 
 hmapKeys f xs = Map.foldrWithKey step Map.empty xs
--- | Map over all the hash map values with a key
     where step k v a = Map.insert (f k) v a 
+
+-- | Map over all the hash map values with a key
 hmapWithKey f xs = Map.foldrWithKey step Map.empty xs 
     where step k v a = Map.insert k (f k v) a
 -- * Data types and classes

@@ -1,4 +1,7 @@
 {-# LANGUAGE ViewPatterns #-}
+-- | The notification system is modeled after a postal office
+--   we can sort the letters, then send letters in order of priority to
+--   the user boxes 
 module Data.Notifications where 
 
 import qualified Data.PriorityQueue as PQ 
@@ -40,39 +43,48 @@ newtype UserBoxes = UB {
             runUserBoxes :: TVar (IM.IntMap (TVar (LL.LimitList Int)))
         }
 
-
+-- | Get all letters in the postoffice with an index
 readPostSorter :: PostOffice -> STM (IM.IntMap Letter)
 readPostSorter (PO (_, ps, _)) = readTVar (runPostSorter ps)
 
+-- | Modify all the letters in the post office 
 modifyPostSorter :: PostOffice -> (IM.IntMap Letter -> IM.IntMap Letter) -> STM ()
 modifyPostSorter (PO (_, ps,_)) f = modifyTVar (runPostSorter ps) f
 
+-- | Replace all letters in the post office 
 writePostSorter :: PostOffice -> IM.IntMap Letter -> STM ()
 writePostSorter (PO (_,ps,_)) = writeTVar (runPostSorter ps) 
 
+-- | Read a specific user box 
 readUserBoxes :: PostOffice -> STM (IM.IntMap (TVar (LL.LimitList Int)))
 readUserBoxes (PO (_,_,x)) = readTVar (runUserBoxes x)
 
+-- | Modify a user box 
 modifyUserBoxes :: PostOffice -> (IM.IntMap (TVar (LL.LimitList Int)) -> IM.IntMap (TVar (LL.LimitList Int))) -> STM () 
 modifyUserBoxes (PO (_,_,x)) = modifyTVar (runUserBoxes x)
 
+-- | Replace a user box 
 writeUserBoxes :: PostOffice -> IM.IntMap (TVar (LL.LimitList Int)) -> STM ()
 writeUserBoxes (PO (_,_,x)) = writeTVar (runUserBoxes x) 
 
+-- | get the priority queue from the postoffice 
 readPrioService :: PostOffice -> STM (PQ.Prio Time Int)
 readPrioService (PO (x,_,_)) = readTVar (runPrioService x)
 
+-- | modify the priority service of the postoffice 
 modifyPrioService :: PostOffice -> (PQ.Prio Time Int -> PQ.Prio Time Int) -> STM ()
 modifyPrioService (PO (x, _, _)) = modifyTVar (runPrioService x) 
 
 
+-- | Replace the priority service in the postoffice 
 writePrioService :: PostOffice -> PQ.Prio Time Int -> STM ()
 writePrioService (PO (x,_,_)) = writeTVar (runPrioService x) 
 
-
+-- | Modify a specific letter 
 modifyLetter :: PostOffice -> Int -> (Letter -> Letter) -> STM ()
 modifyLetter po i f = modifyPostSorter po $ IM.update (Just . f) i   
 
+-- | Delete a letter from the postoffice 
 deleteLetter :: PostOffice -> Int -> STM ()
 deleteLetter po i = modifyPostSorter po $ IM.delete i   
 
@@ -80,22 +92,25 @@ deleteLetter po i = modifyPostSorter po $ IM.delete i
 
 type UserId = Integer 
 
+-- | Get the id from a letter 
 getId :: Letter -> Int 
 getId it = fromInteger $ fromJust $ P.id it 
 
 withPriority it f | (getPrio $ it)  == Nothing = return ()
                   | otherwise = f (fromJust $ getPrio it)
 
+-- | Get the priority of the letter 
 getPrio :: Letter -> Maybe Time 
 getPrio l | P.ttl l == Nothing = Nothing 
           | otherwise = Just $ (fromJust $ P.ttl l) 
 
-
+-- | A post office has a PrioService, PostSorter and UserBoxes 
 newtype PostOffice = PO {
         -- | close the post office 
         closePostOffice ::  (PrioService,PostSorter,UserBoxes) 
     }
 
+-- | Send a letter with postoffice to a user 
 sendLocal :: PostOffice -> UserId -> Letter -> IO ()
 sendLocal po uid it = do 
             atomically $ do 
@@ -130,13 +145,12 @@ openPostOffice = do
                         UB  ub
                     )
 
--- | send a message to that users 
+-- | send a message to that users locally and to the central post center (database) 
 sendLetter :: PostOffice -> UserId -> Letter -> SqlTransaction Connection Letter
 sendLetter po uid lt = sendCentral uid lt >>= \c -> (liftIO . sendLocal po uid) c  >> return c
 
 
-                         
-
+-- Send a letter to the database 
 sendCentral ::  UserId -> Letter -> SqlTransaction Connection Letter 
 sendCentral uid it = do 
                     a <- milliTime  
@@ -144,7 +158,7 @@ sendCentral uid it = do
                     id <- save  prit 
                     return (prit { P.id = Just id}) 
 
-
+-- | Flag letter read  
 setRead :: PostOffice -> UserId -> Integer -> SqlTransaction Connection () 
 setRead po uid id = do 
                    liftIO $ atomically $ modifyLetter po (fromInteger id) (\x -> x { P.read = True })
@@ -153,7 +167,7 @@ setRead po uid id = do
                    save (x { P.read = True } :: Letter) :: SqlTransaction Connection Integer 
                    return ()
 
-
+-- | Flag letter archived 
 setArchive :: PostOffice -> UserId -> Integer -> SqlTransaction Connection ()
 setArchive po uid id = do 
                    liftIO $ atomically $ modifyLetter po (fromInteger id) (\x -> x { P.archive = True })
@@ -212,7 +226,7 @@ haulPost po uid = do
                                    modifyPrioService po $ \z -> PQ.insert prio (getId it) z  
 
 
-
+-- | get all message letters since .. 
 extractSince :: Time -> PostOffice -> STM [Int]
 extractSince t po = do 
                         xs <- readPrioService po

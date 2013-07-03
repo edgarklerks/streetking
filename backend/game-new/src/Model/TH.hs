@@ -115,7 +115,7 @@ genAll nm tbl xs = genAllId nm tbl "id" xs
 
 genAllId :: String -> String -> String -> [(String, Name)] -> Q [Dec]
 genAllId nm tbl td xs = 
-                   do checkTables tbl xs
+                   do -- checkTables tbl xs
                       r <- genRecord nm xs  
                       i <- genInstance nm xs
                       d <- genDatabase nm tbl td xs

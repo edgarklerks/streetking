@@ -90,18 +90,23 @@ import qualified Control.Monad.CatchIO as CIO
 import qualified GHC.Exception as E 
 
 -- | Sql transaction is a monad, which encapsulate computations in a transaction
--- | By throwing an error the transaction will be rolled back
--- | The SqlTransactionUser gives the possibility to add a user state
--- | In SqlTransaction the user state is a mechanism to lock a certain operation
--- | Other capabilities are: 
--- | * paralel queries 
--- | * atomical actions
--- | * exception catching (`Control.Monad.Error`)
--- | * error handling 
--- | * server level locking 
--- |
--- | The monad is hand rolled and CPS transformed for efficiency 
--- |
+--   By throwing an error the transaction will be rolled back
+--   The SqlTransactionUser gives the possibility to add a user state
+--   In SqlTransaction the user state is a mechanism to lock a certain operation
+--   Other capabilities are: 
+--
+--      * paralel queries 
+--
+--      * atomical actions
+--
+--      * exception catching (`Control.Monad.Error`)
+--
+--      * error handling 
+--
+--      * server level locking 
+--  
+--   The monad is hand rolled and CPS transformed for efficiency 
+--  
 type SqlTransaction c a = SqlTransactionUser L.Lock c a 
 
 -- | Exception data type.
@@ -117,11 +122,15 @@ instance IsString SqlError where
     fromString = UError 
 
 -- | This is the core monad. It is a hand rolled CPS transformed monadstack. It handles state and exception handling
+--
+-- It is derived from the following stack:
+--
 -- @
 --   newtype SqlTransaction l c a = SqlTransaction {
 --     unsafeRunSqlTransaction :: StateT (c,l) (ErrorT String IO) a 
 --   } deriving (Functor, Alternative, Applicative, Monad, MonadPlus, MonadFix, MonadState c, MonadError String, MonadIO) 
 -- @
+--
 
 newtype SqlTransactionUser l c a = SqlTransaction {
                 unsafeRunSqlTransaction :: forall r. ((c,l) -> a -> IO (Either SqlError r)) -> (c,l) -> IO (Either SqlError r)
@@ -210,10 +219,13 @@ getUser = SqlTransaction $ \r c@(t,l) -> r c l
 putUser a = SqlTransaction $ \r (c,_) -> r (c,a) ()
 
 -- | Do a SqlTransaction action and put a lock on the provided label. If the lock can't be acquired, don't block.    
--- | Example
+--
+--   Example
+--
 -- @
 -- withLockNonBlock "namespace" "key" $ do ... 
 -- @
+--
 dbWithLockNonBlock n a m = do 
         l <- getUser 
         L.withLockNonBlock l n a m 
@@ -238,11 +250,11 @@ instance MonadIO (SqlTransactionUser l c) where
     liftIO m = SqlTransaction $ \r c -> (m >>= r c)
 
 -- | A minimal implementation of a future value
--- | that is a value, which will be calculated in paralel
+--   that is a value, which will be calculated in paralel
 type Future a = MVar (Either SqlError a) 
 
 -- | Explicitly encapsulates a computation in a transaction block.
--- | This commits the previous computation
+--   This commits the previous computation
 atomical :: SqlTransaction Connection a -> SqlTransaction Connection a 
 atomical trans = do 
                 c <- ask 
@@ -253,8 +265,8 @@ atomical trans = do
                 liftIO (H.begin c)
                 return a
 -- | Fork a SqlTransaction, so it can calculate the computation concurrently 
--- | This shares the database connection, so it the parent should be done with all the operations on the database. 
--- | Errors don't roll back the parent 
+--   This shares the database connection, so it the parent should be done with all the operations on the database. 
+--   Errors don't roll back the parent 
 forkSqlTransaction :: SqlTransaction Connection () -> SqlTransaction Connection ThreadId 
 forkSqlTransaction m = do 
                 c <- ask -- current database connection
@@ -263,8 +275,8 @@ forkSqlTransaction m = do
                     (unsafeRunSqlTransaction m) (\_ a -> return (Right a)) (c,l)
                     return ()
 -- | Creates a new future in the SqlTransaction monad with a calculation 
--- | The database connection will be cloned, so it is safe for the parent 
--- | to operate on the database 
+--   The database connection will be cloned, so it is safe for the parent 
+--   to operate on the database 
 newFuture :: H.IConnection c => 
 	SqlTransaction c a -- ^ calculation needed in the future 
 	-> SqlTransaction c (Future a) 
@@ -280,7 +292,7 @@ newFuture m = do
         return m1
 
 -- | Fill a future with a value
--- | This is an internal function 
+--   This is an internal function 
 fillFuture :: Future a -> (Either SqlError a) -> SqlTransaction c ()
 fillFuture m = liftIO . putMVar m 
 
@@ -293,7 +305,7 @@ doneFuture :: Future a -> SqlTransaction c Bool
 doneFuture = liftIO . isEmptyMVar
 
 -- | Read the future, this will force the calculation.
--- | Any exception will be thrown in the parent 
+--   Any exception will be thrown in the parent 
 readFuture :: H.IConnection c => Future a -> SqlTransaction c a
 readFuture f = do 
                 b <- liftIO $ readMVar f
@@ -302,7 +314,8 @@ readFuture f = do
                     Right a -> return a
 
 -- | Run queries in paralel
--- | Example:
+--   Example:
+--
 -- @
 -- parSafe [comp1, comp2, comp3]
 -- @
@@ -523,7 +536,9 @@ instance Show Lock where
     show AccessExclusive = "ACCESS EXCLUSIVE"
 
 -- | Lock a table with Lock and do a computation when locked 
--- | Example
+--
+--  Example
+--
 -- @
 -- f = lock "account" RowExclusive $ do ... 
 -- @
