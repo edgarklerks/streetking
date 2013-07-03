@@ -1,0 +1,665 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Lua.Monad</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Lua.Monad</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runLua" class="def"
+	    >runLua</a
+	    > ::  <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a -&gt; IO (Either String a)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runLuaMonad" class="def"
+	    >runLuaMonad</a
+	    > ::  <a href="Lua-Prim.html#t:LuaState"
+	    >LuaState</a
+	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a -&gt; IO (Either String a)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runLuaMonad-39-" class="def"
+	    >runLuaMonad'</a
+	    > ::  <a href="Lua-Prim.html#t:LuaState"
+	    >LuaState</a
+	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a -&gt; IO (Either String a)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadLib" class="def"
+	    >loadLib</a
+	    > :: FilePath -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:eval" class="def"
+	    >eval</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:LuaValue" class="def"
+	    >LuaValue</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:LuaObj" class="def"
+		  >LuaObj</a
+		  > [(<a href="Lua-Monad.html#t:LuaValue"
+		  >LuaValue</a
+		  >, <a href="Lua-Monad.html#t:LuaValue"
+		  >LuaValue</a
+		  >)]</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:LuaNum" class="def"
+		  >LuaNum</a
+		  > !Double</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:LuaString" class="def"
+		  >LuaString</a
+		  > !String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:LuaBool" class="def"
+		  >LuaBool</a
+		  > !Bool</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:LuaNil" class="def"
+		  >LuaNil</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:LuaNone" class="def"
+		  >LuaNone</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:LuaError" class="def"
+		  >LuaError</a
+		  > !String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:LuaValue" class="caption collapser" onclick="toggleSection('i:LuaValue')"
+	    >Instances</p
+	    ><div id="section.i:LuaValue" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Data <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Num <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Ord <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Read <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Typeable <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >IsString <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >StackValue <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Double <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Integer <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Rational <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible String <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    > Double</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    > Integer</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    > Rational</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    > String</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    > <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(Typeable a, Convertible <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    > a) =&gt; Convertible <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    > [(String, a)]</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(Typeable a, Convertible a <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    >) =&gt; Convertible [(String, a)] <a href="Lua-Monad.html#t:LuaValue"
+		    >LuaValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:LuaMonad" class="def"
+	    >LuaMonad</a
+	    > a </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:LR" class="def"
+		  >LR</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unLR" class="def"
+			>unLR</a
+			> :: ReaderT <a href="Lua-Prim.html#t:LuaState"
+			>LuaState</a
+			> (ErrorT String IO) a</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:LuaMonad" class="caption collapser" onclick="toggleSection('i:LuaMonad')"
+	    >Instances</p
+	    ><div id="section.i:LuaMonad" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Monad <a href="Lua-Monad.html#t:LuaMonad"
+		    >LuaMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Functor <a href="Lua-Monad.html#t:LuaMonad"
+		    >LuaMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Applicative <a href="Lua-Monad.html#t:LuaMonad"
+		    >LuaMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadIO <a href="Lua-Monad.html#t:LuaMonad"
+		    >LuaMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadReader <a href="Lua-Prim.html#t:LuaState"
+		    >LuaState</a
+		    > <a href="Lua-Monad.html#t:LuaMonad"
+		    >LuaMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadError String <a href="Lua-Monad.html#t:LuaMonad"
+		    >LuaMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:registerhsfunction" class="def"
+	    >registerhsfunction</a
+	    > :: LuaImport a =&gt; String -&gt; a -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadLuaValue" class="def"
+	    >loadLuaValue</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > (Maybe <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:saveLuaValue" class="def"
+	    >saveLuaValue</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getValue" class="def"
+	    >getValue</a
+	    > :: StackValue a =&gt; String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getInt" class="def"
+	    >getInt</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getString" class="def"
+	    >getString</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getBool" class="def"
+	    >getBool</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getLuaValue" class="def"
+	    >getLuaValue</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getDouble" class="def"
+	    >getDouble</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Double</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getType" class="def"
+	    >getType</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Prim.html#t:LuaType"
+	    >LuaType</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:valToLua" class="def"
+	    >valToLua</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tableToLua" class="def"
+	    >tableToLua</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:pushLuaValue" class="def"
+	    >pushLuaValue</a
+	    > :: <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadIntoTable" class="def"
+	    >loadIntoTable</a
+	    > :: LuaState -&gt; (<a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    >, <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    >) -&gt; IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:push" class="def"
+	    >push</a
+	    > :: StackValue a =&gt; a -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:peek" class="def"
+	    >peek</a
+	    > :: StackValue a =&gt; Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:pop" class="def"
+	    >pop</a
+	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadfile" class="def"
+	    >loadfile</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:call" class="def"
+	    >call</a
+	    > :: Int -&gt; Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tostring" class="def"
+	    >tostring</a
+	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:pushnil" class="def"
+	    >pushnil</a
+	    > :: <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:ltype" class="def"
+	    >ltype</a
+	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Prim.html#t:LuaType"
+	    >LuaType</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getglobal" class="def"
+	    >getglobal</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:next" class="def"
+	    >next</a
+	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:newstate" class="def"
+	    >newstate</a
+	    > :: IO LuaState</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

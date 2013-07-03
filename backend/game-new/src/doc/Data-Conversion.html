@@ -1,0 +1,4347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.Conversion</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-Conversion.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.Conversion</p
+	></div
+      ><div id="description"
+      ><p class="caption"
+	>Description</p
+	><div class="doc"
+	><p
+	  >Tests and interface for InRules 
+</p
+	  ></div
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><a href="#v:.-62-"
+	    >(.&gt;)</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; String -&gt; Maybe <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:.-62--62-"
+	    >(.&gt;&gt;)</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; String -&gt; [<a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:-61--61--62-"
+	    >(==&gt;)</a
+	    > :: <a href="Data-Conversion.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; String -&gt; a -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:..-62-"
+	    >(..&gt;)</a
+	    > :: <a href="Data-Conversion.html#t:FromInRule"
+	    >FromInRule</a
+	    > a =&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; String -&gt; Maybe a</li
+	  ><li class="src short"
+	  ><a href="#v:hmapKeys"
+	    >hmapKeys</a
+	    > :: (Eq k, Hashable k) =&gt; (k1 -&gt; k) -&gt; HashMap k1 v -&gt; HashMap k v</li
+	  ><li class="src short"
+	  ><a href="#v:hmapWithKey"
+	    >hmapWithKey</a
+	    > :: (Eq k, Hashable k) =&gt; (k -&gt; v1 -&gt; v) -&gt; HashMap k v1 -&gt; HashMap k v</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:InRule"
+	    >InRule</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:InString"
+		>InString</a
+		> !String  </li
+	      ><li
+	      >| <a href="#v:InByteString"
+		>InByteString</a
+		> !ByteString  </li
+	      ><li
+	      >| <a href="#v:InInteger"
+		>InInteger</a
+		> !Integer  </li
+	      ><li
+	      >| <a href="#v:InDouble"
+		>InDouble</a
+		> !Double  </li
+	      ><li
+	      >| <a href="#v:InNumber"
+		>InNumber</a
+		> !Rational  </li
+	      ><li
+	      >| <a href="#v:InBool"
+		>InBool</a
+		> !Bool  </li
+	      ><li
+	      >| <a href="#v:InNull"
+		>InNull</a
+		>  </li
+	      ><li
+	      >| <a href="#v:InArray"
+		>InArray</a
+		> [<a href="Data-Conversion.html#t:InRule"
+		>InRule</a
+		>]  </li
+	      ><li
+	      >| <a href="#v:InObject"
+		>InObject</a
+		> (HashMap String <a href="Data-Conversion.html#t:InRule"
+		>InRule</a
+		>)  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:Readable"
+	    >Readable</a
+	    >  = <a href="#v:Readable"
+	    >Readable</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unReadable"
+		>unReadable</a
+		> :: String</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:InKey"
+	    >InKey</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:Index"
+		>Index</a
+		> Int  </li
+	      ><li
+	      >| <a href="#v:None"
+		>None</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Assoc"
+		>Assoc</a
+		> String  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:IdentityMonoid"
+	    >IdentityMonoid</a
+	    > a = <a href="#v:IM"
+	    >IM</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unIM"
+		>unIM</a
+		> :: a</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:PathState"
+	    >PathState</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:Accept"
+		>Accept</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Reject"
+		>Reject</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:PathStep"
+	    >PathStep</a
+	    > a<ul class="subs"
+	    ><li
+	      >= <a href="#v:Next"
+		>Next</a
+		> (<a href="Data-Conversion.html#t:PathAcceptor"
+		>PathAcceptor</a
+		> a)  </li
+	      ><li
+	      >| <a href="#v:Final"
+		>Final</a
+		> <a href="Data-Conversion.html#t:PathState"
+		>PathState</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a = <a href="#v:PM"
+	    >PM</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unPM"
+		>unPM</a
+		> :: a -&gt; <a href="Data-Conversion.html#t:PathStep"
+		>PathStep</a
+		> a</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:accept"
+	    >accept</a
+	    > ::  <a href="Data-Conversion.html#t:PathStep"
+	    >PathStep</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:reject"
+	    >reject</a
+	    > ::  <a href="Data-Conversion.html#t:PathStep"
+	    >PathStep</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:acceptor"
+	    >acceptor</a
+	    > ::  <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:continue"
+	    >continue</a
+	    > ::  <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:alter"
+	    >alter</a
+	    > ::  <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a -&gt; <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a -&gt; <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:apoint"
+	    >apoint</a
+	    > :: Eq a =&gt; a -&gt; <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:runPath"
+	    >runPath</a
+	    > :: Eq a =&gt; <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a -&gt; [a] -&gt; Bool</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:KindView"
+	    >KindView</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:TScalar"
+		>TScalar</a
+		>  </li
+	      ><li
+	      >| <a href="#v:TArray"
+		>TArray</a
+		>  </li
+	      ><li
+	      >| <a href="#v:TObject"
+		>TObject</a
+		>  </li
+	      ><li
+	      >| <a href="#v:TNone"
+		>TNone</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:viewKind"
+	    >viewKind</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:KindView"
+	    >KindView</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:kmap"
+	    >kmap</a
+	    > :: (<a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:pmap"
+	    >pmap</a
+	    > :: (Monoid (f <a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    >), Pointed f) =&gt; (f <a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:pfold"
+	    >pfold</a
+	    > :: (Monoid (f <a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    >), Pointed f) =&gt; (f <a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; b -&gt; b) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; b -&gt; b</li
+	  ><li class="src short"
+	  ><a href="#v:kfold"
+	    >kfold</a
+	    > ::  (<a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; b -&gt; b) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; b -&gt; b</li
+	  ><li class="src short"
+	  ><a href="#v:readable"
+	    >readable</a
+	    > :: String -&gt; <a href="Data-Conversion.html#t:Readable"
+	    >Readable</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:viaReadable"
+	    >viaReadable</a
+	    > :: Read a =&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; a</li
+	  ><li class="src short"
+	  ><a href="#v:asReadable"
+	    >asReadable</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:Readable"
+	    >Readable</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a href="#t:ToInRule"
+	    >ToInRule</a
+	    > a  <span class="keyword"
+	    >where</span
+	    ><ul class="subs"
+	    ><li
+	      ><a href="#v:toInRule"
+		>toInRule</a
+		> :: a -&gt; <a href="Data-Conversion.html#t:InRule"
+		>InRule</a
+		></li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a href="#t:FromInRule"
+	    >FromInRule</a
+	    > a  <span class="keyword"
+	    >where</span
+	    ><ul class="subs"
+	    ><li
+	      ><a href="#v:fromInRule"
+		>fromInRule</a
+		> :: <a href="Data-Conversion.html#t:InRule"
+		>InRule</a
+		> -&gt; a</li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:validObject"
+	    >validObject</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; Bool</li
+	  ><li class="src short"
+	  ><a href="#v:emptyObj"
+	    >emptyObj</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:singleObj"
+	    >singleObj</a
+	    > :: <a href="Data-Conversion.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; String -&gt; a -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:fromList"
+	    >fromList</a
+	    > :: <a href="Data-Conversion.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; [(String, a)] -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:toList"
+	    >toList</a
+	    > :: <a href="Data-Conversion.html#t:FromInRule"
+	    >FromInRule</a
+	    > a =&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; [(String, a)]</li
+	  ><li class="src short"
+	  ><a href="#v:toListString"
+	    >toListString</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; [(String, String)]</li
+	  ><li class="src short"
+	  ><a href="#v:unionObj"
+	    >unionObj</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:unionsObj"
+	    >unionsObj</a
+	    > :: [<a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >] -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:toString"
+	    >toString</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; String</li
+	  ><li class="src short"
+	  ><a href="#v:pprint"
+	    >pprint</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:pprints"
+	    >pprints</a
+	    > :: [<a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >] -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:object"
+	    >object</a
+	    > :: [(String, <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >)] -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:list"
+	    >list</a
+	    > :: [<a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >] -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:project"
+	    >project</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:keyFilter"
+	    >keyFilter</a
+	    > :: (String -&gt; Bool) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><a name="v:.-62-" class="def"
+	    >(.&gt;)</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; String -&gt; Maybe <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Find top level matching keyword 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:.-62--62-" class="def"
+	    >(.&gt;&gt;)</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; String -&gt; [<a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >]</p
+	  ><div class="doc"
+	  ><p
+	    >Search all occuring keywords recursively  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-61--61--62-" class="def"
+	    >(==&gt;)</a
+	    > :: <a href="Data-Conversion.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; String -&gt; a -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    ><code
+	      >(<code
+		><a href="Data-Conversion.html#v:-61--61--62-"
+		  >==&gt;</a
+		  ></code
+		>)</code
+	      > Eq <code
+	      ><code
+		><a href="Data-Conversion.html#v:singleObj"
+		  >singleObj</a
+		  ></code
+		></code
+	      > .
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:..-62-" class="def"
+	    >(..&gt;)</a
+	    > :: <a href="Data-Conversion.html#t:FromInRule"
+	    >FromInRule</a
+	    > a =&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; String -&gt; Maybe a</p
+	  ><div class="doc"
+	  ><p
+	    >Find top level value and convert to normal value 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:hmapKeys" class="def"
+	    >hmapKeys</a
+	    > :: (Eq k, Hashable k) =&gt; (k1 -&gt; k) -&gt; HashMap k1 v -&gt; HashMap k v</p
+	  ><div class="doc"
+	  ><p
+	    >Map all the hash map keys 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:hmapWithKey" class="def"
+	    >hmapWithKey</a
+	    > :: (Eq k, Hashable k) =&gt; (k -&gt; v1 -&gt; v) -&gt; HashMap k v1 -&gt; HashMap k v</p
+	  ><div class="doc"
+	  ><p
+	    >Map over all the hash map values with a key
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:InRule" class="def"
+	    >InRule</a
+	    >  </p
+	  ><div class="doc"
+	  ><p
+	    >Primitive type, a subset of this type is isomorph to json and yaml  
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:InString" class="def"
+		  >InString</a
+		  > !String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:InByteString" class="def"
+		  >InByteString</a
+		  > !ByteString</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:InInteger" class="def"
+		  >InInteger</a
+		  > !Integer</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:InDouble" class="def"
+		  >InDouble</a
+		  > !Double</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:InNumber" class="def"
+		  >InNumber</a
+		  > !Rational</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:InBool" class="def"
+		  >InBool</a
+		  > !Bool</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:InNull" class="def"
+		  >InNull</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:InArray" class="def"
+		  >InArray</a
+		  > [<a href="Data-Conversion.html#t:InRule"
+		  >InRule</a
+		  >]</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:InObject" class="def"
+		  >InObject</a
+		  > (HashMap String <a href="Data-Conversion.html#t:InRule"
+		  >InRule</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:InRule" class="caption collapser" onclick="toggleSection('i:InRule')"
+	    >Instances</p
+	    ><div id="section.i:InRule" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >IsString <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Monoid <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Binary <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Arbitrary <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Serialize <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Tools.html#t:StringLike"
+		    >StringLike</a
+		    > <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > b =&gt; Convertible b <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > b =&gt; Convertible <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    > b</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:Readable" class="def"
+	    >Readable</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Readable" class="def"
+		  >Readable</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unReadable" class="def"
+			>unReadable</a
+			> :: String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Readable" class="caption collapser" onclick="toggleSection('i:Readable')"
+	    >Instances</p
+	    ><div id="section.i:Readable" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-Conversion.html#t:Readable"
+		    >Readable</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-Conversion.html#t:Readable"
+		    >Readable</a
+		    ></td
+		  ><td class="doc"
+		  ><p
+		    >Dirty fallback strategy
+</p
+		    ></td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Read a =&gt; Convertible <a href="Data-Conversion.html#t:Readable"
+		    >Readable</a
+		    > a</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:InKey" class="def"
+	    >InKey</a
+	    >  </p
+	  ><div class="doc"
+	  ><p
+	    >Data type used for viewing the type of a index   
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Index" class="def"
+		  >Index</a
+		  > Int</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:None" class="def"
+		  >None</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Assoc" class="def"
+		  >Assoc</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:InKey" class="caption collapser" onclick="toggleSection('i:InKey')"
+	    >Instances</p
+	    ><div id="section.i:InKey" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-Conversion.html#t:InKey"
+		    >InKey</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Monoid <a href="Data-Conversion.html#t:InKey"
+		    >InKey</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:IdentityMonoid" class="def"
+	    >IdentityMonoid</a
+	    > a </p
+	  ><div class="doc"
+	  ><p
+	    >Identity monoid, doesn't exist in prelude or anywhere else 
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:IM" class="def"
+		  >IM</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unIM" class="def"
+			>unIM</a
+			> :: a</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:IdentityMonoid" class="caption collapser" onclick="toggleSection('i:IdentityMonoid')"
+	    >Instances</p
+	    ><div id="section.i:IdentityMonoid" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Functor <a href="Data-Conversion.html#t:IdentityMonoid"
+		    >IdentityMonoid</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Pointed <a href="Data-Conversion.html#t:IdentityMonoid"
+		    >IdentityMonoid</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Copointed <a href="Data-Conversion.html#t:IdentityMonoid"
+		    >IdentityMonoid</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Monoid a =&gt; Monoid (<a href="Data-Conversion.html#t:IdentityMonoid"
+		    >IdentityMonoid</a
+		    > a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:PathState" class="def"
+	    >PathState</a
+	    >  </p
+	  ><div class="doc"
+	  ><p
+	    >Simple automaton for rejecting or accepting paths 
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Accept" class="def"
+		  >Accept</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Reject" class="def"
+		  >Reject</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:PathState" class="caption collapser" onclick="toggleSection('i:PathState')"
+	    >Instances</p
+	    ><div id="section.i:PathState" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-Conversion.html#t:PathState"
+		    >PathState</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:PathStep" class="def"
+	    >PathStep</a
+	    > a </p
+	  ><div class="doc"
+	  ><p
+	    >One step of the automata. Automata can be in two states:
+ | next step or final path  
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Next" class="def"
+		  >Next</a
+		  > (<a href="Data-Conversion.html#t:PathAcceptor"
+		  >PathAcceptor</a
+		  > a)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Final" class="def"
+		  >Final</a
+		  > <a href="Data-Conversion.html#t:PathState"
+		  >PathState</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:PathAcceptor" class="def"
+	    >PathAcceptor</a
+	    > a </p
+	  ><div class="doc"
+	  ><p
+	    >One machine step 
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:PM" class="def"
+		  >PM</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unPM" class="def"
+			>unPM</a
+			> :: a -&gt; <a href="Data-Conversion.html#t:PathStep"
+			>PathStep</a
+			> a</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:PathAcceptor" class="caption collapser" onclick="toggleSection('i:PathAcceptor')"
+	    >Instances</p
+	    ><div id="section.i:PathAcceptor" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Semigroup (<a href="Data-Conversion.html#t:PathAcceptor"
+		    >PathAcceptor</a
+		    > a)</td
+		  ><td class="doc"
+		  ><p
+		    >Path acceptor is a semigroup and acts semantically like a and operator 
+</p
+		    ></td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:accept" class="def"
+	    >accept</a
+	    > ::  <a href="Data-Conversion.html#t:PathStep"
+	    >PathStep</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >The always acceptor 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:reject" class="def"
+	    >reject</a
+	    > ::  <a href="Data-Conversion.html#t:PathStep"
+	    >PathStep</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >The always rejector 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:acceptor" class="def"
+	    >acceptor</a
+	    > ::  <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Always accept the input 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:continue" class="def"
+	    >continue</a
+	    > ::  <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Always accept the complete input stream (will always be false for finite streams and true for infinite ones) 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:alter" class="def"
+	    >alter</a
+	    > ::  <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a -&gt; <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a -&gt; <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Alternate two acceptors. If the first rejects try the next. Behaves like an or 
+ | operator 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:apoint" class="def"
+	    >apoint</a
+	    > :: Eq a =&gt; a -&gt; <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Creates a pointed acceptor  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runPath" class="def"
+	    >runPath</a
+	    > :: Eq a =&gt; <a href="Data-Conversion.html#t:PathAcceptor"
+	    >PathAcceptor</a
+	    > a -&gt; [a] -&gt; Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:KindView" class="def"
+	    >KindView</a
+	    >  </p
+	  ><div class="doc"
+	  ><p
+	    >View the kind of a InRule 
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:TScalar" class="def"
+		  >TScalar</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:TArray" class="def"
+		  >TArray</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:TObject" class="def"
+		  >TObject</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:TNone" class="def"
+		  >TNone</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:KindView" class="caption collapser" onclick="toggleSection('i:KindView')"
+	    >Instances</p
+	    ><div id="section.i:KindView" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-Conversion.html#t:KindView"
+		    >KindView</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-Conversion.html#t:KindView"
+		    >KindView</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:viewKind" class="def"
+	    >viewKind</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:KindView"
+	    >KindView</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:kmap" class="def"
+	    >kmap</a
+	    > :: (<a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Maps through the structure 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:pmap" class="def"
+	    >pmap</a
+	    > :: (Monoid (f <a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    >), Pointed f) =&gt; (f <a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Maps trough the structure with a history of the path kept in a monoid
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:pfold" class="def"
+	    >pfold</a
+	    > :: (Monoid (f <a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    >), Pointed f) =&gt; (f <a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; b -&gt; b) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; b -&gt; b</p
+	  ><div class="doc"
+	  ><p
+	    >Fold trough a structure with a history of the path kept in a monoid  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:kfold" class="def"
+	    >kfold</a
+	    > ::  (<a href="Data-Conversion.html#t:InKey"
+	    >InKey</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; b -&gt; b) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; b -&gt; b</p
+	  ><div class="doc"
+	  ><p
+	    >Fold through the structure 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:readable" class="def"
+	    >readable</a
+	    > :: String -&gt; <a href="Data-Conversion.html#t:Readable"
+	    >Readable</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Transform a string into a readable 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:viaReadable" class="def"
+	    >viaReadable</a
+	    > :: Read a =&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:asReadable" class="def"
+	    >asReadable</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:Readable"
+	    >Readable</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a name="t:ToInRule" class="def"
+	    >ToInRule</a
+	    > a  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs methods"
+	  ><p class="caption"
+	    >Methods</p
+	    ><p class="src"
+	    ><a name="v:toInRule" class="def"
+	      >toInRule</a
+	      > :: a -&gt; <a href="Data-Conversion.html#t:InRule"
+	      >InRule</a
+	      ></p
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ToInRule" class="caption collapser" onclick="toggleSection('i:ToInRule')"
+	    >Instances</p
+	    ><div id="section.i:ToInRule" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Bool</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Char</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Double</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Float</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Int</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Int32</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Int64</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Integer</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Rational</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Word32</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Word64</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > String</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > ()</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > UTCTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Day</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc"
+		  ><p
+		    >Renders InRule to String.
+</p
+		    ></td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > LocalTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > TimeOfDay</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Value</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-DataPack.html#t:Data"
+		    >Data</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-Event.html#t:Event"
+		    >Event</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Account.html#t:Account"
+		    >Account</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Transaction.html#t:Transaction"
+		    >Transaction</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Escrow.html#t:Escrow"
+		    >Escrow</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Diamonds.html#t:DiamondTransaction"
+		    >DiamondTransaction</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-AccountProfile.html#t:AccountProfile"
+		    >AccountProfile</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-AccountProfileMin.html#t:AccountProfileMin"
+		    >AccountProfileMin</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Car.html#t:Car"
+		    >Car</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Car3dModel.html#t:Car3dModel"
+		    >Car3dModel</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarInGarage.html#t:CarInGarage"
+		    >CarInGarage</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarInstance.html#t:CarInstance"
+		    >CarInstance</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarInstanceParts.html#t:CarInstanceParts"
+		    >CarInstanceParts</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarMarket.html#t:CarMarket"
+		    >CarMarket</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarMinimal.html#t:CarMinimal"
+		    >CarMinimal</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RaceParticipant.html#t:RaceParticipant"
+		    >RaceParticipant</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TrackTime.html#t:TrackTime"
+		    >TrackTime</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarOptions.html#t:CarOptions"
+		    >CarOptions</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarOptionsExtended.html#t:CarOptionsExtended"
+		    >CarOptionsExtended</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarOwners.html#t:CarOwners"
+		    >CarOwners</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-CarStockParts.html#t:CarStockPart"
+		    >CarStockPart</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Challenge.html#t:Challenge"
+		    >Challenge</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-ChallengeAccept.html#t:ChallengeAccept"
+		    >ChallengeAccept</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-ChallengeExtended.html#t:ChallengeExtended"
+		    >ChallengeExtended</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-ChallengeType.html#t:ChallengeType"
+		    >ChallengeType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-City.html#t:City"
+		    >City</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Config.html#t:Config"
+		    >Config</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Continent.html#t:Continent"
+		    >Continent</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-EventStream.html#t:EventStream"
+		    >EventStream</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Garage.html#t:Garage"
+		    >Garage</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-GarageParts.html#t:GaragePart"
+		    >GaragePart</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-GarageReport.html#t:GarageReport"
+		    >GarageReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-GarageReportInsert.html#t:GarageReportInsert"
+		    >GarageReportInsert</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-GeneralReport.html#t:GeneralReport"
+		    >GeneralReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Manufacturer.html#t:Manufacturer"
+		    >Manufacturer</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-ManufacturerMarket.html#t:ManufacturerMarket"
+		    >ManufacturerMarket</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts"
+		    >MarketCarInstanceParts</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-MarketItem.html#t:MarketItem"
+		    >MarketItem</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-MarketPartType.html#t:MarketPartType"
+		    >MarketPartType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-MarketPlace.html#t:MarketPlace"
+		    >MarketPlace</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-MarketPlaceCar.html#t:MarketPlaceCar"
+		    >MarketPlaceCar</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-MenuModel.html#t:MenuModel"
+		    >MenuModel</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Part.html#t:Part"
+		    >Part</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PartDetails.html#t:PartDetails"
+		    >PartDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RaceReward.html#t:RaceRewards"
+		    >RaceRewards</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-RaceReward.html#t:RaceReward"
+		    >RaceReward</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Tournament.html#t:Tournament"
+		    >Tournament</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TournamentExtended.html#t:TournamentExtended"
+		    >TournamentExtended</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PartInstance.html#t:PartInstance"
+		    >PartInstance</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PartMarket.html#t:PartMarket"
+		    >PartMarket</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PartMarketPlaceType.html#t:PartMarketPlaceType"
+		    >PartMarketPlaceType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PartMarketType.html#t:PartMarketType"
+		    >PartMarketType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PartType.html#t:PartType"
+		    >PartType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Personnel.html#t:Personnel"
+		    >Personnel</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PersonnelDetails.html#t:PersonnelDetails"
+		    >PersonnelDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PersonnelInstance.html#t:PersonnelInstance"
+		    >PersonnelInstance</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails"
+		    >PersonnelInstanceDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PersonnelReport.html#t:PersonnelReport"
+		    >PersonnelReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PersonnelTaskType.html#t:PersonnelTaskType"
+		    >PersonnelTaskType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-PreLetter.html#t:PreLetter"
+		    >PreLetter</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Report.html#t:Type"
+		    >Type</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Report.html#t:Report"
+		    >Report</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-RewardLog.html#t:RewardLog"
+		    >RewardLog</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-RewardLogEvent.html#t:RewardLogEvent"
+		    >RewardLogEvent</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-ShopReport.html#t:ShopReport"
+		    >ShopReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Support.html#t:Support"
+		    >Support</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TrackCity.html#t:TrackCity"
+		    >TrackCity</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TrackContinent.html#t:TrackContinent"
+		    >TrackContinent</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TrackDetails.html#t:TrackDetails"
+		    >TrackDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TrackMaster.html#t:TrackMaster"
+		    >TrackMaster</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TravelReport.html#t:TravelReport"
+		    >TravelReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Notification.html#t:Notification"
+		    >Notification</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Task.html#t:Task"
+		    >Task</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-CarReady.html#t:CarReadyState"
+		    >CarReadyState</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RaceSectionPerformance.html#t:RaceSectionPerformance"
+		    >RaceSectionPerformance</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TaskTrigger.html#t:TaskTrigger"
+		    >TaskTrigger</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TaskLog.html#t:TaskLog"
+		    >TaskLog</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Action.html#t:Action"
+		    >Action</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-RewardLogEvents.html#t:RewardLogEvents"
+		    >RewardLogEvents</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Rule.html#t:Rule"
+		    >Rule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-RuleReward.html#t:RuleReward"
+		    >RuleReward</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-Reward.html#t:Prize"
+		    >Prize</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-Reward.html#t:Reward"
+		    >Reward</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-Reward.html#t:Rewards"
+		    >Rewards</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > Box</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > ComposeMap</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > CarBaseParameters</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > CarDerivedParameters</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > PartParameter</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > PreviewPart</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-Race.html#t:Race"
+		    >Race</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-RaceDetails.html#t:RaceDetails"
+		    >RaceDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > SectionResult</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > RaceResult</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > RaceParticipant</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > RaceRewards</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > RaceData</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TournamentPlayers.html#t:TournamentPlayer"
+		    >TournamentPlayer</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TournamentResult.html#t:TournamentResult"
+		    >TournamentResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Model-TournamentReport.html#t:TournamentReport"
+		    >TournamentReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Notifications.html#t:NotificationParam"
+		    >NotificationParam</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > RaceType</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > RoundResult</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > TournamentFullData</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > a =&gt; <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > [a]</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > a =&gt; <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > (Maybe a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t1, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t2) =&gt; <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > (t1, t2)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > a =&gt; <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > (HashMap String a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > k, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > v) =&gt; <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > (HashMap k v)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t1, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t2, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t3) =&gt; <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > (t1, t2, t3)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t1, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t2, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t3, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t4) =&gt; <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > (t1, t2, t3, t4)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t1, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t2, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t3, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t4, <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > t5) =&gt; <a href="Data-Conversion.html#t:ToInRule"
+		    >ToInRule</a
+		    > (t1, t2, t3, t4, t5)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a name="t:FromInRule" class="def"
+	    >FromInRule</a
+	    > a  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs methods"
+	  ><p class="caption"
+	    >Methods</p
+	    ><p class="src"
+	    ><a name="v:fromInRule" class="def"
+	      >fromInRule</a
+	      > :: <a href="Data-Conversion.html#t:InRule"
+	      >InRule</a
+	      > -&gt; a</p
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:FromInRule" class="caption collapser" onclick="toggleSection('i:FromInRule')"
+	    >Instances</p
+	    ><div id="section.i:FromInRule" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Bool</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Double</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Float</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Int</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Int32</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Int64</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Integer</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Rational</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Word32</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Word64</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > String</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > UTCTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Day</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > LocalTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > TimeOfDay</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > Value</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-Conversion.html#t:Readable"
+		    >Readable</a
+		    ></td
+		  ><td class="doc"
+		  ><p
+		    >Dirty fallback strategy
+</p
+		    ></td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-Conversion.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-DataPack.html#t:Data"
+		    >Data</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-Event.html#t:Event"
+		    >Event</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Account.html#t:Account"
+		    >Account</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Transaction.html#t:Transaction"
+		    >Transaction</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Escrow.html#t:Escrow"
+		    >Escrow</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Diamonds.html#t:DiamondTransaction"
+		    >DiamondTransaction</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-AccountProfile.html#t:AccountProfile"
+		    >AccountProfile</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-AccountProfileMin.html#t:AccountProfileMin"
+		    >AccountProfileMin</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Car.html#t:Car"
+		    >Car</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Car3dModel.html#t:Car3dModel"
+		    >Car3dModel</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarInGarage.html#t:CarInGarage"
+		    >CarInGarage</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarInstance.html#t:CarInstance"
+		    >CarInstance</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarInstanceParts.html#t:CarInstanceParts"
+		    >CarInstanceParts</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarMarket.html#t:CarMarket"
+		    >CarMarket</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarMinimal.html#t:CarMinimal"
+		    >CarMinimal</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RaceParticipant.html#t:RaceParticipant"
+		    >RaceParticipant</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TrackTime.html#t:TrackTime"
+		    >TrackTime</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarOptions.html#t:CarOptions"
+		    >CarOptions</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarOptionsExtended.html#t:CarOptionsExtended"
+		    >CarOptionsExtended</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarOwners.html#t:CarOwners"
+		    >CarOwners</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-CarStockParts.html#t:CarStockPart"
+		    >CarStockPart</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Challenge.html#t:Challenge"
+		    >Challenge</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-ChallengeAccept.html#t:ChallengeAccept"
+		    >ChallengeAccept</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-ChallengeExtended.html#t:ChallengeExtended"
+		    >ChallengeExtended</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-ChallengeType.html#t:ChallengeType"
+		    >ChallengeType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-City.html#t:City"
+		    >City</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Config.html#t:Config"
+		    >Config</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Continent.html#t:Continent"
+		    >Continent</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-EventStream.html#t:EventStream"
+		    >EventStream</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Garage.html#t:Garage"
+		    >Garage</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-GarageParts.html#t:GaragePart"
+		    >GaragePart</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-GarageReport.html#t:GarageReport"
+		    >GarageReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-GarageReportInsert.html#t:GarageReportInsert"
+		    >GarageReportInsert</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-GeneralReport.html#t:GeneralReport"
+		    >GeneralReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Manufacturer.html#t:Manufacturer"
+		    >Manufacturer</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-ManufacturerMarket.html#t:ManufacturerMarket"
+		    >ManufacturerMarket</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts"
+		    >MarketCarInstanceParts</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-MarketItem.html#t:MarketItem"
+		    >MarketItem</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-MarketPartType.html#t:MarketPartType"
+		    >MarketPartType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-MarketPlace.html#t:MarketPlace"
+		    >MarketPlace</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-MarketPlaceCar.html#t:MarketPlaceCar"
+		    >MarketPlaceCar</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-MenuModel.html#t:MenuModel"
+		    >MenuModel</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Part.html#t:Part"
+		    >Part</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PartDetails.html#t:PartDetails"
+		    >PartDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RaceReward.html#t:RaceRewards"
+		    >RaceRewards</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-RaceReward.html#t:RaceReward"
+		    >RaceReward</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Tournament.html#t:Tournament"
+		    >Tournament</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TournamentExtended.html#t:TournamentExtended"
+		    >TournamentExtended</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PartInstance.html#t:PartInstance"
+		    >PartInstance</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PartMarket.html#t:PartMarket"
+		    >PartMarket</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PartMarketPlaceType.html#t:PartMarketPlaceType"
+		    >PartMarketPlaceType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PartMarketType.html#t:PartMarketType"
+		    >PartMarketType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PartType.html#t:PartType"
+		    >PartType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Personnel.html#t:Personnel"
+		    >Personnel</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PersonnelDetails.html#t:PersonnelDetails"
+		    >PersonnelDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PersonnelInstance.html#t:PersonnelInstance"
+		    >PersonnelInstance</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails"
+		    >PersonnelInstanceDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PersonnelReport.html#t:PersonnelReport"
+		    >PersonnelReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PersonnelTaskType.html#t:PersonnelTaskType"
+		    >PersonnelTaskType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-PreLetter.html#t:PreLetter"
+		    >PreLetter</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Report.html#t:Type"
+		    >Type</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Report.html#t:Report"
+		    >Report</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-RewardLog.html#t:RewardLog"
+		    >RewardLog</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-RewardLogEvent.html#t:RewardLogEvent"
+		    >RewardLogEvent</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-ShopReport.html#t:ShopReport"
+		    >ShopReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Support.html#t:Support"
+		    >Support</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TrackCity.html#t:TrackCity"
+		    >TrackCity</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TrackContinent.html#t:TrackContinent"
+		    >TrackContinent</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TrackDetails.html#t:TrackDetails"
+		    >TrackDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TrackMaster.html#t:TrackMaster"
+		    >TrackMaster</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TravelReport.html#t:TravelReport"
+		    >TravelReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Notification.html#t:Notification"
+		    >Notification</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Task.html#t:Task"
+		    >Task</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-CarReady.html#t:CarReadyState"
+		    >CarReadyState</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RaceSectionPerformance.html#t:RaceSectionPerformance"
+		    >RaceSectionPerformance</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TaskTrigger.html#t:TaskTrigger"
+		    >TaskTrigger</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TaskLog.html#t:TaskLog"
+		    >TaskLog</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Action.html#t:Action"
+		    >Action</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-RewardLogEvents.html#t:RewardLogEvents"
+		    >RewardLogEvents</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Rule.html#t:Rule"
+		    >Rule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-RuleReward.html#t:RuleReward"
+		    >RuleReward</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > CarBaseParameters</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > CarDerivedParameters</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > PartParameter</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > PreviewPart</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-Race.html#t:Race"
+		    >Race</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-RaceDetails.html#t:RaceDetails"
+		    >RaceDetails</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > SectionResult</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > RaceResult</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > RaceParticipant</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > RaceRewards</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > RaceData</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TournamentPlayers.html#t:TournamentPlayer"
+		    >TournamentPlayer</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TournamentResult.html#t:TournamentResult"
+		    >TournamentResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Model-TournamentReport.html#t:TournamentReport"
+		    >TournamentReport</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > RoundResult</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > TournamentFullData</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > a =&gt; <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > [a]</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > a =&gt; <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > (Maybe a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t1, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t2) =&gt; <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > (t1, t2)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > a =&gt; <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > (HashMap String a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(Eq k, Hashable k, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > k, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > v) =&gt; <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > (HashMap k v)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t1, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t2, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t3) =&gt; <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > (t1, t2, t3)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t1, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t2, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t3, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t4) =&gt; <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > (t1, t2, t3, t4)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t1, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t2, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t3, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t4, <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > t5) =&gt; <a href="Data-Conversion.html#t:FromInRule"
+		    >FromInRule</a
+		    > (t1, t2, t3, t4, t5)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:validObject" class="def"
+	    >validObject</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:emptyObj" class="def"
+	    >emptyObj</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:singleObj" class="def"
+	    >singleObj</a
+	    > :: <a href="Data-Conversion.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; String -&gt; a -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Create single InRule object.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fromList" class="def"
+	    >fromList</a
+	    > :: <a href="Data-Conversion.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; [(String, a)] -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Create InRule object from list.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:toList" class="def"
+	    >toList</a
+	    > :: <a href="Data-Conversion.html#t:FromInRule"
+	    >FromInRule</a
+	    > a =&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; [(String, a)]</p
+	  ><div class="doc"
+	  ><p
+	    >Create InRule object from list.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:toListString" class="def"
+	    >toListString</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; [(String, String)]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:unionObj" class="def"
+	    >unionObj</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:unionsObj" class="def"
+	    >unionsObj</a
+	    > :: [<a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >] -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Merge InRule objects from list.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:toString" class="def"
+	    >toString</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; String</p
+	  ><div class="doc"
+	  ><p
+	    >Renders InRule to String.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:pprint" class="def"
+	    >pprint</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >Pretty-prints InRule.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:pprints" class="def"
+	    >pprints</a
+	    > :: [<a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >] -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >Pretty-prints InRules.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:object" class="def"
+	    >object</a
+	    > :: [(String, <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >)] -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:list" class="def"
+	    >list</a
+	    > :: [<a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    >] -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:project" class="def"
+	    >project</a
+	    > :: <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:keyFilter" class="def"
+	    >keyFilter</a
+	    > :: (String -&gt; Bool) -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    > -&gt; <a href="Data-Conversion.html#t:InRule"
+	    >InRule</a
+	    ></p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>
