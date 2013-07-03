@@ -2,9 +2,9 @@
      NoMonomorphismRestriction, ExistentialQuantification,
      MultiParamTypeClasses, GeneralizedNewtypeDeriving, OverloadedStrings #-}
 -- | This module is a writer like monad, which builds
--- | a tree like map of InRules values from SqlTransaction 
--- | Actions   
--- | This is handy for building complex return objects 
+--   a tree like map of InRules values from SqlTransaction 
+--   Actions   
+--   This is handy for building complex return objects 
 module Data.ComposeModel(
         ComposeMonad,
         abort,
@@ -55,8 +55,8 @@ instance Monoid ComposeMap where
 
 
 -- | ComposeMonad, is a continutation monad to jump out of a composition
--- | A Reader to store the connection 
--- | And a writer to build up our map  
+--   A Reader to store the connection 
+--   And a writer to build up our map  
 newtype ComposeMonad r c a = CM {
                 unCM  :: ContT r (ReaderT c (WriterT ComposeMap (SqlTransactionUser L.Lock c))) a    
             } deriving (Functor, Applicative, Monad, MonadReader c, MonadIO, MonadCont) 
@@ -105,8 +105,12 @@ instance ToInRule Box where
 instance ToInRule ComposeMap where 
             toInRule = toInRule . fmap toInRule . unComposeMap 
 
+-- |
+-- @
 -- runComposeMonad :: (Applicative m, MonadIO m) => ComposeMonad a Connection a -> (String -> m (H.HashMap String InRule)) -> Connection -> m (H.HashMap String InRule)
--- | run Compose map safely 
+-- @
+--  
+-- run Compose map safely 
 runComposeMonad l m f c = do -- (ComposeMap xs)
                                 ts <- unsafeRunCompose l c m 
                                 case ts of 

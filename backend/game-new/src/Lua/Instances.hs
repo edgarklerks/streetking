@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, UndecidableInstances, TypeSynonymInstances, FlexibleContexts, ScopedTypeVariables #-}
+-- | Various instance for 'Data.Convertible' for 'Lua.Prim.LuaValue' 
 module Lua.Instances where
 
 import Data.Convertible

@@ -81,8 +81,8 @@ cmp Nothing _ = True
 cmp (Just a) b | a == b = True 
                | otherwise = False 
 
-instance Evaluate Event Symbol where 
 -- | Matcher for tournament types 
+instance Evaluate Event Symbol where 
     match (Tournament pos id type_id) (TournamentI x y z) = cmp x pos && cmp y id && cmp z type_id  
     match (PracticeRace track_id _) (PracticeI x) = cmp x track_id 
     match (ChallengeRace pos tid _) (RaceI x y) = cmp x pos && cmp y tid 

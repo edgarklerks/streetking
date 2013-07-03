@@ -32,7 +32,7 @@ newtype ConnectionContext = ConnectionContext {
         unConnectionContext :: (Int, Connection)
     }
 -- | A connection bucket can be empty or full
--- | If it is empty, it remembers it's connection number 
+--   If it is empty, it remembers it's connection number 
 data ConnectionBucket = Empty Connection Int  
                       | Filled Connection
 
