@@ -22,6 +22,9 @@ data Expr g a where
     Once :: Expr g a -> Expr (O :+: g) a 
     --}
 
+
+-- | Not used at the moment. These should change the 
+-- | behavior of the matcher 
 data a :+: b
 data M
 data D 
@@ -49,7 +52,6 @@ toOne (To x y) = toOne y
 toOne _ = Nothing 
 
 -- | Every expression gives rise to function 
-
 equalDecider = buildDecider (==) 
 
 -- | The underlying arrow is Machine a b = [a] -> ([b], Bool) 
@@ -127,7 +129,7 @@ accept f x [] = False
 accept f x (y:xs) | f y x = True
                   | otherwise = accept f x xs  
 
--- | underline machine is actually very boring. It has some flapping 
+-- | underline machine is actually very boring.
 newtype Machine a b = Machine {
                         runMachine :: [a] -> ([b], Bool)
                 }
