@@ -82,23 +82,10 @@ cmp (Just a) b | a == b = True
                | otherwise = False 
 
 instance Evaluate Event Symbol where 
+-- | Matcher for tournament types 
     match (Tournament pos id type_id) (TournamentI x y z) = cmp x pos && cmp y id && cmp z type_id  
     match (PracticeRace track_id _) (PracticeI x) = cmp x track_id 
     match (ChallengeRace pos tid _) (RaceI x y) = cmp x pos && cmp y tid 
     match (Level i) (LevelI p) = i == p
     match _ _ = False  
                                                                                 
-{--    
-| id == ids = True
-    match (Tournament pos id type_id ) (TournamentI (Just p) ids) | id == ids && pos == p = True 
-    match (Tournament _ _) (TournamentS ) = True 
-    match (Level _) LevelS = True 
-    match (Level n) (LevelI p) | n == p = True 
-    match (ChallengeRace _) RaceS = True 
-    match (ChallengeRace n) (RaceI s) | n == s = True 
-    match (PracticeRace _) PracticeS = True 
-    match (PracticeRace n) (PracticeI p) | n == p = True 
-    match _ _ = False 
-
-
---}
