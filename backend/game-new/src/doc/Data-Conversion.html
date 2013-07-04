@@ -46,7 +46,56 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-Conversion.html")
 	>Description</p
 	><div class="doc"
 	><p
-	  >Tests and interface for InRules 
+	  >Tests for some guarantees we want to make about the code.
+</p
+	  ><ul
+	  ><li
+	    > There should be a mapping between the number types 
+</li
+	    ><li
+	    > A subset of InRule must be isomorphic to Value and Json2,  that means, we do not lose type information. 
+</li
+	    ><li
+	    > Different strings types must isomorph
+</li
+	    ></ul
+	  ><p
+	  >The bijective map  of a subset of InRule with Value is: 
+</p
+	  ><pre
+	  >
+
+InInteger Integer            <a href="-"
+	    >-</a
+	    >      Number (I Integer)
+
+InDouble  Double             <a href="-"
+	    >-</a
+	    >      Number (D Double)
+
+InByteString B.ByteString    <a href="-"
+	    >-</a
+	    >      String (Text) 
+
+InArray  [InRule]            <a href="-"
+	    >-</a
+	    >      Array (Vector Value)  
+
+InObject M.Map String InRule <a href="-"
+	    >-</a
+	    >      Object M.Map Text Value  
+
+InBool Bool                  <a href="-"
+	    >-</a
+	    >      Bool Bool
+
+InNull                       <a href="-"
+	    >-</a
+	    >      Null
+</pre
+	  ><p
+	  >By the way, this is the file you want to import to get the whole
+ interface 
 </p
 	  ></div
 	></div
