@@ -122,9 +122,9 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-ComposeModel.html
 	  ><li class="src short"
 	  ><a href="#v:runComposeMonad"
 	    >runComposeMonad</a
-	    > :: (Applicative m, <a href="Data-SqlTransaction.html#t:IConnection"
+	    > :: (Applicative m, MonadIO m, <a href="Data-SqlTransaction.html#t:IConnection"
 	    >IConnection</a
-	    > conn, MonadIO m) =&gt; <a href="LockSnaplet.html#t:Lock"
+	    > conn) =&gt; <a href="LockSnaplet.html#t:Lock"
 	    >Lock</a
 	    > -&gt; <a href="Data-ComposeModel.html#t:ComposeMonad"
 	    >ComposeMonad</a
@@ -358,9 +358,9 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-ComposeModel.html
 	><p class="src"
 	  ><a name="v:runComposeMonad" class="def"
 	    >runComposeMonad</a
-	    > :: (Applicative m, <a href="Data-SqlTransaction.html#t:IConnection"
+	    > :: (Applicative m, MonadIO m, <a href="Data-SqlTransaction.html#t:IConnection"
 	    >IConnection</a
-	    > conn, MonadIO m) =&gt; <a href="LockSnaplet.html#t:Lock"
+	    > conn) =&gt; <a href="LockSnaplet.html#t:Lock"
 	    >Lock</a
 	    > -&gt; <a href="Data-ComposeModel.html#t:ComposeMonad"
 	    >ComposeMonad</a

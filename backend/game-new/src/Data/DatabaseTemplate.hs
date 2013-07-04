@@ -1,14 +1,19 @@
 {-# LANGUAGE ViewPatterns #-}
 -- | DSL for expression queries, which can extract data from 
--- | a map and build a database contstraint from the DSL.
--- | We have two operators a lifted one, which pulls the 
--- | right side from the map and the left side is the field in the database.
--- | "id" +== "user-id"
--- | This generates id = 1 (if user_id contains 1)
--- | We also have fixed operators, which don't pull up a value from the hash map, 
--- | but have a fixed value
+--   a map and build a database contstraint from the DSL.
+--   We have two operators a lifted one, which pulls the 
+--   right side from the map and the left side is the field in the database.
+--
+-- > "id" +== "user-id"
+--
+--   This generates id = 1 (if user_id contains 1)
+--   We also have fixed operators, which don't pull up a value from the hash map, 
+--   but have a fixed value
+--
 -- > "id" +==| (toSql 12)
--- | There also is an if statement:
+--
+--   There also is an if statement:
+--
 -- > ifdtd ("account" +==| (toSql 1)) ("account_id" +== "account_id") ("account_id" +==| (toSql 2)
 module Data.DatabaseTemplate where 
 

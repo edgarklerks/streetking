@@ -41,6 +41,50 @@ window.onload = function () {pageLoad();setSynopsis("mini_LockSnaplet.html");};
 	><p class="caption"
 	>LockSnaplet</p
 	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Lock"
+	    >Lock</a
+	    > </li
+	  ><li class="src short"
+	  ><a href="#v:getLock"
+	    >getLock</a
+	    > :: MonadState <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > m =&gt; m <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:initLock"
+	    >initLock</a
+	    > ::  SnapletInit b <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:printLocks"
+	    >printLocks</a
+	    > :: <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:withLockBlock"
+	    >withLockBlock</a
+	    > :: (MonadIO m, Applicative m, Show a) =&gt; <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; Namespace -&gt; a -&gt; m b -&gt; m b</li
+	  ><li class="src short"
+	  ><a href="#v:withLockNonBlock"
+	    >withLockNonBlock</a
+	    > :: (MonadIO m, Applicative m, Show a) =&gt; <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; Namespace -&gt; a -&gt; m () -&gt; m ()</li
+	  ></ul
+	></div
       ><div id="interface"
       ><h1
 	>Documentation</h1
@@ -61,6 +105,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_LockSnaplet.html");};
 	    > m =&gt; m <a href="LockSnaplet.html#t:Lock"
 	    >Lock</a
 	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Get the current lock manager 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -69,6 +118,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_LockSnaplet.html");};
 	    > ::  SnapletInit b <a href="LockSnaplet.html#t:Lock"
 	    >Lock</a
 	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Initialize the lock snaplet 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -77,6 +131,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_LockSnaplet.html");};
 	    > :: <a href="LockSnaplet.html#t:Lock"
 	    >Lock</a
 	    > -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >(Debug) print out all the locks 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -85,6 +144,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_LockSnaplet.html");};
 	    > :: (MonadIO m, Applicative m, Show a) =&gt; <a href="LockSnaplet.html#t:Lock"
 	    >Lock</a
 	    > -&gt; Namespace -&gt; a -&gt; m b -&gt; m b</p
+	  ><div class="doc"
+	  ><p
+	    >Do some action with a lock, block if lock isn't possible 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -93,6 +157,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_LockSnaplet.html");};
 	    > :: (MonadIO m, Applicative m, Show a) =&gt; <a href="LockSnaplet.html#t:Lock"
 	    >Lock</a
 	    > -&gt; Namespace -&gt; a -&gt; m () -&gt; m ()</p
+	  ><div class="doc"
+	  ><p
+	    >Do some action with a lock, don't block if lock isn't possible 
+</p
+	    ></div
 	  ></div
 	></div
       ></div
