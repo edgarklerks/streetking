@@ -1,5 +1,35 @@
 {-# Language TypeSynonymInstances, FlexibleInstances, IncoherentInstances, ViewPatterns #-}
--- | Tests and interface for InRules 
+-- | Tests for some guarantees we want to make about the code.
+--
+--      * There should be a mapping between the number types 
+--
+--      * A subset of InRule must be isomorphic to Value and Json2,  that means, we do not lose type information. 
+--
+--      * Different strings types must isomorph
+--
+-- The bijective map  of a subset of InRule with Value is: 
+--
+-- @
+--
+-- InInteger Integer            <->      Number (I Integer)
+--
+-- InDouble  Double             <->      Number (D Double)
+--
+-- InByteString B.ByteString    <->      String (Text) 
+--
+-- InArray  [InRule]            <->      Array (Vector Value)  
+--
+-- InObject M.Map String InRule <->      Object M.Map Text Value  
+--
+-- InBool Bool                  <->      Bool Bool
+--
+-- InNull                       <->      Null
+-- @
+--
+-- By the way, this is the file you want to import to get the whole
+-- interface 
+
+
 module Data.Conversion (
        (.>),
        (.>>),
@@ -94,25 +124,6 @@ import Data.Monoid
 
 
 
-{-- 
- - Tests for some guarantees we want to make about the code.
- -  * There should be a mapping between the number types 
- -  * A subset of InRule must be isomorphic to Value and Json2,
- -    that means, we do not lose type information. 
- -  * Different strings types must isomorph
- -
- -    | InByteString B.ByteString
-	  | InInteger Integer
-	  | InDouble Double
-	  | InNumber Rational
-	  | InBool Bool
-	  | InNull
-	  | InArray [InRule]
-	  | InObject (Map.Map String InRule) 
-
- ---}
-
-
 newtype InRational = InRational {
         unInRational :: InRule 
     } deriving Show
@@ -169,7 +180,7 @@ prop_convert_bytestring_string = property prop_convert_bytestring_string'
 newtype IsomorphT = IsomorphT {
         unIsomorphT :: InRule 
     } deriving Show
-{-- 
+{- * 
  - The bijective map  of a subset of InRule with Value is: 
  - InInteger Integer            <->      Number (I Integer)
  - InDouble  Double             <->      Number (D Double)
@@ -179,7 +190,7 @@ newtype IsomorphT = IsomorphT {
  - InBool Bool                  <->      Bool Bool
  - InNull                       <->      Null
  -
- ---}
+ * -}
  --
 prop_isomorph_value_inrule :: Property 
 prop_isomorph_value_inrule = property prop_isomorph_value_inrule'
