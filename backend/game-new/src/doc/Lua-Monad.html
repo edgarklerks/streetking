@@ -41,6 +41,268 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	><p class="caption"
 	>Lua.Monad</p
 	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><a href="#v:runLua"
+	    >runLua</a
+	    > ::  <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a -&gt; IO (Either String a)</li
+	  ><li class="src short"
+	  ><a href="#v:runLuaMonad"
+	    >runLuaMonad</a
+	    > ::  <a href="Lua-Prim.html#t:LuaState"
+	    >LuaState</a
+	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a -&gt; IO (Either String a)</li
+	  ><li class="src short"
+	  ><a href="#v:runLuaMonad-39-"
+	    >runLuaMonad'</a
+	    > ::  <a href="Lua-Prim.html#t:LuaState"
+	    >LuaState</a
+	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a -&gt; IO (Either String a)</li
+	  ><li class="src short"
+	  ><a href="#v:loadLib"
+	    >loadLib</a
+	    > :: FilePath -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:eval"
+	    >eval</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Int</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:LuaValue"
+	    >LuaValue</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:LuaObj"
+		>LuaObj</a
+		> [(<a href="Lua-Monad.html#t:LuaValue"
+		>LuaValue</a
+		>, <a href="Lua-Monad.html#t:LuaValue"
+		>LuaValue</a
+		>)]  </li
+	      ><li
+	      >| <a href="#v:LuaNum"
+		>LuaNum</a
+		> !Double  </li
+	      ><li
+	      >| <a href="#v:LuaString"
+		>LuaString</a
+		> !String  </li
+	      ><li
+	      >| <a href="#v:LuaBool"
+		>LuaBool</a
+		> !Bool  </li
+	      ><li
+	      >| <a href="#v:LuaNil"
+		>LuaNil</a
+		>  </li
+	      ><li
+	      >| <a href="#v:LuaNone"
+		>LuaNone</a
+		>  </li
+	      ><li
+	      >| <a href="#v:LuaError"
+		>LuaError</a
+		> !String  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:LuaMonad"
+	    >LuaMonad</a
+	    > a = <a href="#v:LR"
+	    >LR</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unLR"
+		>unLR</a
+		> :: ReaderT <a href="Lua-Prim.html#t:LuaState"
+		>LuaState</a
+		> (ErrorT String IO) a</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:registerhsfunction"
+	    >registerhsfunction</a
+	    > :: LuaImport a =&gt; String -&gt; a -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:loadLuaValue"
+	    >loadLuaValue</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > (Maybe <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:saveLuaValue"
+	    >saveLuaValue</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:getValue"
+	    >getValue</a
+	    > :: StackValue a =&gt; String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:getInt"
+	    >getInt</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Int</li
+	  ><li class="src short"
+	  ><a href="#v:getString"
+	    >getString</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > String</li
+	  ><li class="src short"
+	  ><a href="#v:getBool"
+	    >getBool</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Bool</li
+	  ><li class="src short"
+	  ><a href="#v:getLuaValue"
+	    >getLuaValue</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:getDouble"
+	    >getDouble</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Double</li
+	  ><li class="src short"
+	  ><a href="#v:getType"
+	    >getType</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Prim.html#t:LuaType"
+	    >LuaType</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:valToLua"
+	    >valToLua</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:tableToLua"
+	    >tableToLua</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:pushLuaValue"
+	    >pushLuaValue</a
+	    > :: <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:loadIntoTable"
+	    >loadIntoTable</a
+	    > :: LuaState -&gt; (<a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    >, <a href="Lua-Monad.html#t:LuaValue"
+	    >LuaValue</a
+	    >) -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:push"
+	    >push</a
+	    > :: StackValue a =&gt; a -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:peek"
+	    >peek</a
+	    > :: StackValue a =&gt; Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:pop"
+	    >pop</a
+	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:loadfile"
+	    >loadfile</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Int</li
+	  ><li class="src short"
+	  ><a href="#v:call"
+	    >call</a
+	    > :: Int -&gt; Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Int</li
+	  ><li class="src short"
+	  ><a href="#v:tostring"
+	    >tostring</a
+	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > String</li
+	  ><li class="src short"
+	  ><a href="#v:pushnil"
+	    >pushnil</a
+	    > :: <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:ltype"
+	    >ltype</a
+	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > <a href="Lua-Prim.html#t:LuaType"
+	    >LuaType</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:getglobal"
+	    >getglobal</a
+	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:next"
+	    >next</a
+	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
+	    >LuaMonad</a
+	    > Bool</li
+	  ><li class="src short"
+	  ><a href="#v:newstate"
+	    >newstate</a
+	    > :: IO LuaState</li
+	  ></ul
+	></div
       ><div id="interface"
       ><h1
 	>Documentation</h1
@@ -51,6 +313,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > ::  <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > a -&gt; IO (Either String a)</p
+	  ><div class="doc"
+	  ><p
+	    >Evaluate a Lua monad in the IO monad  
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -61,6 +328,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > a -&gt; IO (Either String a)</p
+	  ><div class="doc"
+	  ><p
+	    >Run the lua monad with closing the state 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -71,6 +343,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > a -&gt; IO (Either String a)</p
+	  ><div class="doc"
+	  ><p
+	    >Run the Lua monad without closing the state 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -79,6 +356,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: FilePath -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Load a library into the interpreter 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -87,6 +369,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > Int</p
+	  ><div class="doc"
+	  ><p
+	    >Evaluate some lua code 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -343,6 +630,15 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    >  <a name="t:LuaMonad" class="def"
 	    >LuaMonad</a
 	    > a </p
+	  ><div class="doc"
+	  ><p
+	    >The lua monad keeps the current LuaState and offers error handling
+   through <code
+	      >ErrorT</code
+	      >. It also has access to the IO
+   Monad 
+</p
+	    ></div
 	  ><div class="subs constructors"
 	  ><p class="caption"
 	    >Constructors</p
@@ -443,6 +739,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: LuaImport a =&gt; String -&gt; a -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Register a haskell function in lua 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -453,6 +754,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > (Maybe <a href="Lua-Monad.html#t:LuaValue"
 	    >LuaValue</a
 	    >)</p
+	  ><div class="doc"
+	  ><p
+	    >Get global variable value 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -463,6 +769,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Save global variable value 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -471,6 +782,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: StackValue a =&gt; String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Get the haskell value by name and pop it of the stack, omit type 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -479,6 +795,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > Int</p
+	  ><div class="doc"
+	  ><p
+	    >Get the int  by name and pop it of the stack, omit type 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -487,6 +808,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > String</p
+	  ><div class="doc"
+	  ><p
+	    >Get the string  by name and pop it of the stack, omit type 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -495,6 +821,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > Bool</p
+	  ><div class="doc"
+	  ><p
+	    >Get the boolean  by name and pop it of the stack, omit type 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -505,6 +836,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > <a href="Lua-Monad.html#t:LuaValue"
 	    >LuaValue</a
 	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Get a global value by name 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -513,6 +849,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > Double</p
+	  ><div class="doc"
+	  ><p
+	    >Get the double  by name and pop it of the stack, omit type 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -523,6 +864,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > <a href="Lua-Prim.html#t:LuaType"
 	    >LuaType</a
 	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Get the type of a variable by name 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -533,6 +879,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > <a href="Lua-Monad.html#t:LuaValue"
 	    >LuaValue</a
 	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Retrieve a value from the stack by name 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -543,6 +894,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > <a href="Lua-Monad.html#t:LuaValue"
 	    >LuaValue</a
 	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Retrieve a table by name from the stack 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -553,6 +909,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Push value on stack 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -563,6 +924,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    >, <a href="Lua-Monad.html#t:LuaValue"
 	    >LuaValue</a
 	    >) -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >Load a key value pair into a table 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -571,6 +937,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: StackValue a =&gt; a -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Push a value on the stack 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -579,6 +950,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: StackValue a =&gt; Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Peek nth item of the stack 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -587,6 +963,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Pop nth item of the stack 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -595,6 +976,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > Int</p
+	  ><div class="doc"
+	  ><p
+	    >Load a file into lua 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -603,6 +989,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: Int -&gt; Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > Int</p
+	  ><div class="doc"
+	  ><p
+	    >call a function 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -611,6 +1002,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: Int -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > String</p
+	  ><div class="doc"
+	  ><p
+	    >Convert to string 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -619,6 +1015,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Push nil on the stack 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -629,6 +1030,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > <a href="Lua-Prim.html#t:LuaType"
 	    >LuaType</a
 	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Get the type of the value on the stack 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -637,6 +1043,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	    > :: String -&gt; <a href="Lua-Monad.html#t:LuaMonad"
 	    >LuaMonad</a
 	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Retrieve a global by name   
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -651,6 +1062,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Lua-Monad.html");};
 	  ><a name="v:newstate" class="def"
 	    >newstate</a
 	    > :: IO LuaState</p
+	  ><div class="doc"
+	  ><p
+	    >Create a new state 
+</p
+	    ></div
 	  ></div
 	></div
       ></div

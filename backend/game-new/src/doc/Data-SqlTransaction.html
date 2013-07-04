@@ -636,9 +636,9 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 	  ><li class="src short"
 	  ><a href="#v:runSqlTransaction"
 	    >runSqlTransaction</a
-	    > :: (Applicative m, <a href="Data-SqlTransaction.html#t:IConnection"
+	    > :: (Applicative m, MonadIO m, <a href="Data-SqlTransaction.html#t:IConnection"
 	    >IConnection</a
-	    > conn, MonadIO m) =&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    > conn) =&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
 	    >SqlTransactionUser</a
 	    > l conn b -&gt; (String -&gt; m b) -&gt; conn -&gt; l -&gt; m b</li
 	  ><li class="src short"
@@ -855,954 +855,6 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		    >IConnection</a
 		    > <a href="Data-SqlTransaction.html#t:Connection"
 		    >Connection</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Account.html#t:Account"
-		    >Account</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Transaction.html#t:Transaction"
-		    >Transaction</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Escrow.html#t:Escrow"
-		    >Escrow</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Diamonds.html#t:DiamondTransaction"
-		    >DiamondTransaction</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-AccountProfile.html#t:AccountProfile"
-		    >AccountProfile</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-AccountProfileMin.html#t:AccountProfileMin"
-		    >AccountProfileMin</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Car.html#t:Car"
-		    >Car</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Car3dModel.html#t:Car3dModel"
-		    >Car3dModel</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarInGarage.html#t:CarInGarage"
-		    >CarInGarage</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarInstance.html#t:CarInstance"
-		    >CarInstance</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarInstanceParts.html#t:CarInstanceParts"
-		    >CarInstanceParts</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarMarket.html#t:CarMarket"
-		    >CarMarket</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarMinimal.html#t:CarMinimal"
-		    >CarMinimal</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TrackTime.html#t:TrackTime"
-		    >TrackTime</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarOptions.html#t:CarOptions"
-		    >CarOptions</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarOptionsExtended.html#t:CarOptionsExtended"
-		    >CarOptionsExtended</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarOwners.html#t:CarOwners"
-		    >CarOwners</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-CarStockParts.html#t:CarStockPart"
-		    >CarStockPart</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Challenge.html#t:Challenge"
-		    >Challenge</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-ChallengeAccept.html#t:ChallengeAccept"
-		    >ChallengeAccept</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-ChallengeExtended.html#t:ChallengeExtended"
-		    >ChallengeExtended</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-ChallengeType.html#t:ChallengeType"
-		    >ChallengeType</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-City.html#t:City"
-		    >City</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Config.html#t:Config"
-		    >Config</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Continent.html#t:Continent"
-		    >Continent</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-EventStream.html#t:EventStream"
-		    >EventStream</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Garage.html#t:Garage"
-		    >Garage</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-GarageParts.html#t:GaragePart"
-		    >GaragePart</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-GarageReport.html#t:GarageReport"
-		    >GarageReport</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-GarageReportInsert.html#t:GarageReportInsert"
-		    >GarageReportInsert</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-GeneralReport.html#t:GeneralReport"
-		    >GeneralReport</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Manufacturer.html#t:Manufacturer"
-		    >Manufacturer</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-ManufacturerMarket.html#t:ManufacturerMarket"
-		    >ManufacturerMarket</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts"
-		    >MarketCarInstanceParts</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-MarketItem.html#t:MarketItem"
-		    >MarketItem</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-MarketPartType.html#t:MarketPartType"
-		    >MarketPartType</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-MarketPlace.html#t:MarketPlace"
-		    >MarketPlace</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-MarketPlaceCar.html#t:MarketPlaceCar"
-		    >MarketPlaceCar</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-MenuModel.html#t:MenuModel"
-		    >MenuModel</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Part.html#t:Part"
-		    >Part</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PartDetails.html#t:PartDetails"
-		    >PartDetails</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-RaceReward.html#t:RaceReward"
-		    >RaceReward</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Tournament.html#t:Tournament"
-		    >Tournament</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TournamentExtended.html#t:TournamentExtended"
-		    >TournamentExtended</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PartInstance.html#t:PartInstance"
-		    >PartInstance</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PartMarket.html#t:PartMarket"
-		    >PartMarket</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PartMarketPlaceType.html#t:PartMarketPlaceType"
-		    >PartMarketPlaceType</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PartMarketType.html#t:PartMarketType"
-		    >PartMarketType</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PartType.html#t:PartType"
-		    >PartType</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Personnel.html#t:Personnel"
-		    >Personnel</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PersonnelDetails.html#t:PersonnelDetails"
-		    >PersonnelDetails</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PersonnelInstance.html#t:PersonnelInstance"
-		    >PersonnelInstance</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails"
-		    >PersonnelInstanceDetails</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PersonnelReport.html#t:PersonnelReport"
-		    >PersonnelReport</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PersonnelTaskType.html#t:PersonnelTaskType"
-		    >PersonnelTaskType</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-PreLetter.html#t:PreLetter"
-		    >PreLetter</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Report.html#t:Report"
-		    >Report</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-RewardLog.html#t:RewardLog"
-		    >RewardLog</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-RewardLogEvent.html#t:RewardLogEvent"
-		    >RewardLogEvent</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-ShopReport.html#t:ShopReport"
-		    >ShopReport</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Support.html#t:Support"
-		    >Support</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TrackCity.html#t:TrackCity"
-		    >TrackCity</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TrackContinent.html#t:TrackContinent"
-		    >TrackContinent</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TrackDetails.html#t:TrackDetails"
-		    >TrackDetails</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TrackMaster.html#t:TrackMaster"
-		    >TrackMaster</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TravelReport.html#t:TravelReport"
-		    >TravelReport</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Notification.html#t:Notification"
-		    >Notification</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Task.html#t:Task"
-		    >Task</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TaskTrigger.html#t:TaskTrigger"
-		    >TaskTrigger</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TaskLog.html#t:TaskLog"
-		    >TaskLog</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Action.html#t:Action"
-		    >Action</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-RewardLogEvents.html#t:RewardLogEvents"
-		    >RewardLogEvents</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Rule.html#t:Rule"
-		    >Rule</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-RuleReward.html#t:RuleReward"
-		    >RuleReward</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-Race.html#t:Race"
-		    >Race</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-RaceDetails.html#t:RaceDetails"
-		    >RaceDetails</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TournamentPlayers.html#t:TournamentPlayer"
-		    >TournamentPlayer</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TournamentResult.html#t:TournamentResult"
-		    >TournamentResult</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Model-General.html#t:Database"
-		    >Database</a
-		    > <a href="Data-SqlTransaction.html#t:Connection"
-		    >Connection</a
-		    > <a href="Model-TournamentReport.html#t:TournamentReport"
-		    >TournamentReport</a
 		    ></td
 		  ><td class="doc empty"
 		  >&nbsp;</td
@@ -2067,12 +1119,6 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		  ></tr
 		><tr
 		><td class="src"
-		  >Show Result</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
 		  >Typeable <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
 		    ></td
@@ -2089,46 +1135,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		  ></tr
 		><tr
 		><td class="src"
-		  ><a href="Data-InRules.html#t:FromInRule"
-		    >FromInRule</a
-		    > <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Data-InRules.html#t:ToInRule"
-		    >ToInRule</a
-		    > <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc"
-		  ><p
-		    >Renders InRule to String.
-</p
-		    ></td
-		  ></tr
-		><tr
-		><td class="src"
 		  ><a href="Data-Tools.html#t:StringLike"
 		    >StringLike</a
 		    > <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
 		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >ToValues Query</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >ToSql Query</td
 		  ><td class="doc empty"
 		  >&nbsp;</td
 		  ></tr
@@ -2262,6 +1273,30 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		  ></tr
 		><tr
 		><td class="src"
+		  >Convertible ByteString <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible ByteString <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Day <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
 		  >Convertible UTCTime <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
 		    ></td
@@ -2286,7 +1321,63 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		  ></tr
 		><tr
 		><td class="src"
-		  >Convertible Day <a href="Data-SqlTransaction.html#t:SqlValue"
+		  >Convertible TimeOfDay <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible ZonedTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible LocalTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Text <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Text <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible TimeDiff <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible ClockTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible CalendarTime <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
 		    ></td
 		  ><td class="doc empty"
@@ -2384,6 +1475,30 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		><td class="src"
 		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Day</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
 		    > UTCTime</td
 		  ><td class="doc empty"
 		  >&nbsp;</td
@@ -2408,41 +1523,7 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		><td class="src"
 		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
-		    > Day</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    > <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    > TimeDiff</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    > Text</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    > Text</td
+		    > TimeOfDay</td
 		  ><td class="doc empty"
 		  >&nbsp;</td
 		  ></tr
@@ -2466,6 +1547,30 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		><td class="src"
 		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
+		    > Text</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Text</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > TimeDiff</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
 		    > ClockTime</td
 		  ><td class="doc empty"
 		  >&nbsp;</td
@@ -2482,120 +1587,6 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		><td class="src"
 		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
-		    > ByteString</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    > ByteString</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    > TimeOfDay</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    > <a href="Data-Hstore.html#t:HStore"
-		    >HStore</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible TimeDiff <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible Text <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible Text <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible ZonedTime <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible LocalTime <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible ClockTime <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible CalendarTime <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible ByteString <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible ByteString <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible TimeOfDay <a href="Data-SqlTransaction.html#t:SqlValue"
-		    >SqlValue</a
-		    ></td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  >Convertible <a href="Data-Hstore.html#t:HStore"
-		    >HStore</a
 		    > <a href="Data-SqlTransaction.html#t:SqlValue"
 		    >SqlValue</a
 		    ></td
@@ -3550,9 +2541,9 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 	><p class="src"
 	  ><a name="v:runSqlTransaction" class="def"
 	    >runSqlTransaction</a
-	    > :: (Applicative m, <a href="Data-SqlTransaction.html#t:IConnection"
+	    > :: (Applicative m, MonadIO m, <a href="Data-SqlTransaction.html#t:IConnection"
 	    >IConnection</a
-	    > conn, MonadIO m) =&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    > conn) =&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
 	    >SqlTransactionUser</a
 	    > l conn b -&gt; (String -&gt; m b) -&gt; conn -&gt; l -&gt; m b</p
 	  ><div class="doc"
@@ -3722,18 +2713,6 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.ht
 		    > (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
 		    >SqlTransactionUser</a
 		    > l c)</td
-		  ><td class="doc empty"
-		  >&nbsp;</td
-		  ></tr
-		><tr
-		><td class="src"
-		  ><a href="Data-SqlTransaction.html#t:IConnection"
-		    >IConnection</a
-		    > c =&gt; MonadError <a href="Data-SqlTransaction.html#t:SqlError"
-		    >SqlError</a
-		    > (<a href="Data-ComposeModel.html#t:ComposeMonad"
-		    >ComposeMonad</a
-		    > r c)</td
 		  ><td class="doc empty"
 		  >&nbsp;</td
 		  ></tr

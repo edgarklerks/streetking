@@ -41,6 +41,35 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-DatabaseTemplate.
 	><p class="caption"
 	>Data.DatabaseTemplate</p
 	></div
+      ><div id="description"
+      ><p class="caption"
+	>Description</p
+	><div class="doc"
+	><p
+	  >DSL for expression queries, which can extract data from 
+   a map and build a database contstraint from the DSL.
+   We have two operators a lifted one, which pulls the 
+   right side from the map and the left side is the field in the database.
+</p
+	  ><pre
+	  > &quot;id&quot; +== &quot;user-id&quot;
+</pre
+	  ><p
+	  >This generates id = 1 (if user_id contains 1)
+   We also have fixed operators, which don't pull up a value from the hash map, 
+   but have a fixed value
+</p
+	  ><pre
+	  > &quot;id&quot; +==| (toSql 12)
+</pre
+	  ><p
+	  >There also is an if statement:
+</p
+	  ><pre
+	  > ifdtd (&quot;account&quot; +==| (toSql 1)) (&quot;account_id&quot; +== &quot;account_id&quot;) (&quot;account_id&quot; +==| (toSql 2)
+</pre
+	  ></div
+	></div
       ><div id="synopsis"
       ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
 	>Synopsis</p
