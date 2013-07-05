@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs, ScopedTypeVariables #-}
+{-# LANGUAGE GADTs #-}
 module Data.HeartBeat where 
 
 import System.ZMQ3
@@ -10,9 +10,6 @@ import Control.Concurrent
 import Control.Concurrent.STM 
 import Control.Monad.Trans
 import qualified Data.ByteString as B
-import Data.ExternalLog (Cycle, reportCycle) 
-import qualified Control.Monad.CatchIO as CIO 
-import GHC.Exception
 
 {- | 
 -
@@ -49,7 +46,7 @@ instance Serialize Beat where
 
 type ClientC = Either String () -> IO (Maybe B.ByteString) 
 type ServerC = Beat -> IO (Either String ()) 
--- 100000 microseconds -> 100 ms  
+
 delay = 100000
 
 -- | check your self into a proxy and start heartbeating 
@@ -85,14 +82,11 @@ checkin org cp callback = withContext $ \c -> do
 
 
 -- | handle authorizations  by binding to the address  
-hotelManager :: Cycle -> Address -> ServerC -> IO ()
-hotelManager a b c = CIO.catch  (hotelManager' a b c) (\(a :: SomeException) -> print "exception in heartbeat" *> print a)
-hotelManager' :: Cycle -> Address -> ServerC -> IO ()
-hotelManager' cl lp callback = withContext $ \c -> 
+hotelManager :: Address -> ServerC -> IO ()
+hotelManager lp callback = withContext $ \c -> 
                            withSocket c Rep $ \s -> do 
                                         bind s lp 
                                         forever $ do 
---                                            reportCycle cl "heartbeat" "hotelManager"
                                             a <- receive s  
                                             case (decode a) of 
                                                 Left msh -> send s [] (encode $ (Left msh :: Either String ()))
@@ -102,7 +96,7 @@ hotelManager' cl lp callback = withContext $ \c ->
 
 testHeartBeat = do 
         forkIO 
-            $ hotelManager undefined "tcp://*:2765" 
+            $ hotelManager "tcp://*:2765" 
             $ \b -> case b of 
                         Alive who meta -> print who *> return (Right ()) 
                         Error -> print "error" *> return (Left "error received")

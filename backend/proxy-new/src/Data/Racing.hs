@@ -1,10 +1,22 @@
-{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms #-}
+{-# LANGUAGE TemplateHaskell, LiberalTypeSynonyms, GeneralizedNewtypeDeriving, ScopedTypeVariables, OverloadedStrings, ViewPatterns, FlexibleContexts, BangPatterns #-}
 
-module Data.Racing where
+module Data.Racing () where {-- (
+        runRaceWithParticipant,
+        RaceParticipant(..),
+        RaceDatas,
+        RaceData(..),
+        raceResult2FE,
+        RaceRewards,
+        RaceResult(..),
+        raceData,
+        rp_account_id,
+        mkRaceParticipant
+
+) where --}
 
 import Data.Constants
 import Data.Car
-import Data.Driver
+import qualified Data.Driver as D
 import Data.Environment
 import Data.Track
 import Data.Section
@@ -13,8 +25,31 @@ import Model.TH
 import Model.General
 import Data.InRules
 import Data.Conversion
-import Database.HDBC
+import Database.HDBC hiding (rollback)
+import Database.HDBC.PostgreSQL 
 import qualified Data.HashMap.Strict as H
+import qualified Data.ByteString.Lazy as LB
+import qualified Data.Aeson as AS
+import Debug.Trace
+import System.Random
+import Control.Monad.State 
+import Control.Monad.Random 
+import Control.Monad.Writer 
+import Control.Monad
+import Control.Applicative
+import Data.InRules
+import Data.Monoid 
+import Data.SqlTransaction
+import qualified Data.List as L 
+
+import qualified Model.Account as A
+import qualified Model.AccountProfileMin as APM
+import qualified Model.CarInGarage as CIG
+import qualified Model.CarMinimal as CMI
+import qualified Model.TrackDetails as TD
+import qualified Model.Part as Part
+import qualified Model.PartDetails as PD
+import Data.Char 
 import Debug.Trace
 
 type Path = Double
@@ -36,24 +71,6 @@ initialSpeed = 0
 trackWidth :: Radius
 trackWidth = 10.0 -- road width in metres. TODO: this should be a variable in every section.
 
-{--
-data RaceResult = RaceResult {
-    raceTime :: Time',
-    raceSpeedMax :: Speed,
-    raceSpeedAvg :: Speed,
-    raceSpeedFin :: Speed,
-    sectionResults :: [SectionResult]
-} deriving Show
-
-data SectionResult = SectionResult {
-    sectionPath :: Path,        -- path taken (0-1)
-    sectionSpeedMax :: Speed,   -- highest speed achieved in section
-    sectionSpeedAvg :: Speed,   -- average speed across section
-    sectionSpeedOut :: Speed,   -- speed on leaving section
-    sectionTime :: Time'        -- time taken for section
-} deriving Show
---}
-
 $(genMapableRecord "SectionResult" 
     [
         ("sectionId", ''Integer),
@@ -65,8 +82,6 @@ $(genMapableRecord "SectionResult"
         ])
 
 type SectionResults = [SectionResult]
-instance FromInRule SectionResult 
-instance ToInRule SectionResult
 
 $(genMapableRecord "RaceResult"
     [
@@ -78,27 +93,82 @@ $(genMapableRecord "RaceResult"
             ("sectionResults", ''SectionResults)
         ])
 
+instance Ord RaceResult where 
+        compare (raceTime -> x) (raceTime -> y) = compare x y 
+
+type MInteger = Maybe Integer
+
+$(genMapableRecord "RaceParticipant"
+    [
+            ("rp_account", ''A.Account),
+            ("rp_account_min", ''APM.AccountProfileMin),
+            ("rp_car", ''CIG.CarInGarage),
+            ("rp_car_min", ''CMI.CarMinimal),
+            ("rp_escrow_id", ''MInteger)
+       ])
+rp_account_id :: RaceParticipant -> Integer
+rp_account_id = fromJust . A.id . rp_account
+
+rp_car_id :: RaceParticipant -> Integer
+rp_car_id = fromJust . CIG.id . rp_car
+
+-- | mkRaceParticipant accepts an car_instance_id account_id and a optional (Maybe Integer) and returns an RaceParticipant 
+mkRaceParticipant :: Integer -> Integer -> Maybe Integer ->  SqlTransaction Connection RaceParticipant  
+mkRaceParticipant cins_id account_id escrowid = do 
+                                    cig <- aload (cins_id) (rollback "cannot find car") :: SqlTransaction Connection CIG.CarInGarage
+                                    cmin <- aload (cins_id) (rollback "cannot find car") :: SqlTransaction Connection CMI.CarMinimal 
+                                    ac <- aload account_id (rollback "cannot find account") :: SqlTransaction Connection A.Account
+                                    acmin <- aload (account_id) (rollback "cannot find account") :: SqlTransaction Connection APM.AccountProfileMin 
+                                    return $ RaceParticipant ac acmin cig cmin escrowid 
+
+
+type PartsDetails = [PD.PartDetails]
+
+$(genMapableRecord "RaceRewards"
+    [
+            ("money", ''Integer),
+            ("respect", ''Integer),
+            ("parts", ''PartsDetails)
+       ])
+
+emptyRaceRewards :: RaceRewards
+emptyRaceRewards = RaceRewards 0 0 []
+
+instance Monoid RaceRewards where 
+        mempty = emptyRaceRewards 
+        mappend (RaceRewards a b c)  (RaceRewards a' b' c') = RaceRewards (a + a') (b + b') (c <> c')
+
+instance Num RaceRewards where
+    (+) = (<>) 
+    fromInteger n = RaceRewards n 0 []
+    abs n = n 
+    signum _ = 1
+    (*) = error "race rewards didn't implement times"
+
+
+$(genMapableRecord "RaceData"
+    [
+            ("rd_user", ''APM.AccountProfileMin),
+            ("rd_car", ''CMI.CarMinimal),
+            ("rd_result", ''RaceResult)
+--            ("rd_rewards", ''RaceRewards)
+       ])
+
+type RaceDatas = [RaceData]
+
+runRaceWithParticipant :: RaceParticipant -> Track -> Environment -> RaceResult 
+runRaceWithParticipant p t e = raceResult2FE $ runRace t (D.accountDriver $ rp_account p) (carInGarageCar $ rp_car p) e
+
+raceData :: RaceParticipant -> RaceResult -> RaceData
+raceData p r = RaceData (rp_account_min p) (rp_car_min p) r
+
+-- convert to front-end units (km/h instead of m/s)
 raceResult2FE :: RaceResult -> RaceResult
 raceResult2FE (RaceResult i t vm va vf ss) = RaceResult i t (ms2kmh vm) (ms2kmh va) (ms2kmh vf) (map sectionResult2FE ss)
-
 sectionResult2FE :: SectionResult -> SectionResult
 sectionResult2FE (SectionResult i p vm va vo t)  = SectionResult i p (ms2kmh vm) (ms2kmh va) (ms2kmh vo) t
 
--- RaceResult to writable HashMap list
-mapRaceResult :: RaceResult -> [H.HashMap String SqlValue]
-mapRaceResult = (map mapSectionResult) . sectionResults
-
--- SectionResult to writable HashMap;
-mapSectionResult :: SectionResult -> H.HashMap String SqlValue
-mapSectionResult s = H.fromList $ [
-        ("time", toSql $ sectionTime s),
-        ("path", toSql $ sectionPath s),
-        ("section_id", toSql $ sectionId s),
-        ("speed_max", toSql $ sectionSpeedMax s),
-        ("speed_avg", toSql $ sectionSpeedAvg s),
-        ("speed_out", toSql $ sectionSpeedOut s)
-   ]
-
+{-
 -- 500m straight
 testSection1 = Section 0 Nothing 500
 
@@ -109,7 +179,7 @@ testSection2 = Section 0 (Just 15) 25
 testSection3 = Section 0 (Just 100) 300
 
 -- race tracks
-track0 = [Section 0 Nothing 10000]
+track0 = Track 0  [Section 0 Nothing 10000]
 
 track1 = Track 0 [
         Section 0 Nothing 2000,
@@ -118,35 +188,25 @@ track1 = Track 0 [
     ]
 
 track2 = Track 0 [
-        Section 0 Nothing 2000,
-        Section 0 (Just 100) 200,
-        Section 0 (Just 20) 30,
-        Section 0 (Just 100) 150,
-        Section 0 (Just 20) 30,
-        Section 0 (Just 100) 200,
-        Section 0 Nothing 3000
+        Section 0 Nothing 500,
+        Section 0 (Just 50) 75,
+        Section 0 Nothing 100,
+        Section 0 (Just 20) 60,
+        Section 0 Nothing 1000
     ]
 
 track3 = Track 0 [Section 0 (Just 100) 700]
 track4 = Track 0 [Section 0 Nothing 700]
+-}
 
 -- run a path using driver skills. path is a double 0 - 1 indicating the quality of the traveled path.
 -- from this and the section properties, the effective radius and path length are calculated.
-path :: Driver -> Path
-path d = skillIntelligence d -- TODO: randomize
+path :: D.Driver -> Path
+path d =  D.intelligence d 
 
 -- "correct" a section, i.e. take into account the path and modify the angle, arclength and radius accordingly
 pathSection :: Section -> Path -> Section
 pathSection s@(Section i _ _) p = Section i (sectionPathRadius s p) (sectionPathLength s p)
-
-{-
-sectionPathAngle :: Section -> Path -> Maybe Angle
-sectionPathAngle s p = case (radius s) of
-    Nothing -> Nothing
-    Just r -> Just $ (2 *) $ asin $ y / (fromJust $ sectionPathRadius s p)
-        where
-            y = (r *) $ sin $ (arclength s) / (r * 2)
--}
 
 pathDeviation :: Path -> Length
 pathDeviation p = trackWidth * (0.5 - p)
@@ -184,13 +244,41 @@ sectionPathLength s p = case (radius s) of
         Just rp -> rp * (fromJust $ sectionPathAngle s p)
 
 -- calculate maximum speed in a section
-topSpeed :: Section -> Driver -> Car -> Environment -> Speed
+topSpeed :: Section -> D.Driver -> Car -> Environment -> Speed
 topSpeed s d c e = case (radius s) of
     Nothing -> lightSpeed
     Just r -> corneringSpeed c e r -- TODO: account for driver handling skill
 
+data RaceConfig = RC {
+        track :: Track,
+        driver :: D.Driver,
+        car :: Car,
+        env :: Environment
+    }
+
+-- randT
+-- State 
+-- IO 
+-- a
+
+{----
+
+newtype RaceMonad a = RM {
+        unRM :: RandT StdGen (State RaceConfig) a 
+    } deriving (Monad, Functor, Applicative, MonadState RaceConfig, MonadRandom)
+
+runRaceMonad :: RaceMonad a -> StdGen -> RaceConfig -> a 
+runRaceMonad m g c = evalState (evalRandT (unRM m) g) c
+
+raceM :: RaceMonad [a] 
+raceM = do 
+    p <- gets driver 
+    (r :: Double) <- getRandomR (0, 1)
+    return []
+--}
+ 
 -- for a driver, car and environment, given a list of sections, make a list of section results
-runRace :: Track -> Driver -> Car -> Environment -> RaceResult
+runRace :: Track -> D.Driver -> Car -> Environment -> RaceResult
 runRace (Track i ss) d c e = res $ runRace' ss' d c e
     where
         ss' :: [(Section, Path, Speed)] -- each section with a path and the exit speed limit (i.e., the max speed in the next section). the last section effectively has no exit speed limit.
@@ -208,39 +296,39 @@ runRace (Track i ss) d c e = res $ runRace' ss' d c e
                 vf = sectionSpeedOut $ last rs
        
 -- (section, path, speed): for each section, the path has been determined. the speed is the maximum entry speed for the next section.
-runRace' :: [(Section, Path, Speed)] -> Driver -> Car -> Environment -> [SectionResult]
-runRace' sps d c e = fst $ foldl step ([], 0) sps
+runRace' :: [(Section, Path, Speed)] -> D.Driver -> Car -> Environment -> [SectionResult]
+runRace' sps d c e = {-# SCC runRace' #-} fst $ L.foldr (\x z -> {-# SCC innerLoop #-} step z x) ([], 0) sps
     where
         step :: ([SectionResult], Speed) -> (Section, Path, Speed) -> ([SectionResult], Speed)
         step (rs, vin) (s, p, vnx) = (rs ++ [res], sectionSpeedOut res)
             where
-                res = runSection s p vin vnx d c e
+                res = {-# SCC runSection #-} runSection s p vin vnx d c e
 
 -- integration state: current time, distance traveled, highest speed, current speed, currently braking
-data IState = IState Time' Length Speed Speed Bool Integer
+data IState = IState !Time' !Length !Speed !Speed !Bool !Integer
 
 -- runSection: integrate over section 
-runSection :: Section -> Path -> Speed -> Speed -> Driver -> Car -> Environment -> SectionResult
-runSection s@(Section i _ _) p vin vnext d c e = proc $ IState 0 0 vin vin False 0
+runSection :: Section -> Path -> Speed -> Speed -> D.Driver -> Car -> Environment -> SectionResult
+runSection s@(Section i _ _) p vin vnext d c e = {-# SCC procEntry #-} proc $ IState 0 0 vin vin False 0
     where
         s' = pathSection s p
-        l = arclength s'
-        vlim = topSpeed s d c e
+        l = arclength s' 
+        vlim = topSpeed s' d c e
         proc :: IState -> SectionResult
         proc ist@(IState t x vm v b n) = case (x >= l) of
             True -> SectionResult i p (max v vm) (l/t) v t
-            False -> (tr t x vm v b n) $ proc $ IState (t + deltaTime) (x + deltaTime * v) (max v vm) v' b' (n+1)
+            False ->  (tr t x vm v b n) $ {-# SCC procInner #-} proc  $  IState ({-# SCC td #-} t + deltaTime) ({-# SCC dp #-} x + deltaTime * v) ({-# SCC vm #-} max v vm) v' b' (n+1)
                 where
                     -- determine distance needed to brake to vnext
                     -- TODO: driver always brakes too early: (l - x + err). err is reduced by driver skill.
                     -- TODO: speed reduction is based on braking only and should account for drag force, too.
-                    tr t x vm v b n = case (mod n 10) of
---                        0 -> traceShow ((show s) ++ " - #" ++ (show n) ++ " - " ++ (show t) ++ "s - " ++ (show x) ++ "m - " ++ (show v) ++ "m/s")
-                        _ -> id
-                    b' = (||) b $ (speedReductionDistance c e v vnext) >= (l-x)
+                    tr !t !x !vm !v !b !n  = case mod n 10 of
+                                          --      0 -> id -- traceShow ((show s) ++ " - #" ++ (show n) ++ " - " ++ (show t) ++ "s - " ++ (show x) ++ "m - " ++ (show v) ++ "m/s", show c) r 
+                                                otherwise -> id 
+                    b' = {-# SCC b' #-} (||) b $ (speedReductionDistance c e v vnext) >= (l-x)
                     v' = case b' of
-                        True -> max vnext $ v - deltaTime * ((brakingForce c e) + (dragForce c e v)) / (mass c)
-                        False -> min vlim $ v + deltaTime * ((accelerationForce c e v) - (dragForce c e v)) / (mass c)
+                        True -> {-# SCC vTrue #-} max vnext $ v - deltaTime * ((brakingForce c e) + (dragForce c e v)) / (mass c)
+                        False -> {-# SCC fTrue #-} min vlim $ v + deltaTime * ((accelerationForce c e v) - (dragForce c e v)) / (mass c)
 
 
 {-
@@ -275,13 +363,15 @@ accelerationTime c e v = (v^2 * m / p + p / (m * mu^2 * g^2)) / 2
         g = constant "g"
 
 -- maximum braking force that can be applied is lower value of braking force and maximum force applied through tyres
+-- NOTE: braking parameter meaning changed to precentage of traction force available for braking 
 brakingForce :: Car -> Environment -> Double
-brakingForce c e = min (brf c) (mu * m * g) 
+brakingForce c e = (brp c) * mu * m * g
+    -- min (brf c) (mu * m * g) 
     where
         m = mass c
         mu = (tco c) * (mtraction e)
         g = constant "g"
- 
+
 -- minimum distance traveled before car can be stopped from v (m/s)
 stoppingDistance :: Car -> Environment -> Double -> Double
 stoppingDistance c e v = m * v^2 / (2 * b)
@@ -311,13 +401,13 @@ corneringSpeed c e r = sqrt $ (r *) $ lateralAcceleration c e r
 
 -- drag force for car in environment at speed v
 dragForce :: Car -> Environment -> Speed -> Double
-dragForce c e v = v^2 * 0.5 * (rho e) * (cda c)
+dragForce c e v = {-# SCC dragForce #-} v^2 * 0.5 * (rho e) * (cda c)
 
 -- acceleration force for car in environment at speed v using continuous transmission approximation: torque T ~ P/v. at low speeds, T is limited by tyre traction.
 accelerationForce :: Car -> Environment -> Speed -> Double
-accelerationForce c e v = case (v <= tractionSpeedTreshold c e) of
-    True -> (mass c) * (tco c) * (mtraction e) * (constant "g")
-    False -> (pwr c) / v
+accelerationForce c e v = {-# SCC accelerationForce #-} case (v <= tractionSpeedTreshold c e) of
+    True -> {-# SCC aTrue #-}  (mass c) * (tco c) * (mtraction e) * (constant "g")
+    False -> {-# SCC aFalse #-} (pwr c) / v
 
 
 {-
@@ -352,8 +442,62 @@ nitrous c e = nos c
  - Randomization
  -}
 
--- take a double x 0-1
--- produce a random double y 0-1
--- use a skewed normal distribution centered on x
-foo :: Double -> Double
-foo = undefined
+-- generate a random number in range [0,1] biased towards m
+-- TODO: include bias level d (now fixed on power 2)
+drand :: Double -> IO Double 
+drand m = do
+        n <- randomIO 
+        case n > m of
+            False -> return $ sqrt $ n * m
+            True -> return $ (1 -) $ sqrt $ (m-1) *  (n-1)
+
+
+newtype StrangeFunctor f a b = HF {
+                    unHF :: f a (StrangeFunctor f a (a -> f a b))
+                }
+
+newtype WarpedFunctor f a b = WP {
+                    unWP :: f a (a -> f a (WarpedFunctor f a b -> b))    
+            }
+
+
+imap f h = WP . (fmap . fmap . fmap) (\g -> f . g . (WP . (fmap . fmap . fmap) (\g ->  h . g . (imap f h) ) . unWP)) . unWP  
+
+cst p = WP (return (const (return (const p))))  
+
+test212 :: WarpedFunctor Either String Int 
+test212 = imap (ord) (chr) (cst 'a') 
+
+instance Functor (f a) => Functor (StrangeFunctor f a) where 
+        fmap f = HF . fmap ((fmap.fmap.fmap) f)  . unHF 
+
+
+
+garageCarProps :: CIG.CarInGarage -> CIG.CarInGarage
+garageCarProps c = c {
+                CIG.acceleration = todbi $ acceleration car defaultEnvironment,
+                CIG.top_speed = todbi $ topspeed car defaultEnvironment,
+                CIG.cornering = todbi $ cornering car defaultEnvironment,
+                CIG.stopping = todbi $ stopping car defaultEnvironment,
+                CIG.nitrous = todbi $ nitrous car defaultEnvironment
+            }
+                where
+                    car = Car (fromInteger $ CIG.weight c) (fromdbi $ CIG.power c) (fromdbi $ CIG.traction c) (fromdbi $ CIG.handling c) (fromdbi $ CIG.braking c) (fromdbi $ CIG.aero c) (fromdbi $ CIG.nos c)
+
+minimalCarProps :: CMI.CarMinimal -> CMI.CarMinimal
+minimalCarProps c = c {
+                CMI.acceleration = todbi $ acceleration car defaultEnvironment,
+                CMI.top_speed = todbi $ topspeed car defaultEnvironment,
+                CMI.cornering = todbi $ cornering car defaultEnvironment,
+                CMI.stopping = todbi $ stopping car defaultEnvironment,
+                CMI.nitrous = todbi $ nitrous car defaultEnvironment
+            }
+                where
+                    car = Car (fromInteger $ CMI.weight c) (fromdbi $ CMI.power c) (fromdbi $ CMI.traction c) (fromdbi $ CMI.handling c) (fromdbi $ CMI.braking c) (fromdbi $ CMI.aero c) (fromdbi $ CMI.nos c)
+
+todbi :: Double -> Integer
+todbi = floor . (10000 *)
+fromdbi :: Integer -> Double
+fromdbi = (/ 10000) . fromInteger
+
+

@@ -7,7 +7,7 @@ import qualified Model.TrackDetails as TD
 data Track = Track {
         track_id :: Integer,
         sections :: [Section]
-    }
+    } deriving (Eq, Show)
 
 trackDetailsTrack :: [TD.TrackDetails] -> Track
 trackDetailsTrack [] = Track 0 []

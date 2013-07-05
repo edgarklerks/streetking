@@ -1,3 +1,4 @@
+-- | Small module for logging to an external party 
 module Data.ExternalLog where 
 
 import System.ZMQ3
@@ -17,10 +18,6 @@ data Cycle = Cycle {
 
 reportCycle :: Cycle -> String -> String -> IO ()
 reportCycle a group component = atomically $ writeTQueue (cycleChannel a) (group, component) 
-
-reportCycleSTM :: Cycle -> String -> String -> STM ()
-reportCycleSTM a group component = writeTQueue (cycleChannel a) (group, component) 
-
 
 
 initCycle :: Address -> IO Cycle 
