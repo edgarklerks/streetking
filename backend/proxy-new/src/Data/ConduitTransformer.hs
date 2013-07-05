@@ -1,17 +1,12 @@
 {-# LANGUAGE ViewPatterns, DoRec #-}
+-- | Package for transforming conduits to enumerators and back.
+-- | Needed for cross compability between http-conduit and snap 
+
 module Data.ConduitTransformer (
         conduitToEnumeratorSource,
-        enumeratorToConduitSource,
-        tqueueSink,
-        tqueueSource,
-        tqueueEnumerator,
-        tqueueIterator
+        enumeratorToConduitSource
     ) where 
 
-{-- 
-- Package for transforming conduits to enumerators and back.
-- Needed for cross compability between http-conduit and snap 
----}
 
 
 import qualified Data.Conduit as C
@@ -37,7 +32,7 @@ readChannel = liftIO . atomically . readTQueue
 writeChannel :: MonadIO m => TQueue (Maybe [a]) -> Maybe [a] -> m ()
 writeChannel n = liftIO . atomically . writeTQueue n  
 
--- Producer / Source 
+-- | Producer / Source 
 tqueueEnumerator :: TQueue (Maybe [a]) -> E.Enumerator a IO b 
 tqueueEnumerator n f = do 
             p <- readChannel n
@@ -52,7 +47,7 @@ tqueueEnumerator n f = do
                             a -> E.returnI a 
 
 
--- Consumer / Sink 
+-- | Consumer / Sink 
 tqueueIterator :: TQueue (Maybe [a]) -> E.Iteratee a IO ()
 tqueueIterator f = E.continue go 
         where go (E.Chunks xs) = do 
@@ -62,7 +57,7 @@ tqueueIterator f = E.continue go
 
 
 
-tqueueSource :: (MonadIO m, Show a) => TQueue (Maybe [a]) -> C.Source m a 
+tqueueSource :: Show a => TQueue (Maybe [a]) -> C.Source IO a 
 tqueueSource n = do 
             s <- readChannel n
             case s of 
@@ -70,39 +65,31 @@ tqueueSource n = do
                 Just xs -> mapM_ C.yield xs >> tqueueSource n 
 
 
-tqueueSink :: (MonadIO m) => TQueue (Maybe [a]) -> C.Sink a m ()
+tqueueSink :: TQueue (Maybe [a]) -> C.Sink a IO ()
 tqueueSink n = do 
             xs <- C.head 
             case xs of 
                 Nothing -> writeChannel n (Nothing)
                 Just xs -> writeChannel n (Just [xs]) >> tqueueSink n 
 
--- push the source to a sink 
---
--- sink send to channel 
---
--- channel is read by an enumerator 
---
---      feed to an iterator  
---
---
+-- | push the source to a sink 
+-- |
+-- | sink send to channel 
+-- |
+-- | channel is read by an enumerator 
+-- | 
+-- |     feed to an iterator  
 conduitToEnumeratorSource :: C.Source IO a -> IO (E.Enumerator a IO ())
 conduitToEnumeratorSource f = do 
                         x <- newTQueueIO 
                         forkIO $ f C.$$ tqueueSink x 
                         return (tqueueEnumerator x)
 
--- This is the dual operation 
-
-
--- feed the enumerator  
---              
---              to an iterator  
---
--- iterator send to channel 
---
--- channel is read by an source 
---
+-- | This is the dual operation 
+-- | feed the enumerator  
+-- | to an iterator  
+-- | iterator send to channel 
+-- | channel is read by an source 
 enumeratorToConduitSource :: Show a => E.Enumerator a IO () -> IO (C.Source IO a)
 enumeratorToConduitSource f = do 
                         x <- newTQueueIO 

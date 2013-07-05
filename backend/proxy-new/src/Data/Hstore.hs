@@ -1,4 +1,5 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
+-- | Creates some conversion instances for getting and retrieving hstores  
 module Data.Hstore (
         parseHStore,
         HStore(..),

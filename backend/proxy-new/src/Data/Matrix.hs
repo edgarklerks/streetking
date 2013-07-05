@@ -1,4 +1,6 @@
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE BangPatterns, ViewPatterns #-}
+-- | Various function for manipulating matrices. It is implemented with arrays,
+-- | so it is fairly efficient 
 module Data.Matrix where 
 
 import Data.Array.Base
@@ -15,7 +17,7 @@ import Data.List (permutations)
 import Debug.Trace
 import Data.Binary 
 
--- rows x cols  
+-- | An efficient implementation of a matrix 
 data Vector a = Vector !Int !Int !(Array (Int,Int) a)
     deriving (Show, Eq)
 
@@ -40,13 +42,13 @@ instance (Show a, Eq a, Num a) => Num (Vector a) where
                        in  b
         signum a = abs a -- `scalarDiv` abs a  
         fromInteger = mk11 . fromInteger 
-
+-- | Get the magnitude of the vector (the length), gives back an 1,1 vector 
 magnitude :: (Num a, Floating a, Show a, Eq a) => Vector a -> Vector a
 magnitude v = sqrt $ abs v 
-
+-- | Normalize the vector 
 normalize :: (Num a, Floating a, Show a, Eq a) => Vector a -> Vector a
 normalize v = v / magnitude v 
-
+-- | Get the theta of a 2x1 vector 
 theta21 v@(Vector 2 1 n)  = mk21 (fromScalar $ magnitude v, atan2 (n ! (2,1)) (n ! (1,1)))
 
 instance (Show a, Eq a, Floating a) => Floating (Vector a) where 
@@ -65,6 +67,7 @@ instance (Show a, Eq a, Floating a) => Floating (Vector a) where
     acosh = fmap acosh
 {-- Elementary Row operations --}
 
+-- | Swap two rows 
 swap :: Int -> Int -> Vector a -> Vector a 
 swap i j (Vector r c vec1) = Vector r c $ runSTArray $ do 
                             a <- thaw vec1 
@@ -79,7 +82,7 @@ swap' c i j a = do    forM_ [1 .. c] $ \k -> do
                             writeArray a (j,k) p
                       return ()
 
- 
+-- | Scale the elements vector  
 scale :: Num a => Int -> a -> Vector a -> Vector a 
 scale i s (Vector r c vec1) = Vector r c $ runSTArray $ do 
                                     a <- thaw vec1 
@@ -89,7 +92,7 @@ scale i s (Vector r c vec1) = Vector r c $ runSTArray $ do
 scale' :: Num a => Int -> Int -> a  -> STArray s (Int, Int) a -> ST s ()
 scale' c i s a =  forM_ [1..c] $ \k -> readArray a (i,k) >>= writeArray a (i,k) . (*s)
 
-
+-- | Add a row to a vector 
 addRow :: Num a => Int -> Int -> a -> Vector a -> Vector a 
 addRow i j s (Vector r c vec1) = Vector r c $ runSTArray $ do 
                                     a <- thaw vec1 
@@ -103,12 +106,14 @@ addRow' c i j s a =  forM_ [1..c] $ \k -> do
                                 writeArray a (j,k) (s * p + q)
                             
 
-
+-- | Find a pivot, only works on square matrices 
 findPivot :: (Num a, Ord a) => Int -> Vector a -> (a, (Int,Int))
 findPivot k (Vector r c vec1) | r == c = maximumBy (\x y -> compare (fst x) (fst y)) $ (\i -> (abs $ vec1 ! (i,k), (i,k))) <$>  [k .. r]
                               | otherwise = error "cannot find pivot for a non square matrix"
 
-
+-- | Solve a system of the form:
+-- | aM = S  
+-- | Works only on square matrices 
 gaussianElim :: (Ord a, Fractional b, Real a, Show b) => Vector a -> Vector a -> Vector b 
 gaussianElim v res | square v = slice (getCols v + 1) (getCols v + getCols res) b  
                    | otherwise = error "Matrix is not square"
@@ -140,21 +145,23 @@ gaussianElim v res | square v = slice (getCols v + 1) (getCols v + getCols res) 
 
                         return a 
         
-
+-- | Get the x coordinate of a (2x1 or 1x2) vector 
 getX :: Vector a -> a 
 getX (Vector 2 1 n) = n ! (1,1) 
 getX (Vector 1 2 n) = n ! (1,1)
 
+-- | Get the y coordinate of a (2x1 or 1x2) vector 
 getY :: Vector a -> a
 getY (Vector 2 1 n) = n ! (2,1)
 getY (Vector 1 2 n) = n ! (1,2)
 
+-- | Calculate the first order central difference 
 firstCentralDifference :: (Fractional a, Num a) =>  [Vector a] -> Maybe a
 firstCentralDifference [] = Nothing 
 firstCentralDifference (x1:x2:x3:xs) =  Just $ (getY x3 - getY x1) / h
     where h = getX x3 - getX x1
 
-
+-- | Calculate the second order central different 
 secondCentralDifference :: (Fractional a, Num a) => [Vector a] -> Maybe a
 secondCentralDifference [] = Nothing 
 secondCentralDifference (x1:x2:x3:x4:x5:xs) = Just $ (getY x5 - getY x3) / (hf * hc) - (getY x3 - getY x1) / (hc * hb)
@@ -346,7 +353,7 @@ mk2n xs = mkVector 2 (length xs) $ do
                         [a,b]
 
 mkn2 :: [(a,a)] -> Vector a 
-mkn2 xs = mkVector (length xs) 2 $do 
+mkn2 xs = mkVector (length xs) 2 $ do 
                 (a,b) <- xs 
                 [a,b]
 
@@ -365,6 +372,7 @@ mk41 (a,b,c,d) = mkVector 4 1 [a,b,c,d]
 fromScalar (Vector 1 1 n) = n ! (1,1)
 
 -- Sum{i=1..mi - m + 1, j=1..ni - n + 1} (Sum{k = 1..m, l=1..n} I(i + k - 1, j + l - 1) * K(k,l)
+-- | Calculate the convolution of two vectors 
 convolute :: Num a => Vector a -> Vector a -> Vector a 
 convolute (Vector mi ni im) (Vector m n kr) = Vector mi ni $ runSTArray $ do
                                 a <- thaw im 

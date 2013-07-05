@@ -1,4 +1,5 @@
-{-# LANGUAGE TemplateHaskell, DeriveGeneric, StandaloneDeriving #-}
+{-# LANGUAGE TemplateHaskell, DeriveGeneric, StandaloneDeriving,
+ ViewPatterns  #-}
 
 module Data.MenuTree where 
 
@@ -89,7 +90,7 @@ testTree = Node (Root) [
                 ]
 
 -- GENERATED START
-
+{-
 isoProp = smallCheck 4 (property prop) 
     where prop :: Tree Menu -> Bool 
           prop x = fromFlat (toFlat t) == t
@@ -114,6 +115,6 @@ instance (Serial a) => Serial (Tree a) where
                case t of
                    Node x1 x2 -> t0 x1 x2
              | t0 <- alts2 rs d]
-
+-}
 -- GENERATED STOP
 --

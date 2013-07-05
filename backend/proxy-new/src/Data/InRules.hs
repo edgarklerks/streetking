@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, IncoherentInstances, RankNTypes, FlexibleContexts, ViewPatterns, ScopedTypeVariables #-}
+-- | This module implements a dynamic type system 
 module Data.InRules where
 
 
@@ -11,6 +12,7 @@ import Data.Word
 import Data.Int
 
 import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString.Lazy as LB
 
 import Data.Time.Calendar
 import Data.Time.Clock 
@@ -18,44 +20,63 @@ import Data.Time.LocalTime
 import Data.Convertible
 import Data.Maybe
 import Control.Applicative
-import Data.Monoid -- hiding ((<>))
+import Data.Monoid hiding ((<>))
 import Control.Monad
 import Data.Pointed
 import Data.Copointed
+import Data.Word 
 import Data.Semigroup
+import Control.Monad.Identity
 import qualified Data.List.NonEmpty as N
+import qualified Data.Serialize as S 
+import Test.QuickCheck hiding ((==>))
+
 infixr 6 ==>
 infixr 6 .>
 infixl 6 .>>
 infixr 6 ..>
-
+-- | Map all the hash map keys 
 hmapKeys f xs = Map.foldrWithKey step Map.empty xs
     where step k v a = Map.insert (f k) v a 
+
+-- | Map over all the hash map values with a key
 hmapWithKey f xs = Map.foldrWithKey step Map.empty xs 
     where step k v a = Map.insert k (f k v) a
 -- * Data types and classes
 -- think about adding timestamp without timezone as some kind of double
 -- with pretty print... 
 
-data InRule = InString String
-      | InByteString B.ByteString
-	  | InInteger Integer
-	  | InDouble Double
-	  | InNumber Rational
-	  | InBool Bool
+-- | Primitive type, a subset of this type is isomorph to json and yaml  
+data InRule = 
+        InString !String
+      | InByteString !B.ByteString
+	  | InInteger !Integer
+	  | InDouble !Double
+	  | InNumber !Rational
+	  | InBool !Bool
 	  | InNull
 	  | InArray [InRule]
 	  | InObject (Map.HashMap String InRule) 
-    deriving (Eq)
+    deriving (Eq, Show )
+               
 
 newtype Readable = Readable {
         unReadable :: String 
     } deriving Show
 
- 
+-- InRule isn't a proper monoid, be carefull 
+instance Monoid InRule where 
+    mappend (InArray xs) (InArray ys) = InArray (xs `mappend` ys)
+    mappend (InObject xs) (InObject ys) = InObject (xs `mappend` ys)
+    mappend InNull s = s
+    mappend s InNull = s 
+    mappend s t = InArray [t,s] 
+    mempty = InNull 
 
--- | Setters, getters, folds, unfolds and maps. 
 
+
+
+-- | Data type used for viewing the type of a index   
 data InKey = Index Int 
            | None
            | Assoc String 
@@ -67,6 +88,7 @@ instance Monoid InKey where
     x `mappend` y = y 
     mempty = None
 
+-- | Identity monoid, doesn't exist in prelude or anywhere else 
 newtype IdentityMonoid a = IM { unIM :: a }
 
 instance Monoid a => Monoid (IdentityMonoid a) where 
@@ -83,21 +105,27 @@ instance Copointed (IdentityMonoid) where
 data PathState = Accept | Reject
     deriving Show 
 
+-- | One step of the automata. Automata can be in two states:
+-- | next step or final path  
 data PathStep a = Next (PathAcceptor a) | Final PathState
 
+-- | One machine step 
 newtype PathAcceptor a = PM {
         unPM :: a -> PathStep a 
     }
 
+-- | Path acceptor is a semigroup and acts semantically like a and operator 
 instance Semigroup (PathAcceptor a) where 
     (<>) (PM f) (PM g) = PM $ \a -> 
                 case f a of 
                     Final Accept -> Next (PM g)
                     Final Reject -> reject 
                     Next t -> Next t 
+-- | The always acceptor 
 accept :: PathStep a
 accept = Final Accept 
 
+-- | The always rejector 
 reject :: PathStep a
 reject = Final Reject 
 
@@ -108,6 +136,8 @@ rejector = PM $ \a -> reject
 -- |  Always accept the complete input stream (will always be false for finite streams and true for infinite ones) 
 continue = PM $ \a -> Next continue 
 
+-- | Alternate two acceptors. If the first rejects try the next. Behaves like an or 
+-- | operator 
 alter :: PathAcceptor a -> PathAcceptor a -> PathAcceptor a
 alter (PM g) (PM f) = PM $ \a -> 
             case g a of 
@@ -118,11 +148,11 @@ alter (PM g) (PM f) = PM $ \a ->
                         Final Accept -> accept 
                         Final Reject -> reject 
 
-
+-- | Creates a pointed acceptor  
 apoint a = PM $ \s -> if s == a then accept else reject 
 
 
-
+-- Run an acceptor against a stream of characters 
 runPath :: Eq a => PathAcceptor a -> [a] -> Bool 
 runPath x [] = False
 runPath x a = case unPM x (head a) of 
@@ -130,12 +160,12 @@ runPath x a = case unPM x (head a) of
                     Final Reject -> False 
                     Next t -> runPath t (tail a)
 
-
+-- | View the kind of a InRule 
 data KindView = TScalar 
              | TArray 
              | TObject 
              | TNone 
-    deriving Show
+    deriving (Show, Eq)
 
 viewKind :: InRule -> KindView 
 viewKind (InArray _) = TArray
@@ -174,11 +204,24 @@ pfold f x z = pfold' f mempty x z
           pfold' f ks (InObject xs) z = Map.foldrWithKey step z xs 
               where step k x z = pfold' f (ks `mappend` point (Assoc k)) x z 
 
+-- | Example of the longest path in the inrule structure 
+longest_path :: InRule -> Int 
+longest_path xs = pfold step xs 0 
+    where step :: [InKey] -> InRule -> Int -> Int  
+          step xs@(ckey -> t) _ b | t > b = t 
+                                  | otherwise = b 
+ckey :: Num a => [InKey] -> a
+ckey (Index _:xs) = 1 + ckey xs 
+ckey (Assoc _:xs) = 1 + ckey xs 
+ckey (x:xs) = 0 + ckey xs 
+ckey _ = 0 
+
+
 -- | Fold through the structure 
 kfold :: (InKey -> InRule -> b -> b) -> InRule -> b -> b
 kfold f x z = pfold f' x z 
     where f' k x z = f (copoint (k :: IdentityMonoid InKey)) x z 
-
+        
 -- | Find top level matching keyword 
 (.>) :: InRule -> String -> Maybe InRule
 (.>) (InObject xs) lbl = Map.lookup lbl xs
@@ -195,7 +238,7 @@ kfold f x z = pfold f' x z
 (.>>) _ _ = []
 
 
-
+-- | Transform a string into a readable 
 readable :: String -> Readable 
 readable a = Readable a
 
@@ -212,11 +255,9 @@ asReadable (InByteString x) = readable (B.unpack x)
 asReadable (InBool x) = readable (show x)
 asReadable _ = error "Not an readable object"
 
-instance Show InRule where 
-    show = toString 
--- Just InRules :P
 type InRules = [InRule]
- 
+
+-- Converting from and to an inrule  
 instance (FromInRule b) => Convertible InRule b where
 	safeConvert = Right . fromInRule 
 
@@ -243,6 +284,81 @@ validObject _ = False
 
 emptyObj :: InRule
 emptyObj = InObject (Map.empty)
+
+object :: [(String, InRule)] -> InRule 
+object = InObject . Map.fromList 
+
+list :: [InRule] -> InRule 
+list xs = InArray xs 
+
+-- Laws : 
+--  shp (a `project` b) == shp b 
+--  a `project` (b `project` c) = (a `project` b) `project` c
+--  b `project` c = b, if shp c = b  
+-- 
+--  There is no identity 
+--
+--  a `project` e = a, b `project` e = b
+-- 
+--isn't a proper monoi, be carefull 
+--
+--
+project :: InRule -> InRule -> InRule 
+project (InObject xs) (InObject ps) = InObject $ mapWithKey step xs
+            where step k x = case Map.lookup k ps of
+                                    Nothing -> x
+                                    Just p -> project x p
+
+project (InArray xs) (InArray sp) = InArray $ stepBoth xs sp 
+                        where stepBoth (x:xs) (s:sp) = project x s : stepBoth xs sp 
+                              stepBoth []  sp = sp 
+                              stepBoth xs  [] = []
+
+project a b = b 
+
+
+{-- filterKey :: [String] -> InRule -> InRule 
+filterKey f obj = kfold
+--}
+--
+mapWithKey :: (k -> a -> b) -> Map.HashMap k a -> Map.HashMap k b 
+mapWithKey f xs = runIdentity $ Map.traverseWithKey step xs 
+        where   step k = return . f k 
+
+-- InArray -> InObject 
+
+arrayToObj :: InRule -> InRule 
+arrayToObj (InArray xs) = InObject $ Map.fromList $  (show <$> [0..]) `zip` xs 
+
+shp xs@(InObject ts) (InObject sp) | Map.size  ts /= Map.size sp = False 
+                                   | otherwise  = Map.foldrWithKey step True sp 
+            where 
+                  step k _ False = False 
+                  step lbl y True = case xs .> lbl of 
+                                        Nothing -> False 
+                                        Just a -> shp a y  
+shp (InArray xs) (InArray sp) | length xs /= length sp = False 
+                              | otherwise = and $ uncurry shp <$> (xs `zip` sp)
+shp a b = viewKind a == viewKind b 
+
+
+shpTestAB = shp a b && not (shp b a)
+    where a = object $ [
+                        ("test", InInteger 1),
+--                        ("test2", InInteger 3),
+                        ("test3", InBool True)
+                       ]
+
+          b = object $ [
+                    ("test", InInteger 3),
+                    ("test2", InBool True) 
+                ]
+
+shpTestArr = shp lb lc && shp lc lb && not (shp la lb) 
+    where la = list $ [ ]
+-- shpTestArr = (a, b)
+          lb = list $ [InBool True, InInteger 9, InBool True]
+          lc = list $ [InBool False, InInteger 9, InBool False]
 
 -- | Create single InRule object.
 singleObj :: ToInRule a => String -> a -> InRule
@@ -291,223 +407,7 @@ unionRecObj (InObject x) (InObject y) = InObject $
 unionRecObj  _  _  = error "unionRecObj: Not an object"
 
 
-instance (Read a) => Convertible (Readable) a where 
-    safeConvert (Readable a) = read a
 
-instance  ToInRule () where
-    toInRule () = InArray []
-
-instance  ToInRule Char where
-    toInRule x = InString [x]
-
-instance ToInRule InRule where
-    toInRule = id
-instance FromInRule InRule where
-    fromInRule = id
-
-instance ToInRule a => ToInRule (Maybe a) where
-    toInRule = maybe InNull toInRule
-instance FromInRule a => FromInRule (Maybe a) where
-    fromInRule x = if x == InNull then Nothing else Just (fromInRule x)
-
-instance ToInRule Bool where
-    toInRule x = InBool x
-instance FromInRule Bool where
-    fromInRule (InBool x) = x
-    fromInRule x = viaReadable x
-
-
-instance ToInRule String where
-    toInRule x = InString x
-instance FromInRule String where
-    fromInRule (InString x) = x
-    fromInRule (InByteString x) = B.unpack x
-    fromInRule x = viaReadable x
-
-
-instance ToInRule B.ByteString where
-    toInRule x = InByteString x
-
-
-instance FromInRule B.ByteString where
-    fromInRule (InByteString x) = x
-    fromInRule (InString x) = B.pack x
-    fromInRule x = viaReadable x 
-
-
-instance ToInRule Integer where
-    toInRule x = InInteger x
-instance FromInRule Integer where
-    fromInRule (InInteger i) = i
-    fromInRule (InNumber x) = toInteger $ floor x
-    fromInRule (InDouble x) = toInteger $ floor x
-    fromInRule x = viaReadable x 
-
-
-instance ToInRule Int where
-    toInRule x = InInteger $ toInteger x
-instance FromInRule Int where
-    fromInRule (InInteger i) = fromInteger i
-    fromInRule (InNumber x) = floor x
-    fromInRule (InDouble x) = floor x
-    fromInRule x = viaReadable x 
-
-{----}
-
-instance ToInRule Word32 where
-    toInRule x = InInteger $ toInteger x
-instance FromInRule Word32 where
-    fromInRule (InInteger i) = fromInteger i
-    fromInRule (InNumber x) = floor x
-    fromInRule (InDouble x) = floor x
-
-    fromInRule x = viaReadable x 
-
-
-
-instance ToInRule Word64 where
-    toInRule x = InInteger $ toInteger x
-instance FromInRule Word64 where
-    fromInRule (InInteger i) = fromInteger i
-    fromInRule (InNumber x) = floor x
-    fromInRule (InDouble x) = floor x
-    fromInRule x = viaReadable x 
-
-
-instance ToInRule Int32 where
-    toInRule x = InInteger $ toInteger x
-instance FromInRule Int32 where
-    fromInRule (InInteger i) = fromInteger i
-    fromInRule (InNumber x) = floor x
-    fromInRule (InDouble x) = floor x
-    fromInRule x = viaReadable x 
-
-instance ToInRule Int64 where
-    toInRule x = InInteger $ toInteger x
-instance FromInRule Int64 where
-    fromInRule (InInteger i) = fromInteger i
-    fromInRule (InNumber x) = floor x
-    fromInRule (InDouble x) = floor x
-    fromInRule x = viaReadable x 
-
-
-
-instance ToInRule Double where
-    toInRule x = InDouble x
-instance FromInRule Double where
-    fromInRule (InDouble i) = i
-    fromInRule (InNumber x) = fromRational x
-    fromInRule (InInteger x) = fromIntegral x
-    fromInRule x = viaReadable x 
-
-double2Float :: Double -> Float 
-double2Float  = fromRational . toRational
-
-float2Double :: Float -> Double 
-float2Double  = fromRational . toRational
-
-
-
-instance ToInRule Float where
-    toInRule x = InDouble $ float2Double x
-instance FromInRule Float where
-    fromInRule (InDouble i) = double2Float i
-    fromInRule (InNumber x) = fromRational x
-    fromInRule (InInteger x) = fromIntegral x
-    fromInRule x = viaReadable x 
-
-{--
-instance ToInRule Fractional where
-    toInRule x = InDouble x
-instance FromInRule Fractional where
-    fromInRule (InDouble i) =  i 
-
-instance ToInRule Num where
-    toInRule x = InInteger x
-instance FromInRule Num where
-    fromInRule (InInteger i) =  i 
-    --}
-
-instance ToInRule Rational where
-    toInRule x = InNumber x
-instance FromInRule Rational where
-    fromInRule (InNumber i) =  i
-    fromInRule (InInteger i) = fromIntegral i
-    fromInRule (InDouble i) =  toRational i
-    fromInRule x = viaReadable x 
-
-
-instance (ToInRule a) => ToInRule (Map.HashMap String a) where
-    toInRule = InObject .  Map.map toInRule
-instance (FromInRule a) => FromInRule (Map.HashMap String a) where
-    fromInRule (InObject m) = Map.map fromInRule m
-    fromInRule _ = error "You gave not an object"
-
-instance (ToInRule a) => ToInRule [a] where
-    toInRule = InArray . map toInRule
-instance (FromInRule a) => FromInRule [a] where
-    fromInRule (InArray xs) = map fromInRule xs
-
-instance (ToInRule t1, ToInRule t2) => ToInRule (t1, t2) where
-    toInRule (x1, x2) = InArray [toInRule x1, toInRule x2]
-instance (FromInRule t1, FromInRule t2) => FromInRule (t1, t2) where
-    fromInRule (InArray [x, y]) = (fromInRule x, fromInRule y)
-
-
-instance (ToInRule t1, ToInRule t2, ToInRule t3) => ToInRule (t1, t2, t3) where
-    toInRule (x1, x2, x3) = InArray [toInRule x1, toInRule x2, toInRule x3]
-instance (FromInRule t1, FromInRule t2, FromInRule t3) => FromInRule (t1, t2, t3) where
-    fromInRule (InArray [x1, x2, x3]) = (fromInRule x1, fromInRule x2, fromInRule x3)
-
-instance (ToInRule t1, ToInRule t2, ToInRule t3, ToInRule t4) => ToInRule (t1, t2, t3, t4) where
-    toInRule (x1, x2, x3, x4) = InArray [toInRule x1, toInRule x2, toInRule x3, toInRule x4]
-instance (FromInRule t1, FromInRule t2, FromInRule t3, FromInRule t4) => FromInRule (t1, t2, t3, t4) where
-    fromInRule (InArray [x1, x2, x3, x4]) = (fromInRule x1, fromInRule x2, fromInRule x3, fromInRule x4)
-
-instance (ToInRule t1, ToInRule t2, ToInRule t3, ToInRule t4, ToInRule t5) => ToInRule (t1, t2, t3, t4, t5) where
-    toInRule (x1, x2, x3, x4, x5) = InArray [toInRule x1, toInRule x2, toInRule x3, toInRule x4, toInRule x5]
-instance (FromInRule t1, FromInRule t2, FromInRule t3, FromInRule t4, FromInRule t5) => FromInRule (t1, t2, t3, t4, t5) where
-    fromInRule (InArray [x1, x2, x3, x4, x5]) = (fromInRule x1, fromInRule x2, fromInRule x3, fromInRule x4, fromInRule x5)
-
-
-
-
-instance ToInRule Day where
-    toInRule a =  (\(y,m,d) ->  InObject (Map.fromList [("y", toInRule y ),("m", toInRule m ),("d", toInRule d )])) (toGregorian a )
-instance FromInRule Day where
-    fromInRule xs =  case tod xs of 
-                        Just x -> x 
-                        Nothing -> error "From Day convert fail. y, m, d do not exist"
-        where tod xs = do y <- xs .> "y"
-                          m <- xs .> "m"
-                          d <- xs .> "d" 
-                          return ( fromGregorian (fromInRule y) (fromInRule m) (fromInRule d ) )
-
-instance ToInRule TimeOfDay where
-    toInRule (TimeOfDay h m s ) =  InObject (Map.fromList [("h", toInRule h ),("min", toInRule m ),("s", toInRule (toRational s) )])
-instance FromInRule TimeOfDay where
-    fromInRule xs =  case tod xs of 
-                        Just x -> x 
-                        Nothing -> error "From TimeOfDay convert fail. h, min, s do not exist "
-        where tod xs = do h <- xs .> "h"
-                          mi <- xs .> "min"
-                          s <- xs .> "s" 
-                          return ( TimeOfDay (fromInRule h) (fromInRule mi) (fromRational (fromInRule s )) )
-
-
-instance ToInRule LocalTime where
-    toInRule (LocalTime x y) = unionObj (toInRule x) $ toInRule y
-
-instance FromInRule LocalTime where
-    fromInRule (InObject xs)= LocalTime ((fromInRule (InObject xs))::Day) ((fromInRule (InObject xs))::TimeOfDay)
-
-
-
-instance ToInRule UTCTime where
-    toInRule (UTCTime x y) = toInRule (utcToLocalTime utc (UTCTime x y))
-instance FromInRule UTCTime where
-    fromInRule (InObject xs)= localTimeToUTC utc ((fromInRule (InObject xs)) ::LocalTime)
-    fromInRule x = viaReadable x 
 {----}
 
 
@@ -563,8 +463,4 @@ escInChar c = case c of
     '\\' -> "\\\\"
     '\"' -> "\\\""
     _    -> [c]
--- Dirty fallback strategy
-instance FromInRule (Readable) where 
-    fromInRule = asReadable
-
 
