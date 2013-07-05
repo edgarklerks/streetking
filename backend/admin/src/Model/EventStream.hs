@@ -15,6 +15,7 @@ import           Prelude hiding (id)
 import qualified Data.Aeson as AS
 import Data.Conversion
 import Data.Event 
+import qualified Data.Relation as Rel
 type Stream = Maybe [Event]
 $(genAll "EventStream" "event_stream" 
     [

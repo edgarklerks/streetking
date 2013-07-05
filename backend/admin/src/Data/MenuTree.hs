@@ -88,7 +88,7 @@ testTree = Node (Root) [
 
                     ]
                 ]
-
+{--
 -- GENERATED START
 
 isoProp = smallCheck 4 (property prop) 
@@ -118,3 +118,4 @@ instance (Serial a) => Serial (Tree a) where
 
 -- GENERATED STOP
 --
+--}

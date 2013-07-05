@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances, ViewPatterns #-}
-
+-- | Primitive database data types for expression simple queries 
+-- | Internal use only 
 module Data.Database where
 
 import Control.Applicative
@@ -17,13 +18,8 @@ import Database.HDBC.PostgreSQL
 -- -> Tables is a list
 -- -> constraints, selections each refer to specific table
 
-{-
- -  Testing
- -}
-
 dbconn ::  IO Connection
 dbconn = connectPostgreSQL "host=192.168.4.9 port=5432 dbname=postgres user=postgres password=wetwetwet" 
-
 doSql :: SqlTransaction Connection a -> IO a
 doSql t = dbconn >>= flip (runSqlTransaction t error) undefined
 
@@ -163,7 +159,7 @@ instance Expression Constraint where
             enc OpIContains x = toSql $ encWith '%' $ (fromSql x :: Sql)
             enc _ x = x
 
-data ConOp = OpLT | OpLTE | OpGT | OpGTE | OpEQ | OpNEQ | OpContains | OpIContains deriving Show
+data ConOp = OpLT | OpLTE | OpGT | OpGTE | OpEQ | OpNEQ | OpContains | OpIContains | OpInList deriving Show
 
 cLT :: Selection -> Value -> Constraint
 cLT = Constraint OpLT
@@ -189,6 +185,9 @@ cIn = Constraint OpContains
 
 cIni :: Selection -> Value -> Constraint
 cIni = Constraint OpIContains
+
+cInList :: Selection -> Value -> Constraint
+cInList = Constraint OpInList
 
 (|<) :: Sql -> Value -> Constraint
 (|<) a b = cLT (column a) b
@@ -222,6 +221,10 @@ infixl 4 |%
 (|%%) a b = cIni (column a) b
 infixl 4 |%%
 
+(|~) :: Sql -> Value -> Constraint
+(|~) a b = cInList (column a) b
+infixl 4 |~
+
 instance Expression ConOp where
     sql OpLT = "<"
     sql OpLTE = "<="
@@ -231,6 +234,7 @@ instance Expression ConOp where
     sql OpNEQ = "<>"
     sql OpContains = "like"
     sql OpIContains = "ilike"
+    sql OpInList = "in"
     values _ = []
 
 {- Order -}
@@ -341,7 +345,7 @@ instance Expression Update where
  - *** Functions ***
  -}
 
--- constraints: provide map of optional arguments and a dictionary of operators to use for each one
+-- | constraints: provide map of optional arguments and a dictionary of operators to use for each one
 constraints :: [(Sql, Selection -> Value -> Constraint)] -> [(Sql, Value)] -> Constraints
 constraints ls m = foldr step [] ls
     where
@@ -349,7 +353,7 @@ constraints ls m = foldr step [] ls
             Just v -> (f (column k) v) : xs
             _ -> xs
 
--- assigns: provide list of allowed fields, default values, and a list of optional arguments
+-- | assigns: provide list of allowed fields, default values, and a list of optional arguments
 assigns :: [(Sql, Sql)] -> [(Sql, Value)] -> [Assignment]
 assigns ds ls = concat [map (uncurry (.#>)) ds, map (uncurry (.->)) ls]
 
@@ -359,7 +363,7 @@ inserts ds ls = Inserts $ assigns ds ls
 updates :: [(Sql, Sql)] -> [(Sql, Value)] -> Assignments
 updates ds ls = Updates $ assigns ds ls
 
--- orders: provide map of optional arguments. if found, sort_field and sort_invert is used to generate orderings
+-- | orders: provide map of optional arguments. if found, sort_field and sort_invert is used to generate orderings
 orders :: [(Sql, Value)] -> Orders
 orders m = ord $ lookup "sort_field" m
     where
@@ -369,23 +373,23 @@ orders m = ord $ lookup "sort_field" m
         bl Nothing = False
 
 
--- limit: provide map of optional arguments. if found, limit is used to generate limit
+-- | limit: provide map of optional arguments. if found, limit is used to generate limit
 limit :: [(Sql, Value)] -> Limit
 limit m = case (lookup "limit" m) of
     Just v -> Limit v
     _ -> NullLimit
 
--- offset: provide map of optional arguments. if found, offset is used to generate offset
+-- | offset: provide map of optional arguments. if found, offset is used to generate offset
 offset :: [(Sql, Value)] -> Offset
 offset m = case (lookup "offset" m) of
     Just v -> Offset v
     _ -> NullOffset
 
--- transaction: provide query function and an expression, generates transaction
+-- | transaction: provide query function and an expression, generates transaction
 transaction :: (Expression x) => (Sql -> Values -> SqlTransaction Connection t) -> x -> SqlTransaction Connection t
 transaction f x = f (sql x) (values x)
 
--- select: quick select. table name; [(field name, constraint constructor)]; map of optional arguments
+-- | select: quick select. table name; [(field name, constraint constructor)]; map of optional arguments
 select :: Sql -> [(Sql, Selection -> Value -> Constraint)] -> [(Sql, Value)] -> SqlTransaction Connection [M.HashMap Sql Value]
 select t c ls = transaction sqlGetAllAssoc $ Select tbl sel con ord lim ofs
     where
@@ -396,21 +400,21 @@ select t c ls = transaction sqlGetAllAssoc $ Select tbl sel con ord lim ofs
         lim = limit ls
         ofs = offset ls
 
--- insert: quick insert. table name; defaults; fields names; map of optional arguments
+-- | insert: quick insert. table name; defaults; fields names; map of optional arguments
 insert :: Sql -> [(Sql, Sql)] -> [(Sql, Value)] -> SqlTransaction Connection Value
 insert t d ls = transaction sqlGetOne $ Insert tbl ass
     where
         tbl = table t
         ass = inserts d ls
 
--- update: quick update. table name; [(Sql, Selection -> Value -> Constraint)]; constraint arguments; default assigns; assignment arguments
+-- | update: quick update. table name; [(Sql, Selection -> Value -> Constraint)]; constraint arguments; default assigns; assignment arguments
 update :: Sql -> Constraints -> [(Sql, Sql)] -> [(Sql, Value)] -> SqlTransaction Connection ()
 update t con d a = transaction sqlExecute $ Update tbl ass con
     where
         tbl = table t
         ass = updates d a
 
--- upsert: take table name and a record in HashMap format. check if a record already exists with the id from the Map. if exists, update the record; if not, insert. return the id of the record.
+-- | upsert: take table name and a record in HashMap format. check if a record already exists with the id from the Map. if exists, update the record; if not, insert. return the id of the record.
 upsert :: Sql -> M.HashMap Sql Value -> SqlTransaction Connection Value
 upsert t m = do
     let mi x = fromSql x :: Integer
@@ -432,7 +436,7 @@ upsert t m = do
  - *** Utility ***
  -}
 
--- geometry: convert geo coordinates to a geometry. this requires a query.
+-- | geometry: convert geo coordinates to a geometry. this requires a query.
 geometry :: SqlValue -> SqlValue -> SqlTransaction Connection SqlValue
 geometry lat lng = sqlGetOne "select ST_MakePoint(?, ?) as \"geometry\"" [lng, lat]
 

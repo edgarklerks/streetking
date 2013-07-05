@@ -19,6 +19,7 @@ import qualified Data.Aeson as AS
 import Data.Conversion
 
 import qualified Model.CarInGarage as CIG
+import qualified Data.Relation as Rel
 
 
 $(genAll "CarMinimal" "car_in_garage"

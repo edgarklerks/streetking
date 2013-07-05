@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeSynonymInstances, FlexibleInstances, OverlappingInstances, MultiParamTypeClasses, IncoherentInstances, RankNTypes, FlexibleContexts, ViewPatterns, ScopedTypeVariables #-}
+-- | This module implements a dynamic type system 
 module Data.InRules where
 
 
@@ -19,27 +20,33 @@ import Data.Time.LocalTime
 import Data.Convertible
 import Data.Maybe
 import Control.Applicative
-import Data.Monoid -- hiding ((<>))
+import Data.Monoid hiding ((<>))
 import Control.Monad
 import Data.Pointed
 import Data.Copointed
 import Data.Word 
 import Data.Semigroup
+import Control.Monad.Identity
 import qualified Data.List.NonEmpty as N
 import qualified Data.Serialize as S 
+import Test.QuickCheck hiding ((==>))
+
 infixr 6 ==>
 infixr 6 .>
 infixl 6 .>>
 infixr 6 ..>
-
+-- | Map all the hash map keys 
 hmapKeys f xs = Map.foldrWithKey step Map.empty xs
     where step k v a = Map.insert (f k) v a 
+
+-- | Map over all the hash map values with a key
 hmapWithKey f xs = Map.foldrWithKey step Map.empty xs 
     where step k v a = Map.insert k (f k v) a
 -- * Data types and classes
 -- think about adding timestamp without timezone as some kind of double
 -- with pretty print... 
 
+-- | Primitive type, a subset of this type is isomorph to json and yaml  
 data InRule = 
         InString !String
       | InByteString !B.ByteString
@@ -50,20 +57,26 @@ data InRule =
 	  | InNull
 	  | InArray [InRule]
 	  | InObject (Map.HashMap String InRule) 
-    deriving (Eq)
+    deriving (Eq, Show )
                
-
-instance Show InRule where 
-        show a = pprint' "  " 0 a 
 
 newtype Readable = Readable {
         unReadable :: String 
     } deriving Show
 
- 
+-- InRule isn't a proper monoid, be carefull 
+instance Monoid InRule where 
+    mappend (InArray xs) (InArray ys) = InArray (xs `mappend` ys)
+    mappend (InObject xs) (InObject ys) = InObject (xs `mappend` ys)
+    mappend InNull s = s
+    mappend s InNull = s 
+    mappend s t = InArray [t,s] 
+    mempty = InNull 
 
--- | Setters, getters, folds, unfolds and maps. 
 
+
+
+-- | Data type used for viewing the type of a index   
 data InKey = Index Int 
            | None
            | Assoc String 
@@ -75,6 +88,7 @@ instance Monoid InKey where
     x `mappend` y = y 
     mempty = None
 
+-- | Identity monoid, doesn't exist in prelude or anywhere else 
 newtype IdentityMonoid a = IM { unIM :: a }
 
 instance Monoid a => Monoid (IdentityMonoid a) where 
@@ -91,21 +105,27 @@ instance Copointed (IdentityMonoid) where
 data PathState = Accept | Reject
     deriving Show 
 
+-- | One step of the automata. Automata can be in two states:
+-- | next step or final path  
 data PathStep a = Next (PathAcceptor a) | Final PathState
 
+-- | One machine step 
 newtype PathAcceptor a = PM {
         unPM :: a -> PathStep a 
     }
 
+-- | Path acceptor is a semigroup and acts semantically like a and operator 
 instance Semigroup (PathAcceptor a) where 
     (<>) (PM f) (PM g) = PM $ \a -> 
                 case f a of 
                     Final Accept -> Next (PM g)
                     Final Reject -> reject 
                     Next t -> Next t 
+-- | The always acceptor 
 accept :: PathStep a
 accept = Final Accept 
 
+-- | The always rejector 
 reject :: PathStep a
 reject = Final Reject 
 
@@ -116,6 +136,8 @@ rejector = PM $ \a -> reject
 -- |  Always accept the complete input stream (will always be false for finite streams and true for infinite ones) 
 continue = PM $ \a -> Next continue 
 
+-- | Alternate two acceptors. If the first rejects try the next. Behaves like an or 
+-- | operator 
 alter :: PathAcceptor a -> PathAcceptor a -> PathAcceptor a
 alter (PM g) (PM f) = PM $ \a -> 
             case g a of 
@@ -126,11 +148,11 @@ alter (PM g) (PM f) = PM $ \a ->
                         Final Accept -> accept 
                         Final Reject -> reject 
 
-
+-- | Creates a pointed acceptor  
 apoint a = PM $ \s -> if s == a then accept else reject 
 
 
-
+-- Run an acceptor against a stream of characters 
 runPath :: Eq a => PathAcceptor a -> [a] -> Bool 
 runPath x [] = False
 runPath x a = case unPM x (head a) of 
@@ -138,12 +160,12 @@ runPath x a = case unPM x (head a) of
                     Final Reject -> False 
                     Next t -> runPath t (tail a)
 
-
+-- | View the kind of a InRule 
 data KindView = TScalar 
              | TArray 
              | TObject 
              | TNone 
-    deriving Show
+    deriving (Show, Eq)
 
 viewKind :: InRule -> KindView 
 viewKind (InArray _) = TArray
@@ -182,11 +204,24 @@ pfold f x z = pfold' f mempty x z
           pfold' f ks (InObject xs) z = Map.foldrWithKey step z xs 
               where step k x z = pfold' f (ks `mappend` point (Assoc k)) x z 
 
+-- | Example of the longest path in the inrule structure 
+longest_path :: InRule -> Int 
+longest_path xs = pfold step xs 0 
+    where step :: [InKey] -> InRule -> Int -> Int  
+          step xs@(ckey -> t) _ b | t > b = t 
+                                  | otherwise = b 
+ckey :: Num a => [InKey] -> a
+ckey (Index _:xs) = 1 + ckey xs 
+ckey (Assoc _:xs) = 1 + ckey xs 
+ckey (x:xs) = 0 + ckey xs 
+ckey _ = 0 
+
+
 -- | Fold through the structure 
 kfold :: (InKey -> InRule -> b -> b) -> InRule -> b -> b
 kfold f x z = pfold f' x z 
     where f' k x z = f (copoint (k :: IdentityMonoid InKey)) x z 
-
+        
 -- | Find top level matching keyword 
 (.>) :: InRule -> String -> Maybe InRule
 (.>) (InObject xs) lbl = Map.lookup lbl xs
@@ -203,7 +238,7 @@ kfold f x z = pfold f' x z
 (.>>) _ _ = []
 
 
-
+-- | Transform a string into a readable 
 readable :: String -> Readable 
 readable a = Readable a
 
@@ -220,9 +255,9 @@ asReadable (InByteString x) = readable (B.unpack x)
 asReadable (InBool x) = readable (show x)
 asReadable _ = error "Not an readable object"
 
--- Just InRules :P
 type InRules = [InRule]
- 
+
+-- Converting from and to an inrule  
 instance (FromInRule b) => Convertible InRule b where
 	safeConvert = Right . fromInRule 
 
@@ -249,6 +284,81 @@ validObject _ = False
 
 emptyObj :: InRule
 emptyObj = InObject (Map.empty)
+
+object :: [(String, InRule)] -> InRule 
+object = InObject . Map.fromList 
+
+list :: [InRule] -> InRule 
+list xs = InArray xs 
+
+-- Laws : 
+--  shp (a `project` b) == shp b 
+--  a `project` (b `project` c) = (a `project` b) `project` c
+--  b `project` c = b, if shp c = b  
+-- 
+--  There is no identity 
+--
+--  a `project` e = a, b `project` e = b
+-- 
+--isn't a proper monoi, be carefull 
+--
+--
+project :: InRule -> InRule -> InRule 
+project (InObject xs) (InObject ps) = InObject $ mapWithKey step xs
+            where step k x = case Map.lookup k ps of
+                                    Nothing -> x
+                                    Just p -> project x p
+
+project (InArray xs) (InArray sp) = InArray $ stepBoth xs sp 
+                        where stepBoth (x:xs) (s:sp) = project x s : stepBoth xs sp 
+                              stepBoth []  sp = sp 
+                              stepBoth xs  [] = []
+
+project a b = b 
+
+
+{-- filterKey :: [String] -> InRule -> InRule 
+filterKey f obj = kfold
+--}
+--
+mapWithKey :: (k -> a -> b) -> Map.HashMap k a -> Map.HashMap k b 
+mapWithKey f xs = runIdentity $ Map.traverseWithKey step xs 
+        where   step k = return . f k 
+
+-- InArray -> InObject 
+
+arrayToObj :: InRule -> InRule 
+arrayToObj (InArray xs) = InObject $ Map.fromList $  (show <$> [0..]) `zip` xs 
+
+shp xs@(InObject ts) (InObject sp) | Map.size  ts /= Map.size sp = False 
+                                   | otherwise  = Map.foldrWithKey step True sp 
+            where 
+                  step k _ False = False 
+                  step lbl y True = case xs .> lbl of 
+                                        Nothing -> False 
+                                        Just a -> shp a y  
+shp (InArray xs) (InArray sp) | length xs /= length sp = False 
+                              | otherwise = and $ uncurry shp <$> (xs `zip` sp)
+shp a b = viewKind a == viewKind b 
+
+
+shpTestAB = shp a b && not (shp b a)
+    where a = object $ [
+                        ("test", InInteger 1),
+--                        ("test2", InInteger 3),
+                        ("test3", InBool True)
+                       ]
+
+          b = object $ [
+                    ("test", InInteger 3),
+                    ("test2", InBool True) 
+                ]
+
+shpTestArr = shp lb lc && shp lc lb && not (shp la lb) 
+    where la = list $ [ ]
+-- shpTestArr = (a, b)
+          lb = list $ [InBool True, InInteger 9, InBool True]
+          lc = list $ [InBool False, InInteger 9, InBool False]
 
 -- | Create single InRule object.
 singleObj :: ToInRule a => String -> a -> InRule

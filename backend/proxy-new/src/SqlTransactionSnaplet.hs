@@ -48,7 +48,7 @@ returnDatabase x = gets _pool >>= \c -> liftIO (DCP.returnConnection c x)
 runDb :: (Applicative m, CIO.MonadCatchIO m, MonadState SqlTransactionConfig m) => (String -> m a) -> SqlTransaction Connection a -> m a
 runDb e xs = withConnection $ \c -> do 
     liftIO $ DB.begin c 
-    frp <- runSqlTransaction xs e c 
+    frp <- runSqlTransaction xs e c (error "no lock") 
     liftIO $ DB.commit c 
     frp `seq` return frp
 

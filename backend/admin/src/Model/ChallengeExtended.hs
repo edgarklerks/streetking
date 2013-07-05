@@ -22,6 +22,7 @@ import qualified Model.AccountProfileMin as APM
 import qualified Model.CarMinimal as CMI
 
 import Data.Maybe
+import qualified Data.Relation as Rel
 
 
 $(genAll "ChallengeExtended" "challenge_extended" [

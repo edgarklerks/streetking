@@ -1,4 +1,6 @@
 {-# LANGUAGE MultiParamTypeClasses, FlexibleInstances,FunctionalDependencies, UndecidableInstances, OverlappingInstances #-} 
+-- | Generalization of concurrent variables 
+-- | Handles mvars, tvars, tqueue, tchan, chan, tmvars, IOvar  
 module Data.DVars where 
 
 import Control.Applicative
@@ -13,36 +15,47 @@ import Data.IORef
 
 
 class RunDVar m t where 
+    -- | Run a dvar in a monad 
     runDVar :: t a -> m a
 
 class ReadDVar t f where 
+    -- | Read a dvar (blocks when empty) 
     readDVar :: f a -> t a
 
 class PutDVar t f where 
+    -- | Put a dvar (blocks when full)
     putDVar :: f a -> a -> t () 
 
 class WriteDVar t f where 
+    -- | Write a dvar (doesn't block when full)
     writeDVar :: f a ->  a -> t ()
 
 class SwapDVar t f where 
+    -- | Swap a dvar (blocks when empty)
     swapDVar :: f a -> a -> t a 
 
-class CreateDVar t f where 
+class CreateDVar t f where  
+    -- | Initiate a new dvar 
     newDVar :: a -> t (f a)
    
 class EmptyDVar t f where 
+    -- | Initiate a new empty dvar 
     newEmptyDVar :: t (f a)
 
 class TryTakeDVar t f where 
+    -- | Read a dvar, doesn't block when empty 
     tryTakeDVar :: f a -> t (Maybe a)
 
 
 
 class TakeDVar t f where 
+    -- | Read a dvar, makes it empty when succeed 
     takeDVar :: f a -> t a 
 class ModifyDVar t f where 
+    -- | Change a dvar, blocks when empty 
     modifyDVar :: f a -> (a -> a) -> t () 
 
+-- | Reader like monad  
 class (Monad m) => MonadGetter m s | m -> s where 
         getter :: (s -> a) -> m a
         getterM :: (s -> m a) -> m a
@@ -349,13 +362,15 @@ test x = do
     liftIO (print "woekoe")
     
     return (1 + p)
-
+-- | Write a dvar (doesn't block) 
 (=$) :: WriteDVar m f => f a -> a -> m ()
 (=$) = writeDVar 
 
+-- | Put a dvar (blocks)
 (=|) :: PutDVar m f => f a -> a -> m ()
 (=|) = putDVar 
 
+-- | Change a dvar (blocks)
 (=.) :: ModifyDVar m f => f a -> (a -> a) -> m ()
 (=.) = modifyDVar 
 

@@ -1,4 +1,10 @@
 {-# LANGUAGE GADTs, RankNTypes #-}
+-- | Distributed data channel. 
+-- | Slaves do some work and push the results to the master.
+-- | In this case, slaves handle the login and the master (proxy) needs
+-- | the authentication information for filtering traffic.  
+-- | N slaves can push data to 1 master 
+-- | Depredicated by nodesnaplet, which is a p2p network.
 module Data.DChan (
         setupMaster,
         setupSlave,
@@ -235,6 +241,8 @@ instance NFData ServerWords where
     rnf (Error xs) = xs `deepseq` () 
 {-- Test --}
 
+
+-- | Example to setup the master
 main = do 
     setupMaster "tcp://*:7391" "ctrl" (\x -> force x `deepseq` return ()) 
     forM_ [1..10] $ \i -> slaveSpawn (9431 + i)
@@ -242,7 +250,7 @@ main = do
 
 
    
-
+-- | Example to setup the slaves 
 slaveSpawn i = do 
     x <- setupSlave "tcp://127.0.0.1:7391" ("tcp://127.0.0.1:" ++ show i)
     forever $ do 

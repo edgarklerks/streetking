@@ -21,6 +21,7 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 import qualified Data.ByteString.Char8 as C
+import qualified Data.Relation as Rel
 
 data Type =
       Race

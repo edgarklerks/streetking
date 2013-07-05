@@ -22,6 +22,7 @@ import qualified Model.Tournament as T
 import qualified Model.TournamentResult as TR
 import qualified Model.TournamentPlayers as TP 
 import           Prelude hiding (id)
+import qualified Data.Relation as Rel
 
 type MRaceReward = Maybe RaceRewards 
 type TournamentResults = [TR.TournamentResult]

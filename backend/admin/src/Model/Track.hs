@@ -14,6 +14,7 @@ import           Control.Applicative
 import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id, length)
+import qualified Data.Relation as Rel
 
 type MInteger = Maybe Integer
 type Data = Maybe String 

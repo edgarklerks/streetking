@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, NoMonomorphismRestriction, OverloadedStrings #-}
+{-# LANGUAGE RankNTypes, MultiParamTypeClasses, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, NoMonomorphismRestriction, FunctionalDependencies #-}
 module Model.General
     (
         module Data.Default,
@@ -15,7 +15,11 @@ module Model.General
         mco,
         mfp,
         nhead,
-        sempty
+        sempty,
+        aget,
+        agetlist,
+        aload,
+        adeny
 
     )
 
@@ -33,14 +37,15 @@ import           Control.Monad
 import           Data.Database
 import           Data.Default
 import           Data.Hstore 
-import qualified Data.ByteString as B 
 
-class H.IConnection c => Database c a where 
+class H.IConnection c => Database c a | a -> c where 
     save :: a -> SqlTransaction c Integer
     load :: Integer -> SqlTransaction c (Maybe a) 
     -- Constraints Orders limit offset
     search :: Constraints -> Orders -> Integer -> Integer -> SqlTransaction c [a]
     delete :: a -> Constraints -> SqlTransaction c ()
+    fields :: a -> [(String, String)]
+    tableName :: a -> String  
 
 
 class Mapable a where 
@@ -83,7 +88,39 @@ mco = (fmap) thsql
 
 mfp = (fmap catMaybes) . (fmap.fmap) fromHashMap
 
+{-
+ - Asserted record fetching tools; move to some appropriate location later
+ -}
 
-instance Default B.ByteString where 
+-- load a record or run f if not found
+aload :: Database Connection a => Integer -> SqlTransaction Connection a -> SqlTransaction Connection a
+aload n f = do
+    s <- load n
+    case s of 
+        Nothing -> f 
+        Just s -> return s 
 
-    def = ""
+-- get one record or run f if none found
+aget :: Database Connection a => Constraints -> SqlTransaction Connection a -> SqlTransaction Connection a
+aget cs f = do
+    ss <- search cs [] 1 0
+    case ss of 
+        [] -> f 
+        x:_ -> return x
+
+-- get list of records or run f if none found
+agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [a] -> SqlTransaction Connection [a]
+agetlist cs os l o f = do
+    ss <- search cs os l o 
+    case ss of 
+        [] -> f 
+        xs -> return xs 
+
+-- run f if any records found. note: return is necessary in order to infer search type.
+adeny :: Database Connection a => Constraints -> SqlTransaction Connection [a] -> SqlTransaction Connection [a]
+adeny cs f = do
+    ss <- search cs [] 1 0
+    case ss of 
+        [] -> return ss
+        xs ->  f 
+
