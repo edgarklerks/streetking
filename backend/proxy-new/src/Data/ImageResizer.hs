@@ -1,29 +1,7 @@
+-- | Do not use, depredicated 
 module Data.ImageResizer (
     
 ) where
-{- type LMonad = IO (Maybe a)
--- liftIO :: MonadIO m => IO a -> m a
--- liftIO (a :: IO a) = do 
-            ((a >>= \a' -> 
-            f a') >>= \b -> 
-            return (Just a') :: IO (Maybe a))
-            (>>=) :: m a -> (a -> m b) -> m b 
--- reset (\p -> shift p (\k ->  forM_ [1..1000] $ \i -> if i `mod` 543 == 0 then return i 
---                             else k (return i)  
--- liftIO a = a >>= 
-do 
- a <- f  :: IO (Maybe a)       
- b <- g a  => 
- (>>=) m f = do 
-    a <- m 
-    (f a)
-    
- return b 
- -- (liftIO f) >>= \a -> g a >>= \b -> return b 
- -- (return (Just a')) >>= \a -> 
-    -- liftIO :: IO a -> m a
-    liftIO a = a >>= \a' -> return (Just a')
-  -}                                     
 import Control.Monad.Error
 import Control.Monad.Error.Class
 import Data.ByteString.Char8
