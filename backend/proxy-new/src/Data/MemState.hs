@@ -43,7 +43,7 @@ instance S.Serialize Snapshot where
             get = H.fromList <$> S.get
 
 newQueryChan :: IO QueryChan 
-newQueryChan = newTChanIO
+newQueryChan = newTQueueIO
 
 addCounter :: MemState -> STM ()
 addCounter = flip modifyTVar (+1) . changes 
@@ -164,12 +164,12 @@ instance S.Serialize Result where
 data Op = I | D | Q
 
 type Unique a = TMVar a
-type QueryChan = TChan (Query, Unique Result)
+type QueryChan = TQueue (Query, Unique Result)
 
 test :: IO a
 test = do 
     m <- newMemState undefined undefined "asd"
-    n <- newTChanIO 
+    n <- newTQueueIO 
     forkIO $ queryManager "asd" m n
    
     forkIO $  iclient n 1 1000
@@ -192,7 +192,7 @@ queryManager fp m c = let ms = unMS m
                         when (i > 1000) $ void $ forkIO $ do 
                                     atomically $ resetCounter m 
                                     storeSnapShot fp m 
-                        (q,u) <- atomically $ readTChan c
+                        (q,u) <- atomically $ readTQueue c
                         case q of 
                             Insert x y -> atomically $ do 
                                                 addCounter m 
@@ -217,6 +217,6 @@ queryManager fp m c = let ms = unMS m
 runQuery :: QueryChan   -> Query ->  IO Result 
 runQuery s x = do 
             un <- newEmptyTMVarIO 
-            atomically $ writeTChan s (x, un) 
+            atomically $ writeTQueue s (x, un) 
             atomically $ takeTMVar un 
 
