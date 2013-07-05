@@ -1,0 +1,551 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.ModelToSVG</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();};
+//]]>
+</script
+    ></head
+  ><body id="mini"
+  ><div id="module-header"
+    ><p class="caption"
+      >Data.ModelToSVG</p
+      ></div
+    ><div id="interface"
+    ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:X" target="main"
+	  >X</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:Y" target="main"
+	  >Y</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:Radius" target="main"
+	  >Radius</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:Label" target="main"
+	  >Label</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:Name" target="main"
+	  >Name</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="Data-ModelToSVG.html#t:Connect" target="main"
+	  >Connect</a
+	  > a</p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:Action" target="main"
+	  >Action</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="Data-ModelToSVG.html#t:SVGTree" target="main"
+	  >SVGTree</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="Data-ModelToSVG.html#t:Option" target="main"
+	  >Option</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:Options" target="main"
+	  >Options</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="Data-ModelToSVG.html#t:SVGDef" target="main"
+	  >SVGDef</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:SVGPair" target="main"
+	  >SVGPair</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="Data-ModelToSVG.html#t:RenderData" target="main"
+	  >RenderData</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:defaultRenderData" target="main"
+	  >defaultRenderData</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:cpoint" target="main"
+	  >cpoint</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:opts" target="main"
+	  >opts</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:lines" target="main"
+	  >lines</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:buttons" target="main"
+	  >buttons</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:circles" target="main"
+	  >circles</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:boxes" target="main"
+	  >boxes</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:cons" target="main"
+	  >cons</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:def" target="main"
+	  >def</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:box" target="main"
+	  >box</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:circle" target="main"
+	  >circle</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:line" target="main"
+	  >line</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:button" target="main"
+	  >button</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:-60--45--62-" target="main"
+	  >(&lt;-&gt;)</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:-124--45--62-" target="main"
+	  >(|-&gt;)</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:-60--45--124-" target="main"
+	  >(&lt;-|)</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:multi" target="main"
+	  >multi</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:insert" target="main"
+	  >insert</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:test" target="main"
+	  >test</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:-60--33--62-" target="main"
+	  >(&lt;!&gt;)</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="Data-ModelToSVG.html#t:Renderer" target="main"
+	  >Renderer</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:renderData" target="main"
+	  >renderData</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:interpRenderData" target="main"
+	  >interpRenderData</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:makeConnected" target="main"
+	  >makeConnected</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:renderLocal" target="main"
+	  >renderLocal</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:localConnect" target="main"
+	  >localConnect</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:svgData" target="main"
+	  >svgData</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:renderBox" target="main"
+	  >renderBox</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:modelAttribute" target="main"
+	  >modelAttribute</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:testBox" target="main"
+	  >testBox</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:addOpts" target="main"
+	  >addOpts</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:renderCircle" target="main"
+	  >renderCircle</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:renderLine" target="main"
+	  >renderLine</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:renderCon" target="main"
+	  >renderCon</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:renderButton" target="main"
+	  >renderButton</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:-43--43--61-" target="main"
+	  >(++=)</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:render" target="main"
+	  >render</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:connect" target="main"
+	  >connect</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:headr" target="main"
+	  >headr</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:headl" target="main"
+	  >headl</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:tailr" target="main"
+	  >tailr</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:taill" target="main"
+	  >taill</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:records" target="main"
+	  >records</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:record" target="main"
+	  >record</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:addButtons" target="main"
+	  >addButtons</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:testdb" target="main"
+	  >testdb</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:loadContinent-39-" target="main"
+	  >loadContinent'</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:loadContinent" target="main"
+	  >loadContinent</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:trackRecord" target="main"
+	  >trackRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:continentRecord" target="main"
+	  >continentRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:cityRecord" target="main"
+	  >cityRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:loadCarInstance" target="main"
+	  >loadCarInstance</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:carInstanceRecord" target="main"
+	  >carInstanceRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:carModelRecord" target="main"
+	  >carModelRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:accountRecord" target="main"
+	  >accountRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:loadPartModel" target="main"
+	  >loadPartModel</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:partTypeRecord" target="main"
+	  >partTypeRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:partInstanceRecord" target="main"
+	  >partInstanceRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:partModelRecord" target="main"
+	  >partModelRecord</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:loadPartInstance" target="main"
+	  >loadPartInstance</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:loadPartType" target="main"
+	  >loadPartType</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:recId" target="main"
+	  >recId</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:addRecordsPaged" target="main"
+	  >addRecordsPaged</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:addRecords-39-" target="main"
+	  >addRecords'</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:addRecordsDivided" target="main"
+	  >addRecordsDivided</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:divide" target="main"
+	  >divide</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:test2" target="main"
+	  >test2</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:test3" target="main"
+	  >test3</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:addRecords" target="main"
+	  >addRecords</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="Data-ModelToSVG.html#v:runl" target="main"
+	  >runl</a
+	  ></p
+	></div
+      ></div
+    ></body
+  ></html
+>

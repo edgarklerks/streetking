@@ -27,7 +27,18 @@ data CheckException = CheckException String
     deriving (Show, Typeable)
 
 instance Exception CheckException
-    
+
+-- | A check is a function, which can  return void or
+-- | an error string.
+-- | It is a monoid, but unfortunetaly we don't use this class
+-- | The monoid class would look like this:
+-- | mappend (CW p) (CW q) = CW $ \b -> p b >> p q  
+-- | This would behave like an and operator 
+-- | Or would be like:
+-- | orC (CW p) (CW q) = CW $ \b -> case p b of 
+-- | 					Left a -> q b
+-- | 					Right () -> return ()
+
 newtype CheckWrapper a = CW {
             unCW :: (a -> Either String ())
         }

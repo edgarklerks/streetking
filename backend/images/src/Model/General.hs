@@ -93,30 +93,34 @@ mfp = (fmap catMaybes) . (fmap.fmap) fromHashMap
  -}
 
 -- load a record or run f if not found
-aload :: Database Connection a => Integer -> SqlTransaction Connection () -> SqlTransaction Connection a
+aload :: Database Connection a => Integer -> SqlTransaction Connection a -> SqlTransaction Connection a
 aload n f = do
     s <- load n
-    when (isNothing s) f
-    return $ fromJust s
+    case s of 
+        Nothing -> f 
+        Just s -> return s 
 
 -- get one record or run f if none found
-aget :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection a
+aget :: Database Connection a => Constraints -> SqlTransaction Connection a -> SqlTransaction Connection a
 aget cs f = do
     ss <- search cs [] 1 0
-    unless (not $ null ss) f
-    return $ head ss
+    case ss of 
+        [] -> f 
+        x:_ -> return x
 
 -- get list of records or run f if none found
-agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection () -> SqlTransaction Connection [a]
+agetlist :: Database Connection a => Constraints -> Orders -> Integer -> Integer -> SqlTransaction Connection [a] -> SqlTransaction Connection [a]
 agetlist cs os l o f = do
     ss <- search cs os l o 
-    unless (not $ null ss) f
-    return ss
+    case ss of 
+        [] -> f 
+        xs -> return xs 
 
 -- run f if any records found. note: return is necessary in order to infer search type.
-adeny :: Database Connection a => Constraints -> SqlTransaction Connection () -> SqlTransaction Connection [a]
+adeny :: Database Connection a => Constraints -> SqlTransaction Connection [a] -> SqlTransaction Connection [a]
 adeny cs f = do
     ss <- search cs [] 1 0
-    unless (null ss) f
-    return ss
+    case ss of 
+        [] -> return ss
+        xs ->  f 
 

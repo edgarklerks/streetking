@@ -18,6 +18,7 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id)
 import qualified Model.Transaction as TR 
+import qualified Data.Relation as Rel
 
 $(genAll "Escrow" "escrow" [             
                     ("id", ''Id),

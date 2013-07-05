@@ -17,6 +17,7 @@ import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Aeson as AS
 import Data.Conversion
+import qualified Data.Relation as Rel
 
 type MInteger = Maybe Integer 
 

@@ -15,6 +15,7 @@ import           Prelude hiding (id)
 
 import qualified Data.Aeson as AS
 import Data.Conversion
+import qualified Data.Relation as Rel
 
 $(genAll "City" "city"
     [

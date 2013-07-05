@@ -14,6 +14,7 @@ import qualified Data.Map as M
 import           Model.TH
 import           Prelude hiding (id, read)
 import qualified Data.ByteString.Lazy as B 
+import qualified Data.Relation as Rel
 
 type MInteger = Maybe Integer 
 type BString = Maybe B.ByteString 

@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >ConfigSnaplet</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_ConfigSnaplet.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>ConfigSnaplet</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initConfig" class="def"
+	    >initConfig</a
+	    > ::  FilePath -&gt; SnapletInit b <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+	    >ConfigSnaplet</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lookupConfig" class="def"
+	    >lookupConfig</a
+	    > :: MonadState <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+	    >ConfigSnaplet</a
+	    > m =&gt; String -&gt; m (Maybe [<a href="ConfigSnaplet.html#t:Config"
+	    >Config</a
+	    >])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lookupVar" class="def"
+	    >lookupVar</a
+	    > :: Monad m =&gt; String -&gt; [<a href="ConfigSnaplet.html#t:Config"
+	    >Config</a
+	    >] -&gt; m (Maybe <a href="ConfigSnaplet.html#t:Config"
+	    >Config</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lookupVal" class="def"
+	    >lookupVal</a
+	    > :: MonadState <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+	    >ConfigSnaplet</a
+	    > m =&gt; String -&gt; String -&gt; m (Maybe <a href="ConfigSnaplet.html#t:Config"
+	    >Config</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Config" class="def"
+	    >Config</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Var" class="def"
+		  >Var</a
+		  > String <a href="ConfigSnaplet.html#t:Config"
+		  >Config</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:IntegerC" class="def"
+		  >IntegerC</a
+		  > Integer</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:StringC" class="def"
+		  >StringC</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:BoolC" class="def"
+		  >BoolC</a
+		  > Bool</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:FloatC" class="def"
+		  >FloatC</a
+		  > Float</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:ArrayC" class="def"
+		  >ArrayC</a
+		  > [<a href="ConfigSnaplet.html#t:Config"
+		  >Config</a
+		  >]</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Config" class="caption collapser" onclick="toggleSection('i:Config')"
+	    >Instances</p
+	    ><div id="section.i:Config" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="ConfigSnaplet.html#t:Config"
+		    >Config</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Sections" class="def"
+	    >Sections</a
+	    > = [<a href="ConfigSnaplet.html#t:Section"
+	    >Section</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Section" class="def"
+	    >Section</a
+	    > = (String, [<a href="ConfigSnaplet.html#t:Config"
+	    >Config</a
+	    >])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:ConfigSnaplet" class="def"
+	    >ConfigSnaplet</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:ConfigSnaplet" class="def"
+		  >ConfigSnaplet</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:_configDir" class="def"
+			>_configDir</a
+			> :: String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_configData" class="def"
+			>_configData</a
+			> :: <a href="ConfigSnaplet.html#t:Sections"
+			>Sections</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ConfigSnaplet" class="caption collapser" onclick="toggleSection('i:ConfigSnaplet')"
+	    >Instances</p
+	    ><div id="section.i:ConfigSnaplet" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+		    >ConfigSnaplet</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:configDir" class="def"
+	    >configDir</a
+	    > :: Lens' <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+	    >ConfigSnaplet</a
+	    > String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:configData" class="def"
+	    >configData</a
+	    > :: Lens' <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+	    >ConfigSnaplet</a
+	    > <a href="ConfigSnaplet.html#t:Sections"
+	    >Sections</a
+	    ></p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

@@ -1,4 +1,35 @@
 {-# Language TypeSynonymInstances, FlexibleInstances, IncoherentInstances, ViewPatterns #-}
+-- | Tests for some guarantees we want to make about the code.
+--
+--      * There should be a mapping between the number types 
+--
+--      * A subset of InRule must be isomorphic to Value and Json2,  that means, we do not lose type information. 
+--
+--      * Different strings types must isomorph
+--
+-- The bijective map  of a subset of InRule with Value is: 
+--
+-- @
+--
+-- InInteger Integer            <->      Number (I Integer)
+--
+-- InDouble  Double             <->      Number (D Double)
+--
+-- InByteString B.ByteString    <->      String (Text) 
+--
+-- InArray  [InRule]            <->      Array (Vector Value)  
+--
+-- InObject M.Map String InRule <->      Object M.Map Text Value  
+--
+-- InBool Bool                  <->      Bool Bool
+--
+-- InNull                       <->      Null
+-- @
+--
+-- By the way, this is the file you want to import to get the whole
+-- interface 
+
+
 module Data.Conversion (
        (.>),
        (.>>),
@@ -41,7 +72,11 @@ module Data.Conversion (
        unionsObj,
        toString,
        pprint,
-       pprints
+       pprints,
+       object,
+       list,
+       project,
+       keyFilter
 
 
 
@@ -64,7 +99,7 @@ import qualified Data.Attoparsec.Number as A
 import Data.Attoparsec
 import qualified Data.Text as T 
 import qualified Data.Text.Encoding as T
-import Test.QuickCheck
+import Test.QuickCheck hiding ((==>))
 import Data.Convertible
 import Control.Monad.State
 import qualified Data.Serialize as S
@@ -82,29 +117,11 @@ import Data.Time.LocalTime
 import Data.Fixed
 --import Codec.Compression.GZip
 import Data.Default 
+import Data.Monoid
 
 
 {-- Main file for loading all the instances + inrule tool --}
 
-
-
-{-- 
- - Tests for some guarantees we want to make about the code.
- -  * There should be a mapping between the number types 
- -  * A subset of InRule must be isomorphic to Value and Json2,
- -    that means, we do not lose type information. 
- -  * Different strings types must isomorph
- -
- -    | InByteString B.ByteString
-	  | InInteger Integer
-	  | InDouble Double
-	  | InNumber Rational
-	  | InBool Bool
-	  | InNull
-	  | InArray [InRule]
-	  | InObject (Map.Map String InRule) 
-
- ---}
 
 
 newtype InRational = InRational {
@@ -163,7 +180,7 @@ prop_convert_bytestring_string = property prop_convert_bytestring_string'
 newtype IsomorphT = IsomorphT {
         unIsomorphT :: InRule 
     } deriving Show
-{-- 
+{- * 
  - The bijective map  of a subset of InRule with Value is: 
  - InInteger Integer            <->      Number (I Integer)
  - InDouble  Double             <->      Number (D Double)
@@ -173,7 +190,7 @@ newtype IsomorphT = IsomorphT {
  - InBool Bool                  <->      Bool Bool
  - InNull                       <->      Null
  -
- ---}
+ * -}
  --
 prop_isomorph_value_inrule :: Property 
 prop_isomorph_value_inrule = property prop_isomorph_value_inrule'
@@ -252,6 +269,17 @@ prop_find_all' x xs = lhs x xs  ==  rhs x xs
               rhs x xs = fmap convert (fromList xs .>> x)
 
 
-{-- More general instance --}
 
 
+keyFilter :: (String -> Bool) -> InRule -> InRule 
+keyFilter f xs = kfold step xs mempty 
+    where step k@(Assoc t) x z | f t = (t ==> x) `mappend` z
+                               | otherwise = z 
+          step k x z = x `mappend` z
+
+
+grumpyObject = 
+            ("test" ==> (1 :: Int)) <>
+            ("test2" ==> (2 :: Int)) <> 
+            ("test3" ==> (3 :: Int)) <>
+            (InArray [toInRule "a", toInRule "b"])

@@ -1,4 +1,4 @@
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTs, ViewPatterns #-}
 module Data.SearchBuilder where 
 
 import Model.General 

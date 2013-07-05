@@ -31,7 +31,9 @@ import qualified Data.HashMap.Strict as Map
 
 import Data.Word
 import Data.Hashable
-import Data.List ((\\))
+import Data.List ((\\), transpose)
+
+import qualified Text.PrettyPrint.Boxes as Box
 
 
 
@@ -258,3 +260,37 @@ randomPick (x:xs) = do
             b <- randomRIO (0,1 :: Int) 
             if b == 1 then randomPick xs 
                      else return x 
+
+
+randomPick' :: [a] -> IO (a, [a])
+randomPick' [x] = return (x,[])
+randomPick' (x:xs) = do 
+            b <- randomRIO (0, 1 :: Int)
+            if b == 1 
+                    then do 
+                        (t,ts) <- randomPick' xs 
+                        return (t, x:ts) 
+                    else return (x,xs)
+
+
+showTable :: (Show a) => [[a]] -> String
+showTable = showTable' . (map (map show))
+
+showTable' :: [[String]] -> String
+showTable' rss = renderTable $ map (map Box.text) rss
+
+showTableWithHeader :: (Show a, Show b) => [a] -> [[b]] -> String
+showTableWithHeader hs rss = showTableWithHeader' (map show hs) (map (map show) rss)
+
+showTableWithHeader' :: [String] -> [[String]] -> String
+showTableWithHeader' hs rss = let
+                cs = map ( (Box.vsep 0 Box.top) . (map Box.text) ) $ transpose rss
+                hs' = map Box.text hs
+                cs' = cs ++ ( replicate ((length hs) - (length cs)) (Box.text "") ) -- if empty rss, cs is empty. we need moar elements.
+                ss = zipWith (\c h -> Box.text $ replicate (max (Box.cols c) (Box.cols h)) '-') cs' hs'
+            in renderTable [ss, hs', ss, cs]
+
+renderTable :: [[Box.Box]] -> String
+renderTable rss = Box.render $ Box.hsep 1 Box.left $ map (Box.vsep 0 Box.top) $ transpose rss
+
+

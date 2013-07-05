@@ -19,6 +19,7 @@ import Data.Aeson.Parser
 import Data.Aeson.Types 
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.HashMap.Strict as HM
+import qualified Data.Relation as Rel
 
 -- import Data.Racing
 import Data.RacingNew

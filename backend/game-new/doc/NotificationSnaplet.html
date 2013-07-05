@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >NotificationSnaplet</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_NotificationSnaplet.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>NotificationSnaplet</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendLetter" class="def"
+	    >sendLetter</a
+	    > :: (MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:checkMailBox" class="def"
+	    >checkMailBox</a
+	    > :: (MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > <a href="Data-Notifications.html#t:Letters"
+	    >Letters</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:setArchive" class="def"
+	    >setArchive</a
+	    > :: (MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:setRead" class="def"
+	    >setRead</a
+	    > :: (MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initNotificationSnaplet" class="def"
+	    >initNotificationSnaplet</a
+	    > ::  Snaplet <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > -&gt; Maybe (MVar <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    >) -&gt; SnapletInit b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:NotificationConfig" class="def"
+	    >NotificationConfig</a
+	    >  </p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:NotificationError" class="def"
+	    >NotificationError</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:NE" class="def"
+		  >NE</a
+		  > ByteString</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:NotificationError" class="caption collapser" onclick="toggleSection('i:NotificationError')"
+	    >Instances</p
+	    ><div id="section.i:NotificationError" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="NotificationSnaplet.html#t:NotificationError"
+		    >NotificationError</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Typeable <a href="NotificationSnaplet.html#t:NotificationError"
+		    >NotificationError</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Exception <a href="NotificationSnaplet.html#t:NotificationError"
+		    >NotificationError</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getPostOffice" class="def"
+	    >getPostOffice</a
+	    > :: MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > m =&gt; m <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:_po" class="def"
+	    >_po</a
+	    > :: <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > -&gt; <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    ></p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

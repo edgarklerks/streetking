@@ -25,6 +25,7 @@ import qualified Model.CarInGarage as CIG
 import qualified Model.CarMinimal as CMI
 --import qualified Data.Racing as RC
 import Data.RaceParticipant
+import qualified Data.Relation as Rel
 
 type MInteger = Maybe Integer
 

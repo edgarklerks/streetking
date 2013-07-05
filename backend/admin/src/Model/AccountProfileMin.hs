@@ -21,6 +21,7 @@ import qualified Model.Account as A
 import qualified Model.AccountProfile as AP
 
 import Data.Conversion
+import qualified Data.Relation as Rel
 
 type MString = Maybe String 
 type MInteger = Maybe Integer 
