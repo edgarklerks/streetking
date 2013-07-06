@@ -1,0 +1,101 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.PriorityQueue
+
+Description
+
+This is a reasonable implementation of a priority queue. It has O(1) lookup and amortized delete min of O(log n) I am to lazy to calculate insert, but in practice it works quite well.
+
+Synopsis
+
+* data "Prio":#t:Prio q a
+* "view":#v:view :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; "ViewMin":Data-PriorityQueue.html#t:ViewMin q a
+* data "ViewMin":#t:ViewMin q a
+** = a ":&gt;":#v::-62- ("Prio":Data-PriorityQueue.html#t:Prio q a)
+** &#124; "Nil":#v:Nil
+* "fromList":#v:fromList :: Ord q =&gt; [(q, a)] -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+* "extractMin":#v:extractMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe (a, "Prio":Data-PriorityQueue.html#t:Prio q a)
+* "headMin":#v:headMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe a
+* "tailMin":#v:tailMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe ("Prio":Data-PriorityQueue.html#t:Prio q a)
+* "insert":#v:insert :: Ord q =&gt; q -&gt; a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+* "singleton":#v:singleton :: q -&gt; a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+* "extractTill":#v:extractTill :: Ord q =&gt; q -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; ([a], "Prio":Data-PriorityQueue.html#t:Prio q a)
+* "extractTillWithKey":#v:extractTillWithKey :: Ord q =&gt; q -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; ([(q, a)], "Prio":Data-PriorityQueue.html#t:Prio q a)
+
+h1. Documentation
+
+data Prio q a
+
+Priority heap, the priority is a parameter to the type Prio q a can be ordered, is a functor, a foldable, a monoid and a traversable. There is also a monadic version. We should interpret this as a computation on the objects in the priority heap, rendering a tree of priority heaps and then merged into a consistent priority heap again.
+
+The monad has a problem, because it has a constraint. In the current version of ghc, it is not possible to make it a monad yet.
+
+A comonad like instance could be useful, but is not possible, because a comonad should always be safe to deconstruct. This thing is clearly not safe to deconstruct.
+
+It could be empty
+
+Instances
+
+
+|Functor ("Prio":Data-PriorityQueue.html#t:Prio q)| |
+|Ord q =&gt; Foldable ("Prio":Data-PriorityQueue.html#t:Prio q)| |
+|Ord q =&gt; Traversable ("Prio":Data-PriorityQueue.html#t:Prio q)| |
+|(Show q, Show a) =&gt; Show ("Prio":Data-PriorityQueue.html#t:Prio q a)| |
+|Ord q =&gt; Monoid ("Prio":Data-PriorityQueue.html#t:Prio q a)| |
+
+
+view :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; "ViewMin":Data-PriorityQueue.html#t:ViewMin q a
+
+View pattern for list like perspective
+
+data ViewMin q a
+
+List like view for the minimal element
+
+Constructors
+
+
+|a :&gt; ("Prio":Data-PriorityQueue.html#t:Prio q a)| |
+|Nil| |
+
+
+fromList :: Ord q =&gt; [(q, a)] -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+
+Build a prio heap from a list
+
+extractMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe (a, "Prio":Data-PriorityQueue.html#t:Prio q a)
+
+Get the minimal value O(1)
+
+headMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe a
+
+Get the first element
+
+tailMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe ("Prio":Data-PriorityQueue.html#t:Prio q a)
+
+Get the tail
+
+insert :: Ord q =&gt; q -&gt; a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+
+Insert a new element with priority
+
+singleton :: q -&gt; a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+
+Create an singleton prio queue
+
+extractTill :: Ord q =&gt; q -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; ([a], "Prio":Data-PriorityQueue.html#t:Prio q a)
+
+Get all till priority as value
+
+extractTillWithKey :: Ord q =&gt; q -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; ([(q, a)], "Prio":Data-PriorityQueue.html#t:Prio q a)
+
+Get all till priority as tuple
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,182 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.DatabaseTemplate
+
+Description
+
+DSL for expression queries, which can extract data from a map and build a database contstraint from the DSL. We have two operators a lifted one, which pulls the right side from the map and the left side is the field in the database.
+
+bc.  "id" +== "user-id"
+
+
+This generates id = 1 (if user&#95;id contains 1) We also have fixed operators, which don't pull up a value from the hash map, but have a fixed value
+
+bc.  "id" +==| (toSql 12)
+
+
+There also is an if statement:
+
+bc.  ifdtd ("account" +==| (toSql 1)) ("account_id" +== "account_id") ("account_id" +==| (toSql 2)
+
+
+Synopsis
+
+* data "DTD":#t:DTD
+** = "Con":#v:Con "ConOp":Data-Database.html#t:ConOp String "DTD":Data-DatabaseTemplate.html#t:DTD
+** &#124; "And":#v:And "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD
+** &#124; "Or":#v:Or "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD
+** &#124; "Lift":#v:Lift String
+** &#124; "Fix":#v:Fix "SqlValue":Data-SqlTransaction.html#t:SqlValue
+** &#124; "If":#v:If String (String -&gt; Bool) "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD
+** &#124; "OrderedBy":#v:OrderedBy "DTD":Data-DatabaseTemplate.html#t:DTD [String]
+** &#124; "Nop":#v:Nop
+* "orderedBy":#v:orderedBy :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; [String] -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "transformDTD":#v:transformDTD :: ("DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "filterDTD":#v:filterDTD :: ("DTD":Data-DatabaseTemplate.html#t:DTD -&gt; Bool) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&amp;&amp;)":#v:-43--38--38- :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&#124;&#124;)":#v:-43--124--124- :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+==)":#v:-43--61--61- :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&gt;=)":#v:-43--62--61- :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&gt;)":#v:-43--62- :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&lt;)":#v:-43--60- :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&lt;=)":#v:-43--60--61- :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+%)":#v:-43--37- :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+%%)":#v:-43--37--37- :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&lt;&gt;)":#v:-43--60--62- :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "ifdtd":#v:ifdtd :: String -&gt; (String -&gt; Bool) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+==&#124;)":#v:-43--61--61--124- :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&gt;=&#124;)":#v:-43--62--61--124- :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&gt;&#124;)":#v:-43--62--124- :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&lt;&#124;)":#v:-43--60--124- :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&lt;=&#124;)":#v:-43--60--61--124- :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+%&#124;)":#v:-43--37--124- :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+%%&#124;)":#v:-43--37--37--124- :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "(+&lt;&gt;&#124;)":#v:-43--60--62--124- :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+* "dtd":#v:dtd :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "Constraints":Data-Database.html#t:Constraints
+* "evalDTD":#v:evalDTD :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe "Constraint":Data-Database.html#t:Constraint
+
+h1. Documentation
+
+data DTD
+
+Constructors
+
+
+|Con "ConOp":Data-Database.html#t:ConOp String "DTD":Data-DatabaseTemplate.html#t:DTD| |
+|And "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD| |
+|Or "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD| |
+|Lift String| |
+|Fix "SqlValue":Data-SqlTransaction.html#t:SqlValue| |
+|If String (String -&gt; Bool) "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD| |
+|OrderedBy "DTD":Data-DatabaseTemplate.html#t:DTD [String]| |
+|Nop| |
+
+
+orderedBy :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; [String] -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+transformDTD :: ("DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Transform a DTD bottom up
+
+filterDTD :: ("DTD":Data-DatabaseTemplate.html#t:DTD -&gt; Bool) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Filter certain DTD out
+
+(+&amp;&amp;) :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&#124;&#124;) :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+==) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Equal operator lifted
+
+(+&gt;=) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Greater or equal lifted
+
+(+&gt;) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Greater lifted
+
+(+&lt;) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Smaller lifted
+
+(+&lt;=) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Smaller or equal lifted
+
+(+%) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Like lifted
+
+(+%%) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+ILike lifted
+
+(+&lt;&gt;) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Not equal lifted
+
+ifdtd :: String -&gt; (String -&gt; Bool) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+If statement, see above for usage example
+
+(+==&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Equal fixed
+
+(+&gt;=&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Greater or eqal fixed
+
+(+&gt;&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+Greater fixed
+
+(+&lt;&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+smaller fixed
+
+(+&lt;=&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+smaller or equal fixed
+
+(+%&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+like fixed
+
+(+%%&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+ilike fixed
+
+(+&lt;&gt;&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+dtd :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "Constraints":Data-Database.html#t:Constraints
+
+evalDTD
+
+Arguments
+
+:: "DTD":Data-DatabaseTemplate.html#t:DTD
+
+The database template
+
+-&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+Hashmap which provides the values
+
+-&gt; Maybe "Constraint":Data-Database.html#t:Constraint
+
+Constraint usable form computation
+
+Evaluate transforms the DTD into a constraint
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

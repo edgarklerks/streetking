@@ -1,0 +1,20 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+Safe-Infered
+
+Data.Constants
+
+h1. Documentation
+
+constant :: String -&gt; Double
+
+ms2kmh :: Double -&gt; Double
+
+kmh2ms :: Double -&gt; Double
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

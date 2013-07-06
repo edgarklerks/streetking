@@ -1,0 +1,57 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.TaskLog
+
+h1. Documentation
+
+type MInteger = Maybe Integer
+
+data TaskLog
+
+Constructors
+
+TaskLog
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>time :: Integer</dt>
+<dd> </dd>
+<dt>activity :: String</dt>
+<dd> </dd>
+<dt>task&#95;id :: "MInteger":Model-TaskLog.html#t:MInteger</dt>
+<dd> </dd>
+<dt>entry :: "Data":Data-DataPack.html#t:Data</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "TaskLog":Model-TaskLog.html#t:TaskLog| |
+|Show "TaskLog":Model-TaskLog.html#t:TaskLog| |
+|ToJSON "TaskLog":Model-TaskLog.html#t:TaskLog| |
+|FromJSON "TaskLog":Model-TaskLog.html#t:TaskLog| |
+|Default "TaskLog":Model-TaskLog.html#t:TaskLog| |
+|"FromInRule":Data-InRules.html#t:FromInRule "TaskLog":Model-TaskLog.html#t:TaskLog| |
+|"ToInRule":Data-InRules.html#t:ToInRule "TaskLog":Model-TaskLog.html#t:TaskLog| |
+|"Mapable":Model-General.html#t:Mapable "TaskLog":Model-TaskLog.html#t:TaskLog| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TaskLog":Model-TaskLog.html#t:TaskLog| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

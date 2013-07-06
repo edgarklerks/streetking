@@ -1,0 +1,65 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.RewardLogEvent
+
+h1. Documentation
+
+type MInteger = Maybe Integer
+
+data RewardLogEvent
+
+Constructors
+
+RewardLogEvent
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>account&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>rule :: String</dt>
+<dd> </dd>
+<dt>name :: String</dt>
+<dd> </dd>
+<dt>money :: Integer</dt>
+<dd> </dd>
+<dt>viewed :: Bool</dt>
+<dd> </dd>
+<dt>experience :: Integer</dt>
+<dd> </dd>
+<dt>type&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>type :: String</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+|Show "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+|ToJSON "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+|FromJSON "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+|Default "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+|"FromInRule":Data-InRules.html#t:FromInRule "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+|"ToInRule":Data-InRules.html#t:ToInRule "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+|"Mapable":Model-General.html#t:Mapable "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "RewardLogEvent":Model-RewardLogEvent.html#t:RewardLogEvent| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

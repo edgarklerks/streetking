@@ -1,0 +1,53 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.TrackTime
+
+h1. Documentation
+
+data TrackTime
+
+Constructors
+
+TrackTime
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>account&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>track&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>time :: Double</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|Show "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|ToJSON "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|FromJSON "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|Default "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|"FromInRule":Data-InRules.html#t:FromInRule "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|"ToInRule":Data-InRules.html#t:ToInRule "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|"Mapable":Model-General.html#t:Mapable "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TrackTime":Model-TrackTime.html#t:TrackTime| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

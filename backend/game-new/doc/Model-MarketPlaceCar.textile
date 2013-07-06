@@ -1,0 +1,77 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.MarketPlaceCar
+
+h1. Documentation
+
+type MInteger = Maybe Integer
+
+data MarketPlaceCar
+
+Constructors
+
+MarketPlaceCar
+
+ 
+
+Fields
+
+<dl>
+<dt>car&#95;instance&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>price :: Integer</dt>
+<dd> </dd>
+<dt>top&#95;speed :: Integer</dt>
+<dd> </dd>
+<dt>acceleration :: Integer</dt>
+<dd> </dd>
+<dt>cornering :: Integer</dt>
+<dd> </dd>
+<dt>stopping :: Integer</dt>
+<dd> </dd>
+<dt>nitrous :: Integer</dt>
+<dd> </dd>
+<dt>weight :: Integer</dt>
+<dd> </dd>
+<dt>manufacturer&#95;name :: String</dt>
+<dd> </dd>
+<dt>level :: Integer</dt>
+<dd> </dd>
+<dt>year :: Integer</dt>
+<dd> </dd>
+<dt>wear :: Integer</dt>
+<dd> </dd>
+<dt>improvement :: Integer</dt>
+<dd> </dd>
+<dt>account&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>model :: String</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+|Show "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+|ToJSON "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+|FromJSON "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+|Default "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+|"FromInRule":Data-InRules.html#t:FromInRule "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+|"ToInRule":Data-InRules.html#t:ToInRule "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+|"Mapable":Model-General.html#t:Mapable "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "MarketPlaceCar":Model-MarketPlaceCar.html#t:MarketPlaceCar| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

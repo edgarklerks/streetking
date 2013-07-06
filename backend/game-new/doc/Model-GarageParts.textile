@@ -1,0 +1,117 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.GarageParts
+
+h1. Documentation
+
+type MString = Maybe String
+
+type MInteger = Maybe Integer
+
+type MBool = Maybe Bool
+
+data GaragePart
+
+Constructors
+
+GaragePart
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>account&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>part&#95;type&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>weight :: Integer</dt>
+<dd> </dd>
+<dt>parameter1 :: "MInteger":Model-GarageParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter1&#95;unit :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter1&#95;name :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter1&#95;is&#95;modifier :: "MBool":Model-GarageParts.html#t:MBool</dt>
+<dd> </dd>
+<dt>parameter2 :: "MInteger":Model-GarageParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter2&#95;unit :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter2&#95;name :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter2&#95;is&#95;modifier :: "MBool":Model-GarageParts.html#t:MBool</dt>
+<dd> </dd>
+<dt>parameter3 :: "MInteger":Model-GarageParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter3&#95;unit :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter3&#95;name :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter3&#95;is&#95;modifier :: "MBool":Model-GarageParts.html#t:MBool</dt>
+<dd> </dd>
+<dt>car&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>d3d&#95;model&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>level :: Integer</dt>
+<dd> </dd>
+<dt>name :: String</dt>
+<dd> </dd>
+<dt>price :: Integer</dt>
+<dd> </dd>
+<dt>car&#95;model :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>manufacturer&#95;name :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>part&#95;modifier :: "MString":Model-GarageParts.html#t:MString</dt>
+<dd> </dd>
+<dt>wear :: Integer</dt>
+<dd> </dd>
+<dt>improvement :: Integer</dt>
+<dd> </dd>
+<dt>unique :: Bool</dt>
+<dd> </dd>
+<dt>part&#95;instance&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>trash&#95;price :: Integer</dt>
+<dd> </dd>
+<dt>required :: Bool</dt>
+<dd> </dd>
+<dt>fixed :: Bool</dt>
+<dd> </dd>
+<dt>task&#95;subject :: Bool</dt>
+<dd> </dd>
+<dt>hidden :: Bool</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|Show "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|ToJSON "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|FromJSON "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|Default "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|"FromInRule":Data-InRules.html#t:FromInRule "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|"ToInRule":Data-InRules.html#t:ToInRule "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|"Mapable":Model-General.html#t:Mapable "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "GaragePart":Model-GarageParts.html#t:GaragePart| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

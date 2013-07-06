@@ -1,0 +1,69 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.PersonnelDetails
+
+h1. Documentation
+
+type MInteger = Maybe Integer
+
+data PersonnelDetails
+
+Constructors
+
+PersonnelDetails
+
+ 
+
+Fields
+
+<dl>
+<dt>personnel&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>name :: String</dt>
+<dd> </dd>
+<dt>country&#95;name :: String</dt>
+<dd> </dd>
+<dt>country&#95;shortname :: String</dt>
+<dd> </dd>
+<dt>gender :: Bool</dt>
+<dd> </dd>
+<dt>picture :: String</dt>
+<dd> </dd>
+<dt>salary :: Integer</dt>
+<dd> </dd>
+<dt>price :: Integer</dt>
+<dd> </dd>
+<dt>skill&#95;repair :: Integer</dt>
+<dd> </dd>
+<dt>skill&#95;engineering :: Integer</dt>
+<dd> </dd>
+<dt>sort :: Integer</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+|Show "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+|ToJSON "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+|FromJSON "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+|Default "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+|"FromInRule":Data-InRules.html#t:FromInRule "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+|"ToInRule":Data-InRules.html#t:ToInRule "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+|"Mapable":Model-General.html#t:Mapable "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "PersonnelDetails":Model-PersonnelDetails.html#t:PersonnelDetails| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,371 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+* "A":doc-index-A.html
+* "B":doc-index-B.html
+* "C":doc-index-C.html
+* "D":doc-index-D.html
+* "E":doc-index-E.html
+* "F":doc-index-F.html
+* "G":doc-index-G.html
+* "H":doc-index-H.html
+* "I":doc-index-I.html
+* "J":doc-index-J.html
+* "K":doc-index-K.html
+* "L":doc-index-L.html
+* "M":doc-index-M.html
+* "N":doc-index-N.html
+* "O":doc-index-O.html
+* "P":doc-index-P.html
+* "Q":doc-index-Q.html
+* "R":doc-index-R.html
+* "S":doc-index-S.html
+* "T":doc-index-T.html
+* "U":doc-index-U.html
+* "V":doc-index-V.html
+* "W":doc-index-W.html
+* "Y":doc-index-Y.html
+* "Z":doc-index-Z.html
+* ":":doc-index-58.html
+* "&#42;":doc-index-42.html
+* "+":doc-index-43.html
+* ".":doc-index-46.html
+* "&lt;":doc-index-60.html
+* "=":doc-index-61.html
+* "&#124;":doc-index-124.html
+* "&#95;":doc-index-95.html
+* "All":doc-index-All.html
+
+Index - S
+
+
+|salary| |
+|1 (Function)|"Model.GarageReport":Model-GarageReport.html#v:salary|
+|2 (Function)|"Model.Personnel":Model-Personnel.html#v:salary|
+|3 (Function)|"Model.PersonnelDetails":Model-PersonnelDetails.html#v:salary|
+|4 (Function)|"Model.PersonnelInstance":Model-PersonnelInstance.html#v:salary|
+|5 (Function)|"Model.PersonnelInstanceDetails":Model-PersonnelInstanceDetails.html#v:salary|
+|6 (Function)|"Model.PersonnelReport":Model-PersonnelReport.html#v:salary|
+|sallowed|"Data.Tools":Data-Tools.html#v:sallowed|
+|save|"Model.General":Model-General.html#v:save|
+|saveDb|"Model.TH":Model-TH.html#v:saveDb|
+|saveDb'|"Model.TH":Model-TH.html#v:saveDb-39-|
+|saveLuaValue|"Lua.Monad":Lua-Monad.html#v:saveLuaValue|
+|saveRewardLogEvent|"Data.Reward":Data-Reward.html#v:saveRewardLogEvent|
+|saveTree|"Model.MenuModel":Model-MenuModel.html#v:saveTree|
+|Scalar|"Model.DBFunctions":Model-DBFunctions.html#v:Scalar|
+|scfilter|"Data.Tools":Data-Tools.html#v:scfilter|
+|scheck|"Data.Tools":Data-Tools.html#v:scheck|
+|schema| |
+|1 (Function)|"Model.Account":Model-Account.html#v:schema|
+|2 (Function)|"Model.Transaction":Model-Transaction.html#v:schema|
+|3 (Function)|"Model.Escrow":Model-Escrow.html#v:schema|
+|4 (Function)|"Model.Diamonds":Model-Diamonds.html#v:schema|
+|5 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:schema|
+|6 (Function)|"Model.AccountProfileMin":Model-AccountProfileMin.html#v:schema|
+|7 (Function)|"Model.Car":Model-Car.html#v:schema|
+|8 (Function)|"Model.Car3dModel":Model-Car3dModel.html#v:schema|
+|9 (Function)|"Model.CarInGarage":Model-CarInGarage.html#v:schema|
+|10 (Function)|"Model.CarInstance":Model-CarInstance.html#v:schema|
+|11 (Function)|"Model.CarInstanceParts":Model-CarInstanceParts.html#v:schema|
+|12 (Function)|"Model.CarMarket":Model-CarMarket.html#v:schema|
+|13 (Function)|"Model.CarMinimal":Model-CarMinimal.html#v:schema|
+|14 (Function)|"Model.TrackTime":Model-TrackTime.html#v:schema|
+|15 (Function)|"Model.CarOptions":Model-CarOptions.html#v:schema|
+|16 (Function)|"Model.CarOptionsExtended":Model-CarOptionsExtended.html#v:schema|
+|17 (Function)|"Model.CarOwners":Model-CarOwners.html#v:schema|
+|18 (Function)|"Model.CarStockParts":Model-CarStockParts.html#v:schema|
+|19 (Function)|"Model.Challenge":Model-Challenge.html#v:schema|
+|20 (Function)|"Model.ChallengeAccept":Model-ChallengeAccept.html#v:schema|
+|21 (Function)|"Model.ChallengeExtended":Model-ChallengeExtended.html#v:schema|
+|22 (Function)|"Model.ChallengeType":Model-ChallengeType.html#v:schema|
+|23 (Function)|"Model.City":Model-City.html#v:schema|
+|24 (Function)|"Model.Config":Model-Config.html#v:schema|
+|25 (Function)|"Model.Continent":Model-Continent.html#v:schema|
+|26 (Function)|"Model.EventStream":Model-EventStream.html#v:schema|
+|27 (Function)|"Model.Garage":Model-Garage.html#v:schema|
+|28 (Function)|"Model.GarageParts":Model-GarageParts.html#v:schema|
+|29 (Function)|"Model.GarageReport":Model-GarageReport.html#v:schema|
+|30 (Function)|"Model.GarageReportInsert":Model-GarageReportInsert.html#v:schema|
+|31 (Function)|"Model.GeneralReport":Model-GeneralReport.html#v:schema|
+|32 (Function)|"Model.Manufacturer":Model-Manufacturer.html#v:schema|
+|33 (Function)|"Model.ManufacturerMarket":Model-ManufacturerMarket.html#v:schema|
+|34 (Function)|"Model.MarketCarInstanceParts":Model-MarketCarInstanceParts.html#v:schema|
+|35 (Function)|"Model.MarketItem":Model-MarketItem.html#v:schema|
+|36 (Function)|"Model.MarketPartType":Model-MarketPartType.html#v:schema|
+|37 (Function)|"Model.MarketPlace":Model-MarketPlace.html#v:schema|
+|38 (Function)|"Model.MarketPlaceCar":Model-MarketPlaceCar.html#v:schema|
+|39 (Function)|"Model.MenuModel":Model-MenuModel.html#v:schema|
+|40 (Function)|"Model.Part":Model-Part.html#v:schema|
+|41 (Function)|"Model.PartDetails":Model-PartDetails.html#v:schema|
+|42 (Function)|"Model.RaceReward":Model-RaceReward.html#v:schema|
+|43 (Function)|"Model.Tournament":Model-Tournament.html#v:schema|
+|44 (Function)|"Model.TournamentExtended":Model-TournamentExtended.html#v:schema|
+|45 (Function)|"Model.PartInstance":Model-PartInstance.html#v:schema|
+|46 (Function)|"Model.PartMarket":Model-PartMarket.html#v:schema|
+|47 (Function)|"Model.PartMarketPlaceType":Model-PartMarketPlaceType.html#v:schema|
+|48 (Function)|"Model.PartMarketType":Model-PartMarketType.html#v:schema|
+|49 (Function)|"Model.PartType":Model-PartType.html#v:schema|
+|50 (Function)|"Model.Personnel":Model-Personnel.html#v:schema|
+|51 (Function)|"Model.PersonnelDetails":Model-PersonnelDetails.html#v:schema|
+|52 (Function)|"Model.PersonnelInstance":Model-PersonnelInstance.html#v:schema|
+|53 (Function)|"Model.PersonnelInstanceDetails":Model-PersonnelInstanceDetails.html#v:schema|
+|54 (Function)|"Model.PersonnelReport":Model-PersonnelReport.html#v:schema|
+|55 (Function)|"Model.PersonnelTaskType":Model-PersonnelTaskType.html#v:schema|
+|56 (Function)|"Model.PreLetter":Model-PreLetter.html#v:schema|
+|57 (Function)|"Model.Report":Model-Report.html#v:schema|
+|58 (Function)|"Model.RewardLog":Model-RewardLog.html#v:schema|
+|59 (Function)|"Model.RewardLogEvent":Model-RewardLogEvent.html#v:schema|
+|60 (Function)|"Model.ShopReport":Model-ShopReport.html#v:schema|
+|61 (Function)|"Model.Support":Model-Support.html#v:schema|
+|62 (Function)|"Model.TrackCity":Model-TrackCity.html#v:schema|
+|63 (Function)|"Model.TrackContinent":Model-TrackContinent.html#v:schema|
+|64 (Function)|"Model.TrackDetails":Model-TrackDetails.html#v:schema|
+|65 (Function)|"Model.TrackMaster":Model-TrackMaster.html#v:schema|
+|66 (Function)|"Model.TravelReport":Model-TravelReport.html#v:schema|
+|67 (Function)|"Model.Notification":Model-Notification.html#v:schema|
+|68 (Function)|"Model.Task":Model-Task.html#v:schema|
+|69 (Function)|"Model.TaskTrigger":Model-TaskTrigger.html#v:schema|
+|70 (Function)|"Model.TaskLog":Model-TaskLog.html#v:schema|
+|71 (Function)|"Model.Action":Model-Action.html#v:schema|
+|72 (Function)|"Model.RewardLogEvents":Model-RewardLogEvents.html#v:schema|
+|73 (Function)|"Model.Rule":Model-Rule.html#v:schema|
+|74 (Function)|"Model.RuleReward":Model-RuleReward.html#v:schema|
+|75 (Function)|"Model.Race":Model-Race.html#v:schema|
+|76 (Function)|"Model.RaceDetails":Model-RaceDetails.html#v:schema|
+|77 (Function)|"Model.TournamentPlayers":Model-TournamentPlayers.html#v:schema|
+|78 (Function)|"Model.TournamentResult":Model-TournamentResult.html#v:schema|
+|79 (Function)|"Model.TournamentReport":Model-TournamentReport.html#v:schema|
+|search|"Model.General":Model-General.html#v:search|
+|searchCarInGarage|"Data.CarDerivedParameters":Data-CarDerivedParameters.html#v:searchCarInGarage|
+|searchCarMinified|"Data.CarDerivedParameters":Data-CarDerivedParameters.html#v:searchCarMinified|
+|searchDB|"Model.TH":Model-TH.html#v:searchDB|
+|Section| |
+|1 (Type/Class)|"Config.ConfigFileParser":Config-ConfigFileParser.html#t:Section, "ConfigSnaplet":ConfigSnaplet.html#t:Section|
+|2 (Type/Class)|"Data.Section":Data-Section.html#t:Section|
+|3 (Data Constructor)|"Data.Section":Data-Section.html#v:Section|
+|section|"Data.RacingNew":Data-RacingNew.html#v:section|
+|SectionConfig| |
+|1 (Type/Class)|"Data.RacingNew":Data-RacingNew.html#t:SectionConfig|
+|2 (Data Constructor)|"Data.RacingNew":Data-RacingNew.html#v:SectionConfig|
+|sectionConfig|"Data.RacingNew":Data-RacingNew.html#v:sectionConfig|
+|sectionId|"Data.RacingNew":Data-RacingNew.html#v:sectionId|
+|sectionLength|"Data.RacingNew":Data-RacingNew.html#v:sectionLength|
+|SectionM|"Data.RacingNew":Data-RacingNew.html#t:SectionM|
+|sectionPerformance|"Data.RacingNew":Data-RacingNew.html#v:sectionPerformance|
+|SectionResult| |
+|1 (Type/Class)|"Data.RacingNew":Data-RacingNew.html#t:SectionResult|
+|2 (Data Constructor)|"Data.RacingNew":Data-RacingNew.html#v:SectionResult|
+|sectionResults|"Data.RacingNew":Data-RacingNew.html#v:sectionResults|
+|Sections|"Config.ConfigFileParser":Config-ConfigFileParser.html#t:Sections, "ConfigSnaplet":ConfigSnaplet.html#t:Sections|
+|sections|"Data.Track":Data-Track.html#v:sections|
+|sectionSpeedAvg|"Data.RacingNew":Data-RacingNew.html#v:sectionSpeedAvg|
+|sectionSpeedCap|"Data.RacingNew":Data-RacingNew.html#v:sectionSpeedCap|
+|sectionSpeedIn|"Data.RacingNew":Data-RacingNew.html#v:sectionSpeedIn|
+|sectionSpeedMax|"Data.RacingNew":Data-RacingNew.html#v:sectionSpeedMax|
+|sectionSpeedOut|"Data.RacingNew":Data-RacingNew.html#v:sectionSpeedOut|
+|sectionTime|"Data.RacingNew":Data-RacingNew.html#v:sectionTime|
+|section&#95;id|"Data.Section":Data-Section.html#v:section_id|
+|segment|"Model.TrackDetails":Model-TrackDetails.html#v:segment|
+|Select| |
+|1 (Type/Class)|"Data.Database":Data-Database.html#t:Select|
+|2 (Data Constructor)|"Data.Database":Data-Database.html#v:Select|
+|select| |
+|1 (Function)|"Data.Relation":Data-Relation.html#v:select|
+|2 (Function)|"Data.Database":Data-Database.html#v:select|
+|selectAll|"Data.Database":Data-Database.html#v:selectAll|
+|Selection|"Data.Database":Data-Database.html#t:Selection|
+|Selections|"Data.Database":Data-Database.html#t:Selections|
+|sempty|"Model.General":Model-General.html#v:sempty|
+|sendAnswer|"MemServerAsyncTest":MemServerAsyncTest.html#v:sendAnswer|
+|sendat|"Model.PreLetter":Model-PreLetter.html#v:sendat|
+|sendBulk|"Notifications":Notifications.html#v:sendBulk|
+|sendBulkCentral|"Data.Notifications":Data-Notifications.html#v:sendBulkCentral|
+|sendBulkLocal|"Data.Notifications":Data-Notifications.html#v:sendBulkLocal|
+|sendBulkMail|"Data.Notifications":Data-Notifications.html#v:sendBulkMail|
+|sendCentral|"Data.Notifications":Data-Notifications.html#v:sendCentral|
+|sendCentralNotification|"Notifications":Notifications.html#v:sendCentralNotification|
+|sendLetter| |
+|1 (Function)|"Data.Notifications":Data-Notifications.html#v:sendLetter|
+|2 (Function)|"NotificationSnaplet":NotificationSnaplet.html#v:sendLetter|
+|3 (Function)|"Application":Application.html#v:sendLetter|
+|sendLocal|"Data.Notifications":Data-Notifications.html#v:sendLocal|
+|sendNotification|"Notifications":Notifications.html#v:sendNotification|
+|sendProto|"MemServerAsyncTest":MemServerAsyncTest.html#v:sendProto|
+|sendQuery|"NodeSnapletTest":NodeSnapletTest.html#v:sendQuery|
+|sendUpstream|"MemServerAsyncTest":MemServerAsyncTest.html#v:sendUpstream|
+|serializeHashMap|"Data.ConversionInstances":Data-ConversionInstances.html#v:serializeHashMap|
+|serializeHashMapb|"Data.ConversionInstances":Data-ConversionInstances.html#v:serializeHashMapb|
+|Server|"Data.Role":Data-Role.html#v:Server|
+|ServerC|"Data.HeartBeat":Data-HeartBeat.html#t:ServerC|
+|ServerException|"ProtoExtended":ProtoExtended.html#t:ServerException|
+|set|"Data.DataPack":Data-DataPack.html#v:set|
+|setArchive| |
+|1 (Function)|"Data.Notifications":Data-Notifications.html#v:setArchive|
+|2 (Function)|"NotificationSnaplet":NotificationSnaplet.html#v:setArchive|
+|3 (Function)|"Application":Application.html#v:setArchive|
+|setField|"Data.DataPack":Data-DataPack.html#v:setField|
+|setImmutable|"Model.CarInstance":Model-CarInstance.html#v:setImmutable|
+|setMutable|"Model.CarInstance":Model-CarInstance.html#v:setMutable|
+|setRead| |
+|1 (Function)|"Data.Notifications":Data-Notifications.html#v:setRead|
+|2 (Function)|"NotificationSnaplet":NotificationSnaplet.html#v:setRead|
+|3 (Function)|"Application":Application.html#v:setRead|
+|setTable|"Lua.Prim":Lua-Prim.html#v:setTable|
+|setupTests|"NodeSnapletTest":NodeSnapletTest.html#v:setupTests|
+|sExecute|"Data.SqlTransaction":Data-SqlTransaction.html#v:sExecute|
+|sExecuteMany|"Data.SqlTransaction":Data-SqlTransaction.html#v:sExecuteMany|
+|SF|"Model.DBFunctions":Model-DBFunctions.html#v:SF|
+|sFetchAllRows|"Data.SqlTransaction":Data-SqlTransaction.html#v:sFetchAllRows|
+|sFetchAllRows'|"Data.SqlTransaction":Data-SqlTransaction.html#v:sFetchAllRows-39-|
+|sFetchRow|"Data.SqlTransaction":Data-SqlTransaction.html#v:sFetchRow|
+|Share|"Data.SqlTransaction":Data-SqlTransaction.html#v:Share|
+|ShareRowExclusive|"Data.SqlTransaction":Data-SqlTransaction.html#v:ShareRowExclusive|
+|ShareUpdateExclusive|"Data.SqlTransaction":Data-SqlTransaction.html#v:ShareUpdateExclusive|
+|Shopper|"Model.Report":Model-Report.html#v:Shopper|
+|ShopReport| |
+|1 (Type/Class)|"Model.ShopReport":Model-ShopReport.html#t:ShopReport|
+|2 (Data Constructor)|"Model.ShopReport":Model-ShopReport.html#v:ShopReport|
+|showTable|"Data.Tools":Data-Tools.html#v:showTable|
+|showTable'|"Data.Tools":Data-Tools.html#v:showTable-39-|
+|showTableWithHeader|"Data.Tools":Data-Tools.html#v:showTableWithHeader|
+|showTableWithHeader'|"Data.Tools":Data-Tools.html#v:showTableWithHeader-39-|
+|shp|"Data.InRules":Data-InRules.html#v:shp|
+|shpTestAB|"Data.InRules":Data-InRules.html#v:shpTestAB|
+|shpTestArr|"Data.InRules":Data-InRules.html#v:shpTestArr|
+|simpleRule|"Data.Decider":Data-Decider.html#v:simpleRule|
+|simpleRule2|"Data.Decider":Data-Decider.html#v:simpleRule2|
+|singleObj|"Data.InRules":Data-InRules.html#v:singleObj, "Data.Conversion":Data-Conversion.html#v:singleObj|
+|singleton| |
+|1 (Function)|"Data.LimitList":Data-LimitList.html#v:singleton|
+|2 (Function)|"Data.PriorityQueue":Data-PriorityQueue.html#v:singleton|
+|sinsert|"Model.General":Model-General.html#v:sinsert|
+|size|"Data.LimitList":Data-LimitList.html#v:size|
+|skill|"Notifications":Notifications.html#v:skill|
+|skill&#95;acceleration| |
+|1 (Function)|"Model.Account":Model-Account.html#v:skill_acceleration|
+|2 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:skill_acceleration|
+|skill&#95;braking| |
+|1 (Function)|"Model.Account":Model-Account.html#v:skill_braking|
+|2 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:skill_braking|
+|skill&#95;control| |
+|1 (Function)|"Model.Account":Model-Account.html#v:skill_control|
+|2 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:skill_control|
+|skill&#95;engineering| |
+|1 (Function)|"Model.GarageReport":Model-GarageReport.html#v:skill_engineering|
+|2 (Function)|"Model.Personnel":Model-Personnel.html#v:skill_engineering|
+|3 (Function)|"Model.PersonnelDetails":Model-PersonnelDetails.html#v:skill_engineering|
+|4 (Function)|"Model.PersonnelInstance":Model-PersonnelInstance.html#v:skill_engineering|
+|5 (Function)|"Model.PersonnelInstanceDetails":Model-PersonnelInstanceDetails.html#v:skill_engineering|
+|6 (Function)|"Model.PersonnelReport":Model-PersonnelReport.html#v:skill_engineering|
+|skill&#95;intelligence| |
+|1 (Function)|"Model.Account":Model-Account.html#v:skill_intelligence|
+|2 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:skill_intelligence|
+|skill&#95;reactions| |
+|1 (Function)|"Model.Account":Model-Account.html#v:skill_reactions|
+|2 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:skill_reactions|
+|skill&#95;repair| |
+|1 (Function)|"Model.GarageReport":Model-GarageReport.html#v:skill_repair|
+|2 (Function)|"Model.Personnel":Model-Personnel.html#v:skill_repair|
+|3 (Function)|"Model.PersonnelDetails":Model-PersonnelDetails.html#v:skill_repair|
+|4 (Function)|"Model.PersonnelInstance":Model-PersonnelInstance.html#v:skill_repair|
+|5 (Function)|"Model.PersonnelInstanceDetails":Model-PersonnelInstanceDetails.html#v:skill_repair|
+|6 (Function)|"Model.PersonnelReport":Model-PersonnelReport.html#v:skill_repair|
+|skill&#95;unused| |
+|1 (Function)|"Model.Account":Model-Account.html#v:skill_unused|
+|2 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:skill_unused|
+|slock|"Application":Application.html#v:slock|
+|smust|"Data.Tools":Data-Tools.html#v:smust|
+|SocketGone|"ProtoExtended":ProtoExtended.html#v:SocketGone|
+|sort| |
+|1 (Function)|"Data.Relation":Data-Relation.html#v:sort|
+|2 (Function)|"Model.PartMarketPlaceType":Model-PartMarketPlaceType.html#v:sort|
+|3 (Function)|"Model.PartMarketType":Model-PartMarketType.html#v:sort|
+|4 (Function)|"Model.PartType":Model-PartType.html#v:sort|
+|5 (Function)|"Model.Personnel":Model-Personnel.html#v:sort|
+|6 (Function)|"Model.PersonnelDetails":Model-PersonnelDetails.html#v:sort|
+|7 (Function)|"Model.PersonnelReport":Model-PersonnelReport.html#v:sort|
+|SortOrder|"Data.SortOrder":Data-SortOrder.html#t:SortOrder|
+|sortOrder|"Data.SortOrder":Data-SortOrder.html#v:sortOrder|
+|sort&#95;part&#95;type| |
+|1 (Function)|"Model.CarInstanceParts":Model-CarInstanceParts.html#v:sort_part_type|
+|2 (Function)|"Model.MarketCarInstanceParts":Model-MarketCarInstanceParts.html#v:sort_part_type|
+|3 (Function)|"Model.PartDetails":Model-PartDetails.html#v:sort_part_type|
+|SpecifiedFailure|"ProtoExtended":ProtoExtended.html#v:SpecifiedFailure|
+|specifiedFailure|"ProtoExtended":ProtoExtended.html#v:specifiedFailure|
+|Sql|"Data.Database":Data-Database.html#t:Sql|
+|sql|"Data.Database":Data-Database.html#v:sql|
+|SqlBool|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlBool|
+|SqlByteString|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlByteString|
+|SqlChar|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlChar|
+|SqlDiffTime|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlDiffTime|
+|SqlDouble|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlDouble|
+|SqlEpochTime|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlEpochTime|
+|SqlError|"Data.SqlTransaction":Data-SqlTransaction.html#t:SqlError|
+|sqlExecute|"Data.SqlTransaction":Data-SqlTransaction.html#v:sqlExecute|
+|SqlFunction|"Model.DBFunctions":Model-DBFunctions.html#t:SqlFunction|
+|sqlFunctionToSql|"Model.DBFunctions":Model-DBFunctions.html#v:sqlFunctionToSql|
+|sqlGetAll|"Data.SqlTransaction":Data-SqlTransaction.html#v:sqlGetAll|
+|sqlGetAllAssoc|"Data.SqlTransaction":Data-SqlTransaction.html#v:sqlGetAllAssoc|
+|sqlGetOne|"Data.SqlTransaction":Data-SqlTransaction.html#v:sqlGetOne|
+|sqlGetRow|"Data.SqlTransaction":Data-SqlTransaction.html#v:sqlGetRow|
+|SqlInt32|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlInt32|
+|SqlInt64|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlInt64|
+|SqlInteger|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlInteger|
+|SqlLocalDate|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlLocalDate|
+|SqlLocalTime|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlLocalTime|
+|SqlLocalTimeOfDay|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlLocalTimeOfDay|
+|SqlMap|"Application":Application.html#t:SqlMap|
+|SqlNull|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlNull|
+|SqlPOSIXTime|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlPOSIXTime|
+|SqlRational|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlRational|
+|SqlString|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlString|
+|SqlTimeDiff|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlTimeDiff|
+|SqlTransaction|"Data.SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction|
+|SqlTransactionConfig|"SqlTransactionSnaplet":SqlTransactionSnaplet.html#t:SqlTransactionConfig|
+|SqlTransactionUser|"Data.SqlTransaction":Data-SqlTransaction.html#t:SqlTransactionUser|
+|SqlUTCTime|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlUTCTime|
+|SqlValue|"Data.SqlTransaction":Data-SqlTransaction.html#t:SqlValue|
+|SqlWord32|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlWord32|
+|SqlWord64|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlWord64|
+|SqlZonedLocalTimeOfDay|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlZonedLocalTimeOfDay|
+|SqlZonedTime|"Data.SqlTransaction":Data-SqlTransaction.html#v:SqlZonedTime|
+|sRun|"Data.SqlTransaction":Data-SqlTransaction.html#v:sRun|
+|startNode|"MemServerAsyncTest":MemServerAsyncTest.html#v:startNode|
+|startp|"Data.SortOrder":Data-SortOrder.html#v:startp|
+|StartSync|"ProtoExtended":ProtoExtended.html#v:StartSync|
+|startSync|"ProtoExtended":ProtoExtended.html#v:startSync|
+|start&#95;time| |
+|1 (Function)|"Model.Tournament":Model-Tournament.html#v:start_time|
+|2 (Function)|"Model.TournamentExtended":Model-TournamentExtended.html#v:start_time|
+|3 (Function)|"Model.Race":Model-Race.html#v:start_time|
+|4 (Function)|"Model.RaceDetails":Model-RaceDetails.html#v:start_time|
+|state|"Model.Task":Model-Task.html#v:state|
+|Statement|"Data.SqlTransaction":Data-SqlTransaction.html#t:Statement|
+|STC|"SqlTransactionSnaplet":SqlTransactionSnaplet.html#v:STC|
+|stmp|"Data.SortOrder":Data-SortOrder.html#v:stmp|
+|stopping| |
+|1 (Function)|"Model.CarInGarage":Model-CarInGarage.html#v:stopping|
+|2 (Function)|"Model.CarMinimal":Model-CarMinimal.html#v:stopping|
+|3 (Function)|"Model.MarketPlaceCar":Model-MarketPlaceCar.html#v:stopping|
+|storeTimedMap|"Data.TimedMap":Data-TimedMap.html#v:storeTimedMap|
+|storeTMap|"Data.TimedMap":Data-TimedMap.html#v:storeTMap|
+|Stream|"Model.EventStream":Model-EventStream.html#t:Stream|
+|stream|"Model.EventStream":Model-EventStream.html#v:stream|
+|strength|"Data.Tools":Data-Tools.html#v:strength|
+|StringC|"Config.ConfigFileParser":Config-ConfigFileParser.html#v:StringC, "ConfigSnaplet":ConfigSnaplet.html#v:StringC|
+|StringLike|"Data.Tools":Data-Tools.html#t:StringLike|
+|stripRoute|"ProtoExtended":ProtoExtended.html#v:stripRoute|
+|stripTree|"Data.MenuTree":Data-MenuTree.html#v:stripTree|
+|SubMenu|"Data.MenuTree":Data-MenuTree.html#v:SubMenu|
+|Support| |
+|1 (Type/Class)|"Model.Support":Model-Support.html#t:Support|
+|2 (Data Constructor)|"Model.Support":Model-Support.html#v:Support|
+|Symbol|"Data.Event":Data-Event.html#t:Symbol|
+|Sync|"ProtoExtended":ProtoExtended.html#v:Sync|
+|sync|"ProtoExtended":ProtoExtended.html#v:sync|
+
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,111 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.MarketCarInstanceParts
+
+h1. Documentation
+
+type MString = Maybe String
+
+type MInteger = Maybe Integer
+
+data MarketCarInstanceParts
+
+Constructors
+
+MarketCarInstanceParts
+
+ 
+
+Fields
+
+<dl>
+<dt>part&#95;instance&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>car&#95;instance&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>part&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>name :: String</dt>
+<dd> </dd>
+<dt>part&#95;type&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>weight :: Integer</dt>
+<dd> </dd>
+<dt>improvement :: Integer</dt>
+<dd> </dd>
+<dt>wear :: Integer</dt>
+<dd> </dd>
+<dt>parameter1 :: "MInteger":Model-MarketCarInstanceParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter1&#95;unit :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter1&#95;name :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter2 :: "MInteger":Model-MarketCarInstanceParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter2&#95;unit :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter2&#95;name :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter3 :: "MInteger":Model-MarketCarInstanceParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter3&#95;unit :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter3&#95;name :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>car&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>d3d&#95;model&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>level :: Integer</dt>
+<dd> </dd>
+<dt>price :: Integer</dt>
+<dd> </dd>
+<dt>car&#95;model :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>manufacturer&#95;name :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>part&#95;modifier :: "MString":Model-MarketCarInstanceParts.html#t:MString</dt>
+<dd> </dd>
+<dt>unique :: Bool</dt>
+<dd> </dd>
+<dt>sort&#95;part&#95;type :: Integer</dt>
+<dd> </dd>
+<dt>new&#95;price :: Integer</dt>
+<dd> </dd>
+<dt>account&#95;id :: "MInteger":Model-MarketCarInstanceParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>required :: Bool</dt>
+<dd> </dd>
+<dt>fixed :: Bool</dt>
+<dd> </dd>
+<dt>hidden :: Bool</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+|Show "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+|ToJSON "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+|FromJSON "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+|Default "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+|"FromInRule":Data-InRules.html#t:FromInRule "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+|"ToInRule":Data-InRules.html#t:ToInRule "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+|"Mapable":Model-General.html#t:Mapable "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "MarketCarInstanceParts":Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

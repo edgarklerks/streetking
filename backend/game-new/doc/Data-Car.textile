@@ -1,0 +1,135 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Car
+
+Description
+
+Car specific functions
+
+Synopsis
+
+<ul>
+<li>data "Car":#t:Car = "Car":#v:Car {
+<ul>
+<li>"mass":#v:mass :: Double</li>
+<li>"power":#v:power :: Double</li>
+<li>"traction":#v:traction :: Double</li>
+<li>"handling":#v:handling :: Double</li>
+<li>"braking":#v:braking :: Double</li>
+<li>"aero":#v:aero :: Double</li>
+<li>"nos":#v:nos :: Double</li>
+</ul>
+
+}</li>
+<li>"pwr":#v:pwr :: "Car":Data-Car.html#t:Car -&gt; Double</li>
+<li>"hlm":#v:hlm :: "Car":Data-Car.html#t:Car -&gt; Double</li>
+<li>"tco":#v:tco :: "Car":Data-Car.html#t:Car -&gt; Double</li>
+<li>"cda":#v:cda :: "Car":Data-Car.html#t:Car -&gt; Double</li>
+<li>"dnf":#v:dnf :: "Car":Data-Car.html#t:Car -&gt; Double</li>
+<li>"brp":#v:brp :: "Car":Data-Car.html#t:Car -&gt; Double</li>
+<li>"carInGarageCar":#v:carInGarageCar :: "CarInGarage":Model-CarInGarage.html#t:CarInGarage -&gt; "Car":Data-Car.html#t:Car</li>
+<li>"carMinimalCar":#v:carMinimalCar :: "CarMinimal":Model-CarMinimal.html#t:CarMinimal -&gt; "Car":Data-Car.html#t:Car</li>
+<li>"testCar":#v:testCar :: "Car":Data-Car.html#t:Car</li>
+<li>"zeroCar":#v:zeroCar :: "Car":Data-Car.html#t:Car</li>
+<li>"noobCar":#v:noobCar :: "Car":Data-Car.html#t:Car</li>
+<li>"leetCar":#v:leetCar :: "Car":Data-Car.html#t:Car</li>
+<li>"oneCar":#v:oneCar :: "Car":Data-Car.html#t:Car</li>
+</ul>
+
+h1. Documentation
+
+data Car
+
+Car parameters, units as described, % from 0 to 1
+
+Constructors
+
+Car
+
+ 
+
+Fields
+
+<dl>
+<dt>mass :: Double</dt>
+<dd><p>kg</p></dd>
+<dt>power :: Double</dt>
+<dd><p>%</p></dd>
+<dt>traction :: Double</dt>
+<dd><p>%</p></dd>
+<dt>handling :: Double</dt>
+<dd><p>%</p></dd>
+<dt>braking :: Double</dt>
+<dd><p>%</p></dd>
+<dt>aero :: Double</dt>
+<dd><p>%</p></dd>
+<dt>nos :: Double</dt>
+<dd><p>%</p></dd>
+</dl>
+
+Instances
+
+
+|Show "Car":Data-Car.html#t:Car| |
+
+
+pwr :: "Car":Data-Car.html#t:Car -&gt; Double
+
+effectively usable power in Watt
+
+hlm :: "Car":Data-Car.html#t:Car -&gt; Double
+
+handling multiplier to maximum lateral acceleration
+
+tco :: "Car":Data-Car.html#t:Car -&gt; Double
+
+traction coefficient
+
+cda :: "Car":Data-Car.html#t:Car -&gt; Double
+
+drag coefficient
+
+dnf :: "Car":Data-Car.html#t:Car -&gt; Double
+
+downforce per square m/s
+
+brp :: "Car":Data-Car.html#t:Car -&gt; Double
+
+braking force as a factor of the traction limit
+
+carInGarageCar :: "CarInGarage":Model-CarInGarage.html#t:CarInGarage -&gt; "Car":Data-Car.html#t:Car
+
+Transform a CarInCarage to a Car
+
+carMinimalCar :: "CarMinimal":Model-CarMinimal.html#t:CarMinimal -&gt; "Car":Data-Car.html#t:Car
+
+Transform a CarMinimal to a Car
+
+testCar :: "Car":Data-Car.html#t:Car
+
+Test car, is the same as default car
+
+zeroCar :: "Car":Data-Car.html#t:Car
+
+The zero car, doesn't drive
+
+noobCar :: "Car":Data-Car.html#t:Car
+
+A minimal running car
+
+leetCar :: "Car":Data-Car.html#t:Car
+
+Very good car
+
+oneCar :: "Car":Data-Car.html#t:Car
+
+Best car
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,78 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.AccountProfileMin
+
+h1. Documentation
+
+type MString = Maybe String
+
+type MInteger = Maybe Integer
+
+data AccountProfileMin
+
+Constructors
+
+AccountProfileMin
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>nickname :: String</dt>
+<dd> </dd>
+<dt>picture&#95;small :: "MString":Model-AccountProfileMin.html#t:MString</dt>
+<dd> </dd>
+<dt>picture&#95;medium :: "MString":Model-AccountProfileMin.html#t:MString</dt>
+<dd> </dd>
+<dt>picture&#95;large :: "MString":Model-AccountProfileMin.html#t:MString</dt>
+<dd> </dd>
+<dt>level :: Integer</dt>
+<dd> </dd>
+<dt>city&#95;name :: String</dt>
+<dd> </dd>
+<dt>continent&#95;name :: String</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|Show "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|ToJSON "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|FromJSON "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|Default "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|"FromInRule":Data-InRules.html#t:FromInRule "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|"ToInRule":Data-InRules.html#t:ToInRule "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|"Mapable":Model-General.html#t:Mapable "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+class ToAccountProfileMin a where
+
+Methods
+
+toAPM :: a -&gt; "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin
+
+Instances
+
+
+|"ToAccountProfileMin":Model-AccountProfileMin.html#t:ToAccountProfileMin "Account":Model-Account.html#t:Account| |
+|"ToAccountProfileMin":Model-AccountProfileMin.html#t:ToAccountProfileMin "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

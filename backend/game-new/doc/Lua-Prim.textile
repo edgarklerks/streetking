@@ -1,0 +1,235 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Lua.Prim
+
+Synopsis
+
+<ul>
+<li>type "LuaState":#t:LuaState = LuaState</li>
+<li>type "LuaType":#t:LuaType = LTYPE</li>
+<li>data "LuaValue":#t:LuaValue
+<ul>
+<li>= "LuaObj":#v:LuaObj [("LuaValue":Lua-Prim.html#t:LuaValue, "LuaValue":Lua-Prim.html#t:LuaValue)]</li>
+<li>&#124; "LuaNum":#v:LuaNum !Double</li>
+<li>&#124; "LuaString":#v:LuaString !String</li>
+<li>&#124; "LuaBool":#v:LuaBool !Bool</li>
+<li>&#124; "LuaNil":#v:LuaNil</li>
+<li>&#124; "LuaNone":#v:LuaNone</li>
+<li>&#124; "LuaError":#v:LuaError !String</li>
+</ul>
+</li>
+<li>newtype "LuaMonad":#t:LuaMonad a = "LR":#v:LR {
+<ul>
+<li>"unLR":#v:unLR :: ReaderT "LuaState":Lua-Prim.html#t:LuaState (ErrorT String IO) a</li>
+</ul>
+
+}</li>
+<li>"runLuaMonad'":#v:runLuaMonad-39- :: "LuaState":Lua-Prim.html#t:LuaState -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad a -&gt; IO (Either String a)</li>
+<li>"loadIntoTable":#v:loadIntoTable :: LuaState -&gt; ("LuaValue":Lua-Prim.html#t:LuaValue, "LuaValue":Lua-Prim.html#t:LuaValue) -&gt; IO ()</li>
+<li>"setTable":#v:setTable :: LuaState -&gt; "LuaValue":Lua-Prim.html#t:LuaValue -&gt; "LuaValue":Lua-Prim.html#t:LuaValue -&gt; Int -&gt; IO ()</li>
+<li>"loopTable":#v:loopTable :: "LuaMonad":Lua-Prim.html#t:LuaMonad [("LuaValue":Lua-Prim.html#t:LuaValue, "LuaValue":Lua-Prim.html#t:LuaValue)]</li>
+<li>"&#95;valToLua":#v:_valToLua :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue</li>
+<li>"pop":#v:pop :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad ()</li>
+<li>"peek":#v:peek :: StackValue a =&gt; Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad a</li>
+<li>"ltype":#v:ltype :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaType":Lua-Prim.html#t:LuaType</li>
+<li>"getglobal":#v:getglobal :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad ()</li>
+<li>"pushnil":#v:pushnil :: "LuaMonad":Lua-Prim.html#t:LuaMonad ()</li>
+<li>"newstate":#v:newstate :: IO LuaState</li>
+<li>"push":#v:push :: StackValue a =&gt; a -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad ()</li>
+<li>"catchMaybe":#v:catchMaybe :: MonadError String m =&gt; Maybe a -&gt; (a -&gt; m b) -&gt; String -&gt; m b</li>
+<li>"getLuaValue":#v:getLuaValue :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue</li>
+<li>"peekGlobal":#v:peekGlobal :: StackValue a =&gt; String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad (a, "LuaType":Lua-Prim.html#t:LuaType)</li>
+<li>"getGlobal":#v:getGlobal :: StackValue a =&gt; String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad (a, "LuaType":Lua-Prim.html#t:LuaType)</li>
+<li>"getValue":#v:getValue :: StackValue a =&gt; String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad a</li>
+<li>"getInt":#v:getInt :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad Int</li>
+<li>"getDouble":#v:getDouble :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad Double</li>
+<li>"getBool":#v:getBool :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad Bool</li>
+<li>"getString":#v:getString :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad String</li>
+<li>"getType":#v:getType :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaType":Lua-Prim.html#t:LuaType</li>
+<li>"next":#v:next :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad Bool</li>
+<li>"peekLuaValue":#v:peekLuaValue :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue</li>
+<li>"valToLua":#v:valToLua :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue</li>
+<li>"tableToLua":#v:tableToLua :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue</li>
+</ul>
+
+h1. Documentation
+
+type LuaState = LuaState
+
+type LuaType = LTYPE
+
+data LuaValue
+
+Constructors
+
+
+|LuaObj [("LuaValue":Lua-Prim.html#t:LuaValue, "LuaValue":Lua-Prim.html#t:LuaValue)]| |
+|LuaNum !Double| |
+|LuaString !String| |
+|LuaBool !Bool| |
+|LuaNil| |
+|LuaNone| |
+|LuaError !String| |
+
+
+Instances
+
+
+|Eq "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Data "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Num "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Ord "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Read "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Show "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Typeable "LuaValue":Lua-Prim.html#t:LuaValue| |
+|IsString "LuaValue":Lua-Prim.html#t:LuaValue| |
+|StackValue "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Convertible Double "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Convertible Integer "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Convertible Rational "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Convertible String "LuaValue":Lua-Prim.html#t:LuaValue| |
+|Convertible "LuaValue":Lua-Prim.html#t:LuaValue Double| |
+|Convertible "LuaValue":Lua-Prim.html#t:LuaValue Integer| |
+|Convertible "LuaValue":Lua-Prim.html#t:LuaValue Rational| |
+|Convertible "LuaValue":Lua-Prim.html#t:LuaValue String| |
+|Convertible "LuaValue":Lua-Prim.html#t:LuaValue "LuaValue":Lua-Prim.html#t:LuaValue| |
+|(Typeable a, Convertible "LuaValue":Lua-Prim.html#t:LuaValue a) =&gt; Convertible "LuaValue":Lua-Prim.html#t:LuaValue [(String, a)]| |
+|(Typeable a, Convertible a "LuaValue":Lua-Prim.html#t:LuaValue) =&gt; Convertible [(String, a)] "LuaValue":Lua-Prim.html#t:LuaValue| |
+
+
+newtype LuaMonad a
+
+The lua monad keeps the current LuaState and offers error handling through @ErrorT@. It also has access to the IO Monad
+
+Constructors
+
+LR
+
+ 
+
+Fields
+
+<dl>
+<dt>unLR :: ReaderT "LuaState":Lua-Prim.html#t:LuaState (ErrorT String IO) a</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Monad "LuaMonad":Lua-Prim.html#t:LuaMonad| |
+|Functor "LuaMonad":Lua-Prim.html#t:LuaMonad| |
+|Applicative "LuaMonad":Lua-Prim.html#t:LuaMonad| |
+|MonadIO "LuaMonad":Lua-Prim.html#t:LuaMonad| |
+|MonadReader "LuaState":Lua-Prim.html#t:LuaState "LuaMonad":Lua-Prim.html#t:LuaMonad| |
+|MonadError String "LuaMonad":Lua-Prim.html#t:LuaMonad| |
+
+
+runLuaMonad' :: "LuaState":Lua-Prim.html#t:LuaState -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad a -&gt; IO (Either String a)
+
+Run the Lua monad without closing the state
+
+loadIntoTable :: LuaState -&gt; ("LuaValue":Lua-Prim.html#t:LuaValue, "LuaValue":Lua-Prim.html#t:LuaValue) -&gt; IO ()
+
+Load a key value pair into a table
+
+setTable :: LuaState -&gt; "LuaValue":Lua-Prim.html#t:LuaValue -&gt; "LuaValue":Lua-Prim.html#t:LuaValue -&gt; Int -&gt; IO ()
+
+Set a key value to a specific table
+
+loopTable :: "LuaMonad":Lua-Prim.html#t:LuaMonad [("LuaValue":Lua-Prim.html#t:LuaValue, "LuaValue":Lua-Prim.html#t:LuaValue)]
+
+Retrieve the table as key value pairs
+
+&#95;valToLua :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue
+
+Get some value from the stack
+
+pop :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad ()
+
+Pop nth item of the stack
+
+peek :: StackValue a =&gt; Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad a
+
+Peek nth item of the stack
+
+ltype :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaType":Lua-Prim.html#t:LuaType
+
+Get the type of the value on the stack
+
+getglobal :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad ()
+
+Retrieve a global by name
+
+pushnil :: "LuaMonad":Lua-Prim.html#t:LuaMonad ()
+
+Push nil on the stack
+
+newstate :: IO LuaState
+
+Create a new state
+
+push :: StackValue a =&gt; a -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad ()
+
+Push a value on the stack
+
+catchMaybe :: MonadError String m =&gt; Maybe a -&gt; (a -&gt; m b) -&gt; String -&gt; m b
+
+getLuaValue :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue
+
+Get a global value by name
+
+peekGlobal :: StackValue a =&gt; String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad (a, "LuaType":Lua-Prim.html#t:LuaType)
+
+Get a global value by name as haskell type, keep it on the top of the stack
+
+getGlobal :: StackValue a =&gt; String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad (a, "LuaType":Lua-Prim.html#t:LuaType)
+
+Get a global by name and pop it from the stack
+
+getValue :: StackValue a =&gt; String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad a
+
+Get the haskell value by name and pop it of the stack, omit type
+
+getInt :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad Int
+
+Get the int by name and pop it of the stack, omit type
+
+getDouble :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad Double
+
+Get the double by name and pop it of the stack, omit type
+
+getBool :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad Bool
+
+Get the boolean by name and pop it of the stack, omit type
+
+getString :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad String
+
+Get the string by name and pop it of the stack, omit type
+
+getType :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaType":Lua-Prim.html#t:LuaType
+
+Get the type of a variable by name
+
+next :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad Bool
+
+peekLuaValue :: Int -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue
+
+Peek what value is at the nth place of the stack
+
+valToLua :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue
+
+Retrieve a value from the stack by name
+
+tableToLua :: String -&gt; "LuaMonad":Lua-Prim.html#t:LuaMonad "LuaValue":Lua-Prim.html#t:LuaValue
+
+Retrieve a table by name from the stack
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0
