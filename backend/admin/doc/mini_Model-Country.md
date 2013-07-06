@@ -1,7 +1,0 @@
-Model.Country
-
-data [Country](Model-Country.html#t:Country)
-
-[relation](Model-Country.html#v:relation)
-
-[schema](Model-Country.html#v:schema)

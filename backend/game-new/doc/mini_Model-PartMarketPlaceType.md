@@ -1,7 +1,0 @@
-Model.PartMarketPlaceType
-
-data [PartMarketPlaceType](Model-PartMarketPlaceType.html#t:PartMarketPlaceType)
-
-[relation](Model-PartMarketPlaceType.html#v:relation)
-
-[schema](Model-PartMarketPlaceType.html#v:schema)

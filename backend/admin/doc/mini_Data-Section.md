@@ -1,9 +1,0 @@
-Data.Section
-
-data [Section](Data-Section.html#t:Section)
-
-[angle](Data-Section.html#v:angle)
-
-[perturb](Data-Section.html#v:perturb)
-
-[trackDetailsSection](Data-Section.html#v:trackDetailsSection)

@@ -1,5 +1,0 @@
-Data.Chain
-
-[registerTask](Data-Chain.html#v:registerTask)
-
-[runTask](Data-Chain.html#v:runTask)
