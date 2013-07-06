@@ -207,14 +207,17 @@ joinPrioMonad f = worker (unPrioMonad f)
           worker (Empty) = PrioMonad $ Empty 
           worker (PairNode a _ rs) = a <> mconcat (worker <$> rs)
 
+-- | Bind for a priority heap 
 bindPrioMonad :: (Ord a, Ord b) => PrioMonad a -> (a -> PrioMonad b) -> PrioMonad b
 bindPrioMonad m f = joinPrioMonad $ fmap f m
 
+-- | Return for a priority heap 
 returnPrioMonad :: Ord a => a -> PrioMonad a 
 returnPrioMonad a = PrioMonad $ singleton a a
 dup a = (a,a)
 test = PrioMonad (fromList $ dup <$> [1..100]) `bindPrioMonad` (\x -> returnPrioMonad (x `mod` 3 + x) <> returnPrioMonad (x `mod` 5 + x))
 
+-- | and a test it should behave properly 
 prop_monadic_ok = property (uncurry (==) .  testa)
 testa :: [Int] -> ([Int],[Int])
 testa xs = let b = PrioMonad (fromList $ dup <$> xs) `bindPrioMonad` (\x -> returnPrioMonad( x `mod` 3 + x) <> returnPrioMonad (x `mod` 5 + x))
