@@ -1,0 +1,11 @@
+% Model.City
+% 
+% 
+
+Model.City
+
+data [City](Model-City.html#t:City)
+
+[relation](Model-City.html#v:relation)
+
+[schema](Model-City.html#v:schema)

@@ -1,0 +1,23 @@
+% Data.Account
+% 
+% 
+
+-   [Contents](index.html)
+-   [Index](doc-index.html)
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Account
+
+Documentation
+=============
+
+addRespect :: Integer -\> Integer -\>
+[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
+[Connection](Data-SqlTransaction.html#t:Connection) ()
+
+Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

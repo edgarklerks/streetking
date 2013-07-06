@@ -1,0 +1,11 @@
+% Model.Action
+% 
+% 
+
+Model.Action
+
+data [Action](Model-Action.html#t:Action)
+
+[relation](Model-Action.html#v:relation)
+
+[schema](Model-Action.html#v:schema)

@@ -1,0 +1,15 @@
+% Model.PartMarket
+% 
+% 
+
+Model.PartMarket
+
+type [MString](Model-PartMarket.html#t:MString)
+
+type [MInteger](Model-PartMarket.html#t:MInteger)
+
+data [PartMarket](Model-PartMarket.html#t:PartMarket)
+
+[relation](Model-PartMarket.html#v:relation)
+
+[schema](Model-PartMarket.html#v:schema)

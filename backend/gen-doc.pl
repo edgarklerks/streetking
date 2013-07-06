@@ -35,7 +35,10 @@ for my $out(@output){
     chdir($out . '/src');
     system("$tool $options --odir=../doc $entry");
     chdir($cwd);
-
 }
+print "Converting to markdown";
+system('perl convertMarkDown.pl');
 
-
+for my $out(@output){
+    system("hg add $out/doc/*");
+}

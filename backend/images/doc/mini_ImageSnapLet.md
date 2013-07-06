@@ -1,0 +1,21 @@
+% ImageSnapLet
+% 
+% 
+
+ImageSnapLet
+
+data [ImageConfig](ImageSnapLet.html#t:ImageConfig)
+
+[dumpdir](ImageSnapLet.html#v:dumpdir)
+
+[servdir](ImageSnapLet.html#v:servdir)
+
+[allowedTypes](ImageSnapLet.html#v:allowedTypes)
+
+[uploadImage](ImageSnapLet.html#v:uploadImage)
+
+[serveImage](ImageSnapLet.html#v:serveImage)
+
+[initImage](ImageSnapLet.html#v:initImage)
+
+[getServDir](ImageSnapLet.html#v:getServDir)

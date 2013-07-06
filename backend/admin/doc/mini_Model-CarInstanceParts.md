@@ -1,0 +1,17 @@
+% Model.CarInstanceParts
+% 
+% 
+
+Model.CarInstanceParts
+
+type [MString](Model-CarInstanceParts.html#t:MString)
+
+type [MInteger](Model-CarInstanceParts.html#t:MInteger)
+
+type [MBool](Model-CarInstanceParts.html#t:MBool)
+
+data [CarInstanceParts](Model-CarInstanceParts.html#t:CarInstanceParts)
+
+[relation](Model-CarInstanceParts.html#v:relation)
+
+[schema](Model-CarInstanceParts.html#v:schema)

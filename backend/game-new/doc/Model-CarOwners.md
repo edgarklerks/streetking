@@ -1,0 +1,54 @@
+% Model.CarOwners
+% 
+% 
+
+-   [Contents](index.html)
+-   [Index](doc-index.html)
+
+ 
+
+Safe Haskell
+
+None
+
+Model.CarOwners
+
+Documentation
+=============
+
+type MString = Maybe String
+
+data CarOwners
+
+Constructors
+
+CarOwners
+
+ 
+
+Fields
+
+id :: [Id](Model-General.html#t:Id)
+:    
+account\_id :: Integer
+:    
+
+Instances
+
+  --------------------------------------------------------------------------------------------------------------------------------------------- ---
+  Eq [CarOwners](Model-CarOwners.html#t:CarOwners)                                                                                               
+  Show [CarOwners](Model-CarOwners.html#t:CarOwners)                                                                                             
+  ToJSON [CarOwners](Model-CarOwners.html#t:CarOwners)                                                                                           
+  FromJSON [CarOwners](Model-CarOwners.html#t:CarOwners)                                                                                         
+  Default [CarOwners](Model-CarOwners.html#t:CarOwners)                                                                                          
+  [FromInRule](Data-InRules.html#t:FromInRule) [CarOwners](Model-CarOwners.html#t:CarOwners)                                                     
+  [ToInRule](Data-InRules.html#t:ToInRule) [CarOwners](Model-CarOwners.html#t:CarOwners)                                                         
+  [Mapable](Model-General.html#t:Mapable) [CarOwners](Model-CarOwners.html#t:CarOwners)                                                          
+  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarOwners](Model-CarOwners.html#t:CarOwners)    
+  --------------------------------------------------------------------------------------------------------------------------------------------- ---
+
+relation :: [RelationM](Data-Relation.html#t:RelationM)
+
+schema :: [[Char]]
+
+Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

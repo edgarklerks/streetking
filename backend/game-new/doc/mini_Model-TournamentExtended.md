@@ -1,0 +1,16 @@
+% Model.TournamentExtended
+% 
+% 
+
+Model.TournamentExtended
+
+type [MRaceReward](Model-TournamentExtended.html#t:MRaceReward)
+
+type [MInteger](Model-TournamentExtended.html#t:MInteger)
+
+data
+[TournamentExtended](Model-TournamentExtended.html#t:TournamentExtended)
+
+[relation](Model-TournamentExtended.html#v:relation)
+
+[schema](Model-TournamentExtended.html#v:schema)
