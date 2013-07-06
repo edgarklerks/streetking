@@ -1,4 +1,43 @@
 {-# LANGUAGE ViewPatterns, RankNTypes, GeneralizedNewtypeDeriving, MultiParamTypeClasses, OverloadedStrings, ScopedTypeVariables, TypeSynonymInstances  #-}
+-- | Quickcheck is useful for finding corner cases in 
+--   functions. You setup a 'law' for your function and
+--   then define a property based on that law. 
+--
+--   QuickCheck will then try to find a fail case 
+--   for you. 
+--
+--   HUnit is useful to test expected behaviour of 
+--   functions. This is less strong than a property,
+--   but more useful for complex interfaces. 
+
+--  how to write a test with quickCheck  
+--
+--   Say I want to show emperical that:
+--
+-- @
+--   (a * b) `mod` c = (a `mod` c) * (b `mod` c)
+-- @ 
+--
+--  for (a,b,c) e N 
+--
+--  which is bullshit ofcourse. 
+--  
+--  I first define a property. 
+--
+--  @
+-- 
+-- prop_modabc = property test 
+--      where test :: Int -> Int -> Int -> Bool 
+--            test a b c = (a * b) `mod` c == (a `mod` c) * (b `mod` c)
+--
+--  @
+--
+--  If you start it with 
+--  prop_ we can automagicly run all the tests in this module  
+--  If you don't santa clause will come and get you.
+--
+--  For all other problems use HUnit
+
 module Main where 
 
 
@@ -51,38 +90,6 @@ import qualified Model.PreLetter as L
 import qualified Model.Tournament as T 
 import qualified Snap.Test as S 
 
-{-- Quickcheck is useful for finding corner cases in 
--   functions. You setup a 'law' for your function and
--   then define a property based on that law. 
--
--   QuickCheck will then try to find a fail case 
--   for you. 
--
--   HUnit is useful to test expected behaviour of 
--   functions. This is less strong than a property,
--   but more useful for complex interfaces. 
---}
-
-{-- how to write a test with quickCheck  
--
--   Say I want to show emperical that:
--   
--   (a * b) `mod` c = (a `mod` c) * (b `mod` c)
--   
--   for (a,b,c) e N 
--
--  which is bullshit ofcourse. 
--  
--  I first define a property. 
--
--  If you start it with 
--  prop_ we can automagicly run all the tests in this module  
-
---}
---
---
---
---
 
 prop_dist_mul_mod = property work
     -- Positive a create only positive Num a  
@@ -149,8 +156,6 @@ testHasCars = bracket testcon H.disconnect $ \c -> runRandomIO c $ do
 
 
 -- | I use monadic quickcheck, because it is more general than HUnit
-
-
 notificationTests :: IO ()
 notificationTests = do 
         -- | setup the postoffice 
@@ -378,7 +383,7 @@ inrules_test_obj = object [
                                                 ])
                                         ]
 
--- shape is a binary relationship. But we pretend it gives back a property, 
+-- | shape is a binary relationship. But we pretend it gives back a property, 
 -- we can compare:
 -- (1)  shp (a `project` b) == shp b 
 -- (2)  a `project` (b `project` c) = (a `project` b) `project` c
@@ -448,7 +453,7 @@ instance Arbitrary Query where
                     k <- arbitrary 
                     return $ Query k 
               ds = return DumpState 
-
+-- | Test for memstate 
 test_query = do 
         ms <- newMemState (1000 * 1000 * 60 * 60) (6000 * 1000) "testshit" 
         qc <- newTQueueIO 
@@ -456,6 +461,7 @@ test_query = do
         quickCheck (test_query_insert qc)
         quickCheck (test_delete qc)
 
+-- | Test for deleting out of mem state 
 test_delete qc = monadicIO $ do 
                     k <- pick arbitrary 
                     v <- pick arbitrary
@@ -464,6 +470,7 @@ test_delete qc = monadicIO $ do
                     ps <- Q.run $ runQuery qc (Query k)
                     Q.assert (ps == NotFound && res == Empty && test == Empty) 
 
+-- | Test for query and insert into mem state 
 test_query_insert qc = monadicIO $ do 
         k <- pick arbitrary
         v <- pick arbitrary
@@ -472,7 +479,7 @@ test_query_insert qc = monadicIO $ do
         Q.assert (res == Empty && test == Value v)
 
 
--- Challenge test 
+-- | Challenge test 
 --
 -- acceptChallenge have some ununphantomable problem, where 2 emitEvent stmts are
 -- runned 1.5 times. Player x get's double fun, player y gets once. This tries to reproduce the problem and identify the
