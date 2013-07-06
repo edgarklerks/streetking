@@ -39,7 +39,7 @@ sub convert {
     my $files = shift;
     for my $file(@$files){
         my ($name, $ext) = split(/\./, $file);
-        system('pandoc -f html -t textile -s ' . $file . ' -o ' . "$name.textile");
+        system('pandoc -f html -t rst -s ' . $file . ' -o ' . "$name.rst");
 
     }
 }
