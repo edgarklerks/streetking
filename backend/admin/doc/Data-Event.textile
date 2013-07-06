@@ -1,0 +1,63 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Event
+
+h1. Documentation
+
+data Symbol where
+
+Constructors
+
+
+|TournamentI :: Maybe Integer -&gt; Maybe Integer -&gt; Maybe Integer -&gt; "Symbol":Data-Event.html#t:Symbol| |
+|LevelI :: Integer -&gt; "Symbol":Data-Event.html#t:Symbol| |
+|RaceI :: Maybe Integer -&gt; Maybe Integer -&gt; "Symbol":Data-Event.html#t:Symbol| |
+|PracticeI :: Maybe Integer -&gt; "Symbol":Data-Event.html#t:Symbol| |
+
+
+Instances
+
+
+|Show "Symbol":Data-Event.html#t:Symbol| |
+|"Evaluate":Data-Decider.html#t:Evaluate "Event":Data-Event.html#t:Event "Symbol":Data-Event.html#t:Symbol| |
+
+
+matchEvent :: "Expr":Data-Decider.html#t:Expr g "Symbol":Data-Event.html#t:Symbol -&gt; ["Event":Data-Event.html#t:Event] -&gt; (["Event":Data-Event.html#t:Event], Bool)
+
+eventDecider :: "Expr":Data-Decider.html#t:Expr g "Symbol":Data-Event.html#t:Symbol -&gt; "Decider":Data-Decider.html#t:Decider "Event":Data-Event.html#t:Event
+
+data Event where
+
+Constructors
+
+
+|Tournament :: Integer -&gt; Integer -&gt; Integer -&gt; "Event":Data-Event.html#t:Event| |
+|PracticeRace :: Integer -&gt; "Event":Data-Event.html#t:Event| |
+|ChallengeRace :: Integer -&gt; Integer -&gt; "Event":Data-Event.html#t:Event| |
+|Level :: Integer -&gt; "Event":Data-Event.html#t:Event| |
+
+
+Instances
+
+
+|Eq "Event":Data-Event.html#t:Event| |
+|Show "Event":Data-Event.html#t:Event| |
+|ToJSON "Event":Data-Event.html#t:Event| |
+|FromJSON "Event":Data-Event.html#t:Event| |
+|"FromInRule":Data-InRules.html#t:FromInRule "Event":Data-Event.html#t:Event| |
+|"ToInRule":Data-InRules.html#t:ToInRule "Event":Data-Event.html#t:Event| |
+|"Evaluate":Data-Decider.html#t:Evaluate "Event":Data-Event.html#t:Event "Symbol":Data-Event.html#t:Symbol| |
+
+
+toInt :: Value -&gt; Integer
+
+cmp :: Eq a =&gt; Maybe a -&gt; a -&gt; Bool
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

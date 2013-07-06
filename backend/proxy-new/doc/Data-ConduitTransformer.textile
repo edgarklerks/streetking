@@ -1,0 +1,26 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.ConduitTransformer
+
+h1. Documentation
+
+conduitToEnumeratorSource :: Source IO a -&gt; IO (Enumerator a IO ())
+
+enumeratorToConduitSource :: Show a =&gt; Enumerator a IO () -&gt; IO (Source IO a)
+
+tqueueSink :: MonadIO m =&gt; TQueue (Maybe [a]) -&gt; Sink a m ()
+
+tqueueSource :: (MonadIO m, Show a) =&gt; TQueue (Maybe [a]) -&gt; Source m a
+
+tqueueEnumerator :: TQueue (Maybe [a]) -&gt; Enumerator a IO b
+
+tqueueIterator :: TQueue (Maybe [a]) -&gt; Iteratee a IO ()
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

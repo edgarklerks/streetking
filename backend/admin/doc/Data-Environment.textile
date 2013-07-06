@@ -1,0 +1,45 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Environment
+
+h1. Documentation
+
+data Environment
+
+Constructors
+
+Environment
+
+ 
+
+Fields
+
+<dl>
+<dt>mtraction :: Double</dt>
+<dd> </dd>
+<dt>temperature :: Double</dt>
+<dd> </dd>
+<dt>humidity :: Double</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Show "Environment":Data-Environment.html#t:Environment| |
+
+
+defaultEnvironment :: "Environment":Data-Environment.html#t:Environment
+
+rho :: "Environment":Data-Environment.html#t:Environment -&gt; Double
+
+environment :: "Track":Data-Track.html#t:Track -&gt; "Environment":Data-Environment.html#t:Environment
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0
