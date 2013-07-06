@@ -52,9 +52,10 @@ The main datatype are InRule, this is a data type, which emulates a dynamic type
 binary. A subset is isomorphic to JSON and YAML and can be made isomorphic to XML. This means it doesn't lose information between
 conversion between different types.
 
-   JSON -> InRule -> SqlValue
-                        |
-                      InRule -> XML
+This means for example:
+
+   JSONa -> InRule -> SqlValue -> InRule -> JSONb
+   JSONa === JSONb
 
 
 Style
