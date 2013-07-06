@@ -1,0 +1,178 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.TimedMap
+
+Synopsis
+
+<ul>
+<li>newtype "TimedMap":#t:TimedMap k a = "TimedMap":#v:TimedMap {
+<ul>
+<li>"unTimeMap":#v:unTimeMap :: TVar ("TMap":Data-TimedMap.html#t:TMap k a)</li>
+</ul>
+
+}</li>
+<li>type "TimedMapRestore":#t:TimedMapRestore k a = IO [(Int64, k, a)]</li>
+<li>type "TimedMapStore":#t:TimedMapStore k a = [(Int64, k, a)] -&gt; IO ()</li>
+<li>newtype "TMap":#t:TMap k a = "TMap":#v:TMap {
+<ul>
+<li>"unTMap":#v:unTMap :: (Map k Int64, Map k a)</li>
+</ul>
+
+}</li>
+<li>"newTimedMap":#v:newTimedMap :: Ord k =&gt; IO ("TimedMap":Data-TimedMap.html#t:TimedMap k a)</li>
+<li>"getTimeStamp":#v:getTimeStamp :: IO Int64</li>
+<li>"withNow0":#v:withNow0 :: (a -&gt; Int64 -&gt; IO b) -&gt; a -&gt; IO b</li>
+<li>"withNow1":#v:withNow1 :: (a -&gt; Int64 -&gt; b -&gt; IO c) -&gt; a -&gt; b -&gt; IO c</li>
+<li>"withNow2":#v:withNow2 :: (a -&gt; Int64 -&gt; b -&gt; c -&gt; IO d) -&gt; a -&gt; b -&gt; c -&gt; IO d</li>
+<li>"withNow3":#v:withNow3 :: (a -&gt; Int64 -&gt; b -&gt; c -&gt; d -&gt; IO e) -&gt; a -&gt; b -&gt; c -&gt; d -&gt; IO e</li>
+<li>"lookup":#v:lookup :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM (Maybe a)</li>
+<li>"lookupTime":#v:lookupTime :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM (Maybe Int64)</li>
+<li>"lookupBoth'":#v:lookupBoth-39- :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM (Maybe (Int64, a))</li>
+<li>"tupleMaybe":#v:tupleMaybe :: (Maybe Int64, Maybe b) -&gt; Maybe (Int64, b)</li>
+<li>"lookupBoth":#v:lookupBoth :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM (Maybe Int64, Maybe a)</li>
+<li>"insert":#v:insert :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; Int64 -&gt; k -&gt; a -&gt; STM ()</li>
+<li>"cleanup":#v:cleanup :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; Int64 -&gt; STM ()</li>
+<li>"updateTime":#v:updateTime :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; Int64 -&gt; k -&gt; STM ()</li>
+<li>"delete":#v:delete :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM ()</li>
+<li>"tlookup":#v:tlookup :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; k -&gt; Maybe a</li>
+<li>"tlookupTime":#v:tlookupTime :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; k -&gt; Maybe Int64</li>
+<li>"tlookupBoth":#v:tlookupBoth :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; k -&gt; (Maybe Int64, Maybe a)</li>
+<li>"tinsert":#v:tinsert :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; Int64 -&gt; k -&gt; a -&gt; "TMap":Data-TimedMap.html#t:TMap k a</li>
+<li>"tupdateTime":#v:tupdateTime :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; Int64 -&gt; k -&gt; "TMap":Data-TimedMap.html#t:TMap k a</li>
+<li>"tcleanup":#v:tcleanup :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; Int64 -&gt; "TMap":Data-TimedMap.html#t:TMap k a</li>
+<li>"tremove":#v:tremove :: Ord a =&gt; Int64 -&gt; Map a Int64 -&gt; (Map a Int64, [a])</li>
+<li>"tdelete":#v:tdelete :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; k -&gt; "TMap":Data-TimedMap.html#t:TMap k a</li>
+<li>"storeTimedMap":#v:storeTimedMap :: Ord k =&gt; "TimedMapStore":Data-TimedMap.html#t:TimedMapStore k a -&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; IO ()</li>
+<li>"restoreTimedMap":#v:restoreTimedMap :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; "TimedMapRestore":Data-TimedMap.html#t:TimedMapRestore k a -&gt; IO ()</li>
+<li>"storeTMap":#v:storeTMap :: Ord k =&gt; "TimedMapStore":Data-TimedMap.html#t:TimedMapStore k a -&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; IO ()</li>
+<li>"restoreTMap":#v:restoreTMap :: Ord k =&gt; "TimedMapRestore":Data-TimedMap.html#t:TimedMapRestore k a -&gt; IO ("TMap":Data-TimedMap.html#t:TMap k a)</li>
+</ul>
+
+h1. Documentation
+
+newtype TimedMap k a
+
+Constructors
+
+TimedMap
+
+ 
+
+Fields
+
+<dl>
+<dt>unTimeMap :: TVar ("TMap":Data-TimedMap.html#t:TMap k a)</dt>
+<dd> </dd>
+</dl>
+
+type TimedMapRestore k a = IO [(Int64, k, a)]
+
+type TimedMapStore k a = [(Int64, k, a)] -&gt; IO ()
+
+newtype TMap k a
+
+Constructors
+
+TMap
+
+ 
+
+Fields
+
+<dl>
+<dt>unTMap :: (Map k Int64, Map k a)</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|(Show k, Show a) =&gt; Show ("TMap":Data-TimedMap.html#t:TMap k a)| |
+
+
+newTimedMap :: Ord k =&gt; IO ("TimedMap":Data-TimedMap.html#t:TimedMap k a)
+
+creates a new timed map
+
+getTimeStamp :: IO Int64
+
+Helper function, gets a time stamp as a 64 bits integer
+
+withNow0 :: (a -&gt; Int64 -&gt; IO b) -&gt; a -&gt; IO b
+
+Some helper functions to work with the now
+
+withNow1 :: (a -&gt; Int64 -&gt; b -&gt; IO c) -&gt; a -&gt; b -&gt; IO c
+
+withNow2 :: (a -&gt; Int64 -&gt; b -&gt; c -&gt; IO d) -&gt; a -&gt; b -&gt; c -&gt; IO d
+
+withNow3 :: (a -&gt; Int64 -&gt; b -&gt; c -&gt; d -&gt; IO e) -&gt; a -&gt; b -&gt; c -&gt; d -&gt; IO e
+
+lookup :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM (Maybe a)
+
+Lookup a value from a TimedMap
+
+lookupTime :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM (Maybe Int64)
+
+Lookup a time from a TimedMap
+
+lookupBoth' :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM (Maybe (Int64, a))
+
+Lookup a time and other value from a TimedMap
+
+tupleMaybe :: (Maybe Int64, Maybe b) -&gt; Maybe (Int64, b)
+
+lookupBoth :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM (Maybe Int64, Maybe a)
+
+Lookup a time and other value from a TimedMap
+
+insert :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; Int64 -&gt; k -&gt; a -&gt; STM ()
+
+Insert a value in a TimedMap
+
+cleanup :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; Int64 -&gt; STM ()
+
+Cleanup old variables from a TimedMap, the expiration time is given
+
+updateTime :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; Int64 -&gt; k -&gt; STM ()
+
+Update the time from a key
+
+delete :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; k -&gt; STM ()
+
+Delete a key from a TimedMap
+
+tlookup :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; k -&gt; Maybe a
+
+tlookupTime :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; k -&gt; Maybe Int64
+
+tlookupBoth :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; k -&gt; (Maybe Int64, Maybe a)
+
+tinsert :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; Int64 -&gt; k -&gt; a -&gt; "TMap":Data-TimedMap.html#t:TMap k a
+
+tupdateTime :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; Int64 -&gt; k -&gt; "TMap":Data-TimedMap.html#t:TMap k a
+
+tcleanup :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; Int64 -&gt; "TMap":Data-TimedMap.html#t:TMap k a
+
+tremove :: Ord a =&gt; Int64 -&gt; Map a Int64 -&gt; (Map a Int64, [a])
+
+tdelete :: Ord k =&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; k -&gt; "TMap":Data-TimedMap.html#t:TMap k a
+
+storeTimedMap :: Ord k =&gt; "TimedMapStore":Data-TimedMap.html#t:TimedMapStore k a -&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; IO ()
+
+restoreTimedMap :: Ord k =&gt; "TimedMap":Data-TimedMap.html#t:TimedMap k a -&gt; "TimedMapRestore":Data-TimedMap.html#t:TimedMapRestore k a -&gt; IO ()
+
+This is not an atomically safe action! Restores the map with the given handler. An insert to the map will be overwritten
+
+storeTMap :: Ord k =&gt; "TimedMapStore":Data-TimedMap.html#t:TimedMapStore k a -&gt; "TMap":Data-TimedMap.html#t:TMap k a -&gt; IO ()
+
+restoreTMap :: Ord k =&gt; "TimedMapRestore":Data-TimedMap.html#t:TimedMapRestore k a -&gt; IO ("TMap":Data-TimedMap.html#t:TMap k a)
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

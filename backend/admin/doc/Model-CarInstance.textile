@@ -1,0 +1,73 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.CarInstance
+
+h1. Documentation
+
+type MInteger = Maybe Integer
+
+data CarInstance
+
+Constructors
+
+CarInstance
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>car&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>garage&#95;id :: "MInteger":Model-CarInstance.html#t:MInteger</dt>
+<dd> </dd>
+<dt>deleted :: Bool</dt>
+<dd> </dd>
+<dt>prototype :: Bool</dt>
+<dd> </dd>
+<dt>active :: Bool</dt>
+<dd> </dd>
+<dt>immutable :: Integer</dt>
+<dd> </dd>
+<dt>prototype&#95;name :: String</dt>
+<dd> </dd>
+<dt>prototype&#95;available :: Bool</dt>
+<dd> </dd>
+<dt>prototype&#95;claimable :: Bool</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|Show "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|ToJSON "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|FromJSON "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|Default "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|"FromInRule":Data-InRules.html#t:FromInRule "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|"ToInRule":Data-InRules.html#t:ToInRule "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|"Mapable":Model-General.html#t:Mapable "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "CarInstance":Model-CarInstance.html#t:CarInstance| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+isMutable :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Bool
+
+setImmutable :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Integer
+
+setMutable :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Integer
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0
