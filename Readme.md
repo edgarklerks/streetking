@@ -49,7 +49,7 @@ For simple query resources, use the DatabaseTemplateDSL (DTD), it generates a se
 Documentation of these are done elsewhere. At the moment in a serie mails. This can be better.
 
 The main datatype are InRule, this is a data type, which emulates a dynamic typesystem and can even encode Abstract Datatypes as 
-binary. A subset is isomorphic to JSON and YAML and can be made isomorphic to XML. This means it doesn't lose information between
+binary. A subset is isomorphic to JSON, SqlValue and YAML and can be made isomorphic to XML. This means it doesn't lose information between
 conversion between different types.
 
 This means for example:
