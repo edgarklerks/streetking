@@ -1,7 +1,3 @@
-% Site
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -15,20 +11,16 @@ Site
 
 Description
 
-This module is where all the routes and handlers are defined for your
-site. The `app` function is the initializer that combines everything
-together and is exported by this module.
+This module is where all the routes and handlers are defined for your site. The `app` function is the initializer that combines everything together and is exported by this module.
 
 Synopsis
 
--   [app](#v:app) :: SnapletInit [App](Application.html#t:App)
-    [App](Application.html#t:App)
+-   [app](#v:app) :: SnapletInit [App](Application.html#t:App) [App](Application.html#t:App)
 
 Documentation
 =============
 
-app :: SnapletInit [App](Application.html#t:App)
-[App](Application.html#t:App)
+app :: SnapletInit [App](Application.html#t:App) [App](Application.html#t:App)
 
 The application initializer. app :: SnapletInit App App
 

@@ -1,7 +1,3 @@
-% Data.Constants
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 

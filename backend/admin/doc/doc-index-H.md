@@ -1,7 +1,3 @@
-% (Index - H)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,37 +41,36 @@
 
 Index - H
 
-  -------------- --------------------------------------------------------------------------------------------------------
-  handling        
-  1 (Function)   [Model.CarInGarage](Model-CarInGarage.html#v:handling)
-  2 (Function)   [Model.CarMinimal](Model-CarMinimal.html#v:handling)
-  3 (Function)   [Data.Car](Data-Car.html#v:handling)
-  4 (Function)   [Data.RacingNew](Data-RacingNew.html#v:handling)
-  5 (Function)   [Model.Car](Model-Car.html#v:handling)
-  happyTest      [Data.ConnectionPool](Data-ConnectionPool.html#v:happyTest)
-  haulPost       [Data.Notifications](Data-Notifications.html#v:haulPost)
-  head           [Data.LimitList](Data-LimitList.html#v:head)
-  headl          [Data.ModelToSVG](Data-ModelToSVG.html#v:headl)
-  headMin        [Data.PriorityQueue](Data-PriorityQueue.html#v:headMin)
-  headr          [Data.ModelToSVG](Data-ModelToSVG.html#v:headr)
-  health         [Notifications](Notifications.html#v:health)
-  healthLost     [Data.RacingNew](Data-RacingNew.html#v:healthLost)
-  hempty         [Model.TH](Model-TH.html#v:hempty)
-  hfromlist      [Model.TH](Model-TH.html#v:hfromlist)
-  hidden          
-  1 (Function)   [Model.PartDetails](Model-PartDetails.html#v:hidden)
-  2 (Function)   [Model.PartMarket](Model-PartMarket.html#v:hidden)
-  3 (Function)   [Model.GarageParts](Model-GarageParts.html#v:hidden)
-  4 (Function)   [Model.CarInstanceParts](Model-CarInstanceParts.html#v:hidden)
-  hiempty        [Model.TH](Model-TH.html#v:hiempty)
-  hlm            [Data.Car](Data-Car.html#v:hlm)
-  hmapKeys       [Data.InRules](Data-InRules.html#v:hmapKeys), [Data.Conversion](Data-Conversion.html#v:hmapKeys)
-  hmapWithKey    [Data.InRules](Data-InRules.html#v:hmapWithKey), [Data.Conversion](Data-Conversion.html#v:hmapWithKey)
-  hmlookup       [Model.TH](Model-TH.html#v:hmlookup)
-  HS             [Data.Hstore](Data-Hstore.html#v:HS)
-  HStore         [Data.Hstore](Data-Hstore.html#t:HStore)
-  htsql          [Model.General](Model-General.html#v:htsql)
-  humidity       [Data.Environment](Data-Environment.html#v:humidity)
-  -------------- --------------------------------------------------------------------------------------------------------
+||
+|handling| |
+|1 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:handling)|
+|2 (Function)|[Model.CarMinimal](Model-CarMinimal.html#v:handling)|
+|3 (Function)|[Data.Car](Data-Car.html#v:handling)|
+|4 (Function)|[Data.RacingNew](Data-RacingNew.html#v:handling)|
+|5 (Function)|[Model.Car](Model-Car.html#v:handling)|
+|happyTest|[Data.ConnectionPool](Data-ConnectionPool.html#v:happyTest)|
+|haulPost|[Data.Notifications](Data-Notifications.html#v:haulPost)|
+|head|[Data.LimitList](Data-LimitList.html#v:head)|
+|headl|[Data.ModelToSVG](Data-ModelToSVG.html#v:headl)|
+|headMin|[Data.PriorityQueue](Data-PriorityQueue.html#v:headMin)|
+|headr|[Data.ModelToSVG](Data-ModelToSVG.html#v:headr)|
+|health|[Notifications](Notifications.html#v:health)|
+|healthLost|[Data.RacingNew](Data-RacingNew.html#v:healthLost)|
+|hempty|[Model.TH](Model-TH.html#v:hempty)|
+|hfromlist|[Model.TH](Model-TH.html#v:hfromlist)|
+|hidden| |
+|1 (Function)|[Model.PartDetails](Model-PartDetails.html#v:hidden)|
+|2 (Function)|[Model.PartMarket](Model-PartMarket.html#v:hidden)|
+|3 (Function)|[Model.GarageParts](Model-GarageParts.html#v:hidden)|
+|4 (Function)|[Model.CarInstanceParts](Model-CarInstanceParts.html#v:hidden)|
+|hiempty|[Model.TH](Model-TH.html#v:hiempty)|
+|hlm|[Data.Car](Data-Car.html#v:hlm)|
+|hmapKeys|[Data.InRules](Data-InRules.html#v:hmapKeys), [Data.Conversion](Data-Conversion.html#v:hmapKeys)|
+|hmapWithKey|[Data.InRules](Data-InRules.html#v:hmapWithKey), [Data.Conversion](Data-Conversion.html#v:hmapWithKey)|
+|hmlookup|[Model.TH](Model-TH.html#v:hmlookup)|
+|HS|[Data.Hstore](Data-Hstore.html#v:HS)|
+|HStore|[Data.Hstore](Data-Hstore.html#t:HStore)|
+|htsql|[Model.General](Model-General.html#v:htsql)|
+|humidity|[Data.Environment](Data-Environment.html#v:humidity)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% Lua.Instances
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 

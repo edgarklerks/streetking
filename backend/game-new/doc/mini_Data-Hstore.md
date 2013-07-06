@@ -1,7 +1,3 @@
-% Data.Hstore
-% 
-% 
-
 Data.Hstore
 
 [parseHStore](Data-Hstore.html#v:parseHStore)

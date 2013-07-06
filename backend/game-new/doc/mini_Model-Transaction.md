@@ -1,7 +1,3 @@
-% Model.Transaction
-% 
-% 
-
 Model.Transaction
 
 data [Transaction](Model-Transaction.html#t:Transaction)

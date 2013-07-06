@@ -1,7 +1,3 @@
-% Model.RewardLog
-% 
-% 
-
 Model.RewardLog
 
 data [RewardLog](Model-RewardLog.html#t:RewardLog)

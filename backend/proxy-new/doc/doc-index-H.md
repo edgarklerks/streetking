@@ -1,7 +1,3 @@
-% (Index - H)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,28 +38,27 @@
 
 Index - H
 
-  ------------------- --------------------------------------------------------------------------------------------------------
-  handleCommand       [MemServerAsyncTest](MemServerAsyncTest.html#v:handleCommand)
-  handleQuery         [MemServerAsyncTest](MemServerAsyncTest.html#v:handleQuery)
-  happyTest           [Data.ConnectionPool](Data-ConnectionPool.html#v:happyTest)
-  HasRandom           [RandomSnaplet](RandomSnaplet.html#t:HasRandom)
-  HasRoleSnaplet      [RoleSnaplet](RoleSnaplet.html#t:HasRoleSnaplet)
-  hasRoute            [ProtoExtended](ProtoExtended.html#v:hasRoute)
-  HasSqlTransaction   [SqlTransactionSnaplet](SqlTransactionSnaplet.html#t:HasSqlTransaction)
-  headMin             [Data.PriorityQueue](Data-PriorityQueue.html#v:headMin)
-  headRoute           [ProtoExtended](ProtoExtended.html#v:headRoute)
-  hempty              [Model.TH](Model-TH.html#v:hempty)
-  hfromlist           [Model.TH](Model-TH.html#v:hfromlist)
-  hiempty             [Model.TH](Model-TH.html#v:hiempty)
-  hmapKeys            [Data.InRules](Data-InRules.html#v:hmapKeys), [Data.Conversion](Data-Conversion.html#v:hmapKeys)
-  hmapWithKey         [Data.InRules](Data-InRules.html#v:hmapWithKey), [Data.Conversion](Data-Conversion.html#v:hmapWithKey)
-  hmlookup            [Model.TH](Model-TH.html#v:hmlookup)
-  hotelManager        [Data.HeartBeat](Data-HeartBeat.html#v:hotelManager)
-  hotelManager'       [Data.HeartBeat](Data-HeartBeat.html#v:hotelManager-39-)
-  HS                  [Data.Hstore](Data-Hstore.html#v:HS)
-  hsep                [Data.Role](Data-Role.html#v:hsep)
-  HStore              [Data.Hstore](Data-Hstore.html#t:HStore)
-  htsql               [Model.General](Model-General.html#v:htsql)
-  ------------------- --------------------------------------------------------------------------------------------------------
+||
+|handleCommand|[MemServerAsyncTest](MemServerAsyncTest.html#v:handleCommand)|
+|handleQuery|[MemServerAsyncTest](MemServerAsyncTest.html#v:handleQuery)|
+|happyTest|[Data.ConnectionPool](Data-ConnectionPool.html#v:happyTest)|
+|HasRandom|[RandomSnaplet](RandomSnaplet.html#t:HasRandom)|
+|HasRoleSnaplet|[RoleSnaplet](RoleSnaplet.html#t:HasRoleSnaplet)|
+|hasRoute|[ProtoExtended](ProtoExtended.html#v:hasRoute)|
+|HasSqlTransaction|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#t:HasSqlTransaction)|
+|headMin|[Data.PriorityQueue](Data-PriorityQueue.html#v:headMin)|
+|headRoute|[ProtoExtended](ProtoExtended.html#v:headRoute)|
+|hempty|[Model.TH](Model-TH.html#v:hempty)|
+|hfromlist|[Model.TH](Model-TH.html#v:hfromlist)|
+|hiempty|[Model.TH](Model-TH.html#v:hiempty)|
+|hmapKeys|[Data.InRules](Data-InRules.html#v:hmapKeys), [Data.Conversion](Data-Conversion.html#v:hmapKeys)|
+|hmapWithKey|[Data.InRules](Data-InRules.html#v:hmapWithKey), [Data.Conversion](Data-Conversion.html#v:hmapWithKey)|
+|hmlookup|[Model.TH](Model-TH.html#v:hmlookup)|
+|hotelManager|[Data.HeartBeat](Data-HeartBeat.html#v:hotelManager)|
+|hotelManager'|[Data.HeartBeat](Data-HeartBeat.html#v:hotelManager-39-)|
+|HS|[Data.Hstore](Data-Hstore.html#v:HS)|
+|hsep|[Data.Role](Data-Role.html#v:hsep)|
+|HStore|[Data.Hstore](Data-Hstore.html#t:HStore)|
+|htsql|[Model.General](Model-General.html#v:htsql)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

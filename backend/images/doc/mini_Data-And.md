@@ -1,7 +1,3 @@
-% Data.And
-% 
-% 
-
 Data.And
 
 data [And](Data-And.html#t:And) a

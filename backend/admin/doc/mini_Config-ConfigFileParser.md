@@ -1,7 +1,3 @@
-% Config.ConfigFileParser
-% 
-% 
-
 Config.ConfigFileParser
 
 [readConfig](Config-ConfigFileParser.html#v:readConfig)

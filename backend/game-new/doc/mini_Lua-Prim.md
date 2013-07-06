@@ -1,7 +1,3 @@
-% Lua.Prim
-% 
-% 
-
 Lua.Prim
 
 type [LuaState](Lua-Prim.html#t:LuaState)

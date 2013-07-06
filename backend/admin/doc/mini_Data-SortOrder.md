@@ -1,7 +1,3 @@
-% Data.SortOrder
-% 
-% 
-
 Data.SortOrder
 
 data [SortOrder](Data-SortOrder.html#t:SortOrder)

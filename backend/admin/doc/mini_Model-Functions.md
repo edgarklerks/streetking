@@ -1,7 +1,3 @@
-% Model.Functions
-% 
-% 
-
 Model.Functions
 
 [unix\_timestamp](Model-Functions.html#v:unix_timestamp)

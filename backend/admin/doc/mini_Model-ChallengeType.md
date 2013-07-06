@@ -1,7 +1,3 @@
-% Model.ChallengeType
-% 
-% 
-
 Model.ChallengeType
 
 data [ChallengeType](Model-ChallengeType.html#t:ChallengeType)

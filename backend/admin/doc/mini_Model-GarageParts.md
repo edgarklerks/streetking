@@ -1,7 +1,3 @@
-% Model.GarageParts
-% 
-% 
-
 Model.GarageParts
 
 type [MString](Model-GarageParts.html#t:MString)

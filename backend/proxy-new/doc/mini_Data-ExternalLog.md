@@ -1,7 +1,3 @@
-% Data.ExternalLog
-% 
-% 
-
 Data.ExternalLog
 
 type [Address](Data-ExternalLog.html#t:Address)

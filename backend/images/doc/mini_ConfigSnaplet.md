@@ -1,7 +1,3 @@
-% ConfigSnaplet
-% 
-% 
-
 ConfigSnaplet
 
 [initConfig](ConfigSnaplet.html#v:initConfig)

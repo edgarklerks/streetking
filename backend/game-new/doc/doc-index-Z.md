@@ -1,7 +1,3 @@
-% (Index - Z)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,10 +40,9 @@
 
 Index - Z
 
-  ------------ --------------------------------------------
-  zeroCar      [Data.Car](Data-Car.html#v:zeroCar)
-  zipKeyWith   [Data.Tools](Data-Tools.html#v:zipKeyWith)
-  zipRoleSet   [Data.Role](Data-Role.html#v:zipRoleSet)
-  ------------ --------------------------------------------
+||
+|zeroCar|[Data.Car](Data-Car.html#v:zeroCar)|
+|zipKeyWith|[Data.Tools](Data-Tools.html#v:zipKeyWith)|
+|zipRoleSet|[Data.Role](Data-Role.html#v:zipRoleSet)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

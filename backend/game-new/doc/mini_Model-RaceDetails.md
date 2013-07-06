@@ -1,7 +1,3 @@
-% Model.RaceDetails
-% 
-% 
-
 Model.RaceDetails
 
 data [RaceDetails](Model-RaceDetails.html#t:RaceDetails)

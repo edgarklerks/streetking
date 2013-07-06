@@ -1,7 +1,3 @@
-% Data.DatabaseTemplate
-% 
-% 
-
 Data.DatabaseTemplate
 
 data [DTD](Data-DatabaseTemplate.html#t:DTD)

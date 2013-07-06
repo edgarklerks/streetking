@@ -1,7 +1,3 @@
-% Model.RewardLogEvents
-% 
-% 
-
 Model.RewardLogEvents
 
 type [MInteger](Model-RewardLogEvents.html#t:MInteger)

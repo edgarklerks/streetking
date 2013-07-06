@@ -1,7 +1,3 @@
-% Data.Reward
-% 
-% 
-
 Data.Reward
 
 data [Rewards](Data-Reward.html#t:Rewards)

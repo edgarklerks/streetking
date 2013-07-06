@@ -1,7 +1,3 @@
-% LockSnaplet
-% 
-% 
-
 LockSnaplet
 
 data [Lock](LockSnaplet.html#t:Lock)

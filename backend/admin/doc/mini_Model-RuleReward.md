@@ -1,7 +1,3 @@
-% Model.RuleReward
-% 
-% 
-
 Model.RuleReward
 
 data [RuleReward](Model-RuleReward.html#t:RuleReward)

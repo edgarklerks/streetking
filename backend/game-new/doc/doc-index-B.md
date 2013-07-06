@@ -1,7 +1,3 @@
-% (Index - B)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,34 +40,33 @@
 
 Index - B
 
-  ------------------- --------------------------------------------------------------------------------------------------------------
-  Beat                [Data.HeartBeat](Data-HeartBeat.html#t:Beat)
-  between             [Data.Tools](Data-Tools.html#v:between)
-  body                [Model.Notification](Model-Notification.html#v:body)
-  BoolC               [Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC), [ConfigSnaplet](ConfigSnaplet.html#v:BoolC)
-  braking              
-  1 (Function)        [Model.Car](Model-Car.html#v:braking)
-  2 (Function)        [Model.CarInGarage](Model-CarInGarage.html#v:braking)
-  3 (Function)        [Model.CarMarket](Model-CarMarket.html#v:braking)
-  4 (Function)        [Model.CarMinimal](Model-CarMinimal.html#v:braking)
-  5 (Function)        [Data.RaceSectionPerformance](Data-RaceSectionPerformance.html#v:braking)
-  6 (Function)        [Data.Driver](Data-Driver.html#v:braking)
-  7 (Function)        [Data.Car](Data-Car.html#v:braking)
-  8 (Function)        [Data.RacingNew](Data-RacingNew.html#v:braking)
-  brakingDistance     [Data.RacingNew](Data-RacingNew.html#v:brakingDistance)
-  brp                 [Data.Car](Data-Car.html#v:brp)
-  BString             [Model.PreLetter](Model-PreLetter.html#t:BString)
-  buildDecider        [Data.Decider](Data-Decider.html#v:buildDecider)
-  busy\_subject\_id    
-  1 (Function)        [Model.Account](Model-Account.html#v:busy_subject_id)
-  2 (Function)        [Model.AccountProfile](Model-AccountProfile.html#v:busy_subject_id)
-  busy\_timeleft      [Model.AccountProfile](Model-AccountProfile.html#v:busy_timeleft)
-  busy\_type           
-  1 (Function)        [Model.Account](Model-Account.html#v:busy_type)
-  2 (Function)        [Model.AccountProfile](Model-AccountProfile.html#v:busy_type)
-  busy\_until          
-  1 (Function)        [Model.Account](Model-Account.html#v:busy_until)
-  2 (Function)        [Model.AccountProfile](Model-AccountProfile.html#v:busy_until)
-  ------------------- --------------------------------------------------------------------------------------------------------------
+||
+|Beat|[Data.HeartBeat](Data-HeartBeat.html#t:Beat)|
+|between|[Data.Tools](Data-Tools.html#v:between)|
+|body|[Model.Notification](Model-Notification.html#v:body)|
+|BoolC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC), [ConfigSnaplet](ConfigSnaplet.html#v:BoolC)|
+|braking| |
+|1 (Function)|[Model.Car](Model-Car.html#v:braking)|
+|2 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:braking)|
+|3 (Function)|[Model.CarMarket](Model-CarMarket.html#v:braking)|
+|4 (Function)|[Model.CarMinimal](Model-CarMinimal.html#v:braking)|
+|5 (Function)|[Data.RaceSectionPerformance](Data-RaceSectionPerformance.html#v:braking)|
+|6 (Function)|[Data.Driver](Data-Driver.html#v:braking)|
+|7 (Function)|[Data.Car](Data-Car.html#v:braking)|
+|8 (Function)|[Data.RacingNew](Data-RacingNew.html#v:braking)|
+|brakingDistance|[Data.RacingNew](Data-RacingNew.html#v:brakingDistance)|
+|brp|[Data.Car](Data-Car.html#v:brp)|
+|BString|[Model.PreLetter](Model-PreLetter.html#t:BString)|
+|buildDecider|[Data.Decider](Data-Decider.html#v:buildDecider)|
+|busy\_subject\_id| |
+|1 (Function)|[Model.Account](Model-Account.html#v:busy_subject_id)|
+|2 (Function)|[Model.AccountProfile](Model-AccountProfile.html#v:busy_subject_id)|
+|busy\_timeleft|[Model.AccountProfile](Model-AccountProfile.html#v:busy_timeleft)|
+|busy\_type| |
+|1 (Function)|[Model.Account](Model-Account.html#v:busy_type)|
+|2 (Function)|[Model.AccountProfile](Model-AccountProfile.html#v:busy_type)|
+|busy\_until| |
+|1 (Function)|[Model.Account](Model-Account.html#v:busy_until)|
+|2 (Function)|[Model.AccountProfile](Model-AccountProfile.html#v:busy_until)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

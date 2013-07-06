@@ -1,7 +1,3 @@
-% (Index - A)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,46 +37,45 @@
 
 Index - A
 
-  ---------------------- ----------------------------------------------------------------------------------------------------------------
-  Accept                 [Data.InRules](Data-InRules.html#v:Accept), [Data.Conversion](Data-Conversion.html#v:Accept)
-  accept                 [Data.InRules](Data-InRules.html#v:accept), [Data.Conversion](Data-Conversion.html#v:accept)
-  acceptor               [Data.InRules](Data-InRules.html#v:acceptor), [Data.Conversion](Data-Conversion.html#v:acceptor)
-  AccessExclusive        [Data.SqlTransaction](Data-SqlTransaction.html#v:AccessExclusive)
-  AccessShare            [Data.SqlTransaction](Data-SqlTransaction.html#v:AccessShare)
-  adeny                  [Model.General](Model-General.html#v:adeny)
-  aget                   [Model.General](Model-General.html#v:aget)
-  agetlist               [Model.General](Model-General.html#v:agetlist)
-  allowedTypes           [ImageSnapLet](ImageSnapLet.html#v:allowedTypes)
-  aload                  [Model.General](Model-General.html#v:aload)
-  alter                  [Data.InRules](Data-InRules.html#v:alter), [Data.Conversion](Data-Conversion.html#v:alter)
-  alternate              [Data.Tools](Data-Tools.html#v:alternate)
-  And                     
-  1 (Type/Class)         [Data.And](Data-And.html#t:And)
-  2 (Data Constructor)   [Data.Database](Data-Database.html#v:And)
-  and                    [Data.Relation](Data-Relation.html#v:and)
-  andcf                  [Data.Tools](Data-Tools.html#v:andcf)
-  apoint                 [Data.InRules](Data-InRules.html#v:apoint), [Data.Conversion](Data-Conversion.html#v:apoint)
-  App                     
-  1 (Type/Class)         [Application](Application.html#t:App)
-  2 (Data Constructor)   [Application](Application.html#v:App)
-  app                    [Site](Site.html#v:app)
-  AppHandler             [Application](Application.html#t:AppHandler)
-  Application             
-  1 (Type/Class)         [Model.Application](Model-Application.html#t:Application)
-  2 (Data Constructor)   [Model.Application](Model-Application.html#v:Application)
-  ArrayC                 [Config.ConfigFileParser](Config-ConfigFileParser.html#v:ArrayC), [ConfigSnaplet](ConfigSnaplet.html#v:ArrayC)
-  arrayToObj             [Data.InRules](Data-InRules.html#v:arrayToObj)
-  as                     [Data.Relation](Data-Relation.html#v:as)
-  Asc                    [Data.Relation](Data-Relation.html#v:Asc)
-  asc                    [Data.Database](Data-Database.html#v:asc)
-  asReadable             [Data.InRules](Data-InRules.html#v:asReadable), [Data.Conversion](Data-Conversion.html#v:asReadable)
-  assert                 [Data.Tools](Data-Tools.html#v:assert)
-  Assign                 [Data.Database](Data-Database.html#v:Assign)
-  Assignment             [Data.Database](Data-Database.html#t:Assignment)
-  Assignments            [Data.Database](Data-Database.html#t:Assignments)
-  assigns                [Data.Database](Data-Database.html#v:assigns)
-  Assoc                  [Data.InRules](Data-InRules.html#v:Assoc), [Data.Conversion](Data-Conversion.html#v:Assoc)
-  atomical               [Data.SqlTransaction](Data-SqlTransaction.html#v:atomical)
-  ---------------------- ----------------------------------------------------------------------------------------------------------------
+||
+|Accept|[Data.InRules](Data-InRules.html#v:Accept), [Data.Conversion](Data-Conversion.html#v:Accept)|
+|accept|[Data.InRules](Data-InRules.html#v:accept), [Data.Conversion](Data-Conversion.html#v:accept)|
+|acceptor|[Data.InRules](Data-InRules.html#v:acceptor), [Data.Conversion](Data-Conversion.html#v:acceptor)|
+|AccessExclusive|[Data.SqlTransaction](Data-SqlTransaction.html#v:AccessExclusive)|
+|AccessShare|[Data.SqlTransaction](Data-SqlTransaction.html#v:AccessShare)|
+|adeny|[Model.General](Model-General.html#v:adeny)|
+|aget|[Model.General](Model-General.html#v:aget)|
+|agetlist|[Model.General](Model-General.html#v:agetlist)|
+|allowedTypes|[ImageSnapLet](ImageSnapLet.html#v:allowedTypes)|
+|aload|[Model.General](Model-General.html#v:aload)|
+|alter|[Data.InRules](Data-InRules.html#v:alter), [Data.Conversion](Data-Conversion.html#v:alter)|
+|alternate|[Data.Tools](Data-Tools.html#v:alternate)|
+|And| |
+|1 (Type/Class)|[Data.And](Data-And.html#t:And)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:And)|
+|and|[Data.Relation](Data-Relation.html#v:and)|
+|andcf|[Data.Tools](Data-Tools.html#v:andcf)|
+|apoint|[Data.InRules](Data-InRules.html#v:apoint), [Data.Conversion](Data-Conversion.html#v:apoint)|
+|App| |
+|1 (Type/Class)|[Application](Application.html#t:App)|
+|2 (Data Constructor)|[Application](Application.html#v:App)|
+|app|[Site](Site.html#v:app)|
+|AppHandler|[Application](Application.html#t:AppHandler)|
+|Application| |
+|1 (Type/Class)|[Model.Application](Model-Application.html#t:Application)|
+|2 (Data Constructor)|[Model.Application](Model-Application.html#v:Application)|
+|ArrayC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:ArrayC), [ConfigSnaplet](ConfigSnaplet.html#v:ArrayC)|
+|arrayToObj|[Data.InRules](Data-InRules.html#v:arrayToObj)|
+|as|[Data.Relation](Data-Relation.html#v:as)|
+|Asc|[Data.Relation](Data-Relation.html#v:Asc)|
+|asc|[Data.Database](Data-Database.html#v:asc)|
+|asReadable|[Data.InRules](Data-InRules.html#v:asReadable), [Data.Conversion](Data-Conversion.html#v:asReadable)|
+|assert|[Data.Tools](Data-Tools.html#v:assert)|
+|Assign|[Data.Database](Data-Database.html#v:Assign)|
+|Assignment|[Data.Database](Data-Database.html#t:Assignment)|
+|Assignments|[Data.Database](Data-Database.html#t:Assignments)|
+|assigns|[Data.Database](Data-Database.html#v:assigns)|
+|Assoc|[Data.InRules](Data-InRules.html#v:Assoc), [Data.Conversion](Data-Conversion.html#v:Assoc)|
+|atomical|[Data.SqlTransaction](Data-SqlTransaction.html#v:atomical)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

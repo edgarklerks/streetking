@@ -1,7 +1,3 @@
-% Model.RaceReward
-% 
-% 
-
 Model.RaceReward
 
 data [RaceReward](Model-RaceReward.html#t:RaceReward)

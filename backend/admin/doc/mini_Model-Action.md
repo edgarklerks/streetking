@@ -1,7 +1,3 @@
-% Model.Action
-% 
-% 
-
 Model.Action
 
 data [Action](Model-Action.html#t:Action)

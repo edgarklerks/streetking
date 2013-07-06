@@ -1,7 +1,3 @@
-% (Index - X)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,8 +41,7 @@
 
 Index - X
 
-  --- ---------------------------------------------
-  X   [Data.ModelToSVG](Data-ModelToSVG.html#t:X)
-  --- ---------------------------------------------
+||
+|X|[Data.ModelToSVG](Data-ModelToSVG.html#t:X)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

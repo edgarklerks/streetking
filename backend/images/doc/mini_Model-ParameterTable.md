@@ -1,7 +1,3 @@
-% Model.ParameterTable
-% 
-% 
-
 Model.ParameterTable
 
 data [ParameterTable](Model-ParameterTable.html#t:ParameterTable)

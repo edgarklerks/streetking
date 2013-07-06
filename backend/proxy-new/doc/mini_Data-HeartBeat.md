@@ -1,7 +1,3 @@
-% Data.HeartBeat
-% 
-% 
-
 Data.HeartBeat
 
 type [Address](Data-HeartBeat.html#t:Address)

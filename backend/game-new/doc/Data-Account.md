@@ -1,7 +1,3 @@
-% Data.Account
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -15,9 +11,7 @@ Data.Account
 
 Synopsis
 
--   [addRespect](#v:addRespect) :: Integer -\> Integer -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection) ()
+-   [addRespect](#v:addRespect) :: Integer -\> Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) ()
 
 Documentation
 =============
@@ -34,8 +28,7 @@ user id
 
 respect amount
 
--\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) ()
+-\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) ()
 
  
 

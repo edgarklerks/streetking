@@ -1,7 +1,3 @@
-% (Index - W)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,15 +37,14 @@
 
 Index - W
 
-  ------------------ ----------------------------------------------------------------------
-  waitUnless         [Data.SqlTransaction](Data-SqlTransaction.html#v:waitUnless)
-  waitWhen           [Data.SqlTransaction](Data-SqlTransaction.html#v:waitWhen)
-  whenM              [Data.Tools](Data-Tools.html#v:whenM)
-  withConnection     [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:withConnection)
-  withDefault        [Data.InRules](Data-InRules.html#v:withDefault)
-  withEncoding       [Data.SqlTransaction](Data-SqlTransaction.html#v:withEncoding)
-  withLockBlock      [LockSnaplet](LockSnaplet.html#v:withLockBlock)
-  withLockNonBlock   [LockSnaplet](LockSnaplet.html#v:withLockNonBlock)
-  ------------------ ----------------------------------------------------------------------
+||
+|waitUnless|[Data.SqlTransaction](Data-SqlTransaction.html#v:waitUnless)|
+|waitWhen|[Data.SqlTransaction](Data-SqlTransaction.html#v:waitWhen)|
+|whenM|[Data.Tools](Data-Tools.html#v:whenM)|
+|withConnection|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:withConnection)|
+|withDefault|[Data.InRules](Data-InRules.html#v:withDefault)|
+|withEncoding|[Data.SqlTransaction](Data-SqlTransaction.html#v:withEncoding)|
+|withLockBlock|[LockSnaplet](LockSnaplet.html#v:withLockBlock)|
+|withLockNonBlock|[LockSnaplet](LockSnaplet.html#v:withLockNonBlock)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

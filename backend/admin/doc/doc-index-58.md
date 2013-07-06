@@ -1,7 +1,3 @@
-% (Index - :)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,9 +41,8 @@
 
 Index - :
 
-  ----- -------------------------------------------------------
-  :+:   [Data.Decider](Data-Decider.html#t::-43-:)
-  :\>   [Data.PriorityQueue](Data-PriorityQueue.html#v::-62-)
-  ----- -------------------------------------------------------
+||
+|:+:|[Data.Decider](Data-Decider.html#t::-43-:)|
+|:\>|[Data.PriorityQueue](Data-PriorityQueue.html#v::-62-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

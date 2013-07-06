@@ -1,7 +1,3 @@
-% (Index - G)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,46 +38,45 @@
 
 Index - G
 
-  ----------------------- --------------------------------------------------------------------------
-  genAll                  [Model.TH](Model-TH.html#v:genAll)
-  genAllId                [Model.TH](Model-TH.html#v:genAllId)
-  genDatabase             [Model.TH](Model-TH.html#v:genDatabase)
-  genDefaultInstance      [Model.TH](Model-TH.html#v:genDefaultInstance)
-  genDependenciesUpdate   [Model.TH](Model-TH.html#v:genDependenciesUpdate)
-  genInstance             [Model.TH](Model-TH.html#v:genInstance)
-  genInstanceFromInRule   [Model.TH](Model-TH.html#v:genInstanceFromInRule)
-  genInstanceFromJSON     [Model.TH](Model-TH.html#v:genInstanceFromJSON)
-  genInstanceToInRule     [Model.TH](Model-TH.html#v:genInstanceToInRule)
-  genInstanceToJSON       [Model.TH](Model-TH.html#v:genInstanceToJSON)
-  genMapableRecord        [Model.TH](Model-TH.html#v:genMapableRecord)
-  genRecord               [Model.TH](Model-TH.html#v:genRecord)
-  genRelation             [Model.TH](Model-TH.html#v:genRelation)
-  genRelationSchema       [Model.TH](Model-TH.html#v:genRelationSchema)
-  geometry                [Data.Database](Data-Database.html#v:geometry)
-  Get                     [Data.Role](Data-Role.html#v:Get), [RoleSnaplet](RoleSnaplet.html#v:Get)
-  get                     [Data.SqlTransaction](Data-SqlTransaction.html#v:get)
-  getAnyColumn            [Model.TH](Model-TH.html#v:getAnyColumn)
-  getAssoc                [Data.Relation](Data-Relation.html#v:getAssoc)
-  getCommand              [ProtoExtended](ProtoExtended.html#v:getCommand)
-  getConnection           [Data.ConnectionPool](Data-ConnectionPool.html#v:getConnection)
-  getDatabase             [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:getDatabase)
-  getLock                 [LockSnaplet](LockSnaplet.html#v:getLock)
-  getQuery                [ProtoExtended](ProtoExtended.html#v:getQuery)
-  getResult                
-  1 (Function)            [ProtoExtended](ProtoExtended.html#v:getResult)
-  2 (Function)            [Data.Relation](Data-Relation.html#v:getResult)
-  getRoles                 
-  1 (Function)            [Data.Role](Data-Role.html#v:getRoles)
-  2 (Function)            [RoleSnaplet](RoleSnaplet.html#v:getRoles)
-  getTimeStamp            [Data.TimedMap](Data-TimedMap.html#v:getTimeStamp)
-  getTTL                  [ProtoExtended](ProtoExtended.html#v:getTTL)
-  getUniform              [RandomSnaplet](RandomSnaplet.html#v:getUniform)
-  getUniformR             [RandomSnaplet](RandomSnaplet.html#v:getUniformR)
-  getUniqueKey            [RandomSnaplet](RandomSnaplet.html#v:getUniqueKey)
-  getUser                 [Data.SqlTransaction](Data-SqlTransaction.html#v:getUser)
-  get\_ic\_config         [MemServerAsyncTest](MemServerAsyncTest.html#v:get_ic_config)
-  get\_pc\_config         [MemServerAsyncTest](MemServerAsyncTest.html#v:get_pc_config)
-  get\_uc\_config         [MemServerAsyncTest](MemServerAsyncTest.html#v:get_uc_config)
-  ----------------------- --------------------------------------------------------------------------
+||
+|genAll|[Model.TH](Model-TH.html#v:genAll)|
+|genAllId|[Model.TH](Model-TH.html#v:genAllId)|
+|genDatabase|[Model.TH](Model-TH.html#v:genDatabase)|
+|genDefaultInstance|[Model.TH](Model-TH.html#v:genDefaultInstance)|
+|genDependenciesUpdate|[Model.TH](Model-TH.html#v:genDependenciesUpdate)|
+|genInstance|[Model.TH](Model-TH.html#v:genInstance)|
+|genInstanceFromInRule|[Model.TH](Model-TH.html#v:genInstanceFromInRule)|
+|genInstanceFromJSON|[Model.TH](Model-TH.html#v:genInstanceFromJSON)|
+|genInstanceToInRule|[Model.TH](Model-TH.html#v:genInstanceToInRule)|
+|genInstanceToJSON|[Model.TH](Model-TH.html#v:genInstanceToJSON)|
+|genMapableRecord|[Model.TH](Model-TH.html#v:genMapableRecord)|
+|genRecord|[Model.TH](Model-TH.html#v:genRecord)|
+|genRelation|[Model.TH](Model-TH.html#v:genRelation)|
+|genRelationSchema|[Model.TH](Model-TH.html#v:genRelationSchema)|
+|geometry|[Data.Database](Data-Database.html#v:geometry)|
+|Get|[Data.Role](Data-Role.html#v:Get), [RoleSnaplet](RoleSnaplet.html#v:Get)|
+|get|[Data.SqlTransaction](Data-SqlTransaction.html#v:get)|
+|getAnyColumn|[Model.TH](Model-TH.html#v:getAnyColumn)|
+|getAssoc|[Data.Relation](Data-Relation.html#v:getAssoc)|
+|getCommand|[ProtoExtended](ProtoExtended.html#v:getCommand)|
+|getConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:getConnection)|
+|getDatabase|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:getDatabase)|
+|getLock|[LockSnaplet](LockSnaplet.html#v:getLock)|
+|getQuery|[ProtoExtended](ProtoExtended.html#v:getQuery)|
+|getResult| |
+|1 (Function)|[ProtoExtended](ProtoExtended.html#v:getResult)|
+|2 (Function)|[Data.Relation](Data-Relation.html#v:getResult)|
+|getRoles| |
+|1 (Function)|[Data.Role](Data-Role.html#v:getRoles)|
+|2 (Function)|[RoleSnaplet](RoleSnaplet.html#v:getRoles)|
+|getTimeStamp|[Data.TimedMap](Data-TimedMap.html#v:getTimeStamp)|
+|getTTL|[ProtoExtended](ProtoExtended.html#v:getTTL)|
+|getUniform|[RandomSnaplet](RandomSnaplet.html#v:getUniform)|
+|getUniformR|[RandomSnaplet](RandomSnaplet.html#v:getUniformR)|
+|getUniqueKey|[RandomSnaplet](RandomSnaplet.html#v:getUniqueKey)|
+|getUser|[Data.SqlTransaction](Data-SqlTransaction.html#v:getUser)|
+|get\_ic\_config|[MemServerAsyncTest](MemServerAsyncTest.html#v:get_ic_config)|
+|get\_pc\_config|[MemServerAsyncTest](MemServerAsyncTest.html#v:get_pc_config)|
+|get\_uc\_config|[MemServerAsyncTest](MemServerAsyncTest.html#v:get_uc_config)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% Model.PartDetails
-% 
-% 
-
 Model.PartDetails
 
 type [MInteger](Model-PartDetails.html#t:MInteger)

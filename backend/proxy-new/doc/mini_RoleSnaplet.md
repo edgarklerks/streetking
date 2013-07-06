@@ -1,7 +1,3 @@
-% RoleSnaplet
-% 
-% 
-
 RoleSnaplet
 
 [may](RoleSnaplet.html#v:may)

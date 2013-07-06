@@ -1,7 +1,3 @@
-% (Index - N)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,71 +41,70 @@
 
 Index - N
 
-  ---------------------- ------------------------------------------------------------------------------------------
-  Name                   [Data.ModelToSVG](Data-ModelToSVG.html#t:Name)
-  name                    
-  1 (Function)           [Model.PartDetails](Model-PartDetails.html#v:name)
-  2 (Function)           [Model.Tournament](Model-Tournament.html#v:name)
-  3 (Function)           [Model.TournamentType](Model-TournamentType.html#v:name)
-  4 (Function)           [Model.Reward](Model-Reward.html#v:name)
-  5 (Function)           [Model.RuleReward](Model-RuleReward.html#v:name)
-  6 (Function)           [Model.Action](Model-Action.html#v:name)
-  7 (Function)           [Model.Rule](Model-Rule.html#v:name)
-  8 (Function)           [Model.RewardLog](Model-RewardLog.html#v:name)
-  9 (Function)           [Model.PartType](Model-PartType.html#v:name)
-  10 (Function)          [Model.PartMarket](Model-PartMarket.html#v:name)
-  11 (Function)          [Model.ParameterTable](Model-ParameterTable.html#v:name)
-  12 (Function)          [Model.Personnel](Model-Personnel.html#v:name)
-  13 (Function)          [Model.Notification](Model-Notification.html#v:name)
-  14 (Function)          [Model.GarageParts](Model-GarageParts.html#v:name)
-  15 (Function)          [Model.Garage](Model-Garage.html#v:name)
-  16 (Function)          [Model.Continent](Model-Continent.html#v:name)
-  17 (Function)          [Model.Country](Model-Country.html#v:name)
-  18 (Function)          [Model.City](Model-City.html#v:name)
-  19 (Function)          [Model.Track](Model-Track.html#v:name)
-  20 (Function)          [Model.ChallengeType](Model-ChallengeType.html#v:name)
-  21 (Function)          [Model.CarInstanceParts](Model-CarInstanceParts.html#v:name)
-  22 (Function)          [Model.PartModifier](Model-PartModifier.html#v:name)
-  23 (Function)          [Model.CarInGarage](Model-CarInGarage.html#v:name)
-  24 (Function)          [Model.CarMinimal](Model-CarMinimal.html#v:name)
-  25 (Function)          [Model.Car](Model-Car.html#v:name)
-  natural                [Data.Tools](Data-Tools.html#v:natural)
-  nempty                 [Model.General](Model-General.html#v:nempty)
-  new                    [Data.LimitList](Data-LimitList.html#v:new)
-  newFuture              [Data.SqlTransaction](Data-SqlTransaction.html#v:newFuture)
-  new\_price             [Model.CarInstanceParts](Model-CarInstanceParts.html#v:new_price)
-  Next                   [Data.InRules](Data-InRules.html#v:Next), [Data.Conversion](Data-Conversion.html#v:Next)
-  nhead                  [Model.General](Model-General.html#v:nhead)
-  nickname                
-  1 (Function)           [Model.AccountProfile](Model-AccountProfile.html#v:nickname)
-  2 (Function)           [Model.AccountGarage](Model-AccountGarage.html#v:nickname)
-  3 (Function)           [Model.Account](Model-Account.html#v:nickname)
-  4 (Function)           [Model.AccountProfileMin](Model-AccountProfileMin.html#v:nickname)
-  Nil                    [Data.PriorityQueue](Data-PriorityQueue.html#v:Nil)
-  ninsert                [Model.General](Model-General.html#v:ninsert)
-  nitrous                 
-  1 (Function)           [Model.CarInGarage](Model-CarInGarage.html#v:nitrous)
-  2 (Function)           [Model.CarMinimal](Model-CarMinimal.html#v:nitrous)
-  nlookup                [Model.General](Model-General.html#v:nlookup)
-  None                    
-  1 (Data Constructor)   [Data.InRules](Data-InRules.html#v:None), [Data.Conversion](Data-Conversion.html#v:None)
-  2 (Data Constructor)   [Data.ModelToSVG](Data-ModelToSVG.html#v:None)
-  noobCar                [Data.Car](Data-Car.html#v:noobCar)
-  Nop                    [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:Nop)
-  nos                     
-  1 (Function)           [Model.CarInGarage](Model-CarInGarage.html#v:nos)
-  2 (Function)           [Model.CarMinimal](Model-CarMinimal.html#v:nos)
-  3 (Function)           [Data.Car](Data-Car.html#v:nos)
-  4 (Function)           [Model.Car](Model-Car.html#v:nos)
-  not                    [Data.Relation](Data-Relation.html#v:not)
-  Notification            
-  1 (Type/Class)         [Model.Notification](Model-Notification.html#t:Notification)
-  2 (Data Constructor)   [Model.Notification](Model-Notification.html#v:Notification)
-  NotificationParam      [Notifications](Notifications.html#t:NotificationParam)
-  notnull                [Data.Relation](Data-Relation.html#v:notnull)
-  NullLimit              [Data.Database](Data-Database.html#v:NullLimit)
-  NullOffset             [Data.Database](Data-Database.html#v:NullOffset)
-  number                 [Model.MenuModel](Model-MenuModel.html#v:number)
-  ---------------------- ------------------------------------------------------------------------------------------
+||
+|Name|[Data.ModelToSVG](Data-ModelToSVG.html#t:Name)|
+|name| |
+|1 (Function)|[Model.PartDetails](Model-PartDetails.html#v:name)|
+|2 (Function)|[Model.Tournament](Model-Tournament.html#v:name)|
+|3 (Function)|[Model.TournamentType](Model-TournamentType.html#v:name)|
+|4 (Function)|[Model.Reward](Model-Reward.html#v:name)|
+|5 (Function)|[Model.RuleReward](Model-RuleReward.html#v:name)|
+|6 (Function)|[Model.Action](Model-Action.html#v:name)|
+|7 (Function)|[Model.Rule](Model-Rule.html#v:name)|
+|8 (Function)|[Model.RewardLog](Model-RewardLog.html#v:name)|
+|9 (Function)|[Model.PartType](Model-PartType.html#v:name)|
+|10 (Function)|[Model.PartMarket](Model-PartMarket.html#v:name)|
+|11 (Function)|[Model.ParameterTable](Model-ParameterTable.html#v:name)|
+|12 (Function)|[Model.Personnel](Model-Personnel.html#v:name)|
+|13 (Function)|[Model.Notification](Model-Notification.html#v:name)|
+|14 (Function)|[Model.GarageParts](Model-GarageParts.html#v:name)|
+|15 (Function)|[Model.Garage](Model-Garage.html#v:name)|
+|16 (Function)|[Model.Continent](Model-Continent.html#v:name)|
+|17 (Function)|[Model.Country](Model-Country.html#v:name)|
+|18 (Function)|[Model.City](Model-City.html#v:name)|
+|19 (Function)|[Model.Track](Model-Track.html#v:name)|
+|20 (Function)|[Model.ChallengeType](Model-ChallengeType.html#v:name)|
+|21 (Function)|[Model.CarInstanceParts](Model-CarInstanceParts.html#v:name)|
+|22 (Function)|[Model.PartModifier](Model-PartModifier.html#v:name)|
+|23 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:name)|
+|24 (Function)|[Model.CarMinimal](Model-CarMinimal.html#v:name)|
+|25 (Function)|[Model.Car](Model-Car.html#v:name)|
+|natural|[Data.Tools](Data-Tools.html#v:natural)|
+|nempty|[Model.General](Model-General.html#v:nempty)|
+|new|[Data.LimitList](Data-LimitList.html#v:new)|
+|newFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:newFuture)|
+|new\_price|[Model.CarInstanceParts](Model-CarInstanceParts.html#v:new_price)|
+|Next|[Data.InRules](Data-InRules.html#v:Next), [Data.Conversion](Data-Conversion.html#v:Next)|
+|nhead|[Model.General](Model-General.html#v:nhead)|
+|nickname| |
+|1 (Function)|[Model.AccountProfile](Model-AccountProfile.html#v:nickname)|
+|2 (Function)|[Model.AccountGarage](Model-AccountGarage.html#v:nickname)|
+|3 (Function)|[Model.Account](Model-Account.html#v:nickname)|
+|4 (Function)|[Model.AccountProfileMin](Model-AccountProfileMin.html#v:nickname)|
+|Nil|[Data.PriorityQueue](Data-PriorityQueue.html#v:Nil)|
+|ninsert|[Model.General](Model-General.html#v:ninsert)|
+|nitrous| |
+|1 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:nitrous)|
+|2 (Function)|[Model.CarMinimal](Model-CarMinimal.html#v:nitrous)|
+|nlookup|[Model.General](Model-General.html#v:nlookup)|
+|None| |
+|1 (Data Constructor)|[Data.InRules](Data-InRules.html#v:None), [Data.Conversion](Data-Conversion.html#v:None)|
+|2 (Data Constructor)|[Data.ModelToSVG](Data-ModelToSVG.html#v:None)|
+|noobCar|[Data.Car](Data-Car.html#v:noobCar)|
+|Nop|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:Nop)|
+|nos| |
+|1 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:nos)|
+|2 (Function)|[Model.CarMinimal](Model-CarMinimal.html#v:nos)|
+|3 (Function)|[Data.Car](Data-Car.html#v:nos)|
+|4 (Function)|[Model.Car](Model-Car.html#v:nos)|
+|not|[Data.Relation](Data-Relation.html#v:not)|
+|Notification| |
+|1 (Type/Class)|[Model.Notification](Model-Notification.html#t:Notification)|
+|2 (Data Constructor)|[Model.Notification](Model-Notification.html#v:Notification)|
+|NotificationParam|[Notifications](Notifications.html#t:NotificationParam)|
+|notnull|[Data.Relation](Data-Relation.html#v:notnull)|
+|NullLimit|[Data.Database](Data-Database.html#v:NullLimit)|
+|NullOffset|[Data.Database](Data-Database.html#v:NullOffset)|
+|number|[Model.MenuModel](Model-MenuModel.html#v:number)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

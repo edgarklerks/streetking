@@ -1,7 +1,3 @@
-% Model.PartInstance
-% 
-% 
-
 Model.PartInstance
 
 data [PartInstance](Model-PartInstance.html#t:PartInstance)

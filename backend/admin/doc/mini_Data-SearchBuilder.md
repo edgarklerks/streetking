@@ -1,7 +1,3 @@
-% Data.SearchBuilder
-% 
-% 
-
 Data.SearchBuilder
 
 type [Sortable](Data-SearchBuilder.html#t:Sortable)

@@ -1,7 +1,3 @@
-% Data.Task
-% 
-% 
-
 Data.Task
 
 data [Action](Data-Task.html#t:Action)

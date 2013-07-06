@@ -1,7 +1,3 @@
-% (Index - E)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,22 +37,21 @@
 
 Index - E
 
-  ----------------------- --------------------------------------------------------------------------------------------------
-  email                   [Data.Tools](Data-Tools.html#v:email)
-  Empty                   [Data.ConnectionPool](Data-ConnectionPool.html#v:Empty)
-  emptyConnectionBucket   [Data.ConnectionPool](Data-ConnectionPool.html#v:emptyConnectionBucket)
-  emptyFuture             [Data.SqlTransaction](Data-SqlTransaction.html#v:emptyFuture)
-  emptyObj                [Data.InRules](Data-InRules.html#v:emptyObj), [Data.Conversion](Data-Conversion.html#v:emptyObj)
-  enclose                 [Data.Tools](Data-Tools.html#v:enclose)
-  encWith                 [Data.Tools](Data-Tools.html#v:encWith)
-  escInChar               [Data.InRules](Data-InRules.html#v:escInChar)
-  escInStr                [Data.InRules](Data-InRules.html#v:escInStr)
-  execute                 [Data.SqlTransaction](Data-SqlTransaction.html#v:execute)
-  executeMany             [Data.SqlTransaction](Data-SqlTransaction.html#v:executeMany)
-  executeRaw              [Data.SqlTransaction](Data-SqlTransaction.html#v:executeRaw)
-  express                 [Data.Database](Data-Database.html#v:express)
-  Expressable             [Data.Database](Data-Database.html#t:Expressable)
-  Expression              [Data.Database](Data-Database.html#t:Expression)
-  ----------------------- --------------------------------------------------------------------------------------------------
+||
+|email|[Data.Tools](Data-Tools.html#v:email)|
+|Empty|[Data.ConnectionPool](Data-ConnectionPool.html#v:Empty)|
+|emptyConnectionBucket|[Data.ConnectionPool](Data-ConnectionPool.html#v:emptyConnectionBucket)|
+|emptyFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:emptyFuture)|
+|emptyObj|[Data.InRules](Data-InRules.html#v:emptyObj), [Data.Conversion](Data-Conversion.html#v:emptyObj)|
+|enclose|[Data.Tools](Data-Tools.html#v:enclose)|
+|encWith|[Data.Tools](Data-Tools.html#v:encWith)|
+|escInChar|[Data.InRules](Data-InRules.html#v:escInChar)|
+|escInStr|[Data.InRules](Data-InRules.html#v:escInStr)|
+|execute|[Data.SqlTransaction](Data-SqlTransaction.html#v:execute)|
+|executeMany|[Data.SqlTransaction](Data-SqlTransaction.html#v:executeMany)|
+|executeRaw|[Data.SqlTransaction](Data-SqlTransaction.html#v:executeRaw)|
+|express|[Data.Database](Data-Database.html#v:express)|
+|Expressable|[Data.Database](Data-Database.html#t:Expressable)|
+|Expression|[Data.Database](Data-Database.html#t:Expression)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

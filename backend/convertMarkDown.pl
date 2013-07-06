@@ -39,7 +39,7 @@ sub convert {
     my $files = shift;
     for my $file(@$files){
         my ($name, $ext) = split(/\./, $file);
-        system('pandoc -f html -t markdown -s ' . $file . ' -o ' . "$name.md");
+        system('pandoc -f html -t markdown_github -s ' . $file . ' -o ' . "$name.md");
 
     }
 }

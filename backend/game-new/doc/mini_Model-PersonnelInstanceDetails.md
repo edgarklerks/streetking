@@ -1,13 +1,8 @@
-% Model.PersonnelInstanceDetails
-% 
-% 
-
 Model.PersonnelInstanceDetails
 
 type [MInteger](Model-PersonnelInstanceDetails.html#t:MInteger)
 
-data
-[PersonnelInstanceDetails](Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails)
+data [PersonnelInstanceDetails](Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails)
 
 [relation](Model-PersonnelInstanceDetails.html#v:relation)
 

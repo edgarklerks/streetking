@@ -1,7 +1,3 @@
-% (Index - V)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,31 +38,30 @@
 
 Index - V
 
-  ---------------------- --------------------------------------------------------------------------------------------------------
-  validObject            [Data.InRules](Data-InRules.html#v:validObject), [Data.Conversion](Data-Conversion.html#v:validObject)
-  Value                   
-  1 (Data Constructor)   [Data.MemTimeState](Data-MemTimeState.html#v:Value)
-  2 (Type/Class)         [Data.Database](Data-Database.html#t:Value)
-  Values                 [Data.Database](Data-Database.html#t:Values)
-  values                 [Data.Database](Data-Database.html#v:values)
-  Var                    [Config.ConfigFileParser](Config-ConfigFileParser.html#v:Var)
-  Variate                [RandomSnaplet](RandomSnaplet.html#t:Variate)
-  Version                [ProtoExtended](ProtoExtended.html#v:Version)
-  versionConst           [ProtoExtended](ProtoExtended.html#v:versionConst)
-  VersionMisMatch        [ProtoExtended](ProtoExtended.html#v:VersionMisMatch)
-  versionMismatch        [ProtoExtended](ProtoExtended.html#v:versionMismatch)
-  viaReadable            [Data.InRules](Data-InRules.html#v:viaReadable), [Data.Conversion](Data-Conversion.html#v:viaReadable)
-  view                    
-  1 (Function)           [Data.PriorityQueue](Data-PriorityQueue.html#v:view)
-  2 (Function)           [Data.Relation](Data-Relation.html#v:view)
-  viewKind               [Data.InRules](Data-InRules.html#v:viewKind), [Data.Conversion](Data-Conversion.html#v:viewKind)
-  ViewMin                [Data.PriorityQueue](Data-PriorityQueue.html#t:ViewMin)
-  viewOpaque             [Data.Role](Data-Role.html#v:viewOpaque)
-  voidRestore            [Data.Role](Data-Role.html#v:voidRestore)
-  voidStore              [Data.Role](Data-Role.html#v:voidStore)
-  vsepB                  [Data.Role](Data-Role.html#v:vsepB)
-  vsepH                  [Data.Role](Data-Role.html#v:vsepH)
-  vsepH0                 [Data.Role](Data-Role.html#v:vsepH0)
-  ---------------------- --------------------------------------------------------------------------------------------------------
+||
+|validObject|[Data.InRules](Data-InRules.html#v:validObject), [Data.Conversion](Data-Conversion.html#v:validObject)|
+|Value| |
+|1 (Data Constructor)|[Data.MemTimeState](Data-MemTimeState.html#v:Value)|
+|2 (Type/Class)|[Data.Database](Data-Database.html#t:Value)|
+|Values|[Data.Database](Data-Database.html#t:Values)|
+|values|[Data.Database](Data-Database.html#v:values)|
+|Var|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:Var)|
+|Variate|[RandomSnaplet](RandomSnaplet.html#t:Variate)|
+|Version|[ProtoExtended](ProtoExtended.html#v:Version)|
+|versionConst|[ProtoExtended](ProtoExtended.html#v:versionConst)|
+|VersionMisMatch|[ProtoExtended](ProtoExtended.html#v:VersionMisMatch)|
+|versionMismatch|[ProtoExtended](ProtoExtended.html#v:versionMismatch)|
+|viaReadable|[Data.InRules](Data-InRules.html#v:viaReadable), [Data.Conversion](Data-Conversion.html#v:viaReadable)|
+|view| |
+|1 (Function)|[Data.PriorityQueue](Data-PriorityQueue.html#v:view)|
+|2 (Function)|[Data.Relation](Data-Relation.html#v:view)|
+|viewKind|[Data.InRules](Data-InRules.html#v:viewKind), [Data.Conversion](Data-Conversion.html#v:viewKind)|
+|ViewMin|[Data.PriorityQueue](Data-PriorityQueue.html#t:ViewMin)|
+|viewOpaque|[Data.Role](Data-Role.html#v:viewOpaque)|
+|voidRestore|[Data.Role](Data-Role.html#v:voidRestore)|
+|voidStore|[Data.Role](Data-Role.html#v:voidStore)|
+|vsepB|[Data.Role](Data-Role.html#v:vsepB)|
+|vsepH|[Data.Role](Data-Role.html#v:vsepH)|
+|vsepH0|[Data.Role](Data-Role.html#v:vsepH0)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

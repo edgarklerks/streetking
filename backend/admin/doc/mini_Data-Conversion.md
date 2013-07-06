@@ -1,7 +1,3 @@
-% Data.Conversion
-% 
-% 
-
 Data.Conversion
 
 [(.\>)](Data-Conversion.html#v:.-62-)

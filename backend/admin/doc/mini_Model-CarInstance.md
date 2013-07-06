@@ -1,7 +1,3 @@
-% Model.CarInstance
-% 
-% 
-
 Model.CarInstance
 
 type [MInteger](Model-CarInstance.html#t:MInteger)

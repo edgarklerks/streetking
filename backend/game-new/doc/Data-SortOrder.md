@@ -1,7 +1,3 @@
-% Data.SortOrder
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -20,46 +16,39 @@ data SortOrder
 
 Constructors
 
-  ---------------------------------------------------- ---
-  OrderBy String [Dir](Data-SortOrder.html#t:Dir)       
-  Col [[SortOrder](Data-SortOrder.html#t:SortOrder)]    
-  ---------------------------------------------------- ---
+||
+|OrderBy String [Dir](Data-SortOrder.html#t:Dir)| |
+|Col [[SortOrder](Data-SortOrder.html#t:SortOrder)]| |
 
 Instances
 
-  --------------------------------------------------- ---
-  Show [SortOrder](Data-SortOrder.html#t:SortOrder)    
-  --------------------------------------------------- ---
+||
+|Show [SortOrder](Data-SortOrder.html#t:SortOrder)| |
 
 data Dir
 
 Constructors
 
-  ------ ---
-  Asc     
-  Desc    
-  ------ ---
+||
+|Asc| |
+|Desc| |
 
 Instances
 
-  --------------------------------------- ---
-  Show [Dir](Data-SortOrder.html#t:Dir)    
-  --------------------------------------- ---
+||
+|Show [Dir](Data-SortOrder.html#t:Dir)| |
 
 rtp :: [Dir](Data-SortOrder.html#t:Dir) -\> Bool
 
-sortOrder :: [SortOrder](Data-SortOrder.html#t:SortOrder) -\> [String]
--\> Either String [Orders](Data-Database.html#t:Orders)
+sortOrder :: [SortOrder](Data-SortOrder.html#t:SortOrder) -\> [String] -\> Either String [Orders](Data-Database.html#t:Orders)
 
-orderby :: String -\> [Dir](Data-SortOrder.html#t:Dir) -\>
-[SortOrder](Data-SortOrder.html#t:SortOrder)
+orderby :: String -\> [Dir](Data-SortOrder.html#t:Dir) -\> [SortOrder](Data-SortOrder.html#t:SortOrder)
 
 desc :: [Dir](Data-SortOrder.html#t:Dir)
 
 asc :: [Dir](Data-SortOrder.html#t:Dir)
 
-getSortOrder :: String -\> Either String
-[SortOrder](Data-SortOrder.html#t:SortOrder)
+getSortOrder :: String -\> Either String [SortOrder](Data-SortOrder.html#t:SortOrder)
 
 startp :: Parser [SortOrder](Data-SortOrder.html#t:SortOrder)
 

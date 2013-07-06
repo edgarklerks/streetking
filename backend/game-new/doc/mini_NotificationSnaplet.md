@@ -1,7 +1,3 @@
-% NotificationSnaplet
-% 
-% 
-
 NotificationSnaplet
 
 [sendLetter](NotificationSnaplet.html#v:sendLetter)

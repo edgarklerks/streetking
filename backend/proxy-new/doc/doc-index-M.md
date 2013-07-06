@@ -1,7 +1,3 @@
-% (Index - M)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,29 +38,28 @@
 
 Index - M
 
-  ---------------- -------------------------------------------------------------
-  Mapable          [Model.General](Model-General.html#t:Mapable)
-  mapWithKey       [Data.InRules](Data-InRules.html#v:mapWithKey)
-  maxl             [Data.Tools](Data-Tools.html#v:maxl)
-  may               
-  1 (Function)     [Data.Role](Data-Role.html#v:may)
-  2 (Function)     [RoleSnaplet](RoleSnaplet.html#v:may)
-  may'             [Data.Role](Data-Role.html#v:may-39-)
-  mco              [Model.General](Model-General.html#v:mco)
-  MemState         [Data.MemTimeState](Data-MemTimeState.html#t:MemState)
-  mfp              [Model.General](Model-General.html#v:mfp)
-  minl             [Data.Tools](Data-Tools.html#v:minl)
-  MissingRouting   [ProtoExtended](ProtoExtended.html#v:MissingRouting)
-  missingRouting   [ProtoExtended](ProtoExtended.html#v:missingRouting)
-  mkCFilter        [Data.Tools](Data-Tools.html#v:mkCFilter)
-  mkCRegex         [Data.Tools](Data-Tools.html#v:mkCRegex)
-  mkFromInRule     [Model.TH](Model-TH.html#v:mkFromInRule)
-  mkParser         [Model.TH](Model-TH.html#v:mkParser)
-  mkToInRule       [Model.TH](Model-TH.html#v:mkToInRule)
-  mkToJson         [Model.TH](Model-TH.html#v:mkToJson)
-  mlookup          [Model.General](Model-General.html#v:mlookup)
-  modifysTVar      [MemServerAsyncTest](MemServerAsyncTest.html#v:modifysTVar)
-  must             [Data.Tools](Data-Tools.html#v:must)
-  ---------------- -------------------------------------------------------------
+||
+|Mapable|[Model.General](Model-General.html#t:Mapable)|
+|mapWithKey|[Data.InRules](Data-InRules.html#v:mapWithKey)|
+|maxl|[Data.Tools](Data-Tools.html#v:maxl)|
+|may| |
+|1 (Function)|[Data.Role](Data-Role.html#v:may)|
+|2 (Function)|[RoleSnaplet](RoleSnaplet.html#v:may)|
+|may'|[Data.Role](Data-Role.html#v:may-39-)|
+|mco|[Model.General](Model-General.html#v:mco)|
+|MemState|[Data.MemTimeState](Data-MemTimeState.html#t:MemState)|
+|mfp|[Model.General](Model-General.html#v:mfp)|
+|minl|[Data.Tools](Data-Tools.html#v:minl)|
+|MissingRouting|[ProtoExtended](ProtoExtended.html#v:MissingRouting)|
+|missingRouting|[ProtoExtended](ProtoExtended.html#v:missingRouting)|
+|mkCFilter|[Data.Tools](Data-Tools.html#v:mkCFilter)|
+|mkCRegex|[Data.Tools](Data-Tools.html#v:mkCRegex)|
+|mkFromInRule|[Model.TH](Model-TH.html#v:mkFromInRule)|
+|mkParser|[Model.TH](Model-TH.html#v:mkParser)|
+|mkToInRule|[Model.TH](Model-TH.html#v:mkToInRule)|
+|mkToJson|[Model.TH](Model-TH.html#v:mkToJson)|
+|mlookup|[Model.General](Model-General.html#v:mlookup)|
+|modifysTVar|[MemServerAsyncTest](MemServerAsyncTest.html#v:modifysTVar)|
+|must|[Data.Tools](Data-Tools.html#v:must)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

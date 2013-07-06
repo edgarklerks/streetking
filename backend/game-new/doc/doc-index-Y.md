@@ -1,7 +1,3 @@
-% (Index - Y)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,13 +40,12 @@
 
 Index - Y
 
-  -------------- ----------------------------------------------------------
-  year            
-  1 (Function)   [Model.Car](Model-Car.html#v:year)
-  2 (Function)   [Model.CarInGarage](Model-CarInGarage.html#v:year)
-  3 (Function)   [Model.CarMarket](Model-CarMarket.html#v:year)
-  4 (Function)   [Model.CarMinimal](Model-CarMinimal.html#v:year)
-  5 (Function)   [Model.MarketPlaceCar](Model-MarketPlaceCar.html#v:year)
-  -------------- ----------------------------------------------------------
+||
+|year| |
+|1 (Function)|[Model.Car](Model-Car.html#v:year)|
+|2 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:year)|
+|3 (Function)|[Model.CarMarket](Model-CarMarket.html#v:year)|
+|4 (Function)|[Model.CarMinimal](Model-CarMinimal.html#v:year)|
+|5 (Function)|[Model.MarketPlaceCar](Model-MarketPlaceCar.html#v:year)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

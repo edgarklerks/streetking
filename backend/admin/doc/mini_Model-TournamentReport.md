@@ -1,13 +1,8 @@
-% Model.TournamentReport
-% 
-% 
-
 Model.TournamentReport
 
 type [MRaceReward](Model-TournamentReport.html#t:MRaceReward)
 
-type
-[TournamentResults](Model-TournamentReport.html#t:TournamentResults)
+type [TournamentResults](Model-TournamentReport.html#t:TournamentResults)
 
 type [Tournament](Model-TournamentReport.html#t:Tournament)
 

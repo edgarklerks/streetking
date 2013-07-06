@@ -1,7 +1,3 @@
-% Data.Event
-% 
-% 
-
 Data.Event
 
 data [Symbol](Data-Event.html#t:Symbol)

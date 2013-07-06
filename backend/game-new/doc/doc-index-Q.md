@@ -1,7 +1,3 @@
-% (Index - Q)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,19 +40,18 @@
 
 Index - Q
 
-  ---------------------- ------------------------------------------------------------------
-  Query                   
-  1 (Type/Class)         [Data.MemTimeState](Data-MemTimeState.html#t:Query)
-  2 (Data Constructor)   [Data.MemTimeState](Data-MemTimeState.html#v:Query)
-  query                   
-  1 (Function)           [ProtoExtended](ProtoExtended.html#v:query)
-  2 (Function)           [NodeSnapletTest](NodeSnapletTest.html#v:query)
-  QueryChan              [Data.MemTimeState](Data-MemTimeState.html#t:QueryChan)
-  queryManager           [Data.MemTimeState](Data-MemTimeState.html#v:queryManager)
-  queryNode              [MemServerAsyncTest](MemServerAsyncTest.html#v:queryNode)
-  quickInsert            [Data.SqlTransaction](Data-SqlTransaction.html#v:quickInsert)
-  quickQuery             [Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery)
-  quickQuery'            [Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery-39-)
-  ---------------------- ------------------------------------------------------------------
+||
+|Query| |
+|1 (Type/Class)|[Data.MemTimeState](Data-MemTimeState.html#t:Query)|
+|2 (Data Constructor)|[Data.MemTimeState](Data-MemTimeState.html#v:Query)|
+|query| |
+|1 (Function)|[ProtoExtended](ProtoExtended.html#v:query)|
+|2 (Function)|[NodeSnapletTest](NodeSnapletTest.html#v:query)|
+|QueryChan|[Data.MemTimeState](Data-MemTimeState.html#t:QueryChan)|
+|queryManager|[Data.MemTimeState](Data-MemTimeState.html#v:queryManager)|
+|queryNode|[MemServerAsyncTest](MemServerAsyncTest.html#v:queryNode)|
+|quickInsert|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickInsert)|
+|quickQuery|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery)|
+|quickQuery'|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery-39-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

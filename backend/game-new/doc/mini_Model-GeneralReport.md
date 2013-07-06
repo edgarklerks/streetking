@@ -1,7 +1,3 @@
-% Model.GeneralReport
-% 
-% 
-
 Model.GeneralReport
 
 type [MInteger](Model-GeneralReport.html#t:MInteger)

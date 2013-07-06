@@ -1,7 +1,3 @@
-% Model.Challenge
-% 
-% 
-
 Model.Challenge
 
 type [MInteger](Model-Challenge.html#t:MInteger)

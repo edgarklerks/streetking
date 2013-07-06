@@ -1,7 +1,3 @@
-% Data.CarReady
-% 
-% 
-
 Data.CarReady
 
 type [Car](Data-CarReady.html#t:Car)

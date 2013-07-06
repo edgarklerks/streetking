@@ -1,7 +1,3 @@
-% Model.DBFunctions
-% 
-% 
-
 Model.DBFunctions
 
 type [Arg](Model-DBFunctions.html#t:Arg)

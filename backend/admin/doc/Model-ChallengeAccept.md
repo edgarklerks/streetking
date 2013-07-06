@@ -1,7 +1,3 @@
-% Model.ChallengeAccept
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -26,26 +22,27 @@ ChallengeAccept
 
 Fields
 
-id :: [Id](Model-General.html#t:Id)
-:    
-challenge\_id :: Integer
-:    
-account\_id :: Integer
-:    
+id :: [Id](Model-General.html#t:Id)  
+ 
+
+challenge\_id :: Integer  
+ 
+
+account\_id :: Integer  
+ 
 
 Instances
 
-  --------------------------------------------------------------------------------------------------------------------------------------------------------------- ---
-  Eq [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                                                                                               
-  Show [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                                                                                             
-  ToJSON [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                                                                                           
-  FromJSON [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                                                                                         
-  Default [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                                                                                          
-  [FromInRule](Data-InRules.html#t:FromInRule) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                                                     
-  [ToInRule](Data-InRules.html#t:ToInRule) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                                                         
-  [Mapable](Model-General.html#t:Mapable) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                                                          
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)    
-  --------------------------------------------------------------------------------------------------------------------------------------------------------------- ---
+||
+|Eq [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|Show [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|ToJSON [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|FromJSON [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|Default [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|[FromInRule](Data-InRules.html#t:FromInRule) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|[ToInRule](Data-InRules.html#t:ToInRule) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|[Mapable](Model-General.html#t:Mapable) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
 
 relation :: [RelationM](Data-Relation.html#t:RelationM)
 

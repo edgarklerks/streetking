@@ -1,7 +1,3 @@
-% Data.SqlTransaction
-% 
-% 
-
 Data.SqlTransaction
 
 [atomical](Data-SqlTransaction.html#v:atomical)
@@ -62,8 +58,7 @@ Data.SqlTransaction
 
 type [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c a
 
-data [SqlTransactionUser](Data-SqlTransaction.html#t:SqlTransactionUser)
-l c a
+data [SqlTransactionUser](Data-SqlTransaction.html#t:SqlTransactionUser) l c a
 
 [runSqlTransaction](Data-SqlTransaction.html#v:runSqlTransaction)
 

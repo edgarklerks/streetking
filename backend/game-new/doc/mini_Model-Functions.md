@@ -1,7 +1,3 @@
-% Model.Functions
-% 
-% 
-
 Model.Functions
 
 [unix\_millitime](Model-Functions.html#v:unix_millitime)

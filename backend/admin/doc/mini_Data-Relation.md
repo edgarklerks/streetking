@@ -1,7 +1,3 @@
-% Data.Relation
-% 
-% 
-
 Data.Relation
 
 data [Relation](Data-Relation.html#t:Relation)

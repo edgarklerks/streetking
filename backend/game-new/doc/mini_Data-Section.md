@@ -1,7 +1,3 @@
-% Data.Section
-% 
-% 
-
 Data.Section
 
 data [Section](Data-Section.html#t:Section)

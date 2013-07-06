@@ -1,7 +1,3 @@
-% (Index - F)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,38 +38,37 @@
 
 Index - F
 
-  ---------------------- ------------------------------------------------------------------------------------------------------
-  fetchAllRows           [Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRows)
-  fetchAllRows'          [Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRows-39-)
-  fetchAllRowsAL         [Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsAL)
-  fetchAllRowsAL'        [Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsAL-39-)
-  fetchAllRowsMap        [Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsMap)
-  fetchRow               [Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRow)
-  fetchRowAl             [Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRowAl)
-  fetchRowMap            [Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRowMap)
-  fields                 [Model.General](Model-General.html#v:fields)
-  fieldsDb               [Model.TH](Model-TH.html#v:fieldsDb)
-  fileRestore            [Data.Role](Data-Role.html#v:fileRestore)
-  fileStore              [Data.Role](Data-Role.html#v:fileStore)
-  fillConnectionBucket   [Data.ConnectionPool](Data-ConnectionPool.html#v:fillConnectionBucket)
-  Filled                 [Data.ConnectionPool](Data-ConnectionPool.html#v:Filled)
-  fillFuture             [Data.SqlTransaction](Data-SqlTransaction.html#v:fillFuture)
-  Final                  [Data.InRules](Data-InRules.html#v:Final), [Data.Conversion](Data-Conversion.html#v:Final)
-  finish                 [Data.SqlTransaction](Data-SqlTransaction.html#v:finish)
-  float2Double           [Data.ConversionInstances](Data-ConversionInstances.html#v:float2Double)
-  FloatC                 [Config.ConfigFileParser](Config-ConfigFileParser.html#v:FloatC)
-  forkSqlTransaction     [Data.SqlTransaction](Data-SqlTransaction.html#v:forkSqlTransaction)
-  frmHashMap             [Model.TH](Model-TH.html#v:frmHashMap)
-  frmMap                 [Model.TH](Model-TH.html#v:frmMap)
-  fromAssoc              [Data.Relation](Data-Relation.html#v:fromAssoc)
-  fromHashMap            [Model.General](Model-General.html#v:fromHashMap)
-  FromInRule             [Data.InRules](Data-InRules.html#t:FromInRule), [Data.Conversion](Data-Conversion.html#t:FromInRule)
-  fromInRule             [Data.InRules](Data-InRules.html#v:fromInRule), [Data.Conversion](Data-Conversion.html#v:fromInRule)
-  fromLazy               [NodeSnapletTest](NodeSnapletTest.html#v:fromLazy)
-  fromList                
-  1 (Function)           [Data.InRules](Data-InRules.html#v:fromList), [Data.Conversion](Data-Conversion.html#v:fromList)
-  2 (Function)           [Data.PriorityQueue](Data-PriorityQueue.html#v:fromList)
-  fromMap                [Model.General](Model-General.html#v:fromMap)
-  ---------------------- ------------------------------------------------------------------------------------------------------
+||
+|fetchAllRows|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRows)|
+|fetchAllRows'|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRows-39-)|
+|fetchAllRowsAL|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsAL)|
+|fetchAllRowsAL'|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsAL-39-)|
+|fetchAllRowsMap|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsMap)|
+|fetchRow|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRow)|
+|fetchRowAl|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRowAl)|
+|fetchRowMap|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRowMap)|
+|fields|[Model.General](Model-General.html#v:fields)|
+|fieldsDb|[Model.TH](Model-TH.html#v:fieldsDb)|
+|fileRestore|[Data.Role](Data-Role.html#v:fileRestore)|
+|fileStore|[Data.Role](Data-Role.html#v:fileStore)|
+|fillConnectionBucket|[Data.ConnectionPool](Data-ConnectionPool.html#v:fillConnectionBucket)|
+|Filled|[Data.ConnectionPool](Data-ConnectionPool.html#v:Filled)|
+|fillFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:fillFuture)|
+|Final|[Data.InRules](Data-InRules.html#v:Final), [Data.Conversion](Data-Conversion.html#v:Final)|
+|finish|[Data.SqlTransaction](Data-SqlTransaction.html#v:finish)|
+|float2Double|[Data.ConversionInstances](Data-ConversionInstances.html#v:float2Double)|
+|FloatC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:FloatC)|
+|forkSqlTransaction|[Data.SqlTransaction](Data-SqlTransaction.html#v:forkSqlTransaction)|
+|frmHashMap|[Model.TH](Model-TH.html#v:frmHashMap)|
+|frmMap|[Model.TH](Model-TH.html#v:frmMap)|
+|fromAssoc|[Data.Relation](Data-Relation.html#v:fromAssoc)|
+|fromHashMap|[Model.General](Model-General.html#v:fromHashMap)|
+|FromInRule|[Data.InRules](Data-InRules.html#t:FromInRule), [Data.Conversion](Data-Conversion.html#t:FromInRule)|
+|fromInRule|[Data.InRules](Data-InRules.html#v:fromInRule), [Data.Conversion](Data-Conversion.html#v:fromInRule)|
+|fromLazy|[NodeSnapletTest](NodeSnapletTest.html#v:fromLazy)|
+|fromList| |
+|1 (Function)|[Data.InRules](Data-InRules.html#v:fromList), [Data.Conversion](Data-Conversion.html#v:fromList)|
+|2 (Function)|[Data.PriorityQueue](Data-PriorityQueue.html#v:fromList)|
+|fromMap|[Model.General](Model-General.html#v:fromMap)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

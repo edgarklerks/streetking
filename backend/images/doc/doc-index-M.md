@@ -1,7 +1,3 @@
-% (Index - M)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,22 +37,21 @@
 
 Index - M
 
-  -------------- --------------------------------------------------------
-  Mapable        [Model.General](Model-General.html#t:Mapable)
-  mapWithKey     [Data.InRules](Data-InRules.html#v:mapWithKey)
-  maxl           [Data.Tools](Data-Tools.html#v:maxl)
-  mco            [Model.General](Model-General.html#v:mco)
-  mfp            [Model.General](Model-General.html#v:mfp)
-  minl           [Data.Tools](Data-Tools.html#v:minl)
-  MInteger       [Model.CarInstance](Model-CarInstance.html#t:MInteger)
-  mkCFilter      [Data.Tools](Data-Tools.html#v:mkCFilter)
-  mkCRegex       [Data.Tools](Data-Tools.html#v:mkCRegex)
-  mkFromInRule   [Model.TH](Model-TH.html#v:mkFromInRule)
-  mkParser       [Model.TH](Model-TH.html#v:mkParser)
-  mkToInRule     [Model.TH](Model-TH.html#v:mkToInRule)
-  mkToJson       [Model.TH](Model-TH.html#v:mkToJson)
-  mlookup        [Model.General](Model-General.html#v:mlookup)
-  must           [Data.Tools](Data-Tools.html#v:must)
-  -------------- --------------------------------------------------------
+||
+|Mapable|[Model.General](Model-General.html#t:Mapable)|
+|mapWithKey|[Data.InRules](Data-InRules.html#v:mapWithKey)|
+|maxl|[Data.Tools](Data-Tools.html#v:maxl)|
+|mco|[Model.General](Model-General.html#v:mco)|
+|mfp|[Model.General](Model-General.html#v:mfp)|
+|minl|[Data.Tools](Data-Tools.html#v:minl)|
+|MInteger|[Model.CarInstance](Model-CarInstance.html#t:MInteger)|
+|mkCFilter|[Data.Tools](Data-Tools.html#v:mkCFilter)|
+|mkCRegex|[Data.Tools](Data-Tools.html#v:mkCRegex)|
+|mkFromInRule|[Model.TH](Model-TH.html#v:mkFromInRule)|
+|mkParser|[Model.TH](Model-TH.html#v:mkParser)|
+|mkToInRule|[Model.TH](Model-TH.html#v:mkToInRule)|
+|mkToJson|[Model.TH](Model-TH.html#v:mkToJson)|
+|mlookup|[Model.General](Model-General.html#v:mlookup)|
+|must|[Data.Tools](Data-Tools.html#v:must)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

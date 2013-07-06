@@ -1,7 +1,3 @@
-% Model.Continent
-% 
-% 
-
 Model.Continent
 
 data [Continent](Model-Continent.html#t:Continent)

@@ -1,5 +1,1 @@
-% Data.Racing
-% 
-% 
-
 Data.Racing

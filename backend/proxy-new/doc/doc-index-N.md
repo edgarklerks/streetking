@@ -1,7 +1,3 @@
-% (Index - N)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,39 +38,38 @@
 
 Index - N
 
-  ---------------------- ------------------------------------------------------------------------------------------
-  NakedRequest           [ProtoExtended](ProtoExtended.html#v:NakedRequest)
-  nakedRequest           [ProtoExtended](ProtoExtended.html#v:nakedRequest)
-  Name                   [Data.ExternalLog](Data-ExternalLog.html#t:Name)
-  natural                [Data.Tools](Data-Tools.html#v:natural)
-  nempty                 [Model.General](Model-General.html#v:nempty)
-  newFuture              [Data.SqlTransaction](Data-SqlTransaction.html#v:newFuture)
-  newMemState            [Data.MemTimeState](Data-MemTimeState.html#v:newMemState)
-  newTimedMap            [Data.TimedMap](Data-TimedMap.html#v:newTimedMap)
-  Next                   [Data.InRules](Data-InRules.html#v:Next), [Data.Conversion](Data-Conversion.html#v:Next)
-  nhead                  [Model.General](Model-General.html#v:nhead)
-  Nil                    [Data.PriorityQueue](Data-PriorityQueue.html#v:Nil)
-  ninsert                [Model.General](Model-General.html#v:ninsert)
-  nlookup                [Model.General](Model-General.html#v:nlookup)
-  node                   [Application](Application.html#v:node)
-  NodeAddr               [ProtoExtended](ProtoExtended.html#t:NodeAddr)
-  NodeList               [ProtoExtended](ProtoExtended.html#v:NodeList)
-  nodeList               [ProtoExtended](ProtoExtended.html#v:nodeList)
-  NodeTest                
-  1 (Type/Class)         [NodeSnapletTest](NodeSnapletTest.html#t:NodeTest)
-  2 (Data Constructor)   [NodeSnapletTest](NodeSnapletTest.html#v:NodeTest)
-  NodeTestParams         [NodeSnapletTest](NodeSnapletTest.html#t:NodeTestParams)
-  None                   [Data.InRules](Data-InRules.html#v:None), [Data.Conversion](Data-Conversion.html#v:None)
-  not                    [Data.Relation](Data-Relation.html#v:not)
-  NotFound               [Data.MemTimeState](Data-MemTimeState.html#v:NotFound)
-  NotFoundException      [ProtoExtended](ProtoExtended.html#v:NotFoundException)
-  notnull                [Data.Relation](Data-Relation.html#v:notnull)
-  NTP                    [NodeSnapletTest](NodeSnapletTest.html#v:NTP)
-  nt\_dump               [NodeSnapletTest](NodeSnapletTest.html#v:nt_dump)
-  nt\_pull               [NodeSnapletTest](NodeSnapletTest.html#v:nt_pull)
-  nt\_req                [NodeSnapletTest](NodeSnapletTest.html#v:nt_req)
-  NullLimit              [Data.Database](Data-Database.html#v:NullLimit)
-  NullOffset             [Data.Database](Data-Database.html#v:NullOffset)
-  ---------------------- ------------------------------------------------------------------------------------------
+||
+|NakedRequest|[ProtoExtended](ProtoExtended.html#v:NakedRequest)|
+|nakedRequest|[ProtoExtended](ProtoExtended.html#v:nakedRequest)|
+|Name|[Data.ExternalLog](Data-ExternalLog.html#t:Name)|
+|natural|[Data.Tools](Data-Tools.html#v:natural)|
+|nempty|[Model.General](Model-General.html#v:nempty)|
+|newFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:newFuture)|
+|newMemState|[Data.MemTimeState](Data-MemTimeState.html#v:newMemState)|
+|newTimedMap|[Data.TimedMap](Data-TimedMap.html#v:newTimedMap)|
+|Next|[Data.InRules](Data-InRules.html#v:Next), [Data.Conversion](Data-Conversion.html#v:Next)|
+|nhead|[Model.General](Model-General.html#v:nhead)|
+|Nil|[Data.PriorityQueue](Data-PriorityQueue.html#v:Nil)|
+|ninsert|[Model.General](Model-General.html#v:ninsert)|
+|nlookup|[Model.General](Model-General.html#v:nlookup)|
+|node|[Application](Application.html#v:node)|
+|NodeAddr|[ProtoExtended](ProtoExtended.html#t:NodeAddr)|
+|NodeList|[ProtoExtended](ProtoExtended.html#v:NodeList)|
+|nodeList|[ProtoExtended](ProtoExtended.html#v:nodeList)|
+|NodeTest| |
+|1 (Type/Class)|[NodeSnapletTest](NodeSnapletTest.html#t:NodeTest)|
+|2 (Data Constructor)|[NodeSnapletTest](NodeSnapletTest.html#v:NodeTest)|
+|NodeTestParams|[NodeSnapletTest](NodeSnapletTest.html#t:NodeTestParams)|
+|None|[Data.InRules](Data-InRules.html#v:None), [Data.Conversion](Data-Conversion.html#v:None)|
+|not|[Data.Relation](Data-Relation.html#v:not)|
+|NotFound|[Data.MemTimeState](Data-MemTimeState.html#v:NotFound)|
+|NotFoundException|[ProtoExtended](ProtoExtended.html#v:NotFoundException)|
+|notnull|[Data.Relation](Data-Relation.html#v:notnull)|
+|NTP|[NodeSnapletTest](NodeSnapletTest.html#v:NTP)|
+|nt\_dump|[NodeSnapletTest](NodeSnapletTest.html#v:nt_dump)|
+|nt\_pull|[NodeSnapletTest](NodeSnapletTest.html#v:nt_pull)|
+|nt\_req|[NodeSnapletTest](NodeSnapletTest.html#v:nt_req)|
+|NullLimit|[Data.Database](Data-Database.html#v:NullLimit)|
+|NullOffset|[Data.Database](Data-Database.html#v:NullOffset)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

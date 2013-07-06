@@ -1,11 +1,6 @@
-% Model.ManufacturerMarket
-% 
-% 
-
 Model.ManufacturerMarket
 
-data
-[ManufacturerMarket](Model-ManufacturerMarket.html#t:ManufacturerMarket)
+data [ManufacturerMarket](Model-ManufacturerMarket.html#t:ManufacturerMarket)
 
 [relation](Model-ManufacturerMarket.html#v:relation)
 

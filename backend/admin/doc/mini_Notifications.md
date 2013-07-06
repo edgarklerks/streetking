@@ -1,7 +1,3 @@
-% Notifications
-% 
-% 
-
 Notifications
 
 data [NotificationParam](Notifications.html#t:NotificationParam)

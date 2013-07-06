@@ -1,7 +1,3 @@
-% (Index - J)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,12 +40,11 @@
 
 Index - J
 
-  ---------------- ----------------------------------------------------------
-  join              
-  1 (Function)     [Data.Tools](Data-Tools.html#v:join)
-  2 (Function)     [Data.Relation](Data-Relation.html#v:join)
-  joinSame         [Data.Reward](Data-Reward.html#v:joinSame)
-  joinTournament   [Data.Tournament](Data-Tournament.html#v:joinTournament)
-  ---------------- ----------------------------------------------------------
+||
+|join| |
+|1 (Function)|[Data.Tools](Data-Tools.html#v:join)|
+|2 (Function)|[Data.Relation](Data-Relation.html#v:join)|
+|joinSame|[Data.Reward](Data-Reward.html#v:joinSame)|
+|joinTournament|[Data.Tournament](Data-Tournament.html#v:joinTournament)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

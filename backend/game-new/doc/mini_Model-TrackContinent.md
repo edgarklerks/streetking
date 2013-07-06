@@ -1,7 +1,3 @@
-% Model.TrackContinent
-% 
-% 
-
 Model.TrackContinent
 
 data [TrackContinent](Model-TrackContinent.html#t:TrackContinent)

@@ -1,7 +1,3 @@
-% Data.Environment
-% 
-% 
-
 Data.Environment
 
 data [Environment](Data-Environment.html#t:Environment)

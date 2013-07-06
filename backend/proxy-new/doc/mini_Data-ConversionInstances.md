@@ -1,7 +1,3 @@
-% Data.ConversionInstances
-% 
-% 
-
 Data.ConversionInstances
 
 [double2Float](Data-ConversionInstances.html#v:double2Float)

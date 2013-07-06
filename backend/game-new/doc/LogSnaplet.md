@@ -1,7 +1,3 @@
-% LogSnaplet
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -16,11 +12,9 @@ LogSnaplet
 Documentation
 =============
 
-initLogSnaplet :: FilePath -\> SnapletInit b
-[Cycle](LogSnaplet.html#t:Cycle)
+initLogSnaplet :: FilePath -\> SnapletInit b [Cycle](LogSnaplet.html#t:Cycle)
 
-logCycle :: (MonadIO m, MonadState [Cycle](LogSnaplet.html#t:Cycle) m)
-=\> String -\> String -\> m ()
+logCycle :: (MonadIO m, MonadState [Cycle](LogSnaplet.html#t:Cycle) m) =\> String -\> String -\> m ()
 
 data Cycle
 

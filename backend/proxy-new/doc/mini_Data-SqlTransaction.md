@@ -1,7 +1,3 @@
-% Data.SqlTransaction
-% 
-% 
-
 Data.SqlTransaction
 
 [quickInsert](Data-SqlTransaction.html#v:quickInsert)
@@ -20,8 +16,7 @@ data [Lock](Data-SqlTransaction.html#t:Lock)
 
 type [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c a
 
-data [SqlTransactionUser](Data-SqlTransaction.html#t:SqlTransactionUser)
-l c a
+data [SqlTransactionUser](Data-SqlTransaction.html#t:SqlTransactionUser) l c a
 
 [atomical](Data-SqlTransaction.html#v:atomical)
 

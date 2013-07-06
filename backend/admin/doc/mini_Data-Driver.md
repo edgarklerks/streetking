@@ -1,7 +1,3 @@
-% Data.Driver
-% 
-% 
-
 Data.Driver
 
 data [Driver](Data-Driver.html#t:Driver)

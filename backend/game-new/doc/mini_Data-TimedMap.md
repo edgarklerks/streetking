@@ -1,7 +1,3 @@
-% Data.TimedMap
-% 
-% 
-
 Data.TimedMap
 
 data [TimedMap](Data-TimedMap.html#t:TimedMap) k a

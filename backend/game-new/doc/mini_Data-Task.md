@@ -1,7 +1,3 @@
-% Data.Task
-% 
-% 
-
 Data.Task
 
 [init](Data-Task.html#v:init)

@@ -1,7 +1,3 @@
-% Model.TournamentPlayers
-% 
-% 
-
 Model.TournamentPlayers
 
 data [TournamentPlayer](Model-TournamentPlayers.html#t:TournamentPlayer)

@@ -1,7 +1,3 @@
-% (Index - K)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,17 +40,16 @@
 
 Index - K
 
-  -------------- --------------------------------------------------------------------------------------------------
-  key             
-  1 (Function)   [Model.CarOptions](Model-CarOptions.html#v:key)
-  2 (Function)   [Model.CarOptionsExtended](Model-CarOptionsExtended.html#v:key)
-  3 (Function)   [Model.Config](Model-Config.html#v:key)
-  keyFilter      [Data.Conversion](Data-Conversion.html#v:keyFilter)
-  KeyVal         [Data.MemTimeState](Data-MemTimeState.html#v:KeyVal)
-  kfold          [Data.InRules](Data-InRules.html#v:kfold), [Data.Conversion](Data-Conversion.html#v:kfold)
-  KindView       [Data.InRules](Data-InRules.html#t:KindView), [Data.Conversion](Data-Conversion.html#t:KindView)
-  kmap           [Data.InRules](Data-InRules.html#v:kmap), [Data.Conversion](Data-Conversion.html#v:kmap)
-  kmh2ms         [Data.Constants](Data-Constants.html#v:kmh2ms)
-  -------------- --------------------------------------------------------------------------------------------------
+||
+|key| |
+|1 (Function)|[Model.CarOptions](Model-CarOptions.html#v:key)|
+|2 (Function)|[Model.CarOptionsExtended](Model-CarOptionsExtended.html#v:key)|
+|3 (Function)|[Model.Config](Model-Config.html#v:key)|
+|keyFilter|[Data.Conversion](Data-Conversion.html#v:keyFilter)|
+|KeyVal|[Data.MemTimeState](Data-MemTimeState.html#v:KeyVal)|
+|kfold|[Data.InRules](Data-InRules.html#v:kfold), [Data.Conversion](Data-Conversion.html#v:kfold)|
+|KindView|[Data.InRules](Data-InRules.html#t:KindView), [Data.Conversion](Data-Conversion.html#t:KindView)|
+|kmap|[Data.InRules](Data-InRules.html#v:kmap), [Data.Conversion](Data-Conversion.html#v:kmap)|
+|kmh2ms|[Data.Constants](Data-Constants.html#v:kmh2ms)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

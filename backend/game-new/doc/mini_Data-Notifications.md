@@ -1,7 +1,3 @@
-% Data.Notifications
-% 
-% 
-
 Data.Notifications
 
 type [Letters](Data-Notifications.html#t:Letters)

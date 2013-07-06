@@ -1,7 +1,3 @@
-% Model.TrackMaster
-% 
-% 
-
 Model.TrackMaster
 
 data [TrackMaster](Model-TrackMaster.html#t:TrackMaster)

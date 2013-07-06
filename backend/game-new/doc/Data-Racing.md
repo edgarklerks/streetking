@@ -1,7 +1,3 @@
-% Data.Racing
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 

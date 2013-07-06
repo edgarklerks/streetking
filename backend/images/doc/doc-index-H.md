@@ -1,7 +1,3 @@
-% (Index - H)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,18 +37,17 @@
 
 Index - H
 
-  ------------- --------------------------------------------------------------------------------------------------------
-  happyTest     [Data.ConnectionPool](Data-ConnectionPool.html#v:happyTest)
-  heist         [Application](Application.html#v:heist)
-  hempty        [Model.TH](Model-TH.html#v:hempty)
-  hfromlist     [Model.TH](Model-TH.html#v:hfromlist)
-  hiempty       [Model.TH](Model-TH.html#v:hiempty)
-  hmapKeys      [Data.InRules](Data-InRules.html#v:hmapKeys), [Data.Conversion](Data-Conversion.html#v:hmapKeys)
-  hmapWithKey   [Data.InRules](Data-InRules.html#v:hmapWithKey), [Data.Conversion](Data-Conversion.html#v:hmapWithKey)
-  hmlookup      [Model.TH](Model-TH.html#v:hmlookup)
-  HS            [Data.Hstore](Data-Hstore.html#v:HS)
-  HStore        [Data.Hstore](Data-Hstore.html#t:HStore)
-  htsql         [Model.General](Model-General.html#v:htsql)
-  ------------- --------------------------------------------------------------------------------------------------------
+||
+|happyTest|[Data.ConnectionPool](Data-ConnectionPool.html#v:happyTest)|
+|heist|[Application](Application.html#v:heist)|
+|hempty|[Model.TH](Model-TH.html#v:hempty)|
+|hfromlist|[Model.TH](Model-TH.html#v:hfromlist)|
+|hiempty|[Model.TH](Model-TH.html#v:hiempty)|
+|hmapKeys|[Data.InRules](Data-InRules.html#v:hmapKeys), [Data.Conversion](Data-Conversion.html#v:hmapKeys)|
+|hmapWithKey|[Data.InRules](Data-InRules.html#v:hmapWithKey), [Data.Conversion](Data-Conversion.html#v:hmapWithKey)|
+|hmlookup|[Model.TH](Model-TH.html#v:hmlookup)|
+|HS|[Data.Hstore](Data-Hstore.html#v:HS)|
+|HStore|[Data.Hstore](Data-Hstore.html#t:HStore)|
+|htsql|[Model.General](Model-General.html#v:htsql)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

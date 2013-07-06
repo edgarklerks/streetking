@@ -1,7 +1,3 @@
-% Model.TournamentResult
-% 
-% 
-
 Model.TournamentResult
 
 type [RaceResultTuple](Model-TournamentResult.html#t:RaceResultTuple)

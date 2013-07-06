@@ -1,7 +1,3 @@
-% Model.Task
-% 
-% 
-
 Model.Task
 
 data [Task](Model-Task.html#t:Task)

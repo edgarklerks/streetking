@@ -1,7 +1,3 @@
-% Data.Car
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -26,26 +22,31 @@ Car
 
 Fields
 
-mass :: Double
-:    
-power :: Double
-:    
-traction :: Double
-:    
-handling :: Double
-:    
-braking :: Double
-:    
-aero :: Double
-:    
-nos :: Double
-:    
+mass :: Double  
+ 
+
+power :: Double  
+ 
+
+traction :: Double  
+ 
+
+handling :: Double  
+ 
+
+braking :: Double  
+ 
+
+aero :: Double  
+ 
+
+nos :: Double  
+ 
 
 Instances
 
-  --------------------------------- ---
-  Show [Car](Data-Car.html#t:Car)    
-  --------------------------------- ---
+||
+|Show [Car](Data-Car.html#t:Car)| |
 
 pwr :: [Car](Data-Car.html#t:Car) -\> Double
 
@@ -59,11 +60,9 @@ dnf :: [Car](Data-Car.html#t:Car) -\> Double
 
 brp :: [Car](Data-Car.html#t:Car) -\> Double
 
-carInGarageCar :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
--\> [Car](Data-Car.html#t:Car)
+carInGarageCar :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [Car](Data-Car.html#t:Car)
 
-carMinimalCar :: [CarMinimal](Model-CarMinimal.html#t:CarMinimal) -\>
-[Car](Data-Car.html#t:Car)
+carMinimalCar :: [CarMinimal](Model-CarMinimal.html#t:CarMinimal) -\> [Car](Data-Car.html#t:Car)
 
 testCar :: [Car](Data-Car.html#t:Car)
 

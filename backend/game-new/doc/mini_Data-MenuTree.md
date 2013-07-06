@@ -1,7 +1,3 @@
-% Data.MenuTree
-% 
-% 
-
 Data.MenuTree
 
 type [Module](Data-MenuTree.html#t:Module)

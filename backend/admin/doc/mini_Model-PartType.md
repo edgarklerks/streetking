@@ -1,7 +1,3 @@
-% Model.PartType
-% 
-% 
-
 Model.PartType
 
 data [PartType](Model-PartType.html#t:PartType)

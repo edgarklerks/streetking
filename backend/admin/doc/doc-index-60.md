@@ -1,7 +1,3 @@
-% (Index - \<)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,12 +41,11 @@
 
 Index - \<
 
-  -------- ----------------------------------------------------------
-  \<!\>    [Data.ModelToSVG](Data-ModelToSVG.html#v:-60--33--62-)
-  \<&&\>   [Data.Relation](Data-Relation.html#v:-60--38--38--62-)
-  \<-\>    [Data.ModelToSVG](Data-ModelToSVG.html#v:-60--45--62-)
-  \<-|     [Data.ModelToSVG](Data-ModelToSVG.html#v:-60--45--124-)
-  \<||\>   [Data.Relation](Data-Relation.html#v:-60--124--124--62-)
-  -------- ----------------------------------------------------------
+||
+|\<!\>|[Data.ModelToSVG](Data-ModelToSVG.html#v:-60--33--62-)|
+|\<&&\>|[Data.Relation](Data-Relation.html#v:-60--38--38--62-)|
+|\<-\>|[Data.ModelToSVG](Data-ModelToSVG.html#v:-60--45--62-)|
+|\<-||[Data.ModelToSVG](Data-ModelToSVG.html#v:-60--45--124-)|
+|\<||\>|[Data.Relation](Data-Relation.html#v:-60--124--124--62-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

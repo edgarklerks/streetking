@@ -1,7 +1,3 @@
-% Model.TravelReport
-% 
-% 
-
 Model.TravelReport
 
 type [MInteger](Model-TravelReport.html#t:MInteger)

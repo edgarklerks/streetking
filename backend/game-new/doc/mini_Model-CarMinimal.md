@@ -1,7 +1,3 @@
-% Model.CarMinimal
-% 
-% 
-
 Model.CarMinimal
 
 data [CarMinimal](Model-CarMinimal.html#t:CarMinimal)

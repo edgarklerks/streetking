@@ -1,5 +1,1 @@
-% Lua.Instances
-% 
-% 
-
 Lua.Instances

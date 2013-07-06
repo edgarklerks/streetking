@@ -1,7 +1,3 @@
-% ProtoExtended
-% 
-% 
-
 ProtoExtended
 
 data [Proto](ProtoExtended.html#t:Proto)

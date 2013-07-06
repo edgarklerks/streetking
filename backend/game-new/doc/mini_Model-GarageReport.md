@@ -1,7 +1,3 @@
-% Model.GarageReport
-% 
-% 
-
 Model.GarageReport
 
 type [MInteger](Model-GarageReport.html#t:MInteger)

@@ -1,7 +1,3 @@
-% Model.Notification
-% 
-% 
-
 Model.Notification
 
 type [MInteger](Model-Notification.html#t:MInteger)

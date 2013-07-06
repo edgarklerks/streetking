@@ -1,7 +1,3 @@
-% Model.EventStream
-% 
-% 
-
 Model.EventStream
 
 type [Stream](Model-EventStream.html#t:Stream)

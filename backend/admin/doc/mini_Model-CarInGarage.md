@@ -1,7 +1,3 @@
-% Model.CarInGarage
-% 
-% 
-
 Model.CarInGarage
 
 type [MInteger](Model-CarInGarage.html#t:MInteger)

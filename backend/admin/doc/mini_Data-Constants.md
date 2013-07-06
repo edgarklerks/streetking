@@ -1,7 +1,3 @@
-% Data.Constants
-% 
-% 
-
 Data.Constants
 
 [constant](Data-Constants.html#v:constant)

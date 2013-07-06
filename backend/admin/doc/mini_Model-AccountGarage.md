@@ -1,7 +1,3 @@
-% Model.AccountGarage
-% 
-% 
-
 Model.AccountGarage
 
 type [MString](Model-AccountGarage.html#t:MString)

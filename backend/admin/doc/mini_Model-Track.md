@@ -1,7 +1,3 @@
-% Model.Track
-% 
-% 
-
 Model.Track
 
 type [MInteger](Model-Track.html#t:MInteger)

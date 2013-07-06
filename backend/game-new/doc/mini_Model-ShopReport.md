@@ -1,7 +1,3 @@
-% Model.ShopReport
-% 
-% 
-
 Model.ShopReport
 
 type [MInteger](Model-ShopReport.html#t:MInteger)
