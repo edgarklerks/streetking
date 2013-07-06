@@ -41,6 +41,113 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	><p class="caption"
 	>Data.PriorityQueue</p
 	></div
+      ><div id="description"
+      ><p class="caption"
+	>Description</p
+	><div class="doc"
+	><p
+	  >This is a reasonable implementation of a priority queue. It has O(1)
+   lookup and amortized delete min of O(log n) 
+   I am to lazy to calculate insert, but in practice it works quite well.
+</p
+	  ></div
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Prio"
+	    >Prio</a
+	    > q a</li
+	  ><li class="src short"
+	  ><a href="#v:view"
+	    >view</a
+	    > :: Ord q =&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a -&gt; <a href="Data-PriorityQueue.html#t:ViewMin"
+	    >ViewMin</a
+	    > q a</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:ViewMin"
+	    >ViewMin</a
+	    > q a<ul class="subs"
+	    ><li
+	      >= a <a href="#v::-62-"
+		>:&gt;</a
+		> (<a href="Data-PriorityQueue.html#t:Prio"
+		>Prio</a
+		> q a)  </li
+	      ><li
+	      >| <a href="#v:Nil"
+		>Nil</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:fromList"
+	    >fromList</a
+	    > :: Ord q =&gt; [(q, a)] -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a</li
+	  ><li class="src short"
+	  ><a href="#v:extractMin"
+	    >extractMin</a
+	    > :: Ord q =&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a -&gt; Maybe (a, <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a)</li
+	  ><li class="src short"
+	  ><a href="#v:headMin"
+	    >headMin</a
+	    > :: Ord q =&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a -&gt; Maybe a</li
+	  ><li class="src short"
+	  ><a href="#v:tailMin"
+	    >tailMin</a
+	    > :: Ord q =&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a -&gt; Maybe (<a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a)</li
+	  ><li class="src short"
+	  ><a href="#v:insert"
+	    >insert</a
+	    > :: Ord q =&gt; q -&gt; a -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a</li
+	  ><li class="src short"
+	  ><a href="#v:singleton"
+	    >singleton</a
+	    > ::  q -&gt; a -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a</li
+	  ><li class="src short"
+	  ><a href="#v:extractTill"
+	    >extractTill</a
+	    > :: Ord q =&gt; q -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a -&gt; ([a], <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a)</li
+	  ><li class="src short"
+	  ><a href="#v:extractTillWithKey"
+	    >extractTillWithKey</a
+	    > :: Ord q =&gt; q -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a -&gt; ([(q, a)], <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > q a)</li
+	  ></ul
+	></div
       ><div id="interface"
       ><h1
 	>Documentation</h1
@@ -51,6 +158,29 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    >  <a name="t:Prio" class="def"
 	    >Prio</a
 	    > q a </p
+	  ><div class="doc"
+	  ><p
+	    >Priority heap, the priority is a parameter to the type
+ Prio q a can be ordered, is a functor, a foldable, a monoid and 
+  a traversable. 
+  There is also a monadic version. We should interpret this as
+  a computation on the objects in the priority heap, rendering a tree
+  of priority heaps and then merged into a consistent priority heap
+  again.
+</p
+	    ><p
+	    >The monad has a problem, because it has a constraint. In the 
+  current version of ghc, it is not possible to make it a monad yet.
+</p
+	    ><p
+	    >A comonad like instance could be useful, but is not possible, because
+  a comonad should always be safe to deconstruct. This thing is clearly
+  not safe to deconstruct. 
+</p
+	    ><p
+	    >It could be empty 
+</p
+	    ></div
 	  ><div class="subs instances"
 	  ><p id="control.i:Prio" class="caption collapser" onclick="toggleSection('i:Prio')"
 	    >Instances</p
@@ -109,6 +239,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > q a -&gt; <a href="Data-PriorityQueue.html#t:ViewMin"
 	    >ViewMin</a
 	    > q a</p
+	  ><div class="doc"
+	  ><p
+	    >View pattern for list like perspective 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -117,6 +252,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    >  <a name="t:ViewMin" class="def"
 	    >ViewMin</a
 	    > q a </p
+	  ><div class="doc"
+	  ><p
+	    >List like view for the minimal element
+</p
+	    ></div
 	  ><div class="subs constructors"
 	  ><p class="caption"
 	    >Constructors</p
@@ -149,6 +289,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > :: Ord q =&gt; [(q, a)] -&gt; <a href="Data-PriorityQueue.html#t:Prio"
 	    >Prio</a
 	    > q a</p
+	  ><div class="doc"
+	  ><p
+	    >Build a prio heap from a list 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -159,6 +304,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > q a -&gt; Maybe (a, <a href="Data-PriorityQueue.html#t:Prio"
 	    >Prio</a
 	    > q a)</p
+	  ><div class="doc"
+	  ><p
+	    >Get the minimal value O(1)
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -167,6 +317,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > :: Ord q =&gt; <a href="Data-PriorityQueue.html#t:Prio"
 	    >Prio</a
 	    > q a -&gt; Maybe a</p
+	  ><div class="doc"
+	  ><p
+	    >Get the first element  
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -177,6 +332,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > q a -&gt; Maybe (<a href="Data-PriorityQueue.html#t:Prio"
 	    >Prio</a
 	    > q a)</p
+	  ><div class="doc"
+	  ><p
+	    >Get the tail 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -187,6 +347,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > q a -&gt; <a href="Data-PriorityQueue.html#t:Prio"
 	    >Prio</a
 	    > q a</p
+	  ><div class="doc"
+	  ><p
+	    >Insert a new element with priority
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -195,6 +360,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > ::  q -&gt; a -&gt; <a href="Data-PriorityQueue.html#t:Prio"
 	    >Prio</a
 	    > q a</p
+	  ><div class="doc"
+	  ><p
+	    >Create an singleton prio queue 
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -205,6 +375,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > q a -&gt; ([a], <a href="Data-PriorityQueue.html#t:Prio"
 	    >Prio</a
 	    > q a)</p
+	  ><div class="doc"
+	  ><p
+	    >Get all till priority as value  
+</p
+	    ></div
 	  ></div
 	><div class="top"
 	><p class="src"
@@ -215,6 +390,11 @@ window.onload = function () {pageLoad();setSynopsis("mini_Data-PriorityQueue.htm
 	    > q a -&gt; ([(q, a)], <a href="Data-PriorityQueue.html#t:Prio"
 	    >Prio</a
 	    > q a)</p
+	  ><div class="doc"
+	  ><p
+	    >Get all till priority as tuple
+</p
+	    ></div
 	  ></div
 	></div
       ></div
