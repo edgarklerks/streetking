@@ -27,7 +27,7 @@ In src/Models/DbFunctions.hs you can add your database functions. See the exampl
 In Site.hs are all the interface functions defined. These are the functions the frontend uses.
 In proxy-new/resource/roleSet.cfg the permission should be set correctly and the function should be added to the routing in Site.hs
 
-For simple query resources, use the DatabaseTemplateDSL (DTD):
+For simple query resources, use the DatabaseTemplateDSL (DTD), it generates a search interface, fetches variables from the provided json and get a limit and order and transform it into SqlValue's:
 
     marketCarPrototype :: Application ()
     marketCarPrototype = do 
@@ -35,6 +35,7 @@ For simple query resources, use the DatabaseTemplateDSL (DTD):
           puser <- fromJust <$> runDb (load uid) :: Application (A.Account )
           let ctr = ("level" |<= (toSql $ A.level puser)) 
           ((l,o),xs) <- getPagesWithDTD (
+                -- This is the DatabaseTemplateDSL
                       "manufacturer_id" +== "manufacturer_id"
                   +&& "id" +== "id"
                   +&& "car_id" +== "car_id"
@@ -46,6 +47,15 @@ For simple query resources, use the DatabaseTemplateDSL (DTD):
           writeMapables ns
 
 Documentation of these are done elsewhere. At the moment in a serie mails. This can be better.
+
+The main datatype are InRule, this is a data type, which emulates a dynamic typesystem and can even encode Abstract Datatypes as 
+binary. A subset is isomorphic to JSON and YAML and can be made isomorphic to XML. This means it doesn't lose information between
+conversion between different types.
+
+   JSON -> InRule -> SqlValue
+                        |
+                      InRule -> XML
+
 
 Style
 =====
