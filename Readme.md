@@ -54,8 +54,8 @@ conversion between different types.
 
 This means for example:
 
-   JSONa -> InRule -> SqlValue -> InRule -> JSONb
-   JSONa === JSONb
+    JSONa -> InRule -> SqlValue -> InRule -> JSONb
+    JSONa === JSONb
 
 
 Style
