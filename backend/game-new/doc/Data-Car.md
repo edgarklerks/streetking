@@ -1,7 +1,3 @@
-% Data.Car
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -35,12 +31,8 @@ Synopsis
 -   [cda](#v:cda) :: [Car](Data-Car.html#t:Car) -\> Double
 -   [dnf](#v:dnf) :: [Car](Data-Car.html#t:Car) -\> Double
 -   [brp](#v:brp) :: [Car](Data-Car.html#t:Car) -\> Double
--   [carInGarageCar](#v:carInGarageCar) ::
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-    [Car](Data-Car.html#t:Car)
--   [carMinimalCar](#v:carMinimalCar) ::
-    [CarMinimal](Model-CarMinimal.html#t:CarMinimal) -\>
-    [Car](Data-Car.html#t:Car)
+-   [carInGarageCar](#v:carInGarageCar) :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [Car](Data-Car.html#t:Car)
+-   [carMinimalCar](#v:carMinimalCar) :: [CarMinimal](Model-CarMinimal.html#t:CarMinimal) -\> [Car](Data-Car.html#t:Car)
 -   [testCar](#v:testCar) :: [Car](Data-Car.html#t:Car)
 -   [zeroCar](#v:zeroCar) :: [Car](Data-Car.html#t:Car)
 -   [noobCar](#v:noobCar) :: [Car](Data-Car.html#t:Car)
@@ -62,32 +54,31 @@ Car
 
 Fields
 
-mass :: Double
-:   kg
+mass :: Double  
+kg
 
-power :: Double
-:   %
+power :: Double  
+%
 
-traction :: Double
-:   %
+traction :: Double  
+%
 
-handling :: Double
-:   %
+handling :: Double  
+%
 
-braking :: Double
-:   %
+braking :: Double  
+%
 
-aero :: Double
-:   %
+aero :: Double  
+%
 
-nos :: Double
-:   %
+nos :: Double  
+%
 
 Instances
 
-  --------------------------------- ---
-  Show [Car](Data-Car.html#t:Car)    
-  --------------------------------- ---
+||
+|Show [Car](Data-Car.html#t:Car)| |
 
 pwr :: [Car](Data-Car.html#t:Car) -\> Double
 
@@ -113,13 +104,11 @@ brp :: [Car](Data-Car.html#t:Car) -\> Double
 
 braking force as a factor of the traction limit
 
-carInGarageCar :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
--\> [Car](Data-Car.html#t:Car)
+carInGarageCar :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [Car](Data-Car.html#t:Car)
 
 Transform a CarInCarage to a Car
 
-carMinimalCar :: [CarMinimal](Model-CarMinimal.html#t:CarMinimal) -\>
-[Car](Data-Car.html#t:Car)
+carMinimalCar :: [CarMinimal](Model-CarMinimal.html#t:CarMinimal) -\> [Car](Data-Car.html#t:Car)
 
 Transform a CarMinimal to a Car
 

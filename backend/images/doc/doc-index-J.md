@@ -1,7 +1,3 @@
-% (Index - J)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,10 +37,9 @@
 
 Index - J
 
-  -------------- --------------------------------------------
-  join            
-  1 (Function)   [Data.Tools](Data-Tools.html#v:join)
-  2 (Function)   [Data.Relation](Data-Relation.html#v:join)
-  -------------- --------------------------------------------
+||
+|join| |
+|1 (Function)|[Data.Tools](Data-Tools.html#v:join)|
+|2 (Function)|[Data.Relation](Data-Relation.html#v:join)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

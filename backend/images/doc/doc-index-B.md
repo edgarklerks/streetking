@@ -1,7 +1,3 @@
-% (Index - B)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,9 +37,8 @@
 
 Index - B
 
-  --------- --------------------------------------------------------------------------------------------------------------
-  between   [Data.Tools](Data-Tools.html#v:between)
-  BoolC     [Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC), [ConfigSnaplet](ConfigSnaplet.html#v:BoolC)
-  --------- --------------------------------------------------------------------------------------------------------------
+||
+|between|[Data.Tools](Data-Tools.html#v:between)|
+|BoolC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC), [ConfigSnaplet](ConfigSnaplet.html#v:BoolC)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

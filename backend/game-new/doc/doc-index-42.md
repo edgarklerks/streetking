@@ -1,7 +1,3 @@
-% (Index - \*)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,23 +40,22 @@
 
 Index - \*
 
-  ---------- ---------------------------------------------------------
-  \*%%\*     [Data.Relation](Data-Relation.html#v:-42--37--37--42-)
-  \*%%|      [Data.Relation](Data-Relation.html#v:-42--37--37--124-)
-  \*%\*      [Data.Relation](Data-Relation.html#v:-42--37--42-)
-  \*%|       [Data.Relation](Data-Relation.html#v:-42--37--124-)
-  \*\<\*     [Data.Relation](Data-Relation.html#v:-42--60--42-)
-  \*\<=\*    [Data.Relation](Data-Relation.html#v:-42--60--61--42-)
-  \*\<=|     [Data.Relation](Data-Relation.html#v:-42--60--61--124-)
-  \*\<\>\*   [Data.Relation](Data-Relation.html#v:-42--60--62--42-)
-  \*\<\>|    [Data.Relation](Data-Relation.html#v:-42--60--62--124-)
-  \*\<|      [Data.Relation](Data-Relation.html#v:-42--60--124-)
-  \*==\*     [Data.Relation](Data-Relation.html#v:-42--61--61--42-)
-  \*==|      [Data.Relation](Data-Relation.html#v:-42--61--61--124-)
-  \*\>\*     [Data.Relation](Data-Relation.html#v:-42--62--42-)
-  \*\>=\*    [Data.Relation](Data-Relation.html#v:-42--62--61--42-)
-  \*\>=|     [Data.Relation](Data-Relation.html#v:-42--62--61--124-)
-  \*\>|      [Data.Relation](Data-Relation.html#v:-42--62--124-)
-  ---------- ---------------------------------------------------------
+||
+|\*%%\*|[Data.Relation](Data-Relation.html#v:-42--37--37--42-)|
+|\*%%||[Data.Relation](Data-Relation.html#v:-42--37--37--124-)|
+|\*%\*|[Data.Relation](Data-Relation.html#v:-42--37--42-)|
+|\*%||[Data.Relation](Data-Relation.html#v:-42--37--124-)|
+|\*\<\*|[Data.Relation](Data-Relation.html#v:-42--60--42-)|
+|\*\<=\*|[Data.Relation](Data-Relation.html#v:-42--60--61--42-)|
+|\*\<=||[Data.Relation](Data-Relation.html#v:-42--60--61--124-)|
+|\*\<\>\*|[Data.Relation](Data-Relation.html#v:-42--60--62--42-)|
+|\*\<\>||[Data.Relation](Data-Relation.html#v:-42--60--62--124-)|
+|\*\<||[Data.Relation](Data-Relation.html#v:-42--60--124-)|
+|\*==\*|[Data.Relation](Data-Relation.html#v:-42--61--61--42-)|
+|\*==||[Data.Relation](Data-Relation.html#v:-42--61--61--124-)|
+|\*\>\*|[Data.Relation](Data-Relation.html#v:-42--62--42-)|
+|\*\>=\*|[Data.Relation](Data-Relation.html#v:-42--62--61--42-)|
+|\*\>=||[Data.Relation](Data-Relation.html#v:-42--62--61--124-)|
+|\*\>||[Data.Relation](Data-Relation.html#v:-42--62--124-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

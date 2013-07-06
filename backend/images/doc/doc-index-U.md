@@ -1,7 +1,3 @@
-% (Index - U)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,32 +37,31 @@
 
 Index - U
 
-  ---------------------- ------------------------------------------------------------------------------------------------------
-  UError                 [Data.SqlTransaction](Data-SqlTransaction.html#v:UError)
-  unConnectionContext    [Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionContext)
-  unConnectionPool       [Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionPool)
-  unHS                   [Data.Hstore](Data-Hstore.html#v:unHS)
-  unIM                   [Data.InRules](Data-InRules.html#v:unIM), [Data.Conversion](Data-Conversion.html#v:unIM)
-  unionObj               [Data.InRules](Data-InRules.html#v:unionObj), [Data.Conversion](Data-Conversion.html#v:unionObj)
-  unionRecObj            [Data.InRules](Data-InRules.html#v:unionRecObj)
-  unionsObj              [Data.InRules](Data-InRules.html#v:unionsObj), [Data.Conversion](Data-Conversion.html#v:unionsObj)
-  unit                   [Model.ParameterTable](Model-ParameterTable.html#v:unit)
-  unite                  [Data.Relation](Data-Relation.html#v:unite)
-  unPM                   [Data.InRules](Data-InRules.html#v:unPM), [Data.Conversion](Data-Conversion.html#v:unPM)
-  unReadable             [Data.InRules](Data-InRules.html#v:unReadable), [Data.Conversion](Data-Conversion.html#v:unReadable)
-  unsafeGetConnection    [Data.ConnectionPool](Data-ConnectionPool.html#v:unsafeGetConnection)
-  unwrapContext          [Data.ConnectionPool](Data-ConnectionPool.html#v:unwrapContext)
-  Update                  
-  1 (Type/Class)         [Data.Database](Data-Database.html#t:Update)
-  2 (Data Constructor)   [Data.Database](Data-Database.html#v:Update)
-  update                 [Data.Database](Data-Database.html#v:update)
-  updateHashMap          [Model.General](Model-General.html#v:updateHashMap)
-  updateMap              [Model.General](Model-General.html#v:updateMap)
-  Updates                [Data.Database](Data-Database.html#v:Updates)
-  updates                [Data.Database](Data-Database.html#v:updates)
-  uploadImage            [ImageSnapLet](ImageSnapLet.html#v:uploadImage)
-  upsert                 [Data.Database](Data-Database.html#v:upsert)
-  upsertWithTables       [Model.TH](Model-TH.html#v:upsertWithTables)
-  ---------------------- ------------------------------------------------------------------------------------------------------
+||
+|UError|[Data.SqlTransaction](Data-SqlTransaction.html#v:UError)|
+|unConnectionContext|[Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionContext)|
+|unConnectionPool|[Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionPool)|
+|unHS|[Data.Hstore](Data-Hstore.html#v:unHS)|
+|unIM|[Data.InRules](Data-InRules.html#v:unIM), [Data.Conversion](Data-Conversion.html#v:unIM)|
+|unionObj|[Data.InRules](Data-InRules.html#v:unionObj), [Data.Conversion](Data-Conversion.html#v:unionObj)|
+|unionRecObj|[Data.InRules](Data-InRules.html#v:unionRecObj)|
+|unionsObj|[Data.InRules](Data-InRules.html#v:unionsObj), [Data.Conversion](Data-Conversion.html#v:unionsObj)|
+|unit|[Model.ParameterTable](Model-ParameterTable.html#v:unit)|
+|unite|[Data.Relation](Data-Relation.html#v:unite)|
+|unPM|[Data.InRules](Data-InRules.html#v:unPM), [Data.Conversion](Data-Conversion.html#v:unPM)|
+|unReadable|[Data.InRules](Data-InRules.html#v:unReadable), [Data.Conversion](Data-Conversion.html#v:unReadable)|
+|unsafeGetConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:unsafeGetConnection)|
+|unwrapContext|[Data.ConnectionPool](Data-ConnectionPool.html#v:unwrapContext)|
+|Update| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Update)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Update)|
+|update|[Data.Database](Data-Database.html#v:update)|
+|updateHashMap|[Model.General](Model-General.html#v:updateHashMap)|
+|updateMap|[Model.General](Model-General.html#v:updateMap)|
+|Updates|[Data.Database](Data-Database.html#v:Updates)|
+|updates|[Data.Database](Data-Database.html#v:updates)|
+|uploadImage|[ImageSnapLet](ImageSnapLet.html#v:uploadImage)|
+|upsert|[Data.Database](Data-Database.html#v:upsert)|
+|upsertWithTables|[Model.TH](Model-TH.html#v:upsertWithTables)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% (Index - \_)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,20 +37,19 @@
 
 Index - \_
 
-  ---------------- ---------------------------------------------------------------
-  \_allowedTypes   [ImageSnapLet](ImageSnapLet.html#v:_allowedTypes)
-  \_config         [Application](Application.html#v:_config)
-  \_configData     [ConfigSnaplet](ConfigSnaplet.html#v:_configData)
-  \_configDir      [ConfigSnaplet](ConfigSnaplet.html#v:_configDir)
-  \_dbcons         [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)
-  \_dsn            [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)
-  \_dumpdir        [ImageSnapLet](ImageSnapLet.html#v:_dumpdir)
-  \_heist          [Application](Application.html#v:_heist)
-  \_img            [Application](Application.html#v:_img)
-  \_magicctx       [ImageSnapLet](ImageSnapLet.html#v:_magicctx)
-  \_pool           [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)
-  \_servdir        [ImageSnapLet](ImageSnapLet.html#v:_servdir)
-  \_sql            [Application](Application.html#v:_sql)
-  ---------------- ---------------------------------------------------------------
+||
+|\_allowedTypes|[ImageSnapLet](ImageSnapLet.html#v:_allowedTypes)|
+|\_config|[Application](Application.html#v:_config)|
+|\_configData|[ConfigSnaplet](ConfigSnaplet.html#v:_configData)|
+|\_configDir|[ConfigSnaplet](ConfigSnaplet.html#v:_configDir)|
+|\_dbcons|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)|
+|\_dsn|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)|
+|\_dumpdir|[ImageSnapLet](ImageSnapLet.html#v:_dumpdir)|
+|\_heist|[Application](Application.html#v:_heist)|
+|\_img|[Application](Application.html#v:_img)|
+|\_magicctx|[ImageSnapLet](ImageSnapLet.html#v:_magicctx)|
+|\_pool|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)|
+|\_servdir|[ImageSnapLet](ImageSnapLet.html#v:_servdir)|
+|\_sql|[Application](Application.html#v:_sql)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% Model.CarStockParts
-% 
-% 
-
 Model.CarStockParts
 
 type [MInteger](Model-CarStockParts.html#t:MInteger)

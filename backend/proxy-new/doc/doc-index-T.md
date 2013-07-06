@@ -1,7 +1,3 @@
-% (Index - T)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,67 +38,66 @@
 
 Index - T
 
-  ---------------------- ----------------------------------------------------------------------------------------------------------
-  Table                  [Data.Database](Data-Database.html#t:Table)
-  table                   
-  1 (Function)           [Data.Relation](Data-Relation.html#v:table)
-  2 (Function)           [Data.Database](Data-Database.html#v:table)
-  tableDb                [Model.TH](Model-TH.html#v:tableDb)
-  tableName              [Model.General](Model-General.html#v:tableName)
-  tailMin                [Data.PriorityQueue](Data-PriorityQueue.html#v:tailMin)
-  tailRoute              [ProtoExtended](ProtoExtended.html#v:tailRoute)
-  take                   [Data.Relation](Data-Relation.html#v:take)
-  TArray                 [Data.InRules](Data-InRules.html#v:TArray), [Data.Conversion](Data-Conversion.html#v:TArray)
-  tcleanup               [Data.TimedMap](Data-TimedMap.html#v:tcleanup)
-  tdelete                [Data.TimedMap](Data-TimedMap.html#v:tdelete)
-  testHeartBeat          [Data.HeartBeat](Data-HeartBeat.html#v:testHeartBeat)
-  threadId               [Data.ExternalLog](Data-ExternalLog.html#v:threadId)
-  thsql                  [Model.General](Model-General.html#v:thsql)
-  TimedMap                
-  1 (Type/Class)         [Data.TimedMap](Data-TimedMap.html#t:TimedMap)
-  2 (Data Constructor)   [Data.TimedMap](Data-TimedMap.html#v:TimedMap)
-  TimedMapRestore        [Data.TimedMap](Data-TimedMap.html#t:TimedMapRestore)
-  TimedMapStore          [Data.TimedMap](Data-TimedMap.html#t:TimedMapStore)
-  tinsert                [Data.TimedMap](Data-TimedMap.html#v:tinsert)
-  tlookup                [Data.TimedMap](Data-TimedMap.html#v:tlookup)
-  tlookupBoth            [Data.TimedMap](Data-TimedMap.html#v:tlookupBoth)
-  tlookupTime            [Data.TimedMap](Data-TimedMap.html#v:tlookupTime)
-  TMap                    
-  1 (Type/Class)         [Data.TimedMap](Data-TimedMap.html#t:TMap)
-  2 (Data Constructor)   [Data.TimedMap](Data-TimedMap.html#v:TMap)
-  tmHashMap              [Model.TH](Model-TH.html#v:tmHashMap)
-  tmMap                  [Model.TH](Model-TH.html#v:tmMap)
-  TNone                  [Data.InRules](Data-InRules.html#v:TNone), [Data.Conversion](Data-Conversion.html#v:TNone)
-  toAssoc                [Data.Relation](Data-Relation.html#v:toAssoc)
-  TObject                [Data.InRules](Data-InRules.html#v:TObject), [Data.Conversion](Data-Conversion.html#v:TObject)
-  toClient               [MemServerAsyncTest](MemServerAsyncTest.html#v:toClient)
-  toCompatible           [Data.InRules](Data-InRules.html#v:toCompatible)
-  toHashMap              [Model.General](Model-General.html#v:toHashMap)
-  ToInRule               [Data.InRules](Data-InRules.html#t:ToInRule), [Data.Conversion](Data-Conversion.html#t:ToInRule)
-  toInRule               [Data.InRules](Data-InRules.html#v:toInRule), [Data.Conversion](Data-Conversion.html#v:toInRule)
-  token                  [Model.Application](Model-Application.html#v:token)
-  toList                 [Data.InRules](Data-InRules.html#v:toList), [Data.Conversion](Data-Conversion.html#v:toList)
-  toListString           [Data.InRules](Data-InRules.html#v:toListString), [Data.Conversion](Data-Conversion.html#v:toListString)
-  toMap                  [Model.General](Model-General.html#v:toMap)
-  toNodes                [MemServerAsyncTest](MemServerAsyncTest.html#v:toNodes)
-  toString                
-  1 (Function)           [Data.InRules](Data-InRules.html#v:toString), [Data.Conversion](Data-Conversion.html#v:toString)
-  2 (Function)           [Data.Tools](Data-Tools.html#v:toString)
-  3 (Function)           [NodeSnapletTest](NodeSnapletTest.html#v:toString)
-  toStrings              [NodeSnapletTest](NodeSnapletTest.html#v:toStrings)
-  toWord64               [Data.ConversionInstances](Data-ConversionInstances.html#v:toWord64)
-  tqueueEnumerator       [Data.ConduitTransformer](Data-ConduitTransformer.html#v:tqueueEnumerator)
-  tqueueIterator         [Data.ConduitTransformer](Data-ConduitTransformer.html#v:tqueueIterator)
-  tqueueSink             [Data.ConduitTransformer](Data-ConduitTransformer.html#v:tqueueSink)
-  tqueueSource           [Data.ConduitTransformer](Data-ConduitTransformer.html#v:tqueueSource)
-  transaction            [Data.Database](Data-Database.html#v:transaction)
-  tremove                [Data.TimedMap](Data-TimedMap.html#v:tremove)
-  tryTakeMVarT           [MemServerAsyncTest](MemServerAsyncTest.html#v:tryTakeMVarT)
-  TScalar                [Data.InRules](Data-InRules.html#v:TScalar), [Data.Conversion](Data-Conversion.html#v:TScalar)
-  TTL                    [ProtoExtended](ProtoExtended.html#t:TTL)
-  TTLReq                 [ProtoExtended](ProtoExtended.html#v:TTLReq)
-  tupdateTime            [Data.TimedMap](Data-TimedMap.html#v:tupdateTime)
-  tupleMaybe             [Data.TimedMap](Data-TimedMap.html#v:tupleMaybe)
-  ---------------------- ----------------------------------------------------------------------------------------------------------
+||
+|Table|[Data.Database](Data-Database.html#t:Table)|
+|table| |
+|1 (Function)|[Data.Relation](Data-Relation.html#v:table)|
+|2 (Function)|[Data.Database](Data-Database.html#v:table)|
+|tableDb|[Model.TH](Model-TH.html#v:tableDb)|
+|tableName|[Model.General](Model-General.html#v:tableName)|
+|tailMin|[Data.PriorityQueue](Data-PriorityQueue.html#v:tailMin)|
+|tailRoute|[ProtoExtended](ProtoExtended.html#v:tailRoute)|
+|take|[Data.Relation](Data-Relation.html#v:take)|
+|TArray|[Data.InRules](Data-InRules.html#v:TArray), [Data.Conversion](Data-Conversion.html#v:TArray)|
+|tcleanup|[Data.TimedMap](Data-TimedMap.html#v:tcleanup)|
+|tdelete|[Data.TimedMap](Data-TimedMap.html#v:tdelete)|
+|testHeartBeat|[Data.HeartBeat](Data-HeartBeat.html#v:testHeartBeat)|
+|threadId|[Data.ExternalLog](Data-ExternalLog.html#v:threadId)|
+|thsql|[Model.General](Model-General.html#v:thsql)|
+|TimedMap| |
+|1 (Type/Class)|[Data.TimedMap](Data-TimedMap.html#t:TimedMap)|
+|2 (Data Constructor)|[Data.TimedMap](Data-TimedMap.html#v:TimedMap)|
+|TimedMapRestore|[Data.TimedMap](Data-TimedMap.html#t:TimedMapRestore)|
+|TimedMapStore|[Data.TimedMap](Data-TimedMap.html#t:TimedMapStore)|
+|tinsert|[Data.TimedMap](Data-TimedMap.html#v:tinsert)|
+|tlookup|[Data.TimedMap](Data-TimedMap.html#v:tlookup)|
+|tlookupBoth|[Data.TimedMap](Data-TimedMap.html#v:tlookupBoth)|
+|tlookupTime|[Data.TimedMap](Data-TimedMap.html#v:tlookupTime)|
+|TMap| |
+|1 (Type/Class)|[Data.TimedMap](Data-TimedMap.html#t:TMap)|
+|2 (Data Constructor)|[Data.TimedMap](Data-TimedMap.html#v:TMap)|
+|tmHashMap|[Model.TH](Model-TH.html#v:tmHashMap)|
+|tmMap|[Model.TH](Model-TH.html#v:tmMap)|
+|TNone|[Data.InRules](Data-InRules.html#v:TNone), [Data.Conversion](Data-Conversion.html#v:TNone)|
+|toAssoc|[Data.Relation](Data-Relation.html#v:toAssoc)|
+|TObject|[Data.InRules](Data-InRules.html#v:TObject), [Data.Conversion](Data-Conversion.html#v:TObject)|
+|toClient|[MemServerAsyncTest](MemServerAsyncTest.html#v:toClient)|
+|toCompatible|[Data.InRules](Data-InRules.html#v:toCompatible)|
+|toHashMap|[Model.General](Model-General.html#v:toHashMap)|
+|ToInRule|[Data.InRules](Data-InRules.html#t:ToInRule), [Data.Conversion](Data-Conversion.html#t:ToInRule)|
+|toInRule|[Data.InRules](Data-InRules.html#v:toInRule), [Data.Conversion](Data-Conversion.html#v:toInRule)|
+|token|[Model.Application](Model-Application.html#v:token)|
+|toList|[Data.InRules](Data-InRules.html#v:toList), [Data.Conversion](Data-Conversion.html#v:toList)|
+|toListString|[Data.InRules](Data-InRules.html#v:toListString), [Data.Conversion](Data-Conversion.html#v:toListString)|
+|toMap|[Model.General](Model-General.html#v:toMap)|
+|toNodes|[MemServerAsyncTest](MemServerAsyncTest.html#v:toNodes)|
+|toString| |
+|1 (Function)|[Data.InRules](Data-InRules.html#v:toString), [Data.Conversion](Data-Conversion.html#v:toString)|
+|2 (Function)|[Data.Tools](Data-Tools.html#v:toString)|
+|3 (Function)|[NodeSnapletTest](NodeSnapletTest.html#v:toString)|
+|toStrings|[NodeSnapletTest](NodeSnapletTest.html#v:toStrings)|
+|toWord64|[Data.ConversionInstances](Data-ConversionInstances.html#v:toWord64)|
+|tqueueEnumerator|[Data.ConduitTransformer](Data-ConduitTransformer.html#v:tqueueEnumerator)|
+|tqueueIterator|[Data.ConduitTransformer](Data-ConduitTransformer.html#v:tqueueIterator)|
+|tqueueSink|[Data.ConduitTransformer](Data-ConduitTransformer.html#v:tqueueSink)|
+|tqueueSource|[Data.ConduitTransformer](Data-ConduitTransformer.html#v:tqueueSource)|
+|transaction|[Data.Database](Data-Database.html#v:transaction)|
+|tremove|[Data.TimedMap](Data-TimedMap.html#v:tremove)|
+|tryTakeMVarT|[MemServerAsyncTest](MemServerAsyncTest.html#v:tryTakeMVarT)|
+|TScalar|[Data.InRules](Data-InRules.html#v:TScalar), [Data.Conversion](Data-Conversion.html#v:TScalar)|
+|TTL|[ProtoExtended](ProtoExtended.html#t:TTL)|
+|TTLReq|[ProtoExtended](ProtoExtended.html#v:TTLReq)|
+|tupdateTime|[Data.TimedMap](Data-TimedMap.html#v:tupdateTime)|
+|tupleMaybe|[Data.TimedMap](Data-TimedMap.html#v:tupleMaybe)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

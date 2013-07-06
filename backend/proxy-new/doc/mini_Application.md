@@ -1,7 +1,3 @@
-% Application
-% 
-% 
-
 Application
 
 data [App](Application.html#t:App)

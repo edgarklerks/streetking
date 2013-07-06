@@ -1,7 +1,3 @@
-% Data.MenuTree
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -26,45 +22,37 @@ data Menu
 
 Constructors
 
-  ------------------------------------------------------------------------------------------------------------------------ ---
-  Root                                                                                                                      
-  MenuItem [Label](Data-MenuTree.html#t:Label) [Module](Data-MenuTree.html#t:Module) [Class](Data-MenuTree.html#t:Class)    
-  SubMenu [Label](Data-MenuTree.html#t:Label) [Module](Data-MenuTree.html#t:Module) [Class](Data-MenuTree.html#t:Class)     
-  Tab [Label](Data-MenuTree.html#t:Label) [Module](Data-MenuTree.html#t:Module) [Class](Data-MenuTree.html#t:Class)         
-  ------------------------------------------------------------------------------------------------------------------------ ---
+||
+|Root| |
+|MenuItem [Label](Data-MenuTree.html#t:Label) [Module](Data-MenuTree.html#t:Module) [Class](Data-MenuTree.html#t:Class)| |
+|SubMenu [Label](Data-MenuTree.html#t:Label) [Module](Data-MenuTree.html#t:Module) [Class](Data-MenuTree.html#t:Class)| |
+|Tab [Label](Data-MenuTree.html#t:Label) [Module](Data-MenuTree.html#t:Module) [Class](Data-MenuTree.html#t:Class)| |
 
 Instances
 
-  ------------------------------------------------------------------------------------------------------- ---
-  Eq [Menu](Data-MenuTree.html#t:Menu)                                                                     
-  Show [Menu](Data-MenuTree.html#t:Menu)                                                                   
-  ToJSON [Menu](Data-MenuTree.html#t:Menu)                                                                 
-  FromJSON [Menu](Data-MenuTree.html#t:Menu)                                                               
-  Convertible [FlatTree](Data-MenuTree.html#t:FlatTree) [[MenuModel](Model-MenuModel.html#t:MenuModel)]    
-  Convertible [[MenuModel](Model-MenuModel.html#t:MenuModel)] [FlatTree](Data-MenuTree.html#t:FlatTree)    
-  Convertible [[MenuModel](Model-MenuModel.html#t:MenuModel)] (Tree [Menu](Data-MenuTree.html#t:Menu))     
-  Convertible (Tree [Menu](Data-MenuTree.html#t:Menu)) [[MenuModel](Model-MenuModel.html#t:MenuModel)]     
-  ------------------------------------------------------------------------------------------------------- ---
+||
+|Eq [Menu](Data-MenuTree.html#t:Menu)| |
+|Show [Menu](Data-MenuTree.html#t:Menu)| |
+|ToJSON [Menu](Data-MenuTree.html#t:Menu)| |
+|FromJSON [Menu](Data-MenuTree.html#t:Menu)| |
+|Convertible [FlatTree](Data-MenuTree.html#t:FlatTree) [[MenuModel](Model-MenuModel.html#t:MenuModel)]| |
+|Convertible [[MenuModel](Model-MenuModel.html#t:MenuModel)] [FlatTree](Data-MenuTree.html#t:FlatTree)| |
+|Convertible [[MenuModel](Model-MenuModel.html#t:MenuModel)] (Tree [Menu](Data-MenuTree.html#t:Menu))| |
+|Convertible (Tree [Menu](Data-MenuTree.html#t:Menu)) [[MenuModel](Model-MenuModel.html#t:MenuModel)]| |
 
-mkTabs :: [Module](Data-MenuTree.html#t:Module) -\>
-[[Label](Data-MenuTree.html#t:Label)] -\> Tree
-[Menu](Data-MenuTree.html#t:Menu)
+mkTabs :: [Module](Data-MenuTree.html#t:Module) -\> [[Label](Data-MenuTree.html#t:Label)] -\> Tree [Menu](Data-MenuTree.html#t:Menu)
 
 type MenuTree = Tree (Int, [Menu](Data-MenuTree.html#t:Menu))
 
 type FlatTree = [((Int, Int), [Menu](Data-MenuTree.html#t:Menu))]
 
-anotateTree :: Tree [Menu](Data-MenuTree.html#t:Menu) -\>
-[MenuTree](Data-MenuTree.html#t:MenuTree)
+anotateTree :: Tree [Menu](Data-MenuTree.html#t:Menu) -\> [MenuTree](Data-MenuTree.html#t:MenuTree)
 
-stripTree :: [MenuTree](Data-MenuTree.html#t:MenuTree) -\> Tree
-[Menu](Data-MenuTree.html#t:Menu)
+stripTree :: [MenuTree](Data-MenuTree.html#t:MenuTree) -\> Tree [Menu](Data-MenuTree.html#t:Menu)
 
-toFlat :: Tree [Menu](Data-MenuTree.html#t:Menu) -\>
-[FlatTree](Data-MenuTree.html#t:FlatTree)
+toFlat :: Tree [Menu](Data-MenuTree.html#t:Menu) -\> [FlatTree](Data-MenuTree.html#t:FlatTree)
 
-fromFlat :: [FlatTree](Data-MenuTree.html#t:FlatTree) -\> Tree
-[Menu](Data-MenuTree.html#t:Menu)
+fromFlat :: [FlatTree](Data-MenuTree.html#t:FlatTree) -\> Tree [Menu](Data-MenuTree.html#t:Menu)
 
 testTree :: Tree [Menu](Data-MenuTree.html#t:Menu)
 

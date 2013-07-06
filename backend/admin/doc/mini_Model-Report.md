@@ -1,7 +1,3 @@
-% Model.Report
-% 
-% 
-
 Model.Report
 
 data [Type](Model-Report.html#t:Type)

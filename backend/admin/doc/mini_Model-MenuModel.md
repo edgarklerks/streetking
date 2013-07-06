@@ -1,7 +1,3 @@
-% Model.MenuModel
-% 
-% 
-
 Model.MenuModel
 
 type [MString](Model-MenuModel.html#t:MString)

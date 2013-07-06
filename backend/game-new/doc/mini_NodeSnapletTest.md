@@ -1,7 +1,3 @@
-% NodeSnapletTest
-% 
-% 
-
 NodeSnapletTest
 
 data [DHTConfig](NodeSnapletTest.html#t:DHTConfig)

@@ -1,7 +1,3 @@
-% Model.Manufacturer
-% 
-% 
-
 Model.Manufacturer
 
 data [Manufacturer](Model-Manufacturer.html#t:Manufacturer)

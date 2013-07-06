@@ -1,7 +1,3 @@
-% Application
-% 
-% 
-
 Application
 
 data [ApplicationException](Application.html#t:ApplicationException)

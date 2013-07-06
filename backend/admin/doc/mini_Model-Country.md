@@ -1,7 +1,3 @@
-% Model.Country
-% 
-% 
-
 Model.Country
 
 data [Country](Model-Country.html#t:Country)

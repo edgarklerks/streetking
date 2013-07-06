@@ -1,7 +1,3 @@
-% (Index - U)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,58 +38,57 @@
 
 Index - U
 
-  --------------------------- ------------------------------------------------------------------------------------------------------
-  UC                          [MemServerAsyncTest](MemServerAsyncTest.html#v:UC)
-  uc\_context                 [MemServerAsyncTest](MemServerAsyncTest.html#v:uc_context)
-  uc\_debug                   [MemServerAsyncTest](MemServerAsyncTest.html#v:uc_debug)
-  uc\_log                     [MemServerAsyncTest](MemServerAsyncTest.html#v:uc_log)
-  uc\_request\_answer\_chan   [MemServerAsyncTest](MemServerAsyncTest.html#v:uc_request_answer_chan)
-  uc\_updates\_map            [MemServerAsyncTest](MemServerAsyncTest.html#v:uc_updates_map)
-  UError                      [Data.SqlTransaction](Data-SqlTransaction.html#v:UError)
-  unConnectionContext         [Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionContext)
-  unConnectionPool            [Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionPool)
-  UnexpectedResponse          [ProtoExtended](ProtoExtended.html#v:UnexpectedResponse)
-  unexpectedResponse          [ProtoExtended](ProtoExtended.html#v:unexpectedResponse)
-  unHS                        [Data.Hstore](Data-Hstore.html#v:unHS)
-  uniform                     [RandomSnaplet](RandomSnaplet.html#v:uniform)
-  uniformR                    [RandomSnaplet](RandomSnaplet.html#v:uniformR)
-  unIM                        [Data.InRules](Data-InRules.html#v:unIM), [Data.Conversion](Data-Conversion.html#v:unIM)
-  unionObj                    [Data.InRules](Data-InRules.html#v:unionObj), [Data.Conversion](Data-Conversion.html#v:unionObj)
-  unionRecObj                 [Data.InRules](Data-InRules.html#v:unionRecObj)
-  unionsObj                   [Data.InRules](Data-InRules.html#v:unionsObj), [Data.Conversion](Data-Conversion.html#v:unionsObj)
-  unite                       [Data.Relation](Data-Relation.html#v:unite)
-  unNodeTest                  [NodeSnapletTest](NodeSnapletTest.html#v:unNodeTest)
-  unPM                        [Data.InRules](Data-InRules.html#v:unPM), [Data.Conversion](Data-Conversion.html#v:unPM)
-  unProtoMonad                [MemServerAsyncTest](MemServerAsyncTest.html#v:unProtoMonad)
-  unReadable                  [Data.InRules](Data-InRules.html#v:unReadable), [Data.Conversion](Data-Conversion.html#v:unReadable)
-  unRS                        [Data.Role](Data-Role.html#v:unRS)
-  unRSM                       [Data.Role](Data-Role.html#v:unRSM)
-  unsafeGetConnection         [Data.ConnectionPool](Data-ConnectionPool.html#v:unsafeGetConnection)
-  UnspecifiedFailure          [ProtoExtended](ProtoExtended.html#v:UnspecifiedFailure)
-  unspecifiedFailure          [ProtoExtended](ProtoExtended.html#v:unspecifiedFailure)
-  unTimeMap                   [Data.TimedMap](Data-TimedMap.html#v:unTimeMap)
-  unTMap                      [Data.TimedMap](Data-TimedMap.html#v:unTMap)
-  unwrapContext               [Data.ConnectionPool](Data-ConnectionPool.html#v:unwrapContext)
-  Update                       
-  1 (Type/Class)              [Data.Database](Data-Database.html#t:Update)
-  2 (Data Constructor)        [Data.Database](Data-Database.html#v:Update)
-  update                      [Data.Database](Data-Database.html#v:update)
-  UpdateConfig                [MemServerAsyncTest](MemServerAsyncTest.html#t:UpdateConfig)
-  updateEngine                [MemServerAsyncTest](MemServerAsyncTest.html#v:updateEngine)
-  updateHashMap               [Model.General](Model-General.html#v:updateHashMap)
-  updateMap                   [Model.General](Model-General.html#v:updateMap)
-  UpdateMonad                 [MemServerAsyncTest](MemServerAsyncTest.html#t:UpdateMonad)
-  Updates                     [Data.Database](Data-Database.html#v:Updates)
-  updates                     [Data.Database](Data-Database.html#v:updates)
-  UpdatesMap                  [MemServerAsyncTest](MemServerAsyncTest.html#t:UpdatesMap)
-  UpdatesSocket               [MemServerAsyncTest](MemServerAsyncTest.html#t:UpdatesSocket)
-  updateTime                  [Data.TimedMap](Data-TimedMap.html#v:updateTime)
-  updateTimeRole              [Data.Role](Data-Role.html#v:updateTimeRole)
-  upsert                      [Data.Database](Data-Database.html#v:upsert)
-  upsertWithTables            [Model.TH](Model-TH.html#v:upsertWithTables)
-  UpstreamMap                 [MemServerAsyncTest](MemServerAsyncTest.html#t:UpstreamMap)
-  UpstreamSocket              [MemServerAsyncTest](MemServerAsyncTest.html#t:UpstreamSocket)
-  User                        [Data.Role](Data-Role.html#v:User), [RoleSnaplet](RoleSnaplet.html#v:User)
-  --------------------------- ------------------------------------------------------------------------------------------------------
+||
+|UC|[MemServerAsyncTest](MemServerAsyncTest.html#v:UC)|
+|uc\_context|[MemServerAsyncTest](MemServerAsyncTest.html#v:uc_context)|
+|uc\_debug|[MemServerAsyncTest](MemServerAsyncTest.html#v:uc_debug)|
+|uc\_log|[MemServerAsyncTest](MemServerAsyncTest.html#v:uc_log)|
+|uc\_request\_answer\_chan|[MemServerAsyncTest](MemServerAsyncTest.html#v:uc_request_answer_chan)|
+|uc\_updates\_map|[MemServerAsyncTest](MemServerAsyncTest.html#v:uc_updates_map)|
+|UError|[Data.SqlTransaction](Data-SqlTransaction.html#v:UError)|
+|unConnectionContext|[Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionContext)|
+|unConnectionPool|[Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionPool)|
+|UnexpectedResponse|[ProtoExtended](ProtoExtended.html#v:UnexpectedResponse)|
+|unexpectedResponse|[ProtoExtended](ProtoExtended.html#v:unexpectedResponse)|
+|unHS|[Data.Hstore](Data-Hstore.html#v:unHS)|
+|uniform|[RandomSnaplet](RandomSnaplet.html#v:uniform)|
+|uniformR|[RandomSnaplet](RandomSnaplet.html#v:uniformR)|
+|unIM|[Data.InRules](Data-InRules.html#v:unIM), [Data.Conversion](Data-Conversion.html#v:unIM)|
+|unionObj|[Data.InRules](Data-InRules.html#v:unionObj), [Data.Conversion](Data-Conversion.html#v:unionObj)|
+|unionRecObj|[Data.InRules](Data-InRules.html#v:unionRecObj)|
+|unionsObj|[Data.InRules](Data-InRules.html#v:unionsObj), [Data.Conversion](Data-Conversion.html#v:unionsObj)|
+|unite|[Data.Relation](Data-Relation.html#v:unite)|
+|unNodeTest|[NodeSnapletTest](NodeSnapletTest.html#v:unNodeTest)|
+|unPM|[Data.InRules](Data-InRules.html#v:unPM), [Data.Conversion](Data-Conversion.html#v:unPM)|
+|unProtoMonad|[MemServerAsyncTest](MemServerAsyncTest.html#v:unProtoMonad)|
+|unReadable|[Data.InRules](Data-InRules.html#v:unReadable), [Data.Conversion](Data-Conversion.html#v:unReadable)|
+|unRS|[Data.Role](Data-Role.html#v:unRS)|
+|unRSM|[Data.Role](Data-Role.html#v:unRSM)|
+|unsafeGetConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:unsafeGetConnection)|
+|UnspecifiedFailure|[ProtoExtended](ProtoExtended.html#v:UnspecifiedFailure)|
+|unspecifiedFailure|[ProtoExtended](ProtoExtended.html#v:unspecifiedFailure)|
+|unTimeMap|[Data.TimedMap](Data-TimedMap.html#v:unTimeMap)|
+|unTMap|[Data.TimedMap](Data-TimedMap.html#v:unTMap)|
+|unwrapContext|[Data.ConnectionPool](Data-ConnectionPool.html#v:unwrapContext)|
+|Update| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Update)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Update)|
+|update|[Data.Database](Data-Database.html#v:update)|
+|UpdateConfig|[MemServerAsyncTest](MemServerAsyncTest.html#t:UpdateConfig)|
+|updateEngine|[MemServerAsyncTest](MemServerAsyncTest.html#v:updateEngine)|
+|updateHashMap|[Model.General](Model-General.html#v:updateHashMap)|
+|updateMap|[Model.General](Model-General.html#v:updateMap)|
+|UpdateMonad|[MemServerAsyncTest](MemServerAsyncTest.html#t:UpdateMonad)|
+|Updates|[Data.Database](Data-Database.html#v:Updates)|
+|updates|[Data.Database](Data-Database.html#v:updates)|
+|UpdatesMap|[MemServerAsyncTest](MemServerAsyncTest.html#t:UpdatesMap)|
+|UpdatesSocket|[MemServerAsyncTest](MemServerAsyncTest.html#t:UpdatesSocket)|
+|updateTime|[Data.TimedMap](Data-TimedMap.html#v:updateTime)|
+|updateTimeRole|[Data.Role](Data-Role.html#v:updateTimeRole)|
+|upsert|[Data.Database](Data-Database.html#v:upsert)|
+|upsertWithTables|[Model.TH](Model-TH.html#v:upsertWithTables)|
+|UpstreamMap|[MemServerAsyncTest](MemServerAsyncTest.html#t:UpstreamMap)|
+|UpstreamSocket|[MemServerAsyncTest](MemServerAsyncTest.html#t:UpstreamSocket)|
+|User|[Data.Role](Data-Role.html#v:User), [RoleSnaplet](RoleSnaplet.html#v:User)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

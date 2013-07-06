@@ -1,7 +1,3 @@
-% Model.CarMarket
-% 
-% 
-
 Model.CarMarket
 
 data [CarMarket](Model-CarMarket.html#t:CarMarket)

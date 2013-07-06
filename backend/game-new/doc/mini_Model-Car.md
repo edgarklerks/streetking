@@ -1,7 +1,3 @@
-% Model.Car
-% 
-% 
-
 Model.Car
 
 data [Car](Model-Car.html#t:Car)

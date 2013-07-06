@@ -1,7 +1,3 @@
-% Model.TaskLog
-% 
-% 
-
 Model.TaskLog
 
 type [MInteger](Model-TaskLog.html#t:MInteger)

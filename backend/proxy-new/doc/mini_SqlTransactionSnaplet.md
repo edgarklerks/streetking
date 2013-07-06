@@ -1,11 +1,6 @@
-% SqlTransactionSnaplet
-% 
-% 
-
 SqlTransactionSnaplet
 
-data
-[SqlTransactionConfig](SqlTransactionSnaplet.html#t:SqlTransactionConfig)
+data [SqlTransactionConfig](SqlTransactionSnaplet.html#t:SqlTransactionConfig)
 
 [dsn](SqlTransactionSnaplet.html#v:dsn)
 
@@ -23,5 +18,4 @@ data
 
 [initSqlTransactionSnaplet](SqlTransactionSnaplet.html#v:initSqlTransactionSnaplet)
 
-class
-[HasSqlTransaction](SqlTransactionSnaplet.html#t:HasSqlTransaction) b
+class [HasSqlTransaction](SqlTransactionSnaplet.html#t:HasSqlTransaction) b

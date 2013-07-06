@@ -1,7 +1,3 @@
-% Model.Garage
-% 
-% 
-
 Model.Garage
 
 data [Garage](Model-Garage.html#t:Garage)

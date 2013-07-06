@@ -1,7 +1,3 @@
-% Model.Car3dModel
-% 
-% 
-
 Model.Car3dModel
 
 data [Car3dModel](Model-Car3dModel.html#t:Car3dModel)

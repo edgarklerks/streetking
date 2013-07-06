@@ -1,7 +1,3 @@
-% (Index - \_)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,27 +40,26 @@
 
 Index - \_
 
-  -------------- ---------------------------------------------------------------
-  \_addr         [NodeSnapletTest](NodeSnapletTest.html#v:_addr)
-  \_config       [Application](Application.html#v:_config)
-  \_configData   [ConfigSnaplet](ConfigSnaplet.html#v:_configData)
-  \_configDir    [ConfigSnaplet](ConfigSnaplet.html#v:_configDir)
-  \_ctx          [NodeSnapletTest](NodeSnapletTest.html#v:_ctx)
-  \_db           [Application](Application.html#v:_db)
-  \_dbcons       [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)
-  \_dsn          [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)
-  \_logcycle     [Application](Application.html#v:_logcycle)
-  \_nde          [Application](Application.html#v:_nde)
-  \_notf         [Application](Application.html#v:_notf)
-  \_pc           [NodeSnapletTest](NodeSnapletTest.html#v:_pc)
-  \_po           [NotificationSnaplet](NotificationSnaplet.html#v:_po)
-  \_pool         [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)
-  \_pull         [NodeSnapletTest](NodeSnapletTest.html#v:_pull)
-  \_query        [NodeSnapletTest](NodeSnapletTest.html#v:_query)
-  \_req          [NodeSnapletTest](NodeSnapletTest.html#v:_req)
-  \_rnd          [Application](Application.html#v:_rnd)
-  \_slock        [Application](Application.html#v:_slock)
-  \_valToLua     [Lua.Prim](Lua-Prim.html#v:_valToLua)
-  -------------- ---------------------------------------------------------------
+||
+|\_addr|[NodeSnapletTest](NodeSnapletTest.html#v:_addr)|
+|\_config|[Application](Application.html#v:_config)|
+|\_configData|[ConfigSnaplet](ConfigSnaplet.html#v:_configData)|
+|\_configDir|[ConfigSnaplet](ConfigSnaplet.html#v:_configDir)|
+|\_ctx|[NodeSnapletTest](NodeSnapletTest.html#v:_ctx)|
+|\_db|[Application](Application.html#v:_db)|
+|\_dbcons|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)|
+|\_dsn|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)|
+|\_logcycle|[Application](Application.html#v:_logcycle)|
+|\_nde|[Application](Application.html#v:_nde)|
+|\_notf|[Application](Application.html#v:_notf)|
+|\_pc|[NodeSnapletTest](NodeSnapletTest.html#v:_pc)|
+|\_po|[NotificationSnaplet](NotificationSnaplet.html#v:_po)|
+|\_pool|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)|
+|\_pull|[NodeSnapletTest](NodeSnapletTest.html#v:_pull)|
+|\_query|[NodeSnapletTest](NodeSnapletTest.html#v:_query)|
+|\_req|[NodeSnapletTest](NodeSnapletTest.html#v:_req)|
+|\_rnd|[Application](Application.html#v:_rnd)|
+|\_slock|[Application](Application.html#v:_slock)|
+|\_valToLua|[Lua.Prim](Lua-Prim.html#v:_valToLua)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

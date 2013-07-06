@@ -1,7 +1,3 @@
-% Model.MarketPlace
-% 
-% 
-
 Model.MarketPlace
 
 type [MString](Model-MarketPlace.html#t:MString)

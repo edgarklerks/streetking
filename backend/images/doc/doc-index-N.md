@@ -1,7 +1,3 @@
-% (Index - N)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,21 +37,20 @@
 
 Index - N
 
-  ------------ ------------------------------------------------------------------------------------------
-  name         [Model.ParameterTable](Model-ParameterTable.html#v:name)
-  natural      [Data.Tools](Data-Tools.html#v:natural)
-  nempty       [Model.General](Model-General.html#v:nempty)
-  newFuture    [Data.SqlTransaction](Data-SqlTransaction.html#v:newFuture)
-  Next         [Data.InRules](Data-InRules.html#v:Next), [Data.Conversion](Data-Conversion.html#v:Next)
-  nhead        [Model.General](Model-General.html#v:nhead)
-  Nil          [Data.And](Data-And.html#v:Nil)
-  ninsert      [Model.General](Model-General.html#v:ninsert)
-  nlookup      [Model.General](Model-General.html#v:nlookup)
-  None         [Data.InRules](Data-InRules.html#v:None), [Data.Conversion](Data-Conversion.html#v:None)
-  not          [Data.Relation](Data-Relation.html#v:not)
-  notnull      [Data.Relation](Data-Relation.html#v:notnull)
-  NullLimit    [Data.Database](Data-Database.html#v:NullLimit)
-  NullOffset   [Data.Database](Data-Database.html#v:NullOffset)
-  ------------ ------------------------------------------------------------------------------------------
+||
+|name|[Model.ParameterTable](Model-ParameterTable.html#v:name)|
+|natural|[Data.Tools](Data-Tools.html#v:natural)|
+|nempty|[Model.General](Model-General.html#v:nempty)|
+|newFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:newFuture)|
+|Next|[Data.InRules](Data-InRules.html#v:Next), [Data.Conversion](Data-Conversion.html#v:Next)|
+|nhead|[Model.General](Model-General.html#v:nhead)|
+|Nil|[Data.And](Data-And.html#v:Nil)|
+|ninsert|[Model.General](Model-General.html#v:ninsert)|
+|nlookup|[Model.General](Model-General.html#v:nlookup)|
+|None|[Data.InRules](Data-InRules.html#v:None), [Data.Conversion](Data-Conversion.html#v:None)|
+|not|[Data.Relation](Data-Relation.html#v:not)|
+|notnull|[Data.Relation](Data-Relation.html#v:notnull)|
+|NullLimit|[Data.Database](Data-Database.html#v:NullLimit)|
+|NullOffset|[Data.Database](Data-Database.html#v:NullOffset)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

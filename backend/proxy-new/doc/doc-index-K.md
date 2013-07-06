@@ -1,7 +1,3 @@
-% (Index - K)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,12 +38,11 @@
 
 Index - K
 
-  ----------- --------------------------------------------------------------------------------------------------
-  keyFilter   [Data.Conversion](Data-Conversion.html#v:keyFilter)
-  KeyVal      [Data.MemTimeState](Data-MemTimeState.html#v:KeyVal)
-  kfold       [Data.InRules](Data-InRules.html#v:kfold), [Data.Conversion](Data-Conversion.html#v:kfold)
-  KindView    [Data.InRules](Data-InRules.html#t:KindView), [Data.Conversion](Data-Conversion.html#t:KindView)
-  kmap        [Data.InRules](Data-InRules.html#v:kmap), [Data.Conversion](Data-Conversion.html#v:kmap)
-  ----------- --------------------------------------------------------------------------------------------------
+||
+|keyFilter|[Data.Conversion](Data-Conversion.html#v:keyFilter)|
+|KeyVal|[Data.MemTimeState](Data-MemTimeState.html#v:KeyVal)|
+|kfold|[Data.InRules](Data-InRules.html#v:kfold), [Data.Conversion](Data-Conversion.html#v:kfold)|
+|KindView|[Data.InRules](Data-InRules.html#t:KindView), [Data.Conversion](Data-Conversion.html#t:KindView)|
+|kmap|[Data.InRules](Data-InRules.html#v:kmap), [Data.Conversion](Data-Conversion.html#v:kmap)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

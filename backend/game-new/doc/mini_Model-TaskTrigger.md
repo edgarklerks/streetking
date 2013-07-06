@@ -1,7 +1,3 @@
-% Model.TaskTrigger
-% 
-% 
-
 Model.TaskTrigger
 
 data [TaskTrigger](Model-TaskTrigger.html#t:TaskTrigger)

@@ -1,7 +1,3 @@
-% Data.RaceParticipant
-% 
-% 
-
 Data.RaceParticipant
 
 data [RaceParticipant](Data-RaceParticipant.html#t:RaceParticipant)

@@ -1,7 +1,3 @@
-% Model.CarInstanceParts
-% 
-% 
-
 Model.CarInstanceParts
 
 type [MString](Model-CarInstanceParts.html#t:MString)

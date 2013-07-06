@@ -1,7 +1,3 @@
-% Model.TrackDetails
-% 
-% 
-
 Model.TrackDetails
 
 data [TrackDetails](Model-TrackDetails.html#t:TrackDetails)

@@ -1,7 +1,3 @@
-% (Index - \_)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,25 +38,24 @@
 
 Index - \_
 
-  --------------- ---------------------------------------------------------------
-  \_addr          [NodeSnapletTest](NodeSnapletTest.html#v:_addr)
-  \_ctx           [NodeSnapletTest](NodeSnapletTest.html#v:_ctx)
-  \_dbcons        [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)
-  \_dht           [RoleSnaplet](RoleSnaplet.html#v:_dht)
-  \_dsn           [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)
-  \_logcycle      [Application](Application.html#v:_logcycle)
-  \_log\_cycler   [RoleSnaplet](RoleSnaplet.html#v:_log_cycler)
-  \_node          [Application](Application.html#v:_node)
-  \_pc            [NodeSnapletTest](NodeSnapletTest.html#v:_pc)
-  \_pool          [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)
-  \_proxy         [Application](Application.html#v:_proxy)
-  \_pull          [NodeSnapletTest](NodeSnapletTest.html#v:_pull)
-  \_query         [NodeSnapletTest](NodeSnapletTest.html#v:_query)
-  \_random        [RoleSnaplet](RoleSnaplet.html#v:_random)
-  \_req           [NodeSnapletTest](NodeSnapletTest.html#v:_req)
-  \_rnd           [Application](Application.html#v:_rnd)
-  \_roles         [Application](Application.html#v:_roles)
-  \_sql           [Application](Application.html#v:_sql)
-  --------------- ---------------------------------------------------------------
+||
+|\_addr|[NodeSnapletTest](NodeSnapletTest.html#v:_addr)|
+|\_ctx|[NodeSnapletTest](NodeSnapletTest.html#v:_ctx)|
+|\_dbcons|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)|
+|\_dht|[RoleSnaplet](RoleSnaplet.html#v:_dht)|
+|\_dsn|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)|
+|\_logcycle|[Application](Application.html#v:_logcycle)|
+|\_log\_cycler|[RoleSnaplet](RoleSnaplet.html#v:_log_cycler)|
+|\_node|[Application](Application.html#v:_node)|
+|\_pc|[NodeSnapletTest](NodeSnapletTest.html#v:_pc)|
+|\_pool|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)|
+|\_proxy|[Application](Application.html#v:_proxy)|
+|\_pull|[NodeSnapletTest](NodeSnapletTest.html#v:_pull)|
+|\_query|[NodeSnapletTest](NodeSnapletTest.html#v:_query)|
+|\_random|[RoleSnaplet](RoleSnaplet.html#v:_random)|
+|\_req|[NodeSnapletTest](NodeSnapletTest.html#v:_req)|
+|\_rnd|[Application](Application.html#v:_rnd)|
+|\_roles|[Application](Application.html#v:_roles)|
+|\_sql|[Application](Application.html#v:_sql)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% ImageSnapLet
-% 
-% 
-
 ImageSnapLet
 
 data [ImageConfig](ImageSnapLet.html#t:ImageConfig)

@@ -1,7 +1,3 @@
-% (Index - +)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,26 +41,25 @@
 
 Index - +
 
-  -------- -------------------------------------------------------------------------
-  +%       [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--37-)
-  +%%      [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--37--37-)
-  +%%|     [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--37--37--124-)
-  +%|      [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--37--124-)
-  +&&      [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--38--38-)
-  ++=      [Data.ModelToSVG](Data-ModelToSVG.html#v:-43--43--61-)
-  +\<      [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60-)
-  +\<=     [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--61-)
-  +\<=|    [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--61--124-)
-  +\<\>    [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--62-)
-  +\<\>|   [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--62--124-)
-  +\<|     [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--124-)
-  +==      [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--61--61-)
-  +==|     [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--61--61--124-)
-  +\>      [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--62-)
-  +\>=     [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--62--61-)
-  +\>=|    [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--62--61--124-)
-  +\>|     [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--62--124-)
-  +||      [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--124--124-)
-  -------- -------------------------------------------------------------------------
+||
+|+%|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--37-)|
+|+%%|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--37--37-)|
+|+%%||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--37--37--124-)|
+|+%||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--37--124-)|
+|+&&|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--38--38-)|
+|++=|[Data.ModelToSVG](Data-ModelToSVG.html#v:-43--43--61-)|
+|+\<|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60-)|
+|+\<=|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--61-)|
+|+\<=||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--61--124-)|
+|+\<\>|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--62-)|
+|+\<\>||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--62--124-)|
+|+\<||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--60--124-)|
+|+==|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--61--61-)|
+|+==||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--61--61--124-)|
+|+\>|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--62-)|
+|+\>=|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--62--61-)|
+|+\>=||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--62--61--124-)|
+|+\>||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--62--124-)|
+|+|||[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:-43--124--124-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

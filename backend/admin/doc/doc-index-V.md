@@ -1,7 +1,3 @@
-% (Index - V)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,22 +41,21 @@
 
 Index - V
 
-  -------------- --------------------------------------------------------------------------------------------------------
-  validObject    [Data.InRules](Data-InRules.html#v:validObject), [Data.Conversion](Data-Conversion.html#v:validObject)
-  Value          [Data.Database](Data-Database.html#t:Value)
-  value           
-  1 (Function)   [Model.Config](Model-Config.html#v:value)
-  2 (Function)   [Model.CarOptions](Model-CarOptions.html#v:value)
-  Values         [Data.Database](Data-Database.html#t:Values)
-  values         [Data.Database](Data-Database.html#v:values)
-  Var            [Config.ConfigFileParser](Config-ConfigFileParser.html#v:Var)
-  viaReadable    [Data.InRules](Data-InRules.html#v:viaReadable), [Data.Conversion](Data-Conversion.html#v:viaReadable)
-  view            
-  1 (Function)   [Data.PriorityQueue](Data-PriorityQueue.html#v:view)
-  2 (Function)   [Data.Relation](Data-Relation.html#v:view)
-  viewed         [Model.RewardLog](Model-RewardLog.html#v:viewed)
-  viewKind       [Data.InRules](Data-InRules.html#v:viewKind), [Data.Conversion](Data-Conversion.html#v:viewKind)
-  ViewMin        [Data.PriorityQueue](Data-PriorityQueue.html#t:ViewMin)
-  -------------- --------------------------------------------------------------------------------------------------------
+||
+|validObject|[Data.InRules](Data-InRules.html#v:validObject), [Data.Conversion](Data-Conversion.html#v:validObject)|
+|Value|[Data.Database](Data-Database.html#t:Value)|
+|value| |
+|1 (Function)|[Model.Config](Model-Config.html#v:value)|
+|2 (Function)|[Model.CarOptions](Model-CarOptions.html#v:value)|
+|Values|[Data.Database](Data-Database.html#t:Values)|
+|values|[Data.Database](Data-Database.html#v:values)|
+|Var|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:Var)|
+|viaReadable|[Data.InRules](Data-InRules.html#v:viaReadable), [Data.Conversion](Data-Conversion.html#v:viaReadable)|
+|view| |
+|1 (Function)|[Data.PriorityQueue](Data-PriorityQueue.html#v:view)|
+|2 (Function)|[Data.Relation](Data-Relation.html#v:view)|
+|viewed|[Model.RewardLog](Model-RewardLog.html#v:viewed)|
+|viewKind|[Data.InRules](Data-InRules.html#v:viewKind), [Data.Conversion](Data-Conversion.html#v:viewKind)|
+|ViewMin|[Data.PriorityQueue](Data-PriorityQueue.html#t:ViewMin)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

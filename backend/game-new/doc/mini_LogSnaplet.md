@@ -1,7 +1,3 @@
-% LogSnaplet
-% 
-% 
-
 LogSnaplet
 
 [initLogSnaplet](LogSnaplet.html#v:initLogSnaplet)

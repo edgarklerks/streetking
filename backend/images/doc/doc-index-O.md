@@ -1,7 +1,3 @@
-% (Index - O)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,32 +37,31 @@
 
 Index - O
 
-  ---------------------- ----------------------------------------------------------------------------------------------
-  object                 [Data.InRules](Data-InRules.html#v:object), [Data.Conversion](Data-Conversion.html#v:object)
-  Offset                  
-  1 (Type/Class)         [Data.Database](Data-Database.html#t:Offset)
-  2 (Data Constructor)   [Data.Database](Data-Database.html#v:Offset)
-  offset                 [Data.Database](Data-Database.html#v:offset)
-  One                    [Data.And](Data-And.html#v:One)
-  OpContains             [Data.Database](Data-Database.html#v:OpContains)
-  OpEQ                   [Data.Database](Data-Database.html#v:OpEQ)
-  OpGT                   [Data.Database](Data-Database.html#v:OpGT)
-  OpGTE                  [Data.Database](Data-Database.html#v:OpGTE)
-  OpIContains            [Data.Database](Data-Database.html#v:OpIContains)
-  OpInList               [Data.Database](Data-Database.html#v:OpInList)
-  OpLT                   [Data.Database](Data-Database.html#v:OpLT)
-  OpLTE                  [Data.Database](Data-Database.html#v:OpLTE)
-  OpNEQ                  [Data.Database](Data-Database.html#v:OpNEQ)
-  Or                     [Data.Database](Data-Database.html#v:Or)
-  or                     [Data.Relation](Data-Relation.html#v:or)
-  orcf                   [Data.Tools](Data-Tools.html#v:orcf)
-  Order                   
-  1 (Type/Class)         [Data.Database](Data-Database.html#t:Order)
-  2 (Data Constructor)   [Data.Database](Data-Database.html#v:Order)
-  order                  [Data.Database](Data-Database.html#v:order)
-  Orders                 [Data.Database](Data-Database.html#t:Orders)
-  orders                 [Data.Database](Data-Database.html#v:orders)
-  orM                    [Data.InRules](Data-InRules.html#v:orM)
-  ---------------------- ----------------------------------------------------------------------------------------------
+||
+|object|[Data.InRules](Data-InRules.html#v:object), [Data.Conversion](Data-Conversion.html#v:object)|
+|Offset| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Offset)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Offset)|
+|offset|[Data.Database](Data-Database.html#v:offset)|
+|One|[Data.And](Data-And.html#v:One)|
+|OpContains|[Data.Database](Data-Database.html#v:OpContains)|
+|OpEQ|[Data.Database](Data-Database.html#v:OpEQ)|
+|OpGT|[Data.Database](Data-Database.html#v:OpGT)|
+|OpGTE|[Data.Database](Data-Database.html#v:OpGTE)|
+|OpIContains|[Data.Database](Data-Database.html#v:OpIContains)|
+|OpInList|[Data.Database](Data-Database.html#v:OpInList)|
+|OpLT|[Data.Database](Data-Database.html#v:OpLT)|
+|OpLTE|[Data.Database](Data-Database.html#v:OpLTE)|
+|OpNEQ|[Data.Database](Data-Database.html#v:OpNEQ)|
+|Or|[Data.Database](Data-Database.html#v:Or)|
+|or|[Data.Relation](Data-Relation.html#v:or)|
+|orcf|[Data.Tools](Data-Tools.html#v:orcf)|
+|Order| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Order)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Order)|
+|order|[Data.Database](Data-Database.html#v:order)|
+|Orders|[Data.Database](Data-Database.html#t:Orders)|
+|orders|[Data.Database](Data-Database.html#v:orders)|
+|orM|[Data.InRules](Data-InRules.html#v:orM)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

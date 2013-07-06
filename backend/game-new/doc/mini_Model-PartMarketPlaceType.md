@@ -1,11 +1,6 @@
-% Model.PartMarketPlaceType
-% 
-% 
-
 Model.PartMarketPlaceType
 
-data
-[PartMarketPlaceType](Model-PartMarketPlaceType.html#t:PartMarketPlaceType)
+data [PartMarketPlaceType](Model-PartMarketPlaceType.html#t:PartMarketPlaceType)
 
 [relation](Model-PartMarketPlaceType.html#v:relation)
 

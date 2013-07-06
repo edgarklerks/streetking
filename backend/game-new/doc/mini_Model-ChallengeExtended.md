@@ -1,11 +1,6 @@
-% Model.ChallengeExtended
-% 
-% 
-
 Model.ChallengeExtended
 
-data
-[ChallengeExtended](Model-ChallengeExtended.html#t:ChallengeExtended)
+data [ChallengeExtended](Model-ChallengeExtended.html#t:ChallengeExtended)
 
 [relation](Model-ChallengeExtended.html#v:relation)
 

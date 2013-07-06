@@ -1,7 +1,3 @@
-% Data.CarDerivedParameters
-% 
-% 
-
 Data.CarDerivedParameters
 
 [searchCarInGarage](Data-CarDerivedParameters.html#v:searchCarInGarage)

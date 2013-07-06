@@ -1,7 +1,3 @@
-% Data.Tools
-% 
-% 
-
 Data.Tools
 
 data [CheckException](Data-Tools.html#t:CheckException)

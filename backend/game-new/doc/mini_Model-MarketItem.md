@@ -1,7 +1,3 @@
-% Model.MarketItem
-% 
-% 
-
 Model.MarketItem
 
 type [MInteger](Model-MarketItem.html#t:MInteger)

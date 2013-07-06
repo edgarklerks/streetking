@@ -1,7 +1,3 @@
-% Model.PreLetter
-% 
-% 
-
 Model.PreLetter
 
 type [MInteger](Model-PreLetter.html#t:MInteger)

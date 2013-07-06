@@ -1,7 +1,3 @@
-% Data.ConnectionPool
-% 
-% 
-
 Data.ConnectionPool
 
 [c](Data-ConnectionPool.html#v:c)

@@ -1,7 +1,3 @@
-% (Index - E)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,32 +38,31 @@
 
 Index - E
 
-  --------------------------- --------------------------------------------------------------------------------------------------
-  email                       [Data.Tools](Data-Tools.html#v:email)
-  Empty                        
-  1 (Data Constructor)        [Data.ConnectionPool](Data-ConnectionPool.html#v:Empty)
-  2 (Data Constructor)        [Data.MemTimeState](Data-MemTimeState.html#v:Empty)
-  emptyConnectionBucket       [Data.ConnectionPool](Data-ConnectionPool.html#v:emptyConnectionBucket)
-  emptyFuture                 [Data.SqlTransaction](Data-SqlTransaction.html#v:emptyFuture)
-  emptyObj                    [Data.InRules](Data-InRules.html#v:emptyObj), [Data.Conversion](Data-Conversion.html#v:emptyObj)
-  enclose                     [Data.Tools](Data-Tools.html#v:enclose)
-  encWith                     [Data.Tools](Data-Tools.html#v:encWith)
-  enumeratorToConduitSource   [Data.ConduitTransformer](Data-ConduitTransformer.html#v:enumeratorToConduitSource)
-  Error                        
-  1 (Data Constructor)        [ProtoExtended](ProtoExtended.html#v:Error)
-  2 (Data Constructor)        [Data.HeartBeat](Data-HeartBeat.html#v:Error)
-  escInChar                   [Data.InRules](Data-InRules.html#v:escInChar)
-  escInStr                    [Data.InRules](Data-InRules.html#v:escInStr)
-  Except                      [Data.MemTimeState](Data-MemTimeState.html#v:Except)
-  execute                     [Data.SqlTransaction](Data-SqlTransaction.html#v:execute)
-  executeMany                 [Data.SqlTransaction](Data-SqlTransaction.html#v:executeMany)
-  executeRaw                  [Data.SqlTransaction](Data-SqlTransaction.html#v:executeRaw)
-  express                     [Data.Database](Data-Database.html#v:express)
-  Expressable                 [Data.Database](Data-Database.html#t:Expressable)
-  Expression                  [Data.Database](Data-Database.html#t:Expression)
-  extractMin                  [Data.PriorityQueue](Data-PriorityQueue.html#v:extractMin)
-  extractTill                 [Data.PriorityQueue](Data-PriorityQueue.html#v:extractTill)
-  extractTillWithKey          [Data.PriorityQueue](Data-PriorityQueue.html#v:extractTillWithKey)
-  --------------------------- --------------------------------------------------------------------------------------------------
+||
+|email|[Data.Tools](Data-Tools.html#v:email)|
+|Empty| |
+|1 (Data Constructor)|[Data.ConnectionPool](Data-ConnectionPool.html#v:Empty)|
+|2 (Data Constructor)|[Data.MemTimeState](Data-MemTimeState.html#v:Empty)|
+|emptyConnectionBucket|[Data.ConnectionPool](Data-ConnectionPool.html#v:emptyConnectionBucket)|
+|emptyFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:emptyFuture)|
+|emptyObj|[Data.InRules](Data-InRules.html#v:emptyObj), [Data.Conversion](Data-Conversion.html#v:emptyObj)|
+|enclose|[Data.Tools](Data-Tools.html#v:enclose)|
+|encWith|[Data.Tools](Data-Tools.html#v:encWith)|
+|enumeratorToConduitSource|[Data.ConduitTransformer](Data-ConduitTransformer.html#v:enumeratorToConduitSource)|
+|Error| |
+|1 (Data Constructor)|[ProtoExtended](ProtoExtended.html#v:Error)|
+|2 (Data Constructor)|[Data.HeartBeat](Data-HeartBeat.html#v:Error)|
+|escInChar|[Data.InRules](Data-InRules.html#v:escInChar)|
+|escInStr|[Data.InRules](Data-InRules.html#v:escInStr)|
+|Except|[Data.MemTimeState](Data-MemTimeState.html#v:Except)|
+|execute|[Data.SqlTransaction](Data-SqlTransaction.html#v:execute)|
+|executeMany|[Data.SqlTransaction](Data-SqlTransaction.html#v:executeMany)|
+|executeRaw|[Data.SqlTransaction](Data-SqlTransaction.html#v:executeRaw)|
+|express|[Data.Database](Data-Database.html#v:express)|
+|Expressable|[Data.Database](Data-Database.html#t:Expressable)|
+|Expression|[Data.Database](Data-Database.html#t:Expression)|
+|extractMin|[Data.PriorityQueue](Data-PriorityQueue.html#v:extractMin)|
+|extractTill|[Data.PriorityQueue](Data-PriorityQueue.html#v:extractTill)|
+|extractTillWithKey|[Data.PriorityQueue](Data-PriorityQueue.html#v:extractTillWithKey)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% (Index - B)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,47 +41,46 @@
 
 Index - B
 
-  ------------------- ---------------------------------------------------------------------------
-  Behaviour           [Data.SearchBuilder](Data-SearchBuilder.html#t:Behaviour)
-  Behaviours          [Data.SearchBuilder](Data-SearchBuilder.html#t:Behaviours)
-  between             [Data.Tools](Data-Tools.html#v:between)
-  BGColor             [Data.ModelToSVG](Data-ModelToSVG.html#v:BGColor)
-  body                [Model.Notification](Model-Notification.html#v:body)
-  BoolC               [Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC)
-  Box                 [Data.ModelToSVG](Data-ModelToSVG.html#v:Box)
-  box                 [Data.ModelToSVG](Data-ModelToSVG.html#v:box)
-  boxes               [Data.ModelToSVG](Data-ModelToSVG.html#v:boxes)
-  braking              
-  1 (Function)        [Data.RaceSectionPerformance](Data-RaceSectionPerformance.html#v:braking)
-  2 (Function)        [Data.Driver](Data-Driver.html#v:braking)
-  3 (Function)        [Model.CarInGarage](Model-CarInGarage.html#v:braking)
-  4 (Function)        [Model.CarMinimal](Model-CarMinimal.html#v:braking)
-  5 (Function)        [Data.Car](Data-Car.html#v:braking)
-  6 (Function)        [Data.RacingNew](Data-RacingNew.html#v:braking)
-  7 (Function)        [Model.Car](Model-Car.html#v:braking)
-  brakingDistance     [Data.RacingNew](Data-RacingNew.html#v:brakingDistance)
-  brp                 [Data.Car](Data-Car.html#v:brp)
-  BString             [Model.PreLetter](Model-PreLetter.html#t:BString)
-  build               [Data.SearchBuilder](Data-SearchBuilder.html#v:build)
-  buildDecider        [Data.Decider](Data-Decider.html#v:buildDecider)
-  busy\_subject\_id    
-  1 (Function)        [Model.AccountProfile](Model-AccountProfile.html#v:busy_subject_id)
-  2 (Function)        [Model.AccountGarage](Model-AccountGarage.html#v:busy_subject_id)
-  3 (Function)        [Model.Account](Model-Account.html#v:busy_subject_id)
-  busy\_timeleft       
-  1 (Function)        [Model.AccountProfile](Model-AccountProfile.html#v:busy_timeleft)
-  2 (Function)        [Model.AccountGarage](Model-AccountGarage.html#v:busy_timeleft)
-  busy\_type           
-  1 (Function)        [Model.AccountProfile](Model-AccountProfile.html#v:busy_type)
-  2 (Function)        [Model.AccountGarage](Model-AccountGarage.html#v:busy_type)
-  3 (Function)        [Model.Account](Model-Account.html#v:busy_type)
-  busy\_until          
-  1 (Function)        [Model.AccountProfile](Model-AccountProfile.html#v:busy_until)
-  2 (Function)        [Model.AccountGarage](Model-AccountGarage.html#v:busy_until)
-  3 (Function)        [Model.Account](Model-Account.html#v:busy_until)
-  Button              [Data.ModelToSVG](Data-ModelToSVG.html#v:Button)
-  button              [Data.ModelToSVG](Data-ModelToSVG.html#v:button)
-  buttons             [Data.ModelToSVG](Data-ModelToSVG.html#v:buttons)
-  ------------------- ---------------------------------------------------------------------------
+||
+|Behaviour|[Data.SearchBuilder](Data-SearchBuilder.html#t:Behaviour)|
+|Behaviours|[Data.SearchBuilder](Data-SearchBuilder.html#t:Behaviours)|
+|between|[Data.Tools](Data-Tools.html#v:between)|
+|BGColor|[Data.ModelToSVG](Data-ModelToSVG.html#v:BGColor)|
+|body|[Model.Notification](Model-Notification.html#v:body)|
+|BoolC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC)|
+|Box|[Data.ModelToSVG](Data-ModelToSVG.html#v:Box)|
+|box|[Data.ModelToSVG](Data-ModelToSVG.html#v:box)|
+|boxes|[Data.ModelToSVG](Data-ModelToSVG.html#v:boxes)|
+|braking| |
+|1 (Function)|[Data.RaceSectionPerformance](Data-RaceSectionPerformance.html#v:braking)|
+|2 (Function)|[Data.Driver](Data-Driver.html#v:braking)|
+|3 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:braking)|
+|4 (Function)|[Model.CarMinimal](Model-CarMinimal.html#v:braking)|
+|5 (Function)|[Data.Car](Data-Car.html#v:braking)|
+|6 (Function)|[Data.RacingNew](Data-RacingNew.html#v:braking)|
+|7 (Function)|[Model.Car](Model-Car.html#v:braking)|
+|brakingDistance|[Data.RacingNew](Data-RacingNew.html#v:brakingDistance)|
+|brp|[Data.Car](Data-Car.html#v:brp)|
+|BString|[Model.PreLetter](Model-PreLetter.html#t:BString)|
+|build|[Data.SearchBuilder](Data-SearchBuilder.html#v:build)|
+|buildDecider|[Data.Decider](Data-Decider.html#v:buildDecider)|
+|busy\_subject\_id| |
+|1 (Function)|[Model.AccountProfile](Model-AccountProfile.html#v:busy_subject_id)|
+|2 (Function)|[Model.AccountGarage](Model-AccountGarage.html#v:busy_subject_id)|
+|3 (Function)|[Model.Account](Model-Account.html#v:busy_subject_id)|
+|busy\_timeleft| |
+|1 (Function)|[Model.AccountProfile](Model-AccountProfile.html#v:busy_timeleft)|
+|2 (Function)|[Model.AccountGarage](Model-AccountGarage.html#v:busy_timeleft)|
+|busy\_type| |
+|1 (Function)|[Model.AccountProfile](Model-AccountProfile.html#v:busy_type)|
+|2 (Function)|[Model.AccountGarage](Model-AccountGarage.html#v:busy_type)|
+|3 (Function)|[Model.Account](Model-Account.html#v:busy_type)|
+|busy\_until| |
+|1 (Function)|[Model.AccountProfile](Model-AccountProfile.html#v:busy_until)|
+|2 (Function)|[Model.AccountGarage](Model-AccountGarage.html#v:busy_until)|
+|3 (Function)|[Model.Account](Model-Account.html#v:busy_until)|
+|Button|[Data.ModelToSVG](Data-ModelToSVG.html#v:Button)|
+|button|[Data.ModelToSVG](Data-ModelToSVG.html#v:button)|
+|buttons|[Data.ModelToSVG](Data-ModelToSVG.html#v:buttons)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% (Index - :)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,8 +38,7 @@
 
 Index - :
 
-  ----- -------------------------------------------------------
-  :\>   [Data.PriorityQueue](Data-PriorityQueue.html#v::-62-)
-  ----- -------------------------------------------------------
+||
+|:\>|[Data.PriorityQueue](Data-PriorityQueue.html#v::-62-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

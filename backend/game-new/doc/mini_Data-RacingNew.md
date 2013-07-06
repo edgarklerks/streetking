@@ -1,7 +1,3 @@
-% Data.RacingNew
-% 
-% 
-
 Data.RacingNew
 
 data [RaceConfig](Data-RacingNew.html#t:RaceConfig)

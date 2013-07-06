@@ -1,7 +1,3 @@
-% ProxyExtendableSnapletConduit
-% 
-% 
-
 ProxyExtendableSnapletConduit
 
 [initProxy](ProxyExtendableSnapletConduit.html#v:initProxy)

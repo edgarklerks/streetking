@@ -1,7 +1,3 @@
-% Model.Escrow
-% 
-% 
-
 Model.Escrow
 
 data [Escrow](Model-Escrow.html#t:Escrow)

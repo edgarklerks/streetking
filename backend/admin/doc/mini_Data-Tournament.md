@@ -1,7 +1,3 @@
-% Data.Tournament
-% 
-% 
-
 Data.Tournament
 
 [createTournament](Data-Tournament.html#v:createTournament)

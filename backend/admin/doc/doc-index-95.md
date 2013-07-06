@@ -1,7 +1,3 @@
-% (Index - \_)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,20 +41,19 @@
 
 Index - \_
 
-  ----------- ---------------------------------------------------------------
-  \_auth      [Application](Application.html#v:_auth)
-  \_boxes     [Data.ModelToSVG](Data-ModelToSVG.html#v:_boxes)
-  \_buttons   [Data.ModelToSVG](Data-ModelToSVG.html#v:_buttons)
-  \_circles   [Data.ModelToSVG](Data-ModelToSVG.html#v:_circles)
-  \_cons      [Data.ModelToSVG](Data-ModelToSVG.html#v:_cons)
-  \_cpoint    [Data.ModelToSVG](Data-ModelToSVG.html#v:_cpoint)
-  \_dbcons    [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)
-  \_dsn       [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)
-  \_lines     [Data.ModelToSVG](Data-ModelToSVG.html#v:_lines)
-  \_opts      [Data.ModelToSVG](Data-ModelToSVG.html#v:_opts)
-  \_pool      [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)
-  \_sess      [Application](Application.html#v:_sess)
-  \_sql       [Application](Application.html#v:_sql)
-  ----------- ---------------------------------------------------------------
+||
+|\_auth|[Application](Application.html#v:_auth)|
+|\_boxes|[Data.ModelToSVG](Data-ModelToSVG.html#v:_boxes)|
+|\_buttons|[Data.ModelToSVG](Data-ModelToSVG.html#v:_buttons)|
+|\_circles|[Data.ModelToSVG](Data-ModelToSVG.html#v:_circles)|
+|\_cons|[Data.ModelToSVG](Data-ModelToSVG.html#v:_cons)|
+|\_cpoint|[Data.ModelToSVG](Data-ModelToSVG.html#v:_cpoint)|
+|\_dbcons|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)|
+|\_dsn|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)|
+|\_lines|[Data.ModelToSVG](Data-ModelToSVG.html#v:_lines)|
+|\_opts|[Data.ModelToSVG](Data-ModelToSVG.html#v:_opts)|
+|\_pool|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)|
+|\_sess|[Application](Application.html#v:_sess)|
+|\_sql|[Application](Application.html#v:_sql)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

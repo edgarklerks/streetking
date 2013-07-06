@@ -1,7 +1,3 @@
-% (Index - .)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,15 +38,14 @@
 
 Index - .
 
-  ------- ----------------------------------------------------------------------------------------------------
-  .\#\>   [Data.Database](Data-Database.html#v:.-35--62-)
-  .&&     [Data.Database](Data-Database.html#v:.-38--38-)
-  .\*     [Data.Database](Data-Database.html#v:.-42-)
-  .-\>    [Data.Database](Data-Database.html#v:.-45--62-)
-  ..\>    [Data.InRules](Data-InRules.html#v:..-62-), [Data.Conversion](Data-Conversion.html#v:..-62-)
-  .\>     [Data.InRules](Data-InRules.html#v:.-62-), [Data.Conversion](Data-Conversion.html#v:.-62-)
-  .\>\>   [Data.InRules](Data-InRules.html#v:.-62--62-), [Data.Conversion](Data-Conversion.html#v:.-62--62-)
-  .||     [Data.Database](Data-Database.html#v:.-124--124-)
-  ------- ----------------------------------------------------------------------------------------------------
+||
+|.\#\>|[Data.Database](Data-Database.html#v:.-35--62-)|
+|.&&|[Data.Database](Data-Database.html#v:.-38--38-)|
+|.\*|[Data.Database](Data-Database.html#v:.-42-)|
+|.-\>|[Data.Database](Data-Database.html#v:.-45--62-)|
+|..\>|[Data.InRules](Data-InRules.html#v:..-62-), [Data.Conversion](Data-Conversion.html#v:..-62-)|
+|.\>|[Data.InRules](Data-InRules.html#v:.-62-), [Data.Conversion](Data-Conversion.html#v:.-62-)|
+|.\>\>|[Data.InRules](Data-InRules.html#v:.-62--62-), [Data.Conversion](Data-Conversion.html#v:.-62--62-)|
+|.|||[Data.Database](Data-Database.html#v:.-124--124-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

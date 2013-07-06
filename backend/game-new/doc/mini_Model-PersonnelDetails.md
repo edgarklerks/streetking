@@ -1,7 +1,3 @@
-% Model.PersonnelDetails
-% 
-% 
-
 Model.PersonnelDetails
 
 type [MInteger](Model-PersonnelDetails.html#t:MInteger)

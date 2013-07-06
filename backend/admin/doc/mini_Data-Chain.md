@@ -1,7 +1,3 @@
-% Data.Chain
-% 
-% 
-
 Data.Chain
 
 [registerTask](Data-Chain.html#v:registerTask)

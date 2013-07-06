@@ -1,7 +1,3 @@
-% Data.Role
-% 
-% 
-
 Data.Role
 
 type [RolePair](Data-Role.html#t:RolePair) k

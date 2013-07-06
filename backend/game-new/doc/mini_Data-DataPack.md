@@ -1,7 +1,3 @@
-% Data.DataPack
-% 
-% 
-
 Data.DataPack
 
 data [Data](Data-DataPack.html#t:Data)

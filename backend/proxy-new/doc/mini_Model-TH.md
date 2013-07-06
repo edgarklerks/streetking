@@ -1,7 +1,3 @@
-% Model.TH
-% 
-% 
-
 Model.TH
 
 [getAnyColumn](Model-TH.html#v:getAnyColumn)

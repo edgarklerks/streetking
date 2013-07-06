@@ -1,7 +1,3 @@
-% Model.PartModifier
-% 
-% 
-
 Model.PartModifier
 
 data [PartModifier](Model-PartModifier.html#t:PartModifier)

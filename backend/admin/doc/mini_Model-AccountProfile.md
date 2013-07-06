@@ -1,7 +1,3 @@
-% Model.AccountProfile
-% 
-% 
-
 Model.AccountProfile
 
 type [MString](Model-AccountProfile.html#t:MString)

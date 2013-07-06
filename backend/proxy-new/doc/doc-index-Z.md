@@ -1,7 +1,3 @@
-% (Index - Z)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,9 +38,8 @@
 
 Index - Z
 
-  ------------ --------------------------------------------
-  zipKeyWith   [Data.Tools](Data-Tools.html#v:zipKeyWith)
-  zipRoleSet   [Data.Role](Data-Role.html#v:zipRoleSet)
-  ------------ --------------------------------------------
+||
+|zipKeyWith|[Data.Tools](Data-Tools.html#v:zipKeyWith)|
+|zipRoleSet|[Data.Role](Data-Role.html#v:zipRoleSet)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

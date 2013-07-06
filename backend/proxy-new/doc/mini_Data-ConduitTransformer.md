@@ -1,7 +1,3 @@
-% Data.ConduitTransformer
-% 
-% 
-
 Data.ConduitTransformer
 
 [conduitToEnumeratorSource](Data-ConduitTransformer.html#v:conduitToEnumeratorSource)

@@ -1,7 +1,3 @@
-% Model.TrackCity
-% 
-% 
-
 Model.TrackCity
 
 data [TrackCity](Model-TrackCity.html#t:TrackCity)

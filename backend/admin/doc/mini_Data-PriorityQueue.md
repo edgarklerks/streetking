@@ -1,7 +1,3 @@
-% Data.PriorityQueue
-% 
-% 
-
 Data.PriorityQueue
 
 data [Prio](Data-PriorityQueue.html#t:Prio) q a

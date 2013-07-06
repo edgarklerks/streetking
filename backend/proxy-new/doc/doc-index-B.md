@@ -1,7 +1,3 @@
-% (Index - B)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,10 +38,9 @@
 
 Index - B
 
-  --------- -----------------------------------------------------------------
-  Beat      [Data.HeartBeat](Data-HeartBeat.html#t:Beat)
-  between   [Data.Tools](Data-Tools.html#v:between)
-  BoolC     [Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC)
-  --------- -----------------------------------------------------------------
+||
+|Beat|[Data.HeartBeat](Data-HeartBeat.html#t:Beat)|
+|between|[Data.Tools](Data-Tools.html#v:between)|
+|BoolC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% MemServerAsyncTest
-% 
-% 
-
 MemServerAsyncTest
 
 data [ProtoMonad](MemServerAsyncTest.html#t:ProtoMonad) c a

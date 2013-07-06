@@ -1,7 +1,3 @@
-% (Index - W)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,22 +38,21 @@
 
 Index - W
 
-  ------------------ ----------------------------------------------------------------------
-  waitUnless         [Data.SqlTransaction](Data-SqlTransaction.html#v:waitUnless)
-  waitWhen           [Data.SqlTransaction](Data-SqlTransaction.html#v:waitWhen)
-  whenM              [Data.Tools](Data-Tools.html#v:whenM)
-  withConnection     [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:withConnection)
-  withDefault        [Data.InRules](Data-InRules.html#v:withDefault)
-  withEncoding       [Data.SqlTransaction](Data-SqlTransaction.html#v:withEncoding)
-  withLockBlock      [LockSnaplet](LockSnaplet.html#v:withLockBlock)
-  withLockNonBlock   [LockSnaplet](LockSnaplet.html#v:withLockNonBlock)
-  withNow0           [Data.TimedMap](Data-TimedMap.html#v:withNow0)
-  withNow1           [Data.TimedMap](Data-TimedMap.html#v:withNow1)
-  withNow2           [Data.TimedMap](Data-TimedMap.html#v:withNow2)
-  withNow3           [Data.TimedMap](Data-TimedMap.html#v:withNow3)
-  withRoleState      [RoleSnaplet](RoleSnaplet.html#v:withRoleState)
-  withTTL            [ProtoExtended](ProtoExtended.html#v:withTTL)
-  withVersion        [ProtoExtended](ProtoExtended.html#v:withVersion)
-  ------------------ ----------------------------------------------------------------------
+||
+|waitUnless|[Data.SqlTransaction](Data-SqlTransaction.html#v:waitUnless)|
+|waitWhen|[Data.SqlTransaction](Data-SqlTransaction.html#v:waitWhen)|
+|whenM|[Data.Tools](Data-Tools.html#v:whenM)|
+|withConnection|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:withConnection)|
+|withDefault|[Data.InRules](Data-InRules.html#v:withDefault)|
+|withEncoding|[Data.SqlTransaction](Data-SqlTransaction.html#v:withEncoding)|
+|withLockBlock|[LockSnaplet](LockSnaplet.html#v:withLockBlock)|
+|withLockNonBlock|[LockSnaplet](LockSnaplet.html#v:withLockNonBlock)|
+|withNow0|[Data.TimedMap](Data-TimedMap.html#v:withNow0)|
+|withNow1|[Data.TimedMap](Data-TimedMap.html#v:withNow1)|
+|withNow2|[Data.TimedMap](Data-TimedMap.html#v:withNow2)|
+|withNow3|[Data.TimedMap](Data-TimedMap.html#v:withNow3)|
+|withRoleState|[RoleSnaplet](RoleSnaplet.html#v:withRoleState)|
+|withTTL|[ProtoExtended](ProtoExtended.html#v:withTTL)|
+|withVersion|[ProtoExtended](ProtoExtended.html#v:withVersion)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

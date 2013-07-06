@@ -1,7 +1,3 @@
-% Model.PartMarket
-% 
-% 
-
 Model.PartMarket
 
 type [MString](Model-PartMarket.html#t:MString)

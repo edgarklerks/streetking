@@ -1,7 +1,3 @@
-% Data.Decider
-% 
-% 
-
 Data.Decider
 
 data [Expr](Data-Decider.html#t:Expr) g a

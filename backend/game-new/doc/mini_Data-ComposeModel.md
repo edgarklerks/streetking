@@ -1,7 +1,3 @@
-% Data.ComposeModel
-% 
-% 
-
 Data.ComposeModel
 
 data [ComposeMonad](Data-ComposeModel.html#t:ComposeMonad) r c a

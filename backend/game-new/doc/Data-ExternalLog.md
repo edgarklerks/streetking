@@ -1,7 +1,3 @@
-% Data.ExternalLog
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -34,15 +30,14 @@ Cycle
 
 Fields
 
-cycleChannel :: TQueue (String, String)
-:    
-threadId :: ThreadId
-:    
+cycleChannel :: TQueue (String, String)  
+ 
 
-reportCycle :: [Cycle](Data-ExternalLog.html#t:Cycle) -\> String -\>
-String -\> IO ()
+threadId :: ThreadId  
+ 
 
-initCycle :: [Address](Data-ExternalLog.html#t:Address) -\> IO
-[Cycle](Data-ExternalLog.html#t:Cycle)
+reportCycle :: [Cycle](Data-ExternalLog.html#t:Cycle) -\> String -\> String -\> IO ()
+
+initCycle :: [Address](Data-ExternalLog.html#t:Address) -\> IO [Cycle](Data-ExternalLog.html#t:Cycle)
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

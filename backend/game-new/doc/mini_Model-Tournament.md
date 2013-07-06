@@ -1,7 +1,3 @@
-% Model.Tournament
-% 
-% 
-
 Model.Tournament
 
 type [MRaceReward](Model-Tournament.html#t:MRaceReward)

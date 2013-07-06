@@ -1,7 +1,3 @@
-% (Index - Q)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,10 +41,9 @@
 
 Index - Q
 
-  ------------- ------------------------------------------------------------------
-  quickInsert   [Data.SqlTransaction](Data-SqlTransaction.html#v:quickInsert)
-  quickQuery    [Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery)
-  quickQuery'   [Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery-39-)
-  ------------- ------------------------------------------------------------------
+||
+|quickInsert|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickInsert)|
+|quickQuery|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery)|
+|quickQuery'|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery-39-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% Model.Config
-% 
-% 
-
 Model.Config
 
 data [Config](Model-Config.html#t:Config)

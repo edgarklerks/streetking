@@ -1,7 +1,3 @@
-% Data.ModelToSVG
-% 
-% 
-
 Data.ModelToSVG
 
 type [X](Data-ModelToSVG.html#t:X)

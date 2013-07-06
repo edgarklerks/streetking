@@ -1,7 +1,3 @@
-% (Index - G)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -41,32 +37,31 @@
 
 Index - G
 
-  ----------------------- -------------------------------------------------------------------
-  garage\_id              [Model.CarInstance](Model-CarInstance.html#v:garage_id)
-  genAll                  [Model.TH](Model-TH.html#v:genAll)
-  genAllId                [Model.TH](Model-TH.html#v:genAllId)
-  genDatabase             [Model.TH](Model-TH.html#v:genDatabase)
-  genDefaultInstance      [Model.TH](Model-TH.html#v:genDefaultInstance)
-  genDependenciesUpdate   [Model.TH](Model-TH.html#v:genDependenciesUpdate)
-  genInstance             [Model.TH](Model-TH.html#v:genInstance)
-  genInstanceFromInRule   [Model.TH](Model-TH.html#v:genInstanceFromInRule)
-  genInstanceFromJSON     [Model.TH](Model-TH.html#v:genInstanceFromJSON)
-  genInstanceToInRule     [Model.TH](Model-TH.html#v:genInstanceToInRule)
-  genInstanceToJSON       [Model.TH](Model-TH.html#v:genInstanceToJSON)
-  genMapableRecord        [Model.TH](Model-TH.html#v:genMapableRecord)
-  genRecord               [Model.TH](Model-TH.html#v:genRecord)
-  genRelation             [Model.TH](Model-TH.html#v:genRelation)
-  genRelationSchema       [Model.TH](Model-TH.html#v:genRelationSchema)
-  geometry                [Data.Database](Data-Database.html#v:geometry)
-  get                     [Data.SqlTransaction](Data-SqlTransaction.html#v:get)
-  getAnyColumn            [Model.TH](Model-TH.html#v:getAnyColumn)
-  getAssoc                [Data.Relation](Data-Relation.html#v:getAssoc)
-  getConnection           [Data.ConnectionPool](Data-ConnectionPool.html#v:getConnection)
-  getDatabase             [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:getDatabase)
-  getLock                 [LockSnaplet](LockSnaplet.html#v:getLock)
-  getResult               [Data.Relation](Data-Relation.html#v:getResult)
-  getServDir              [ImageSnapLet](ImageSnapLet.html#v:getServDir)
-  getUser                 [Data.SqlTransaction](Data-SqlTransaction.html#v:getUser)
-  ----------------------- -------------------------------------------------------------------
+||
+|garage\_id|[Model.CarInstance](Model-CarInstance.html#v:garage_id)|
+|genAll|[Model.TH](Model-TH.html#v:genAll)|
+|genAllId|[Model.TH](Model-TH.html#v:genAllId)|
+|genDatabase|[Model.TH](Model-TH.html#v:genDatabase)|
+|genDefaultInstance|[Model.TH](Model-TH.html#v:genDefaultInstance)|
+|genDependenciesUpdate|[Model.TH](Model-TH.html#v:genDependenciesUpdate)|
+|genInstance|[Model.TH](Model-TH.html#v:genInstance)|
+|genInstanceFromInRule|[Model.TH](Model-TH.html#v:genInstanceFromInRule)|
+|genInstanceFromJSON|[Model.TH](Model-TH.html#v:genInstanceFromJSON)|
+|genInstanceToInRule|[Model.TH](Model-TH.html#v:genInstanceToInRule)|
+|genInstanceToJSON|[Model.TH](Model-TH.html#v:genInstanceToJSON)|
+|genMapableRecord|[Model.TH](Model-TH.html#v:genMapableRecord)|
+|genRecord|[Model.TH](Model-TH.html#v:genRecord)|
+|genRelation|[Model.TH](Model-TH.html#v:genRelation)|
+|genRelationSchema|[Model.TH](Model-TH.html#v:genRelationSchema)|
+|geometry|[Data.Database](Data-Database.html#v:geometry)|
+|get|[Data.SqlTransaction](Data-SqlTransaction.html#v:get)|
+|getAnyColumn|[Model.TH](Model-TH.html#v:getAnyColumn)|
+|getAssoc|[Data.Relation](Data-Relation.html#v:getAssoc)|
+|getConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:getConnection)|
+|getDatabase|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:getDatabase)|
+|getLock|[LockSnaplet](LockSnaplet.html#v:getLock)|
+|getResult|[Data.Relation](Data-Relation.html#v:getResult)|
+|getServDir|[ImageSnapLet](ImageSnapLet.html#v:getServDir)|
+|getUser|[Data.SqlTransaction](Data-SqlTransaction.html#v:getUser)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% Model.City
-% 
-% 
-
 Model.City
 
 data [City](Model-City.html#t:City)

@@ -1,7 +1,3 @@
-% Model.Rule
-% 
-% 
-
 Model.Rule
 
 data [Rule](Model-Rule.html#t:Rule)

@@ -1,7 +1,3 @@
-% Model.Application
-% 
-% 
-
 Model.Application
 
 data [Application](Model-Application.html#t:Application)

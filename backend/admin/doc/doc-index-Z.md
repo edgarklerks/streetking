@@ -1,7 +1,3 @@
-% (Index - Z)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,9 +41,8 @@
 
 Index - Z
 
-  ------------ --------------------------------------------
-  zeroCar      [Data.Car](Data-Car.html#v:zeroCar)
-  zipKeyWith   [Data.Tools](Data-Tools.html#v:zipKeyWith)
-  ------------ --------------------------------------------
+||
+|zeroCar|[Data.Car](Data-Car.html#v:zeroCar)|
+|zipKeyWith|[Data.Tools](Data-Tools.html#v:zipKeyWith)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

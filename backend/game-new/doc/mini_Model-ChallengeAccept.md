@@ -1,7 +1,3 @@
-% Model.ChallengeAccept
-% 
-% 
-
 Model.ChallengeAccept
 
 data [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)

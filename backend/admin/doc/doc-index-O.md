@@ -1,7 +1,3 @@
-% (Index - O)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,44 +41,43 @@
 
 Index - O
 
-  ---------------------- ----------------------------------------------------------------------------------------------
-  O                      [Data.Decider](Data-Decider.html#t:O)
-  object                 [Data.InRules](Data-InRules.html#v:object), [Data.Conversion](Data-Conversion.html#v:object)
-  Offset                  
-  1 (Type/Class)         [Data.Database](Data-Database.html#t:Offset)
-  2 (Data Constructor)   [Data.Database](Data-Database.html#v:Offset)
-  offset                 [Data.Database](Data-Database.html#v:offset)
-  once                   [Model.Rule](Model-Rule.html#v:once)
-  One                    [Data.Decider](Data-Decider.html#v:One)
-  oneCar                 [Data.Car](Data-Car.html#v:oneCar)
-  OpContains             [Data.Database](Data-Database.html#v:OpContains)
-  openPostOffice         [Data.Notifications](Data-Notifications.html#v:openPostOffice)
-  OpEQ                   [Data.Database](Data-Database.html#v:OpEQ)
-  OpGT                   [Data.Database](Data-Database.html#v:OpGT)
-  OpGTE                  [Data.Database](Data-Database.html#v:OpGTE)
-  OpIContains            [Data.Database](Data-Database.html#v:OpIContains)
-  OpLT                   [Data.Database](Data-Database.html#v:OpLT)
-  OpLTE                  [Data.Database](Data-Database.html#v:OpLTE)
-  OpNEQ                  [Data.Database](Data-Database.html#v:OpNEQ)
-  Option                 [Data.ModelToSVG](Data-ModelToSVG.html#t:Option)
-  Options                [Data.ModelToSVG](Data-ModelToSVG.html#t:Options)
-  opts                   [Data.ModelToSVG](Data-ModelToSVG.html#v:opts)
-  Or                      
-  1 (Data Constructor)   [Data.Database](Data-Database.html#v:Or)
-  2 (Data Constructor)   [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:Or)
-  or                     [Data.Relation](Data-Relation.html#v:or)
-  orcf                   [Data.Tools](Data-Tools.html#v:orcf)
-  Order                   
-  1 (Type/Class)         [Data.Database](Data-Database.html#t:Order)
-  2 (Data Constructor)   [Data.Database](Data-Database.html#v:Order)
-  order                  [Data.Database](Data-Database.html#v:order)
-  OrderBy                [Data.SortOrder](Data-SortOrder.html#v:OrderBy)
-  orderby                [Data.SortOrder](Data-SortOrder.html#v:orderby)
-  OrderedBy              [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:OrderedBy)
-  orderedBy              [Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:orderedBy)
-  Orders                 [Data.Database](Data-Database.html#t:Orders)
-  orders                 [Data.Database](Data-Database.html#v:orders)
-  orM                    [Data.InRules](Data-InRules.html#v:orM)
-  ---------------------- ----------------------------------------------------------------------------------------------
+||
+|O|[Data.Decider](Data-Decider.html#t:O)|
+|object|[Data.InRules](Data-InRules.html#v:object), [Data.Conversion](Data-Conversion.html#v:object)|
+|Offset| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Offset)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Offset)|
+|offset|[Data.Database](Data-Database.html#v:offset)|
+|once|[Model.Rule](Model-Rule.html#v:once)|
+|One|[Data.Decider](Data-Decider.html#v:One)|
+|oneCar|[Data.Car](Data-Car.html#v:oneCar)|
+|OpContains|[Data.Database](Data-Database.html#v:OpContains)|
+|openPostOffice|[Data.Notifications](Data-Notifications.html#v:openPostOffice)|
+|OpEQ|[Data.Database](Data-Database.html#v:OpEQ)|
+|OpGT|[Data.Database](Data-Database.html#v:OpGT)|
+|OpGTE|[Data.Database](Data-Database.html#v:OpGTE)|
+|OpIContains|[Data.Database](Data-Database.html#v:OpIContains)|
+|OpLT|[Data.Database](Data-Database.html#v:OpLT)|
+|OpLTE|[Data.Database](Data-Database.html#v:OpLTE)|
+|OpNEQ|[Data.Database](Data-Database.html#v:OpNEQ)|
+|Option|[Data.ModelToSVG](Data-ModelToSVG.html#t:Option)|
+|Options|[Data.ModelToSVG](Data-ModelToSVG.html#t:Options)|
+|opts|[Data.ModelToSVG](Data-ModelToSVG.html#v:opts)|
+|Or| |
+|1 (Data Constructor)|[Data.Database](Data-Database.html#v:Or)|
+|2 (Data Constructor)|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:Or)|
+|or|[Data.Relation](Data-Relation.html#v:or)|
+|orcf|[Data.Tools](Data-Tools.html#v:orcf)|
+|Order| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Order)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Order)|
+|order|[Data.Database](Data-Database.html#v:order)|
+|OrderBy|[Data.SortOrder](Data-SortOrder.html#v:OrderBy)|
+|orderby|[Data.SortOrder](Data-SortOrder.html#v:orderby)|
+|OrderedBy|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:OrderedBy)|
+|orderedBy|[Data.DatabaseTemplate](Data-DatabaseTemplate.html#v:orderedBy)|
+|Orders|[Data.Database](Data-Database.html#t:Orders)|
+|orders|[Data.Database](Data-Database.html#v:orders)|
+|orM|[Data.InRules](Data-InRules.html#v:orM)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

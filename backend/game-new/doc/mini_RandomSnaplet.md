@@ -1,7 +1,3 @@
-% RandomSnaplet
-% 
-% 
-
 RandomSnaplet
 
 data [RandomConfig](RandomSnaplet.html#t:RandomConfig)

@@ -1,7 +1,3 @@
-% (Index - W)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,42 +41,41 @@
 
 Index - W
 
-  ------------------ ----------------------------------------------------------------------
-  wait               [Data.Task](Data-Task.html#v:wait)
-  waitUnless         [Data.SqlTransaction](Data-SqlTransaction.html#v:waitUnless)
-  waitWhen           [Data.SqlTransaction](Data-SqlTransaction.html#v:waitWhen)
-  wear                
-  1 (Function)       [Model.GarageParts](Model-GarageParts.html#v:wear)
-  2 (Function)       [Model.CarInstanceParts](Model-CarInstanceParts.html#v:wear)
-  3 (Function)       [Model.PartInstance](Model-PartInstance.html#v:wear)
-  4 (Function)       [Model.CarInGarage](Model-CarInGarage.html#v:wear)
-  weight              
-  1 (Function)       [Model.PartDetails](Model-PartDetails.html#v:weight)
-  2 (Function)       [Model.Part](Model-Part.html#v:weight)
-  3 (Function)       [Model.PartMarket](Model-PartMarket.html#v:weight)
-  4 (Function)       [Model.GarageParts](Model-GarageParts.html#v:weight)
-  5 (Function)       [Model.CarInstanceParts](Model-CarInstanceParts.html#v:weight)
-  6 (Function)       [Model.CarInGarage](Model-CarInGarage.html#v:weight)
-  7 (Function)       [Model.CarMinimal](Model-CarMinimal.html#v:weight)
-  whenM              [Data.Tools](Data-Tools.html#v:whenM)
-  withConnection     [SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:withConnection)
-  withData           [Data.DataPack](Data-DataPack.html#v:withData)
-  withDefault        [Data.InRules](Data-InRules.html#v:withDefault)
-  withEncoding       [Data.SqlTransaction](Data-SqlTransaction.html#v:withEncoding)
-  withLockBlock      [LockSnaplet](LockSnaplet.html#v:withLockBlock)
-  withLockNonBlock   [LockSnaplet](LockSnaplet.html#v:withLockNonBlock)
-  withPriority       [Data.Notifications](Data-Notifications.html#v:withPriority)
-  writeAeson         [Application](Application.html#v:writeAeson)
-  writeAeson'        [Application](Application.html#v:writeAeson-39-)
-  writeError         [Application](Application.html#v:writeError)
-  writeError'        [Application](Application.html#v:writeError-39-)
-  writeMapable       [Application](Application.html#v:writeMapable)
-  writeMapables      [Application](Application.html#v:writeMapables)
-  writePostSorter    [Data.Notifications](Data-Notifications.html#v:writePostSorter)
-  writePrioService   [Data.Notifications](Data-Notifications.html#v:writePrioService)
-  writeResult        [Application](Application.html#v:writeResult)
-  writeResult'       [Application](Application.html#v:writeResult-39-)
-  writeUserBoxes     [Data.Notifications](Data-Notifications.html#v:writeUserBoxes)
-  ------------------ ----------------------------------------------------------------------
+||
+|wait|[Data.Task](Data-Task.html#v:wait)|
+|waitUnless|[Data.SqlTransaction](Data-SqlTransaction.html#v:waitUnless)|
+|waitWhen|[Data.SqlTransaction](Data-SqlTransaction.html#v:waitWhen)|
+|wear| |
+|1 (Function)|[Model.GarageParts](Model-GarageParts.html#v:wear)|
+|2 (Function)|[Model.CarInstanceParts](Model-CarInstanceParts.html#v:wear)|
+|3 (Function)|[Model.PartInstance](Model-PartInstance.html#v:wear)|
+|4 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:wear)|
+|weight| |
+|1 (Function)|[Model.PartDetails](Model-PartDetails.html#v:weight)|
+|2 (Function)|[Model.Part](Model-Part.html#v:weight)|
+|3 (Function)|[Model.PartMarket](Model-PartMarket.html#v:weight)|
+|4 (Function)|[Model.GarageParts](Model-GarageParts.html#v:weight)|
+|5 (Function)|[Model.CarInstanceParts](Model-CarInstanceParts.html#v:weight)|
+|6 (Function)|[Model.CarInGarage](Model-CarInGarage.html#v:weight)|
+|7 (Function)|[Model.CarMinimal](Model-CarMinimal.html#v:weight)|
+|whenM|[Data.Tools](Data-Tools.html#v:whenM)|
+|withConnection|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:withConnection)|
+|withData|[Data.DataPack](Data-DataPack.html#v:withData)|
+|withDefault|[Data.InRules](Data-InRules.html#v:withDefault)|
+|withEncoding|[Data.SqlTransaction](Data-SqlTransaction.html#v:withEncoding)|
+|withLockBlock|[LockSnaplet](LockSnaplet.html#v:withLockBlock)|
+|withLockNonBlock|[LockSnaplet](LockSnaplet.html#v:withLockNonBlock)|
+|withPriority|[Data.Notifications](Data-Notifications.html#v:withPriority)|
+|writeAeson|[Application](Application.html#v:writeAeson)|
+|writeAeson'|[Application](Application.html#v:writeAeson-39-)|
+|writeError|[Application](Application.html#v:writeError)|
+|writeError'|[Application](Application.html#v:writeError-39-)|
+|writeMapable|[Application](Application.html#v:writeMapable)|
+|writeMapables|[Application](Application.html#v:writeMapables)|
+|writePostSorter|[Data.Notifications](Data-Notifications.html#v:writePostSorter)|
+|writePrioService|[Data.Notifications](Data-Notifications.html#v:writePrioService)|
+|writeResult|[Application](Application.html#v:writeResult)|
+|writeResult'|[Application](Application.html#v:writeResult-39-)|
+|writeUserBoxes|[Data.Notifications](Data-Notifications.html#v:writeUserBoxes)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

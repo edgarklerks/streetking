@@ -1,7 +1,3 @@
-% Model.Diamonds
-% 
-% 
-
 Model.Diamonds
 
 data [DiamondTransaction](Model-Diamonds.html#t:DiamondTransaction)

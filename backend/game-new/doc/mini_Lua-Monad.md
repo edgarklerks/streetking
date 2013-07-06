@@ -1,7 +1,3 @@
-% Lua.Monad
-% 
-% 
-
 Lua.Monad
 
 [runLua](Lua-Monad.html#v:runLua)

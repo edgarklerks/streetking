@@ -1,7 +1,3 @@
-% (Index - |)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -44,34 +40,33 @@
 
 Index - |
 
-  -------------- ----------------------------------------------------------
-  |%             [Data.Database](Data-Database.html#v:-124--37-)
-  |%%            [Data.Database](Data-Database.html#v:-124--37--37-)
-  |%%\*          [Data.Relation](Data-Relation.html#v:-124--37--37--42-)
-  |%%|           [Data.Relation](Data-Relation.html#v:-124--37--37--124-)
-  |%\*           [Data.Relation](Data-Relation.html#v:-124--37--42-)
-  |%|            [Data.Relation](Data-Relation.html#v:-124--37--124-)
-  |\<            [Data.Database](Data-Database.html#v:-124--60-)
-  |\<\*          [Data.Relation](Data-Relation.html#v:-124--60--42-)
-  |\<=           [Data.Database](Data-Database.html#v:-124--60--61-)
-  |\<=\*         [Data.Relation](Data-Relation.html#v:-124--60--61--42-)
-  |\<=|          [Data.Relation](Data-Relation.html#v:-124--60--61--124-)
-  |\<\>          [Data.Database](Data-Database.html#v:-124--60--62-)
-  |\<\>\*        [Data.Relation](Data-Relation.html#v:-124--60--62--42-)
-  |\<\>|         [Data.Relation](Data-Relation.html#v:-124--60--62--124-)
-  |\<|           [Data.Relation](Data-Relation.html#v:-124--60--124-)
-  |==            [Data.Database](Data-Database.html#v:-124--61--61-)
-  |==\*          [Data.Relation](Data-Relation.html#v:-124--61--61--42-)
-  |==|           [Data.Relation](Data-Relation.html#v:-124--61--61--124-)
-  |\>             
-  1 (Function)   [Data.LimitList](Data-LimitList.html#v:-124--62-)
-  2 (Function)   [Data.Database](Data-Database.html#v:-124--62-)
-  |\>\*          [Data.Relation](Data-Relation.html#v:-124--62--42-)
-  |\>=           [Data.Database](Data-Database.html#v:-124--62--61-)
-  |\>=\*         [Data.Relation](Data-Relation.html#v:-124--62--61--42-)
-  |\>=|          [Data.Relation](Data-Relation.html#v:-124--62--61--124-)
-  |\>|           [Data.Relation](Data-Relation.html#v:-124--62--124-)
-  |\~            [Data.Database](Data-Database.html#v:-124--126-)
-  -------------- ----------------------------------------------------------
+||
+||%|[Data.Database](Data-Database.html#v:-124--37-)|
+||%%|[Data.Database](Data-Database.html#v:-124--37--37-)|
+||%%\*|[Data.Relation](Data-Relation.html#v:-124--37--37--42-)|
+||%%||[Data.Relation](Data-Relation.html#v:-124--37--37--124-)|
+||%\*|[Data.Relation](Data-Relation.html#v:-124--37--42-)|
+||%||[Data.Relation](Data-Relation.html#v:-124--37--124-)|
+||\<|[Data.Database](Data-Database.html#v:-124--60-)|
+||\<\*|[Data.Relation](Data-Relation.html#v:-124--60--42-)|
+||\<=|[Data.Database](Data-Database.html#v:-124--60--61-)|
+||\<=\*|[Data.Relation](Data-Relation.html#v:-124--60--61--42-)|
+||\<=||[Data.Relation](Data-Relation.html#v:-124--60--61--124-)|
+||\<\>|[Data.Database](Data-Database.html#v:-124--60--62-)|
+||\<\>\*|[Data.Relation](Data-Relation.html#v:-124--60--62--42-)|
+||\<\>||[Data.Relation](Data-Relation.html#v:-124--60--62--124-)|
+||\<||[Data.Relation](Data-Relation.html#v:-124--60--124-)|
+||==|[Data.Database](Data-Database.html#v:-124--61--61-)|
+||==\*|[Data.Relation](Data-Relation.html#v:-124--61--61--42-)|
+||==||[Data.Relation](Data-Relation.html#v:-124--61--61--124-)|
+||\>| |
+|1 (Function)|[Data.LimitList](Data-LimitList.html#v:-124--62-)|
+|2 (Function)|[Data.Database](Data-Database.html#v:-124--62-)|
+||\>\*|[Data.Relation](Data-Relation.html#v:-124--62--42-)|
+||\>=|[Data.Database](Data-Database.html#v:-124--62--61-)|
+||\>=\*|[Data.Relation](Data-Relation.html#v:-124--62--61--42-)|
+||\>=||[Data.Relation](Data-Relation.html#v:-124--62--61--124-)|
+||\>||[Data.Relation](Data-Relation.html#v:-124--62--124-)|
+||\~|[Data.Database](Data-Database.html#v:-124--126-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

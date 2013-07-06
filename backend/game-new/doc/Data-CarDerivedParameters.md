@@ -1,7 +1,3 @@
-% Data.CarDerivedParameters
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -15,63 +11,18 @@ Data.CarDerivedParameters
 
 Description
 
-This module has some calculations for the derived parameters (these are
-the parameters used in the calculations)
+This module has some calculations for the derived parameters (these are the parameters used in the calculations)
 
 Synopsis
 
--   [searchCarInGarage](#v:searchCarInGarage) ::
-    [Constraints](Data-Database.html#t:Constraints) -\>
-    [Orders](Data-Database.html#t:Orders) -\> Integer -\> Integer -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [[CarInGarage](Model-CarInGarage.html#t:CarInGarage)]
--   [getCarInGarage](#v:getCarInGarage) ::
-    [[Constraint](Data-Database.html#t:Constraint)] -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
--   [loadCarInGarage](#v:loadCarInGarage) :: Integer -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
--   [previewWithPartList](#v:previewWithPartList) ::
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-    [[GaragePart](Model-GarageParts.html#t:GaragePart)] -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection) [PreviewPart]
--   [previewWithPart](#v:previewWithPart) ::
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-    [GaragePart](Model-GarageParts.html#t:GaragePart) -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection) PreviewPart
--   [searchCarMinified](#v:searchCarMinified) ::
-    [Constraints](Data-Database.html#t:Constraints) -\>
-    [Orders](Data-Database.html#t:Orders) -\> Integer -\> Integer -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [[CarMinimal](Model-CarMinimal.html#t:CarMinimal)]
--   [loadCarMinified](#v:loadCarMinified) :: Integer -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [CarMinimal](Model-CarMinimal.html#t:CarMinimal)
--   [getCarMinified](#v:getCarMinified) ::
-    [Constraints](Data-Database.html#t:Constraints) -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-    [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-    [Connection](Data-SqlTransaction.html#t:Connection)
-    [CarMinimal](Model-CarMinimal.html#t:CarMinimal)
+-   [searchCarInGarage](#v:searchCarInGarage) :: [Constraints](Data-Database.html#t:Constraints) -\> [Orders](Data-Database.html#t:Orders) -\> Integer -\> Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [[CarInGarage](Model-CarInGarage.html#t:CarInGarage)]
+-   [getCarInGarage](#v:getCarInGarage) :: [[Constraint](Data-Database.html#t:Constraint)] -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
+-   [loadCarInGarage](#v:loadCarInGarage) :: Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
+-   [previewWithPartList](#v:previewWithPartList) :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [[GaragePart](Model-GarageParts.html#t:GaragePart)] -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [PreviewPart]
+-   [previewWithPart](#v:previewWithPart) :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [GaragePart](Model-GarageParts.html#t:GaragePart) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) PreviewPart
+-   [searchCarMinified](#v:searchCarMinified) :: [Constraints](Data-Database.html#t:Constraints) -\> [Orders](Data-Database.html#t:Orders) -\> Integer -\> Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [[CarMinimal](Model-CarMinimal.html#t:CarMinimal)]
+-   [loadCarMinified](#v:loadCarMinified) :: Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarMinimal](Model-CarMinimal.html#t:CarMinimal)
+-   [getCarMinified](#v:getCarMinified) :: [Constraints](Data-Database.html#t:Constraints) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarMinimal](Model-CarMinimal.html#t:CarMinimal)
 
 Documentation
 =============
@@ -96,9 +47,7 @@ limit
 
 offset
 
--\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[[CarInGarage](Model-CarInGarage.html#t:CarInGarage)]
+-\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [[CarInGarage](Model-CarInGarage.html#t:CarInGarage)]
 
  
 
@@ -112,40 +61,23 @@ Arguments
 
 Database search constraints
 
--\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[CarInGarage](Model-CarInGarage.html#t:CarInGarage)
+-\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
 
 Default car
 
--\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[CarInGarage](Model-CarInGarage.html#t:CarInGarage)
+-\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
 
  
 
 get car in garage with default
 
-loadCarInGarage :: Integer -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[CarInGarage](Model-CarInGarage.html#t:CarInGarage)
+loadCarInGarage :: Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
 
 Load a specific car
 
-previewWithPartList ::
-[CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-[[GaragePart](Model-GarageParts.html#t:GaragePart)] -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) [PreviewPart]
+previewWithPartList :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [[GaragePart](Model-GarageParts.html#t:GaragePart)] -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [PreviewPart]
 
-previewWithPart :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage)
--\> [GaragePart](Model-GarageParts.html#t:GaragePart) -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) PreviewPart
+previewWithPart :: [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [GaragePart](Model-GarageParts.html#t:GaragePart) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) PreviewPart
 
 searchCarMinified
 
@@ -167,28 +99,14 @@ limit
 
 offset
 
--\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[[CarMinimal](Model-CarMinimal.html#t:CarMinimal)]
+-\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [[CarMinimal](Model-CarMinimal.html#t:CarMinimal)]
 
  
 
 Get a minified car
 
-loadCarMinified :: Integer -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[CarMinimal](Model-CarMinimal.html#t:CarMinimal)
+loadCarMinified :: Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarMinimal](Model-CarMinimal.html#t:CarMinimal)
 
-getCarMinified :: [Constraints](Data-Database.html#t:Constraints) -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection)
-[CarMinimal](Model-CarMinimal.html#t:CarMinimal)
+getCarMinified :: [Constraints](Data-Database.html#t:Constraints) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [CarMinimal](Model-CarMinimal.html#t:CarMinimal)
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

@@ -1,7 +1,3 @@
-% Model.TrackTime
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -26,28 +22,30 @@ TrackTime
 
 Fields
 
-id :: [Id](Model-General.html#t:Id)
-:    
-account\_id :: Integer
-:    
-track\_id :: Integer
-:    
-time :: Double
-:    
+id :: [Id](Model-General.html#t:Id)  
+ 
+
+account\_id :: Integer  
+ 
+
+track\_id :: Integer  
+ 
+
+time :: Double  
+ 
 
 Instances
 
-  --------------------------------------------------------------------------------------------------------------------------------------------- ---
-  Eq [TrackTime](Model-TrackTime.html#t:TrackTime)                                                                                               
-  Show [TrackTime](Model-TrackTime.html#t:TrackTime)                                                                                             
-  ToJSON [TrackTime](Model-TrackTime.html#t:TrackTime)                                                                                           
-  FromJSON [TrackTime](Model-TrackTime.html#t:TrackTime)                                                                                         
-  Default [TrackTime](Model-TrackTime.html#t:TrackTime)                                                                                          
-  [FromInRule](Data-InRules.html#t:FromInRule) [TrackTime](Model-TrackTime.html#t:TrackTime)                                                     
-  [ToInRule](Data-InRules.html#t:ToInRule) [TrackTime](Model-TrackTime.html#t:TrackTime)                                                         
-  [Mapable](Model-General.html#t:Mapable) [TrackTime](Model-TrackTime.html#t:TrackTime)                                                          
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackTime](Model-TrackTime.html#t:TrackTime)    
-  --------------------------------------------------------------------------------------------------------------------------------------------- ---
+||
+|Eq [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|Show [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|ToJSON [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|FromJSON [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|Default [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|[FromInRule](Data-InRules.html#t:FromInRule) [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|[ToInRule](Data-InRules.html#t:ToInRule) [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|[Mapable](Model-General.html#t:Mapable) [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackTime](Model-TrackTime.html#t:TrackTime)| |
 
 relation :: [RelationM](Data-Relation.html#t:RelationM)
 

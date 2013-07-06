@@ -1,7 +1,3 @@
-% Model.MarketPlaceCar
-% 
-% 
-
 Model.MarketPlaceCar
 
 type [MInteger](Model-MarketPlaceCar.html#t:MInteger)

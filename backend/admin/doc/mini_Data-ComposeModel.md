@@ -1,7 +1,3 @@
-% Data.ComposeModel
-% 
-% 
-
 Data.ComposeModel
 
 [action](Data-ComposeModel.html#v:action)

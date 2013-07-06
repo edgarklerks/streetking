@@ -1,7 +1,3 @@
-% Model.CarOwners
-% 
-% 
-
 Model.CarOwners
 
 type [MString](Model-CarOwners.html#t:MString)

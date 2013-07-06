@@ -1,7 +1,3 @@
-% Data.Database
-% 
-% 
-
 Data.Database
 
 [dbconn](Data-Database.html#v:dbconn)

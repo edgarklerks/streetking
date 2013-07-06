@@ -1,7 +1,3 @@
-% Model.General
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -16,23 +12,17 @@ Model.General
 Documentation
 =============
 
-class [IConnection](Data-SqlTransaction.html#t:IConnection) c =\>
-Database c a | a -\> c where
+class [IConnection](Data-SqlTransaction.html#t:IConnection) c =\> Database c a | a -\> c where
 
 Methods
 
-save :: a -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c Integer
+save :: a -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c Integer
 
-load :: Integer -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c (Maybe a)
+load :: Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c (Maybe a)
 
-search :: [Constraints](Data-Database.html#t:Constraints) -\>
-[Orders](Data-Database.html#t:Orders) -\> Integer -\> Integer -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c [a]
+search :: [Constraints](Data-Database.html#t:Constraints) -\> [Orders](Data-Database.html#t:Orders) -\> Integer -\> Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c [a]
 
-delete :: a -\> [Constraints](Data-Database.html#t:Constraints) -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c ()
+delete :: a -\> [Constraints](Data-Database.html#t:Constraints) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) c ()
 
 fields :: a -\> [(String, String)]
 
@@ -40,277 +30,234 @@ tableName :: a -\> String
 
 Instances
 
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ ---
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Account](Model-Account.html#t:Account)                                                       
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Transaction](Model-Transaction.html#t:Transaction)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Escrow](Model-Escrow.html#t:Escrow)                                                          
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [DiamondTransaction](Model-Diamonds.html#t:DiamondTransaction)                                
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [AccountProfile](Model-AccountProfile.html#t:AccountProfile)                                  
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [AccountProfileMin](Model-AccountProfileMin.html#t:AccountProfileMin)                         
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Car](Model-Car.html#t:Car)                                                                   
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Car3dModel](Model-Car3dModel.html#t:Car3dModel)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarInstance](Model-CarInstance.html#t:CarInstance)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarInstanceParts](Model-CarInstanceParts.html#t:CarInstanceParts)                            
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarMarket](Model-CarMarket.html#t:CarMarket)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarMinimal](Model-CarMinimal.html#t:CarMinimal)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackTime](Model-TrackTime.html#t:TrackTime)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarOptions](Model-CarOptions.html#t:CarOptions)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarOptionsExtended](Model-CarOptionsExtended.html#t:CarOptionsExtended)                      
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarOwners](Model-CarOwners.html#t:CarOwners)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarStockPart](Model-CarStockParts.html#t:CarStockPart)                                       
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Challenge](Model-Challenge.html#t:Challenge)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                               
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ChallengeExtended](Model-ChallengeExtended.html#t:ChallengeExtended)                         
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ChallengeType](Model-ChallengeType.html#t:ChallengeType)                                     
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [City](Model-City.html#t:City)                                                                
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Config](Model-Config.html#t:Config)                                                          
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Continent](Model-Continent.html#t:Continent)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [EventStream](Model-EventStream.html#t:EventStream)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Garage](Model-Garage.html#t:Garage)                                                          
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [GaragePart](Model-GarageParts.html#t:GaragePart)                                             
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [GarageReport](Model-GarageReport.html#t:GarageReport)                                        
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [GarageReportInsert](Model-GarageReportInsert.html#t:GarageReportInsert)                      
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [GeneralReport](Model-GeneralReport.html#t:GeneralReport)                                     
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Manufacturer](Model-Manufacturer.html#t:Manufacturer)                                        
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ManufacturerMarket](Model-ManufacturerMarket.html#t:ManufacturerMarket)                      
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketCarInstanceParts](Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts)          
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketItem](Model-MarketItem.html#t:MarketItem)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketPartType](Model-MarketPartType.html#t:MarketPartType)                                  
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketPlace](Model-MarketPlace.html#t:MarketPlace)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketPlaceCar](Model-MarketPlaceCar.html#t:MarketPlaceCar)                                  
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MenuModel](Model-MenuModel.html#t:MenuModel)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Part](Model-Part.html#t:Part)                                                                
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartDetails](Model-PartDetails.html#t:PartDetails)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RaceReward](Model-RaceReward.html#t:RaceReward)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Tournament](Model-Tournament.html#t:Tournament)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TournamentExtended](Model-TournamentExtended.html#t:TournamentExtended)                      
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartInstance](Model-PartInstance.html#t:PartInstance)                                        
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartMarket](Model-PartMarket.html#t:PartMarket)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartMarketPlaceType](Model-PartMarketPlaceType.html#t:PartMarketPlaceType)                   
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartMarketType](Model-PartMarketType.html#t:PartMarketType)                                  
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartType](Model-PartType.html#t:PartType)                                                    
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Personnel](Model-Personnel.html#t:Personnel)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelDetails](Model-PersonnelDetails.html#t:PersonnelDetails)                            
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelInstance](Model-PersonnelInstance.html#t:PersonnelInstance)                         
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelInstanceDetails](Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails)    
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelReport](Model-PersonnelReport.html#t:PersonnelReport)                               
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelTaskType](Model-PersonnelTaskType.html#t:PersonnelTaskType)                         
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PreLetter](Model-PreLetter.html#t:PreLetter)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Report](Model-Report.html#t:Report)                                                          
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RewardLog](Model-RewardLog.html#t:RewardLog)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RewardLogEvent](Model-RewardLogEvent.html#t:RewardLogEvent)                                  
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ShopReport](Model-ShopReport.html#t:ShopReport)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Support](Model-Support.html#t:Support)                                                       
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackCity](Model-TrackCity.html#t:TrackCity)                                                 
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackContinent](Model-TrackContinent.html#t:TrackContinent)                                  
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackDetails](Model-TrackDetails.html#t:TrackDetails)                                        
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackMaster](Model-TrackMaster.html#t:TrackMaster)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TravelReport](Model-TravelReport.html#t:TravelReport)                                        
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Notification](Model-Notification.html#t:Notification)                                        
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Task](Model-Task.html#t:Task)                                                                
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TaskTrigger](Model-TaskTrigger.html#t:TaskTrigger)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TaskLog](Model-TaskLog.html#t:TaskLog)                                                       
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Action](Model-Action.html#t:Action)                                                          
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RewardLogEvents](Model-RewardLogEvents.html#t:RewardLogEvents)                               
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Rule](Model-Rule.html#t:Rule)                                                                
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RuleReward](Model-RuleReward.html#t:RuleReward)                                              
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Race](Model-Race.html#t:Race)                                                                
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RaceDetails](Model-RaceDetails.html#t:RaceDetails)                                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TournamentPlayer](Model-TournamentPlayers.html#t:TournamentPlayer)                           
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TournamentResult](Model-TournamentResult.html#t:TournamentResult)                            
-  [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TournamentReport](Model-TournamentReport.html#t:TournamentReport)                            
-  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ ---
+||
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Account](Model-Account.html#t:Account)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Transaction](Model-Transaction.html#t:Transaction)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Escrow](Model-Escrow.html#t:Escrow)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [DiamondTransaction](Model-Diamonds.html#t:DiamondTransaction)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [AccountProfile](Model-AccountProfile.html#t:AccountProfile)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [AccountProfileMin](Model-AccountProfileMin.html#t:AccountProfileMin)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Car](Model-Car.html#t:Car)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Car3dModel](Model-Car3dModel.html#t:Car3dModel)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarInstance](Model-CarInstance.html#t:CarInstance)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarInstanceParts](Model-CarInstanceParts.html#t:CarInstanceParts)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarMarket](Model-CarMarket.html#t:CarMarket)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarMinimal](Model-CarMinimal.html#t:CarMinimal)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarOptions](Model-CarOptions.html#t:CarOptions)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarOptionsExtended](Model-CarOptionsExtended.html#t:CarOptionsExtended)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarOwners](Model-CarOwners.html#t:CarOwners)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [CarStockPart](Model-CarStockParts.html#t:CarStockPart)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Challenge](Model-Challenge.html#t:Challenge)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ChallengeExtended](Model-ChallengeExtended.html#t:ChallengeExtended)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ChallengeType](Model-ChallengeType.html#t:ChallengeType)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [City](Model-City.html#t:City)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Config](Model-Config.html#t:Config)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Continent](Model-Continent.html#t:Continent)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [EventStream](Model-EventStream.html#t:EventStream)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Garage](Model-Garage.html#t:Garage)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [GaragePart](Model-GarageParts.html#t:GaragePart)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [GarageReport](Model-GarageReport.html#t:GarageReport)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [GarageReportInsert](Model-GarageReportInsert.html#t:GarageReportInsert)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [GeneralReport](Model-GeneralReport.html#t:GeneralReport)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Manufacturer](Model-Manufacturer.html#t:Manufacturer)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ManufacturerMarket](Model-ManufacturerMarket.html#t:ManufacturerMarket)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketCarInstanceParts](Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketItem](Model-MarketItem.html#t:MarketItem)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketPartType](Model-MarketPartType.html#t:MarketPartType)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketPlace](Model-MarketPlace.html#t:MarketPlace)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MarketPlaceCar](Model-MarketPlaceCar.html#t:MarketPlaceCar)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [MenuModel](Model-MenuModel.html#t:MenuModel)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Part](Model-Part.html#t:Part)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartDetails](Model-PartDetails.html#t:PartDetails)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RaceReward](Model-RaceReward.html#t:RaceReward)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Tournament](Model-Tournament.html#t:Tournament)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TournamentExtended](Model-TournamentExtended.html#t:TournamentExtended)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartInstance](Model-PartInstance.html#t:PartInstance)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartMarket](Model-PartMarket.html#t:PartMarket)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartMarketPlaceType](Model-PartMarketPlaceType.html#t:PartMarketPlaceType)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartMarketType](Model-PartMarketType.html#t:PartMarketType)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PartType](Model-PartType.html#t:PartType)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Personnel](Model-Personnel.html#t:Personnel)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelDetails](Model-PersonnelDetails.html#t:PersonnelDetails)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelInstance](Model-PersonnelInstance.html#t:PersonnelInstance)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelInstanceDetails](Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelReport](Model-PersonnelReport.html#t:PersonnelReport)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PersonnelTaskType](Model-PersonnelTaskType.html#t:PersonnelTaskType)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [PreLetter](Model-PreLetter.html#t:PreLetter)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Report](Model-Report.html#t:Report)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RewardLog](Model-RewardLog.html#t:RewardLog)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RewardLogEvent](Model-RewardLogEvent.html#t:RewardLogEvent)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [ShopReport](Model-ShopReport.html#t:ShopReport)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Support](Model-Support.html#t:Support)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackCity](Model-TrackCity.html#t:TrackCity)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackContinent](Model-TrackContinent.html#t:TrackContinent)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackDetails](Model-TrackDetails.html#t:TrackDetails)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TrackMaster](Model-TrackMaster.html#t:TrackMaster)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TravelReport](Model-TravelReport.html#t:TravelReport)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Notification](Model-Notification.html#t:Notification)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Task](Model-Task.html#t:Task)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TaskTrigger](Model-TaskTrigger.html#t:TaskTrigger)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TaskLog](Model-TaskLog.html#t:TaskLog)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Action](Model-Action.html#t:Action)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RewardLogEvents](Model-RewardLogEvents.html#t:RewardLogEvents)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Rule](Model-Rule.html#t:Rule)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RuleReward](Model-RuleReward.html#t:RuleReward)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [Race](Model-Race.html#t:Race)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [RaceDetails](Model-RaceDetails.html#t:RaceDetails)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TournamentPlayer](Model-TournamentPlayers.html#t:TournamentPlayer)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TournamentResult](Model-TournamentResult.html#t:TournamentResult)| |
+|[Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) [TournamentReport](Model-TournamentReport.html#t:TournamentReport)| |
 
 class Mapable a where
 
 Methods
 
-fromMap :: Map String [SqlValue](Data-SqlTransaction.html#t:SqlValue)
--\> Maybe a
+fromMap :: Map String [SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> Maybe a
 
-toMap :: a -\> Map String
-[SqlValue](Data-SqlTransaction.html#t:SqlValue)
+toMap :: a -\> Map String [SqlValue](Data-SqlTransaction.html#t:SqlValue)
 
-fromHashMap :: HashMap String
-[SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> Maybe a
+fromHashMap :: HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> Maybe a
 
-toHashMap :: a -\> HashMap String
-[SqlValue](Data-SqlTransaction.html#t:SqlValue)
+toHashMap :: a -\> HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue)
 
-updateMap :: Map String [SqlValue](Data-SqlTransaction.html#t:SqlValue)
--\> a -\> a
+updateMap :: Map String [SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> a -\> a
 
-updateHashMap :: HashMap String
-[SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> a -\> a
+updateHashMap :: HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> a -\> a
 
 Instances
 
-  ------------------------------------------------------------------------------------------------------------------------------------ ---
-  [Mapable](Model-General.html#t:Mapable) [Account](Model-Account.html#t:Account)                                                       
-  [Mapable](Model-General.html#t:Mapable) [Transaction](Model-Transaction.html#t:Transaction)                                           
-  [Mapable](Model-General.html#t:Mapable) [Escrow](Model-Escrow.html#t:Escrow)                                                          
-  [Mapable](Model-General.html#t:Mapable) [DiamondTransaction](Model-Diamonds.html#t:DiamondTransaction)                                
-  [Mapable](Model-General.html#t:Mapable) [AccountProfile](Model-AccountProfile.html#t:AccountProfile)                                  
-  [Mapable](Model-General.html#t:Mapable) [AccountProfileMin](Model-AccountProfileMin.html#t:AccountProfileMin)                         
-  [Mapable](Model-General.html#t:Mapable) [Car](Model-Car.html#t:Car)                                                                   
-  [Mapable](Model-General.html#t:Mapable) [Car3dModel](Model-Car3dModel.html#t:Car3dModel)                                              
-  [Mapable](Model-General.html#t:Mapable) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)                                           
-  [Mapable](Model-General.html#t:Mapable) [CarInstance](Model-CarInstance.html#t:CarInstance)                                           
-  [Mapable](Model-General.html#t:Mapable) [CarInstanceParts](Model-CarInstanceParts.html#t:CarInstanceParts)                            
-  [Mapable](Model-General.html#t:Mapable) [CarMarket](Model-CarMarket.html#t:CarMarket)                                                 
-  [Mapable](Model-General.html#t:Mapable) [CarMinimal](Model-CarMinimal.html#t:CarMinimal)                                              
-  [Mapable](Model-General.html#t:Mapable) [RaceParticipant](Data-RaceParticipant.html#t:RaceParticipant)                                
-  [Mapable](Model-General.html#t:Mapable) [TrackTime](Model-TrackTime.html#t:TrackTime)                                                 
-  [Mapable](Model-General.html#t:Mapable) [CarOptions](Model-CarOptions.html#t:CarOptions)                                              
-  [Mapable](Model-General.html#t:Mapable) [CarOptionsExtended](Model-CarOptionsExtended.html#t:CarOptionsExtended)                      
-  [Mapable](Model-General.html#t:Mapable) [CarOwners](Model-CarOwners.html#t:CarOwners)                                                 
-  [Mapable](Model-General.html#t:Mapable) [CarStockPart](Model-CarStockParts.html#t:CarStockPart)                                       
-  [Mapable](Model-General.html#t:Mapable) [Challenge](Model-Challenge.html#t:Challenge)                                                 
-  [Mapable](Model-General.html#t:Mapable) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)                               
-  [Mapable](Model-General.html#t:Mapable) [ChallengeExtended](Model-ChallengeExtended.html#t:ChallengeExtended)                         
-  [Mapable](Model-General.html#t:Mapable) [ChallengeType](Model-ChallengeType.html#t:ChallengeType)                                     
-  [Mapable](Model-General.html#t:Mapable) [City](Model-City.html#t:City)                                                                
-  [Mapable](Model-General.html#t:Mapable) [Config](Model-Config.html#t:Config)                                                          
-  [Mapable](Model-General.html#t:Mapable) [Continent](Model-Continent.html#t:Continent)                                                 
-  [Mapable](Model-General.html#t:Mapable) [EventStream](Model-EventStream.html#t:EventStream)                                           
-  [Mapable](Model-General.html#t:Mapable) [Garage](Model-Garage.html#t:Garage)                                                          
-  [Mapable](Model-General.html#t:Mapable) [GaragePart](Model-GarageParts.html#t:GaragePart)                                             
-  [Mapable](Model-General.html#t:Mapable) [GarageReport](Model-GarageReport.html#t:GarageReport)                                        
-  [Mapable](Model-General.html#t:Mapable) [GarageReportInsert](Model-GarageReportInsert.html#t:GarageReportInsert)                      
-  [Mapable](Model-General.html#t:Mapable) [GeneralReport](Model-GeneralReport.html#t:GeneralReport)                                     
-  [Mapable](Model-General.html#t:Mapable) [Manufacturer](Model-Manufacturer.html#t:Manufacturer)                                        
-  [Mapable](Model-General.html#t:Mapable) [ManufacturerMarket](Model-ManufacturerMarket.html#t:ManufacturerMarket)                      
-  [Mapable](Model-General.html#t:Mapable) [MarketCarInstanceParts](Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts)          
-  [Mapable](Model-General.html#t:Mapable) [MarketItem](Model-MarketItem.html#t:MarketItem)                                              
-  [Mapable](Model-General.html#t:Mapable) [MarketPartType](Model-MarketPartType.html#t:MarketPartType)                                  
-  [Mapable](Model-General.html#t:Mapable) [MarketPlace](Model-MarketPlace.html#t:MarketPlace)                                           
-  [Mapable](Model-General.html#t:Mapable) [MarketPlaceCar](Model-MarketPlaceCar.html#t:MarketPlaceCar)                                  
-  [Mapable](Model-General.html#t:Mapable) [MenuModel](Model-MenuModel.html#t:MenuModel)                                                 
-  [Mapable](Model-General.html#t:Mapable) [Part](Model-Part.html#t:Part)                                                                
-  [Mapable](Model-General.html#t:Mapable) [PartDetails](Model-PartDetails.html#t:PartDetails)                                           
-  [Mapable](Model-General.html#t:Mapable) [RaceRewards](Data-RaceReward.html#t:RaceRewards)                                             
-  [Mapable](Model-General.html#t:Mapable) [RaceReward](Model-RaceReward.html#t:RaceReward)                                              
-  [Mapable](Model-General.html#t:Mapable) [Tournament](Model-Tournament.html#t:Tournament)                                              
-  [Mapable](Model-General.html#t:Mapable) [TournamentExtended](Model-TournamentExtended.html#t:TournamentExtended)                      
-  [Mapable](Model-General.html#t:Mapable) [PartInstance](Model-PartInstance.html#t:PartInstance)                                        
-  [Mapable](Model-General.html#t:Mapable) [PartMarket](Model-PartMarket.html#t:PartMarket)                                              
-  [Mapable](Model-General.html#t:Mapable) [PartMarketPlaceType](Model-PartMarketPlaceType.html#t:PartMarketPlaceType)                   
-  [Mapable](Model-General.html#t:Mapable) [PartMarketType](Model-PartMarketType.html#t:PartMarketType)                                  
-  [Mapable](Model-General.html#t:Mapable) [PartType](Model-PartType.html#t:PartType)                                                    
-  [Mapable](Model-General.html#t:Mapable) [Personnel](Model-Personnel.html#t:Personnel)                                                 
-  [Mapable](Model-General.html#t:Mapable) [PersonnelDetails](Model-PersonnelDetails.html#t:PersonnelDetails)                            
-  [Mapable](Model-General.html#t:Mapable) [PersonnelInstance](Model-PersonnelInstance.html#t:PersonnelInstance)                         
-  [Mapable](Model-General.html#t:Mapable) [PersonnelInstanceDetails](Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails)    
-  [Mapable](Model-General.html#t:Mapable) [PersonnelReport](Model-PersonnelReport.html#t:PersonnelReport)                               
-  [Mapable](Model-General.html#t:Mapable) [PersonnelTaskType](Model-PersonnelTaskType.html#t:PersonnelTaskType)                         
-  [Mapable](Model-General.html#t:Mapable) [PreLetter](Model-PreLetter.html#t:PreLetter)                                                 
-  [Mapable](Model-General.html#t:Mapable) [Report](Model-Report.html#t:Report)                                                          
-  [Mapable](Model-General.html#t:Mapable) [RewardLog](Model-RewardLog.html#t:RewardLog)                                                 
-  [Mapable](Model-General.html#t:Mapable) [RewardLogEvent](Model-RewardLogEvent.html#t:RewardLogEvent)                                  
-  [Mapable](Model-General.html#t:Mapable) [ShopReport](Model-ShopReport.html#t:ShopReport)                                              
-  [Mapable](Model-General.html#t:Mapable) [Support](Model-Support.html#t:Support)                                                       
-  [Mapable](Model-General.html#t:Mapable) [TrackCity](Model-TrackCity.html#t:TrackCity)                                                 
-  [Mapable](Model-General.html#t:Mapable) [TrackContinent](Model-TrackContinent.html#t:TrackContinent)                                  
-  [Mapable](Model-General.html#t:Mapable) [TrackDetails](Model-TrackDetails.html#t:TrackDetails)                                        
-  [Mapable](Model-General.html#t:Mapable) [TrackMaster](Model-TrackMaster.html#t:TrackMaster)                                           
-  [Mapable](Model-General.html#t:Mapable) [TravelReport](Model-TravelReport.html#t:TravelReport)                                        
-  [Mapable](Model-General.html#t:Mapable) [Notification](Model-Notification.html#t:Notification)                                        
-  [Mapable](Model-General.html#t:Mapable) [Task](Model-Task.html#t:Task)                                                                
-  [Mapable](Model-General.html#t:Mapable) [CarReadyState](Data-CarReady.html#t:CarReadyState)                                           
-  [Mapable](Model-General.html#t:Mapable) [RaceSectionPerformance](Data-RaceSectionPerformance.html#t:RaceSectionPerformance)           
-  [Mapable](Model-General.html#t:Mapable) [TaskTrigger](Model-TaskTrigger.html#t:TaskTrigger)                                           
-  [Mapable](Model-General.html#t:Mapable) [TaskLog](Model-TaskLog.html#t:TaskLog)                                                       
-  [Mapable](Model-General.html#t:Mapable) [Action](Model-Action.html#t:Action)                                                          
-  [Mapable](Model-General.html#t:Mapable) [RewardLogEvents](Model-RewardLogEvents.html#t:RewardLogEvents)                               
-  [Mapable](Model-General.html#t:Mapable) [Rule](Model-Rule.html#t:Rule)                                                                
-  [Mapable](Model-General.html#t:Mapable) [RuleReward](Model-RuleReward.html#t:RuleReward)                                              
-  [Mapable](Model-General.html#t:Mapable) [SectionResult](Data-RacingNew.html#t:SectionResult)                                          
-  [Mapable](Model-General.html#t:Mapable) [RaceResult](Data-RacingNew.html#t:RaceResult)                                                
-  [Mapable](Model-General.html#t:Mapable) [RaceData](Data-RacingNew.html#t:RaceData)                                                    
-  [Mapable](Model-General.html#t:Mapable) CarBaseParameters                                                                             
-  [Mapable](Model-General.html#t:Mapable) CarDerivedParameters                                                                          
-  [Mapable](Model-General.html#t:Mapable) PartParameter                                                                                 
-  [Mapable](Model-General.html#t:Mapable) PreviewPart                                                                                   
-  [Mapable](Model-General.html#t:Mapable) [Race](Model-Race.html#t:Race)                                                                
-  [Mapable](Model-General.html#t:Mapable) [RaceDetails](Model-RaceDetails.html#t:RaceDetails)                                           
-  [Mapable](Model-General.html#t:Mapable) SectionResult                                                                                 
-  [Mapable](Model-General.html#t:Mapable) RaceResult                                                                                    
-  [Mapable](Model-General.html#t:Mapable) RaceParticipant                                                                               
-  [Mapable](Model-General.html#t:Mapable) RaceRewards                                                                                   
-  [Mapable](Model-General.html#t:Mapable) RaceData                                                                                      
-  [Mapable](Model-General.html#t:Mapable) [TournamentPlayer](Model-TournamentPlayers.html#t:TournamentPlayer)                           
-  [Mapable](Model-General.html#t:Mapable) [TournamentResult](Model-TournamentResult.html#t:TournamentResult)                            
-  [Mapable](Model-General.html#t:Mapable) [TournamentReport](Model-TournamentReport.html#t:TournamentReport)                            
-  [Mapable](Model-General.html#t:Mapable) RoundResult                                                                                   
-  [Mapable](Model-General.html#t:Mapable) TournamentFullData                                                                            
-  ------------------------------------------------------------------------------------------------------------------------------------ ---
+||
+|[Mapable](Model-General.html#t:Mapable) [Account](Model-Account.html#t:Account)| |
+|[Mapable](Model-General.html#t:Mapable) [Transaction](Model-Transaction.html#t:Transaction)| |
+|[Mapable](Model-General.html#t:Mapable) [Escrow](Model-Escrow.html#t:Escrow)| |
+|[Mapable](Model-General.html#t:Mapable) [DiamondTransaction](Model-Diamonds.html#t:DiamondTransaction)| |
+|[Mapable](Model-General.html#t:Mapable) [AccountProfile](Model-AccountProfile.html#t:AccountProfile)| |
+|[Mapable](Model-General.html#t:Mapable) [AccountProfileMin](Model-AccountProfileMin.html#t:AccountProfileMin)| |
+|[Mapable](Model-General.html#t:Mapable) [Car](Model-Car.html#t:Car)| |
+|[Mapable](Model-General.html#t:Mapable) [Car3dModel](Model-Car3dModel.html#t:Car3dModel)| |
+|[Mapable](Model-General.html#t:Mapable) [CarInGarage](Model-CarInGarage.html#t:CarInGarage)| |
+|[Mapable](Model-General.html#t:Mapable) [CarInstance](Model-CarInstance.html#t:CarInstance)| |
+|[Mapable](Model-General.html#t:Mapable) [CarInstanceParts](Model-CarInstanceParts.html#t:CarInstanceParts)| |
+|[Mapable](Model-General.html#t:Mapable) [CarMarket](Model-CarMarket.html#t:CarMarket)| |
+|[Mapable](Model-General.html#t:Mapable) [CarMinimal](Model-CarMinimal.html#t:CarMinimal)| |
+|[Mapable](Model-General.html#t:Mapable) [RaceParticipant](Data-RaceParticipant.html#t:RaceParticipant)| |
+|[Mapable](Model-General.html#t:Mapable) [TrackTime](Model-TrackTime.html#t:TrackTime)| |
+|[Mapable](Model-General.html#t:Mapable) [CarOptions](Model-CarOptions.html#t:CarOptions)| |
+|[Mapable](Model-General.html#t:Mapable) [CarOptionsExtended](Model-CarOptionsExtended.html#t:CarOptionsExtended)| |
+|[Mapable](Model-General.html#t:Mapable) [CarOwners](Model-CarOwners.html#t:CarOwners)| |
+|[Mapable](Model-General.html#t:Mapable) [CarStockPart](Model-CarStockParts.html#t:CarStockPart)| |
+|[Mapable](Model-General.html#t:Mapable) [Challenge](Model-Challenge.html#t:Challenge)| |
+|[Mapable](Model-General.html#t:Mapable) [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)| |
+|[Mapable](Model-General.html#t:Mapable) [ChallengeExtended](Model-ChallengeExtended.html#t:ChallengeExtended)| |
+|[Mapable](Model-General.html#t:Mapable) [ChallengeType](Model-ChallengeType.html#t:ChallengeType)| |
+|[Mapable](Model-General.html#t:Mapable) [City](Model-City.html#t:City)| |
+|[Mapable](Model-General.html#t:Mapable) [Config](Model-Config.html#t:Config)| |
+|[Mapable](Model-General.html#t:Mapable) [Continent](Model-Continent.html#t:Continent)| |
+|[Mapable](Model-General.html#t:Mapable) [EventStream](Model-EventStream.html#t:EventStream)| |
+|[Mapable](Model-General.html#t:Mapable) [Garage](Model-Garage.html#t:Garage)| |
+|[Mapable](Model-General.html#t:Mapable) [GaragePart](Model-GarageParts.html#t:GaragePart)| |
+|[Mapable](Model-General.html#t:Mapable) [GarageReport](Model-GarageReport.html#t:GarageReport)| |
+|[Mapable](Model-General.html#t:Mapable) [GarageReportInsert](Model-GarageReportInsert.html#t:GarageReportInsert)| |
+|[Mapable](Model-General.html#t:Mapable) [GeneralReport](Model-GeneralReport.html#t:GeneralReport)| |
+|[Mapable](Model-General.html#t:Mapable) [Manufacturer](Model-Manufacturer.html#t:Manufacturer)| |
+|[Mapable](Model-General.html#t:Mapable) [ManufacturerMarket](Model-ManufacturerMarket.html#t:ManufacturerMarket)| |
+|[Mapable](Model-General.html#t:Mapable) [MarketCarInstanceParts](Model-MarketCarInstanceParts.html#t:MarketCarInstanceParts)| |
+|[Mapable](Model-General.html#t:Mapable) [MarketItem](Model-MarketItem.html#t:MarketItem)| |
+|[Mapable](Model-General.html#t:Mapable) [MarketPartType](Model-MarketPartType.html#t:MarketPartType)| |
+|[Mapable](Model-General.html#t:Mapable) [MarketPlace](Model-MarketPlace.html#t:MarketPlace)| |
+|[Mapable](Model-General.html#t:Mapable) [MarketPlaceCar](Model-MarketPlaceCar.html#t:MarketPlaceCar)| |
+|[Mapable](Model-General.html#t:Mapable) [MenuModel](Model-MenuModel.html#t:MenuModel)| |
+|[Mapable](Model-General.html#t:Mapable) [Part](Model-Part.html#t:Part)| |
+|[Mapable](Model-General.html#t:Mapable) [PartDetails](Model-PartDetails.html#t:PartDetails)| |
+|[Mapable](Model-General.html#t:Mapable) [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|[Mapable](Model-General.html#t:Mapable) [RaceReward](Model-RaceReward.html#t:RaceReward)| |
+|[Mapable](Model-General.html#t:Mapable) [Tournament](Model-Tournament.html#t:Tournament)| |
+|[Mapable](Model-General.html#t:Mapable) [TournamentExtended](Model-TournamentExtended.html#t:TournamentExtended)| |
+|[Mapable](Model-General.html#t:Mapable) [PartInstance](Model-PartInstance.html#t:PartInstance)| |
+|[Mapable](Model-General.html#t:Mapable) [PartMarket](Model-PartMarket.html#t:PartMarket)| |
+|[Mapable](Model-General.html#t:Mapable) [PartMarketPlaceType](Model-PartMarketPlaceType.html#t:PartMarketPlaceType)| |
+|[Mapable](Model-General.html#t:Mapable) [PartMarketType](Model-PartMarketType.html#t:PartMarketType)| |
+|[Mapable](Model-General.html#t:Mapable) [PartType](Model-PartType.html#t:PartType)| |
+|[Mapable](Model-General.html#t:Mapable) [Personnel](Model-Personnel.html#t:Personnel)| |
+|[Mapable](Model-General.html#t:Mapable) [PersonnelDetails](Model-PersonnelDetails.html#t:PersonnelDetails)| |
+|[Mapable](Model-General.html#t:Mapable) [PersonnelInstance](Model-PersonnelInstance.html#t:PersonnelInstance)| |
+|[Mapable](Model-General.html#t:Mapable) [PersonnelInstanceDetails](Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails)| |
+|[Mapable](Model-General.html#t:Mapable) [PersonnelReport](Model-PersonnelReport.html#t:PersonnelReport)| |
+|[Mapable](Model-General.html#t:Mapable) [PersonnelTaskType](Model-PersonnelTaskType.html#t:PersonnelTaskType)| |
+|[Mapable](Model-General.html#t:Mapable) [PreLetter](Model-PreLetter.html#t:PreLetter)| |
+|[Mapable](Model-General.html#t:Mapable) [Report](Model-Report.html#t:Report)| |
+|[Mapable](Model-General.html#t:Mapable) [RewardLog](Model-RewardLog.html#t:RewardLog)| |
+|[Mapable](Model-General.html#t:Mapable) [RewardLogEvent](Model-RewardLogEvent.html#t:RewardLogEvent)| |
+|[Mapable](Model-General.html#t:Mapable) [ShopReport](Model-ShopReport.html#t:ShopReport)| |
+|[Mapable](Model-General.html#t:Mapable) [Support](Model-Support.html#t:Support)| |
+|[Mapable](Model-General.html#t:Mapable) [TrackCity](Model-TrackCity.html#t:TrackCity)| |
+|[Mapable](Model-General.html#t:Mapable) [TrackContinent](Model-TrackContinent.html#t:TrackContinent)| |
+|[Mapable](Model-General.html#t:Mapable) [TrackDetails](Model-TrackDetails.html#t:TrackDetails)| |
+|[Mapable](Model-General.html#t:Mapable) [TrackMaster](Model-TrackMaster.html#t:TrackMaster)| |
+|[Mapable](Model-General.html#t:Mapable) [TravelReport](Model-TravelReport.html#t:TravelReport)| |
+|[Mapable](Model-General.html#t:Mapable) [Notification](Model-Notification.html#t:Notification)| |
+|[Mapable](Model-General.html#t:Mapable) [Task](Model-Task.html#t:Task)| |
+|[Mapable](Model-General.html#t:Mapable) [CarReadyState](Data-CarReady.html#t:CarReadyState)| |
+|[Mapable](Model-General.html#t:Mapable) [RaceSectionPerformance](Data-RaceSectionPerformance.html#t:RaceSectionPerformance)| |
+|[Mapable](Model-General.html#t:Mapable) [TaskTrigger](Model-TaskTrigger.html#t:TaskTrigger)| |
+|[Mapable](Model-General.html#t:Mapable) [TaskLog](Model-TaskLog.html#t:TaskLog)| |
+|[Mapable](Model-General.html#t:Mapable) [Action](Model-Action.html#t:Action)| |
+|[Mapable](Model-General.html#t:Mapable) [RewardLogEvents](Model-RewardLogEvents.html#t:RewardLogEvents)| |
+|[Mapable](Model-General.html#t:Mapable) [Rule](Model-Rule.html#t:Rule)| |
+|[Mapable](Model-General.html#t:Mapable) [RuleReward](Model-RuleReward.html#t:RuleReward)| |
+|[Mapable](Model-General.html#t:Mapable) [SectionResult](Data-RacingNew.html#t:SectionResult)| |
+|[Mapable](Model-General.html#t:Mapable) [RaceResult](Data-RacingNew.html#t:RaceResult)| |
+|[Mapable](Model-General.html#t:Mapable) [RaceData](Data-RacingNew.html#t:RaceData)| |
+|[Mapable](Model-General.html#t:Mapable) CarBaseParameters| |
+|[Mapable](Model-General.html#t:Mapable) CarDerivedParameters| |
+|[Mapable](Model-General.html#t:Mapable) PartParameter| |
+|[Mapable](Model-General.html#t:Mapable) PreviewPart| |
+|[Mapable](Model-General.html#t:Mapable) [Race](Model-Race.html#t:Race)| |
+|[Mapable](Model-General.html#t:Mapable) [RaceDetails](Model-RaceDetails.html#t:RaceDetails)| |
+|[Mapable](Model-General.html#t:Mapable) SectionResult| |
+|[Mapable](Model-General.html#t:Mapable) RaceResult| |
+|[Mapable](Model-General.html#t:Mapable) RaceParticipant| |
+|[Mapable](Model-General.html#t:Mapable) RaceRewards| |
+|[Mapable](Model-General.html#t:Mapable) RaceData| |
+|[Mapable](Model-General.html#t:Mapable) [TournamentPlayer](Model-TournamentPlayers.html#t:TournamentPlayer)| |
+|[Mapable](Model-General.html#t:Mapable) [TournamentResult](Model-TournamentResult.html#t:TournamentResult)| |
+|[Mapable](Model-General.html#t:Mapable) [TournamentReport](Model-TournamentReport.html#t:TournamentReport)| |
+|[Mapable](Model-General.html#t:Mapable) RoundResult| |
+|[Mapable](Model-General.html#t:Mapable) TournamentFullData| |
 
 type Id = Maybe Integer
 
-nlookup :: Convertible [SqlValue](Data-SqlTransaction.html#t:SqlValue) a
-=\> String -\> HashMap String
-[SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> Maybe a
+nlookup :: Convertible [SqlValue](Data-SqlTransaction.html#t:SqlValue) a =\> String -\> HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> Maybe a
 
 nempty :: HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue)
 
-htsql :: Convertible a [SqlValue](Data-SqlTransaction.html#t:SqlValue)
-=\> a -\> [SqlValue](Data-SqlTransaction.html#t:SqlValue)
+htsql :: Convertible a [SqlValue](Data-SqlTransaction.html#t:SqlValue) =\> a -\> [SqlValue](Data-SqlTransaction.html#t:SqlValue)
 
 thsql :: [SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> Integer
 
-ninsert :: (Eq k, Hashable k) =\> k -\> v -\> HashMap k v -\> HashMap k
-v
+ninsert :: (Eq k, Hashable k) =\> k -\> v -\> HashMap k v -\> HashMap k v
 
 sinsert :: Ord k =\> k -\> a -\> Map k a -\> Map k a
 
-mlookup :: Convertible [SqlValue](Data-SqlTransaction.html#t:SqlValue) a
-=\> String -\> Map String
-[SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> Maybe a
+mlookup :: Convertible [SqlValue](Data-SqlTransaction.html#t:SqlValue) a =\> String -\> Map String [SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> Maybe a
 
-mco :: Functor f =\> f [SqlValue](Data-SqlTransaction.html#t:SqlValue)
--\> f Integer
+mco :: Functor f =\> f [SqlValue](Data-SqlTransaction.html#t:SqlValue) -\> f Integer
 
-mfp :: (Functor f, [Mapable](Model-General.html#t:Mapable) a) =\> f
-[HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue)] -\> f
-[a]
+mfp :: (Functor f, [Mapable](Model-General.html#t:Mapable) a) =\> f [HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue)] -\> f [a]
 
-nhead :: (Functor f, [Mapable](Model-General.html#t:Mapable) a) =\> f
-[HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue)] -\> f
-(Maybe a)
+nhead :: (Functor f, [Mapable](Model-General.html#t:Mapable) a) =\> f [HashMap String [SqlValue](Data-SqlTransaction.html#t:SqlValue)] -\> f (Maybe a)
 
 sempty :: Map String [SqlValue](Data-SqlTransaction.html#t:SqlValue)
 
-aget :: [Database](Model-General.html#t:Database)
-[Connection](Data-SqlTransaction.html#t:Connection) a =\>
-[Constraints](Data-Database.html#t:Constraints) -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) a -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) a
+aget :: [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) a =\> [Constraints](Data-Database.html#t:Constraints) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) a -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) a
 
-agetlist :: [Database](Model-General.html#t:Database)
-[Connection](Data-SqlTransaction.html#t:Connection) a =\>
-[Constraints](Data-Database.html#t:Constraints) -\>
-[Orders](Data-Database.html#t:Orders) -\> Integer -\> Integer -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) [a] -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) [a]
+agetlist :: [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) a =\> [Constraints](Data-Database.html#t:Constraints) -\> [Orders](Data-Database.html#t:Orders) -\> Integer -\> Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [a] -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [a]
 
-aload :: [Database](Model-General.html#t:Database)
-[Connection](Data-SqlTransaction.html#t:Connection) a =\> Integer -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) a -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) a
+aload :: [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) a =\> Integer -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) a -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) a
 
-adeny :: [Database](Model-General.html#t:Database)
-[Connection](Data-SqlTransaction.html#t:Connection) a =\>
-[Constraints](Data-Database.html#t:Constraints) -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) [a] -\>
-[SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)
-[Connection](Data-SqlTransaction.html#t:Connection) [a]
+adeny :: [Database](Model-General.html#t:Database) [Connection](Data-SqlTransaction.html#t:Connection) a =\> [Constraints](Data-Database.html#t:Constraints) -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [a] -\> [SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction) [Connection](Data-SqlTransaction.html#t:Connection) [a]
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

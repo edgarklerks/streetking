@@ -1,7 +1,3 @@
-% Data.InRules
-% 
-% 
-
 Data.InRules
 
 [hmapKeys](Data-InRules.html#v:hmapKeys)

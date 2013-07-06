@@ -1,7 +1,3 @@
-% Model.PartMarketType
-% 
-% 
-
 Model.PartMarketType
 
 data [PartMarketType](Model-PartMarketType.html#t:PartMarketType)

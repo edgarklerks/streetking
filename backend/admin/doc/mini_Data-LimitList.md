@@ -1,7 +1,3 @@
-% Data.LimitList
-% 
-% 
-
 Data.LimitList
 
 data [LimitList](Data-LimitList.html#t:LimitList) a

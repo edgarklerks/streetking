@@ -1,11 +1,6 @@
-% SqlTransactionSnaplet
-% 
-% 
-
 SqlTransactionSnaplet
 
-data
-[SqlTransactionConfig](SqlTransactionSnaplet.html#t:SqlTransactionConfig)
+data [SqlTransactionConfig](SqlTransactionSnaplet.html#t:SqlTransactionConfig)
 
 [dsn](SqlTransactionSnaplet.html#v:dsn)
 

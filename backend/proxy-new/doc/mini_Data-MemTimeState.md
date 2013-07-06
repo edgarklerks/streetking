@@ -1,7 +1,3 @@
-% Data.MemTimeState
-% 
-% 
-
 Data.MemTimeState
 
 data [MemState](Data-MemTimeState.html#t:MemState)

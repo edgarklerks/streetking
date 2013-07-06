@@ -1,7 +1,3 @@
-% Model.Part
-% 
-% 
-
 Model.Part
 
 type [MInteger](Model-Part.html#t:MInteger)

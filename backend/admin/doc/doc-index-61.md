@@ -1,7 +1,3 @@
-% (Index - =)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -45,8 +41,7 @@
 
 Index - =
 
-  ------ ----------------------------------------------------------------------------------------------------------
-  ==\>   [Data.InRules](Data-InRules.html#v:-61--61--62-), [Data.Conversion](Data-Conversion.html#v:-61--61--62-)
-  ------ ----------------------------------------------------------------------------------------------------------
+||
+|==\>|[Data.InRules](Data-InRules.html#v:-61--61--62-), [Data.Conversion](Data-Conversion.html#v:-61--61--62-)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

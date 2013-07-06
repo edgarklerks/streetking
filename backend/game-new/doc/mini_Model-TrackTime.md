@@ -1,7 +1,3 @@
-% Model.TrackTime
-% 
-% 
-
 Model.TrackTime
 
 data [TrackTime](Model-TrackTime.html#t:TrackTime)

@@ -1,7 +1,3 @@
-% Application
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -15,8 +11,7 @@ Application
 
 Description
 
-This module defines our application's state type and an alias for its
-handler monad.
+This module defines our application's state type and an alias for its handler monad.
 
 Documentation
 =============
@@ -31,39 +26,37 @@ App
 
 Fields
 
-\_proxy :: Snaplet [ProxySnaplet](ProxyExtendableSnapletConduit.html#t:ProxySnaplet)
-:    
-\_node :: Snaplet [DHTConfig](NodeSnapletTest.html#t:DHTConfig)
-:    
-\_sql :: Snaplet [SqlTransactionConfig](SqlTransactionSnaplet.html#t:SqlTransactionConfig)
-:    
-\_rnd :: Snaplet [RandomConfig](RandomSnaplet.html#t:RandomConfig)
-:    
-\_roles :: Snaplet [RoleSnaplet](RoleSnaplet.html#t:RoleSnaplet)
-:    
-\_logcycle :: Snaplet [Cycle](Data-ExternalLog.html#t:Cycle)
-:    
+\_proxy :: Snaplet [ProxySnaplet](ProxyExtendableSnapletConduit.html#t:ProxySnaplet)  
+ 
 
-sql :: Lens' [App](Application.html#t:App) (Snaplet
-[SqlTransactionConfig](SqlTransactionSnaplet.html#t:SqlTransactionConfig))
+\_node :: Snaplet [DHTConfig](NodeSnapletTest.html#t:DHTConfig)  
+ 
 
-roles :: Lens' [App](Application.html#t:App) (Snaplet
-[RoleSnaplet](RoleSnaplet.html#t:RoleSnaplet))
+\_sql :: Snaplet [SqlTransactionConfig](SqlTransactionSnaplet.html#t:SqlTransactionConfig)  
+ 
 
-rnd :: Lens' [App](Application.html#t:App) (Snaplet
-[RandomConfig](RandomSnaplet.html#t:RandomConfig))
+\_rnd :: Snaplet [RandomConfig](RandomSnaplet.html#t:RandomConfig)  
+ 
 
-proxy :: Lens' [App](Application.html#t:App) (Snaplet
-[ProxySnaplet](ProxyExtendableSnapletConduit.html#t:ProxySnaplet))
+\_roles :: Snaplet [RoleSnaplet](RoleSnaplet.html#t:RoleSnaplet)  
+ 
 
-node :: Lens' [App](Application.html#t:App) (Snaplet
-[DHTConfig](NodeSnapletTest.html#t:DHTConfig))
+\_logcycle :: Snaplet [Cycle](Data-ExternalLog.html#t:Cycle)  
+ 
 
-logcycle :: Lens' [App](Application.html#t:App) (Snaplet
-[Cycle](Data-ExternalLog.html#t:Cycle))
+sql :: Lens' [App](Application.html#t:App) (Snaplet [SqlTransactionConfig](SqlTransactionSnaplet.html#t:SqlTransactionConfig))
 
-type AppHandler = Handler [App](Application.html#t:App)
-[App](Application.html#t:App)
+roles :: Lens' [App](Application.html#t:App) (Snaplet [RoleSnaplet](RoleSnaplet.html#t:RoleSnaplet))
+
+rnd :: Lens' [App](Application.html#t:App) (Snaplet [RandomConfig](RandomSnaplet.html#t:RandomConfig))
+
+proxy :: Lens' [App](Application.html#t:App) (Snaplet [ProxySnaplet](ProxyExtendableSnapletConduit.html#t:ProxySnaplet))
+
+node :: Lens' [App](Application.html#t:App) (Snaplet [DHTConfig](NodeSnapletTest.html#t:DHTConfig))
+
+logcycle :: Lens' [App](Application.html#t:App) (Snaplet [Cycle](Data-ExternalLog.html#t:Cycle))
+
+type AppHandler = Handler [App](Application.html#t:App) [App](Application.html#t:App)
 
 type Application = [AppHandler](Application.html#t:AppHandler)
 

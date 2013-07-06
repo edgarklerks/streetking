@@ -1,7 +1,3 @@
-% Model.General
-% 
-% 
-
 Model.General
 
 class [Database](Model-General.html#t:Database) c a

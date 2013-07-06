@@ -1,7 +1,3 @@
-% Data.RaceReward
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -26,26 +22,27 @@ RaceRewards
 
 Fields
 
-money :: Integer
-:    
-respect :: Integer
-:    
-parts :: PartDetailsList
-:    
+money :: Integer  
+ 
+
+respect :: Integer  
+ 
+
+parts :: PartDetailsList  
+ 
 
 Instances
 
-  ------------------------------------------------------------------------------------------------ ---
-  Eq [RaceRewards](Data-RaceReward.html#t:RaceRewards)                                              
-  Num [RaceRewards](Data-RaceReward.html#t:RaceRewards)                                             
-  Show [RaceRewards](Data-RaceReward.html#t:RaceRewards)                                            
-  Monoid [RaceRewards](Data-RaceReward.html#t:RaceRewards)                                          
-  ToJSON [RaceRewards](Data-RaceReward.html#t:RaceRewards)                                          
-  FromJSON [RaceRewards](Data-RaceReward.html#t:RaceRewards)                                        
-  Default [RaceRewards](Data-RaceReward.html#t:RaceRewards)                                         
-  [FromInRule](Data-InRules.html#t:FromInRule) [RaceRewards](Data-RaceReward.html#t:RaceRewards)    
-  [ToInRule](Data-InRules.html#t:ToInRule) [RaceRewards](Data-RaceReward.html#t:RaceRewards)        
-  [Mapable](Model-General.html#t:Mapable) [RaceRewards](Data-RaceReward.html#t:RaceRewards)         
-  ------------------------------------------------------------------------------------------------ ---
+||
+|Eq [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|Num [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|Show [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|Monoid [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|ToJSON [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|FromJSON [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|Default [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|[FromInRule](Data-InRules.html#t:FromInRule) [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|[ToInRule](Data-InRules.html#t:ToInRule) [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
+|[Mapable](Model-General.html#t:Mapable) [RaceRewards](Data-RaceReward.html#t:RaceRewards)| |
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

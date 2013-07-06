@@ -1,7 +1,3 @@
-% (Index - A)
-% 
-% 
-
 -   [Contents](index.html)
 -   [Index](doc-index.html)
 
@@ -42,59 +38,58 @@
 
 Index - A
 
-  ---------------------- ------------------------------------------------------------------------------------------------------
-  Accept                 [Data.InRules](Data-InRules.html#v:Accept), [Data.Conversion](Data-Conversion.html#v:Accept)
-  accept                 [Data.InRules](Data-InRules.html#v:accept), [Data.Conversion](Data-Conversion.html#v:accept)
-  acceptor               [Data.InRules](Data-InRules.html#v:acceptor), [Data.Conversion](Data-Conversion.html#v:acceptor)
-  AccessExclusive        [Data.SqlTransaction](Data-SqlTransaction.html#v:AccessExclusive)
-  AccessShare            [Data.SqlTransaction](Data-SqlTransaction.html#v:AccessShare)
-  Addr                   [ProtoExtended](ProtoExtended.html#v:Addr)
-  addr                   [NodeSnapletTest](NodeSnapletTest.html#v:addr)
-  Address                 
-  1 (Type/Class)         [Data.ExternalLog](Data-ExternalLog.html#t:Address)
-  2 (Type/Class)         [Data.HeartBeat](Data-HeartBeat.html#t:Address)
-  addRole                 
-  1 (Function)           [Data.Role](Data-Role.html#v:addRole)
-  2 (Function)           [RoleSnaplet](RoleSnaplet.html#v:addRole)
-  addRoute               [ProtoExtended](ProtoExtended.html#v:addRoute)
-  addRoutes              [ProtoExtended](ProtoExtended.html#v:addRoutes)
-  adeny                  [Model.General](Model-General.html#v:adeny)
-  advertise              [ProtoExtended](ProtoExtended.html#v:advertise)
-  Advertisement          [ProtoExtended](ProtoExtended.html#v:Advertisement)
-  aget                   [Model.General](Model-General.html#v:aget)
-  agetlist               [Model.General](Model-General.html#v:agetlist)
-  Alive                  [Data.HeartBeat](Data-HeartBeat.html#v:Alive)
-  All                    [Data.Role](Data-Role.html#v:All), [RoleSnaplet](RoleSnaplet.html#v:All)
-  aload                  [Model.General](Model-General.html#v:aload)
-  alter                  [Data.InRules](Data-InRules.html#v:alter), [Data.Conversion](Data-Conversion.html#v:alter)
-  alternate              [Data.Tools](Data-Tools.html#v:alternate)
-  And                    [Data.Database](Data-Database.html#v:And)
-  and                    [Data.Relation](Data-Relation.html#v:and)
-  andcf                  [Data.Tools](Data-Tools.html#v:andcf)
-  apoint                 [Data.InRules](Data-InRules.html#v:apoint), [Data.Conversion](Data-Conversion.html#v:apoint)
-  App                     
-  1 (Type/Class)         [Application](Application.html#t:App)
-  2 (Data Constructor)   [Application](Application.html#v:App)
-  app                    [Site](Site.html#v:app)
-  AppHandler             [Application](Application.html#t:AppHandler)
-  Application             
-  1 (Type/Class)         [Model.Application](Model-Application.html#t:Application)
-  2 (Data Constructor)   [Model.Application](Model-Application.html#v:Application)
-  3 (Type/Class)         [Application](Application.html#t:Application)
-  ArrayC                 [Config.ConfigFileParser](Config-ConfigFileParser.html#v:ArrayC)
-  arrayToObj             [Data.InRules](Data-InRules.html#v:arrayToObj)
-  as                     [Data.Relation](Data-Relation.html#v:as)
-  Asc                    [Data.Relation](Data-Relation.html#v:Asc)
-  asc                    [Data.Database](Data-Database.html#v:asc)
-  asksTVar               [MemServerAsyncTest](MemServerAsyncTest.html#v:asksTVar)
-  asReadable             [Data.InRules](Data-InRules.html#v:asReadable), [Data.Conversion](Data-Conversion.html#v:asReadable)
-  assert                 [Data.Tools](Data-Tools.html#v:assert)
-  Assign                 [Data.Database](Data-Database.html#v:Assign)
-  Assignment             [Data.Database](Data-Database.html#t:Assignment)
-  Assignments            [Data.Database](Data-Database.html#t:Assignments)
-  assigns                [Data.Database](Data-Database.html#v:assigns)
-  Assoc                  [Data.InRules](Data-InRules.html#v:Assoc), [Data.Conversion](Data-Conversion.html#v:Assoc)
-  atomical               [Data.SqlTransaction](Data-SqlTransaction.html#v:atomical)
-  ---------------------- ------------------------------------------------------------------------------------------------------
+||
+|Accept|[Data.InRules](Data-InRules.html#v:Accept), [Data.Conversion](Data-Conversion.html#v:Accept)|
+|accept|[Data.InRules](Data-InRules.html#v:accept), [Data.Conversion](Data-Conversion.html#v:accept)|
+|acceptor|[Data.InRules](Data-InRules.html#v:acceptor), [Data.Conversion](Data-Conversion.html#v:acceptor)|
+|AccessExclusive|[Data.SqlTransaction](Data-SqlTransaction.html#v:AccessExclusive)|
+|AccessShare|[Data.SqlTransaction](Data-SqlTransaction.html#v:AccessShare)|
+|Addr|[ProtoExtended](ProtoExtended.html#v:Addr)|
+|addr|[NodeSnapletTest](NodeSnapletTest.html#v:addr)|
+|Address| |
+|1 (Type/Class)|[Data.ExternalLog](Data-ExternalLog.html#t:Address)|
+|2 (Type/Class)|[Data.HeartBeat](Data-HeartBeat.html#t:Address)|
+|addRole| |
+|1 (Function)|[Data.Role](Data-Role.html#v:addRole)|
+|2 (Function)|[RoleSnaplet](RoleSnaplet.html#v:addRole)|
+|addRoute|[ProtoExtended](ProtoExtended.html#v:addRoute)|
+|addRoutes|[ProtoExtended](ProtoExtended.html#v:addRoutes)|
+|adeny|[Model.General](Model-General.html#v:adeny)|
+|advertise|[ProtoExtended](ProtoExtended.html#v:advertise)|
+|Advertisement|[ProtoExtended](ProtoExtended.html#v:Advertisement)|
+|aget|[Model.General](Model-General.html#v:aget)|
+|agetlist|[Model.General](Model-General.html#v:agetlist)|
+|Alive|[Data.HeartBeat](Data-HeartBeat.html#v:Alive)|
+|All|[Data.Role](Data-Role.html#v:All), [RoleSnaplet](RoleSnaplet.html#v:All)|
+|aload|[Model.General](Model-General.html#v:aload)|
+|alter|[Data.InRules](Data-InRules.html#v:alter), [Data.Conversion](Data-Conversion.html#v:alter)|
+|alternate|[Data.Tools](Data-Tools.html#v:alternate)|
+|And|[Data.Database](Data-Database.html#v:And)|
+|and|[Data.Relation](Data-Relation.html#v:and)|
+|andcf|[Data.Tools](Data-Tools.html#v:andcf)|
+|apoint|[Data.InRules](Data-InRules.html#v:apoint), [Data.Conversion](Data-Conversion.html#v:apoint)|
+|App| |
+|1 (Type/Class)|[Application](Application.html#t:App)|
+|2 (Data Constructor)|[Application](Application.html#v:App)|
+|app|[Site](Site.html#v:app)|
+|AppHandler|[Application](Application.html#t:AppHandler)|
+|Application| |
+|1 (Type/Class)|[Model.Application](Model-Application.html#t:Application)|
+|2 (Data Constructor)|[Model.Application](Model-Application.html#v:Application)|
+|3 (Type/Class)|[Application](Application.html#t:Application)|
+|ArrayC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:ArrayC)|
+|arrayToObj|[Data.InRules](Data-InRules.html#v:arrayToObj)|
+|as|[Data.Relation](Data-Relation.html#v:as)|
+|Asc|[Data.Relation](Data-Relation.html#v:Asc)|
+|asc|[Data.Database](Data-Database.html#v:asc)|
+|asksTVar|[MemServerAsyncTest](MemServerAsyncTest.html#v:asksTVar)|
+|asReadable|[Data.InRules](Data-InRules.html#v:asReadable), [Data.Conversion](Data-Conversion.html#v:asReadable)|
+|assert|[Data.Tools](Data-Tools.html#v:assert)|
+|Assign|[Data.Database](Data-Database.html#v:Assign)|
+|Assignment|[Data.Database](Data-Database.html#t:Assignment)|
+|Assignments|[Data.Database](Data-Database.html#t:Assignments)|
+|assigns|[Data.Database](Data-Database.html#v:assigns)|
+|Assoc|[Data.InRules](Data-InRules.html#v:Assoc), [Data.Conversion](Data-Conversion.html#v:Assoc)|
+|atomical|[Data.SqlTransaction](Data-SqlTransaction.html#v:atomical)|
 
 Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

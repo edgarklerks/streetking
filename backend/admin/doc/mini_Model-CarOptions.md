@@ -1,7 +1,3 @@
-% Model.CarOptions
-% 
-% 
-
 Model.CarOptions
 
 type [MString](Model-CarOptions.html#t:MString)
