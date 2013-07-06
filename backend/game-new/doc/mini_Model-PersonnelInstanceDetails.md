@@ -1,9 +1,0 @@
-Model.PersonnelInstanceDetails
-
-type [MInteger](Model-PersonnelInstanceDetails.html#t:MInteger)
-
-data [PersonnelInstanceDetails](Model-PersonnelInstanceDetails.html#t:PersonnelInstanceDetails)
-
-[relation](Model-PersonnelInstanceDetails.html#v:relation)
-
-[schema](Model-PersonnelInstanceDetails.html#v:schema)

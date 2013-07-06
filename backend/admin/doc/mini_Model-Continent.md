@@ -1,7 +1,0 @@
-Model.Continent
-
-data [Continent](Model-Continent.html#t:Continent)
-
-[relation](Model-Continent.html#v:relation)
-
-[schema](Model-Continent.html#v:schema)
