@@ -1,0 +1,17 @@
+% Config.ConfigFileParser
+% 
+% 
+
+Config.ConfigFileParser
+
+[readConfig](Config-ConfigFileParser.html#v:readConfig)
+
+[lookupConfig](Config-ConfigFileParser.html#v:lookupConfig)
+
+[lookupVar](Config-ConfigFileParser.html#v:lookupVar)
+
+data [Config](Config-ConfigFileParser.html#t:Config)
+
+type [Sections](Config-ConfigFileParser.html#t:Sections)
+
+type [Section](Config-ConfigFileParser.html#t:Section)

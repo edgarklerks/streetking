@@ -1,0 +1,13 @@
+% Data.Environment
+% 
+% 
+
+Data.Environment
+
+data [Environment](Data-Environment.html#t:Environment)
+
+[defaultEnvironment](Data-Environment.html#v:defaultEnvironment)
+
+[rho](Data-Environment.html#v:rho)
+
+[environment](Data-Environment.html#v:environment)

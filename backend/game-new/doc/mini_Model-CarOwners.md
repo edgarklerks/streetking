@@ -1,0 +1,13 @@
+% Model.CarOwners
+% 
+% 
+
+Model.CarOwners
+
+type [MString](Model-CarOwners.html#t:MString)
+
+data [CarOwners](Model-CarOwners.html#t:CarOwners)
+
+[relation](Model-CarOwners.html#v:relation)
+
+[schema](Model-CarOwners.html#v:schema)

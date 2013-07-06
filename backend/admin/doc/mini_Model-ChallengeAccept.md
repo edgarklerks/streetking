@@ -1,0 +1,11 @@
+% Model.ChallengeAccept
+% 
+% 
+
+Model.ChallengeAccept
+
+data [ChallengeAccept](Model-ChallengeAccept.html#t:ChallengeAccept)
+
+[relation](Model-ChallengeAccept.html#v:relation)
+
+[schema](Model-ChallengeAccept.html#v:schema)

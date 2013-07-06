@@ -1,0 +1,13 @@
+% Model.Part
+% 
+% 
+
+Model.Part
+
+type [MInteger](Model-Part.html#t:MInteger)
+
+data [Part](Model-Part.html#t:Part)
+
+[relation](Model-Part.html#v:relation)
+
+[schema](Model-Part.html#v:schema)

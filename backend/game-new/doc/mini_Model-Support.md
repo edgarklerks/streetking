@@ -1,0 +1,13 @@
+% Model.Support
+% 
+% 
+
+Model.Support
+
+type [AAS](Model-Support.html#t:AAS)
+
+data [Support](Model-Support.html#t:Support)
+
+[relation](Model-Support.html#v:relation)
+
+[schema](Model-Support.html#v:schema)
