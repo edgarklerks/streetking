@@ -1,0 +1,135 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.GarageReport
+
+h1. Documentation
+
+type MInteger = Maybe Integer
+
+type MString = Maybe String
+
+type MBool = Maybe Bool
+
+data GarageReport
+
+Constructors
+
+GarageReport
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>account&#95;id :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>time :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>report&#95;type&#95;id :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>report&#95;descriptor :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>personnel&#95;instance&#95;id :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>part&#95;instance&#95;id :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>personnel&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>name :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>country&#95;name :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>country&#95;shortname :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>gender :: "MBool":Model-GarageReport.html#t:MBool</dt>
+<dd> </dd>
+<dt>picture :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>salary :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>skill&#95;repair :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>skill&#95;engineering :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>training&#95;cost&#95;repair :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>training&#95;cost&#95;engineering :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>paid&#95;until :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>part&#95;type :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>weight :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter1 :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter1&#95;unit :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter1&#95;name :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter2 :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter2&#95;unit :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter2&#95;name :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter3 :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter3&#95;unit :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>parameter3&#95;name :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>level :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>price :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>car&#95;model :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>manufacturer&#95;name :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>part&#95;modifier :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>unique :: "MBool":Model-GarageReport.html#t:MBool</dt>
+<dd> </dd>
+<dt>improvement :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>improvement&#95;change :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>wear :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>wear&#95;change :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+<dt>task :: "MString":Model-GarageReport.html#t:MString</dt>
+<dd> </dd>
+<dt>part&#95;id :: "MInteger":Model-GarageReport.html#t:MInteger</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "GarageReport":Model-GarageReport.html#t:GarageReport| |
+|Show "GarageReport":Model-GarageReport.html#t:GarageReport| |
+|ToJSON "GarageReport":Model-GarageReport.html#t:GarageReport| |
+|FromJSON "GarageReport":Model-GarageReport.html#t:GarageReport| |
+|Default "GarageReport":Model-GarageReport.html#t:GarageReport| |
+|"FromInRule":Data-InRules.html#t:FromInRule "GarageReport":Model-GarageReport.html#t:GarageReport| |
+|"ToInRule":Data-InRules.html#t:ToInRule "GarageReport":Model-GarageReport.html#t:GarageReport| |
+|"Mapable":Model-General.html#t:Mapable "GarageReport":Model-GarageReport.html#t:GarageReport| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "GarageReport":Model-GarageReport.html#t:GarageReport| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

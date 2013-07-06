@@ -1,0 +1,79 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.TournamentExtended
+
+h1. Documentation
+
+type MRaceReward = Maybe "RaceRewards":Data-RaceReward.html#t:RaceRewards
+
+type MInteger = Maybe Integer
+
+data TournamentExtended
+
+Constructors
+
+TournamentExtended
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>car&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>start&#95;time :: "MInteger":Model-TournamentExtended.html#t:MInteger</dt>
+<dd> </dd>
+<dt>costs :: Integer</dt>
+<dd> </dd>
+<dt>minlevel :: Integer</dt>
+<dd> </dd>
+<dt>maxlevel :: Integer</dt>
+<dd> </dd>
+<dt>rewards :: "MRaceReward":Model-TournamentExtended.html#t:MRaceReward</dt>
+<dd> </dd>
+<dt>track&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>players :: Integer</dt>
+<dd> </dd>
+<dt>name :: String</dt>
+<dd> </dd>
+<dt>current&#95;players :: Integer</dt>
+<dd> </dd>
+<dt>done :: Bool</dt>
+<dd> </dd>
+<dt>running :: Bool</dt>
+<dd> </dd>
+<dt>tournament&#95;type&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>tournament&#95;type :: String</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+|Show "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+|ToJSON "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+|FromJSON "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+|Default "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+|"FromInRule":Data-InRules.html#t:FromInRule "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+|"ToInRule":Data-InRules.html#t:ToInRule "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+|"Mapable":Model-General.html#t:Mapable "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TournamentExtended":Model-TournamentExtended.html#t:TournamentExtended| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

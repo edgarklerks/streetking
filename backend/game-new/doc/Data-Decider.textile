@@ -1,0 +1,173 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+Safe-Infered
+
+Data.Decider
+
+Description
+
+This let the user build a regular expression engine, which also works with permutations of the expression.
+
+Synopsis
+
+<ul>
+<li>data "Expr":#t:Expr g a where
+<ul>
+<li>"Any":#v:Any :: ["Expr":Data-Decider.html#t:Expr g a] -&gt; "Expr":Data-Decider.html#t:Expr g a</li>
+<li>"All":#v:All :: ["Expr":Data-Decider.html#t:Expr g a] -&gt; "Expr":Data-Decider.html#t:Expr g a</li>
+<li>"FromTo":#v:FromTo :: Integer -&gt; Integer -&gt; "Expr":Data-Decider.html#t:Expr g a -&gt; "Expr":Data-Decider.html#t:Expr g a</li>
+<li>"One":#v:One :: a -&gt; "Expr":Data-Decider.html#t:Expr g a</li>
+<li>"From":#v:From :: Integer -&gt; "Expr":Data-Decider.html#t:Expr g a -&gt; "Expr":Data-Decider.html#t:Expr g a</li>
+<li>"To":#v:To :: Integer -&gt; "Expr":Data-Decider.html#t:Expr g a -&gt; "Expr":Data-Decider.html#t:Expr g a</li>
+</ul>
+</li>
+<li>data a ":+:":#t::-43-: b</li>
+<li>data "M":#t:M</li>
+<li>data "D":#t:D</li>
+<li>data "O":#t:O</li>
+<li>class "Evaluate":#t:Evaluate a b where
+<ul>
+<li>"match":#v:match :: a -&gt; b -&gt; Bool</li>
+</ul>
+</li>
+<li>"simpleRule":#v:simpleRule :: Num a =&gt; "Expr":Data-Decider.html#t:Expr g a</li>
+<li>"simpleRule2":#v:simpleRule2 :: Num a =&gt; "Expr":Data-Decider.html#t:Expr g a</li>
+<li>"toOne":#v:toOne :: "Expr":Data-Decider.html#t:Expr g a -&gt; Maybe a</li>
+<li>"equalDecider":#v:equalDecider :: Eq b =&gt; "Expr":Data-Decider.html#t:Expr g b -&gt; "Decider":Data-Decider.html#t:Decider b</li>
+<li>newtype "Decider":#t:Decider a = "Decider":#v:Decider {
+<ul>
+<li>"runDecider":#v:runDecider :: [a] -&gt; ([a], Bool)</li>
+</ul>
+
+}</li>
+<li>"buildDecider":#v:buildDecider :: (a -&gt; b -&gt; Bool) -&gt; "Expr":Data-Decider.html#t:Expr g b -&gt; "Decider":Data-Decider.html#t:Decider a</li>
+<li>"member":#v:member :: (a -&gt; b -&gt; Bool) -&gt; b -&gt; [a] -&gt; ([a], Bool)</li>
+<li>"accept":#v:accept :: (a -&gt; b -&gt; Bool) -&gt; b -&gt; [a] -&gt; Bool</li>
+<li>newtype "Machine":#t:Machine a b = "Machine":#v:Machine {
+<ul>
+<li>"runMachine":#v:runMachine :: [a] -&gt; ([b], Bool)</li>
+</ul>
+
+}</li>
+<li>"(.-)":#v:.-45- :: "Machine":Data-Decider.html#t:Machine a a1 -&gt; "Machine":Data-Decider.html#t:Machine a1 b -&gt; "Machine":Data-Decider.html#t:Machine a b</li>
+</ul>
+
+h1. Documentation
+
+data Expr g a where
+
+Expression language for a decider
+
+Constructors
+
+
+|Any :: ["Expr":Data-Decider.html#t:Expr g a] -&gt; "Expr":Data-Decider.html#t:Expr g a| |
+|All :: ["Expr":Data-Decider.html#t:Expr g a] -&gt; "Expr":Data-Decider.html#t:Expr g a| |
+|FromTo :: Integer -&gt; Integer -&gt; "Expr":Data-Decider.html#t:Expr g a -&gt; "Expr":Data-Decider.html#t:Expr g a| |
+|One :: a -&gt; "Expr":Data-Decider.html#t:Expr g a| |
+|From :: Integer -&gt; "Expr":Data-Decider.html#t:Expr g a -&gt; "Expr":Data-Decider.html#t:Expr g a| |
+|To :: Integer -&gt; "Expr":Data-Decider.html#t:Expr g a -&gt; "Expr":Data-Decider.html#t:Expr g a| |
+
+
+Instances
+
+
+|Show a =&gt; Show ("Expr":Data-Decider.html#t:Expr g a)| |
+
+
+data a :+: b
+
+Not used at the moment. These should change the &#124; behavior of the matcher
+
+data M
+
+data D
+
+data O
+
+class Evaluate a b where
+
+Methods
+
+match :: a -&gt; b -&gt; Bool
+
+Instances
+
+"Evaluate":Data-Decider.html#t:Evaluate "Event":Data-Event.html#t:Event "Symbol":Data-Event.html#t:Symbol
+
+Matcher for tournament types
+
+simpleRule :: Num a =&gt; "Expr":Data-Decider.html#t:Expr g a
+
+simpleRule2 :: Num a =&gt; "Expr":Data-Decider.html#t:Expr g a
+
+toOne :: "Expr":Data-Decider.html#t:Expr g a -&gt; Maybe a
+
+equalDecider :: Eq b =&gt; "Expr":Data-Decider.html#t:Expr g b -&gt; "Decider":Data-Decider.html#t:Decider b
+
+Every expression gives rise to function
+
+newtype Decider a
+
+The underlying arrow is Machine a b = [a] -&gt; ([b], Bool) deltaStream = xs - ys
+
+Constructors
+
+Decider
+
+ 
+
+Fields
+
+<dl>
+<dt>runDecider :: [a] -&gt; ([a], Bool)</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+Monoid ("Decider":Data-Decider.html#t:Decider a)
+
+A decider is a monoid, we can add several machines together
+
+buildDecider :: (a -&gt; b -&gt; Bool) -&gt; "Expr":Data-Decider.html#t:Expr g b -&gt; "Decider":Data-Decider.html#t:Decider a
+
+Builds a decider from an expression
+
+member :: (a -&gt; b -&gt; Bool) -&gt; b -&gt; [a] -&gt; ([a], Bool)
+
+The most primitive building block. This is satisfy, when you build &#124; a parser. We use member, because we need to allow all permutations
+
+accept :: (a -&gt; b -&gt; Bool) -&gt; b -&gt; [a] -&gt; Bool
+
+newtype Machine a b
+
+underline machine is actually very boring.
+
+Constructors
+
+Machine
+
+ 
+
+Fields
+
+<dl>
+<dt>runMachine :: [a] -&gt; ([b], Bool)</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Category "Machine":Data-Decider.html#t:Machine| |
+
+
+(.-) :: "Machine":Data-Decider.html#t:Machine a a1 -&gt; "Machine":Data-Decider.html#t:Machine a1 b -&gt; "Machine":Data-Decider.html#t:Machine a b
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

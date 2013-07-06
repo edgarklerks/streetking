@@ -1,0 +1,46 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Section
+
+h1. Documentation
+
+data Section
+
+Constructors
+
+Section
+
+ 
+
+Fields
+
+<dl>
+<dt>section&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>radius :: Maybe Double</dt>
+<dd> </dd>
+<dt>arclength :: Double</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "Section":Data-Section.html#t:Section| |
+|Show "Section":Data-Section.html#t:Section| |
+
+
+angle :: "Section":Data-Section.html#t:Section -&gt; Maybe Double
+
+perturb :: Double -&gt; "Section":Data-Section.html#t:Section -&gt; "Section":Data-Section.html#t:Section
+
+trackDetailsSection :: "TrackDetails":Model-TrackDetails.html#t:TrackDetails -&gt; "Section":Data-Section.html#t:Section
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

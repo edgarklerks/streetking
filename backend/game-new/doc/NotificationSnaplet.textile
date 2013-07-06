@@ -1,0 +1,46 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+NotificationSnaplet
+
+h1. Documentation
+
+sendLetter :: (MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig), MonadState "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig (m b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig), MonadSnaplet m, MonadSnap (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig)) =&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; m b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig "Letter":Data-Notifications.html#t:Letter
+
+checkMailBox :: (MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig), MonadState "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig (m b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig), MonadSnaplet m, MonadSnap (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig)) =&gt; "UserId":Data-Notifications.html#t:UserId -&gt; m b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig "Letters":Data-Notifications.html#t:Letters
+
+setArchive :: (MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig), MonadState "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig (m b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig), MonadSnaplet m, MonadSnap (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig)) =&gt; "UserId":Data-Notifications.html#t:UserId -&gt; Integer -&gt; m b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig ()
+
+setRead :: (MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig), MonadState "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig (m b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig), MonadSnaplet m, MonadSnap (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig)) =&gt; "UserId":Data-Notifications.html#t:UserId -&gt; Integer -&gt; m b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig ()
+
+initNotificationSnaplet :: Snaplet "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig -&gt; Maybe (MVar "PostOffice":Data-Notifications.html#t:PostOffice) -&gt; SnapletInit b "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig
+
+data NotificationConfig
+
+data NotificationError
+
+Constructors
+
+
+|NE ByteString| |
+
+
+Instances
+
+
+|Show "NotificationError":NotificationSnaplet.html#t:NotificationError| |
+|Typeable "NotificationError":NotificationSnaplet.html#t:NotificationError| |
+|Exception "NotificationError":NotificationSnaplet.html#t:NotificationError| |
+
+
+getPostOffice :: MonadState "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig m =&gt; m "PostOffice":Data-Notifications.html#t:PostOffice
+
+&#95;po :: "NotificationConfig":NotificationSnaplet.html#t:NotificationConfig -&gt; "PostOffice":Data-Notifications.html#t:PostOffice
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

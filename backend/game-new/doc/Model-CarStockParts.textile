@@ -1,0 +1,77 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.CarStockParts
+
+h1. Documentation
+
+type MInteger = Maybe Integer
+
+data CarStockPart
+
+Constructors
+
+CarStockPart
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>part&#95;type&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>weight :: Integer</dt>
+<dd> </dd>
+<dt>parameter1 :: "MInteger":Model-CarStockParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter2 :: "MInteger":Model-CarStockParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter3 :: "MInteger":Model-CarStockParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter1&#95;type&#95;id :: "MInteger":Model-CarStockParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter2&#95;type&#95;id :: "MInteger":Model-CarStockParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>parameter3&#95;type&#95;id :: "MInteger":Model-CarStockParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>car&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>d3d&#95;model&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>level :: Integer</dt>
+<dd> </dd>
+<dt>price :: Integer</dt>
+<dd> </dd>
+<dt>part&#95;modifier&#95;id :: "MInteger":Model-CarStockParts.html#t:MInteger</dt>
+<dd> </dd>
+<dt>unique :: Bool</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+|Show "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+|ToJSON "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+|FromJSON "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+|Default "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+|"FromInRule":Data-InRules.html#t:FromInRule "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+|"ToInRule":Data-InRules.html#t:ToInRule "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+|"Mapable":Model-General.html#t:Mapable "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "CarStockPart":Model-CarStockParts.html#t:CarStockPart| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

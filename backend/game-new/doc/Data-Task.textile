@@ -1,0 +1,99 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Task
+
+h1. Documentation
+
+init :: IO ()
+
+registerHandler :: ("Task":Model-Task.html#t:Task -&gt; Bool) -&gt; ("Task":Model-Task.html#t:Task -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Bool) -&gt; IO ()
+
+run :: "Trigger":Data-Task.html#t:Trigger -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+runAll :: "Trigger":Data-Task.html#t:Trigger -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+executeTask :: "Task":Model-Task.html#t:Task -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Bool
+
+task :: ToJSON a =&gt; a -&gt; Integer -&gt; "Data":Data-DataPack.html#t:Data -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Integer
+
+trigger :: "Trigger":Data-Task.html#t:Trigger -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Integer
+
+data Action
+
+Constructors
+
+
+|TrackTime| |
+|GiveRespect| |
+|GiveMoney| |
+|GiveCar| |
+|GivePart| |
+|TransferMoney| |
+|TransferCar| |
+|EscrowCancel| |
+|EscrowRelease| |
+|EmitEvent| |
+|MutabilizeCar| |
+
+
+Instances
+
+
+|Enum "Action":Data-Task.html#t:Action| |
+|Eq "Action":Data-Task.html#t:Action| |
+|Show "Action":Data-Task.html#t:Action| |
+|ToJSON "Action":Data-Task.html#t:Action| |
+|FromJSON "Action":Data-Task.html#t:Action| |
+
+
+data Trigger
+
+Constructors
+
+
+|Track| |
+|User| |
+|Car| |
+|Part| |
+|Cron| |
+|Test| |
+
+
+Instances
+
+
+|Enum "Trigger":Data-Task.html#t:Trigger| |
+|Eq "Trigger":Data-Task.html#t:Trigger| |
+|Show "Trigger":Data-Task.html#t:Trigger| |
+|ToJSON "Trigger":Data-Task.html#t:Trigger| |
+|FromJSON "Trigger":Data-Task.html#t:Trigger| |
+
+
+trackTime :: Integer -&gt; Integer -&gt; Integer -&gt; Double -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+emitEvent :: Integer -&gt; "Event":Data-Event.html#t:Event -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+giveMoney :: Integer -&gt; Integer -&gt; Integer -&gt; String -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+transferMoney :: Integer -&gt; Integer -&gt; Integer -&gt; Integer -&gt; String -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+giveCar :: Integer -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+transferCar :: Integer -&gt; Integer -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+givePart :: Integer -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+giveRespect :: Integer -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+escrowCancel :: Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+escrowRelease :: Integer -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

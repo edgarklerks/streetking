@@ -1,0 +1,85 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.TrackMaster
+
+h1. Documentation
+
+data TrackMaster
+
+Constructors
+
+TrackMaster
+
+ 
+
+Fields
+
+<dl>
+<dt>track&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>track&#95;name :: String</dt>
+<dd> </dd>
+<dt>track&#95;data :: String</dt>
+<dd> </dd>
+<dt>track&#95;level :: Integer</dt>
+<dd> </dd>
+<dt>city&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>city&#95;name :: String</dt>
+<dd> </dd>
+<dt>city&#95;data :: String</dt>
+<dd> </dd>
+<dt>continent&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>continent&#95;name :: String</dt>
+<dd> </dd>
+<dt>continent&#95;data :: String</dt>
+<dd> </dd>
+<dt>length :: Double</dt>
+<dd> </dd>
+<dt>energy&#95;cost :: Integer</dt>
+<dd> </dd>
+<dt>top&#95;time&#95;exists :: Bool</dt>
+<dd> </dd>
+<dt>top&#95;time :: Double</dt>
+<dd> </dd>
+<dt>top&#95;time&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>top&#95;time&#95;account&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>top&#95;time&#95;name :: String</dt>
+<dd> </dd>
+<dt>top&#95;time&#95;picture&#95;small :: String</dt>
+<dd> </dd>
+<dt>top&#95;time&#95;picture&#95;medium :: String</dt>
+<dd> </dd>
+<dt>top&#95;time&#95;picture&#95;large :: String</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|Show "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|ToJSON "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|FromJSON "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|Default "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|"FromInRule":Data-InRules.html#t:FromInRule "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|"ToInRule":Data-InRules.html#t:ToInRule "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|"Mapable":Model-General.html#t:Mapable "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0
