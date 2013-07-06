@@ -1,9 +1,0 @@
-Data.RaceParticipant
-
-data "RaceParticipant":Data-RaceParticipant.html#t:RaceParticipant
-
-"mkRaceParticipant":Data-RaceParticipant.html#v:mkRaceParticipant
-
-"rp&#95;account&#95;id":Data-RaceParticipant.html#v:rp_account_id
-
-"rp&#95;car&#95;id":Data-RaceParticipant.html#v:rp_car_id
