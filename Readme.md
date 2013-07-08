@@ -94,6 +94,8 @@ Document your code with haddock. This is easy to do:
 
 You can regenerate the documentation by running perl gen-doc.pl
 
+The generated restructed text sucks balls, but stupid bitbucket cannot show html. The html is fine.
+
 Profiling
 =========
 
