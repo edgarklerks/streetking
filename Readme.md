@@ -108,3 +108,27 @@ Snaplets
 
 Snaplets are little server components, which are easily plugged in. If you have some general functionality 
 wrap it in a snaplet. 
+
+
+Bugs and features missing
+========================
+
+Demo, fix bugs. 
+
+Bugs
+=====
+
+Race calculation, if a car has a current speed, which is too high for the next section, the current section is *expanded*. 
+Looking into the algorithms. 
+
+Car locking, sometimes car is not unlocked sometimes. 
+
+
+Features
+========
+
+Missions, 
+We need a resource for mission descriptions and mission rewards. 
+This should also resource to create missions by level etc. 
+A mission is itself an action. 
+
