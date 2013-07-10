@@ -129,6 +129,8 @@ If somebody has broken car, tournament will never finish. We need to have a time
 
 If car/part is sold, car is gone, and the image server doesn't keep a image. The reports and images should syncronised. 
 
+P2P bug should be filtered out. 
+
 
 Features
 ========
@@ -141,6 +143,11 @@ A mission is itself an action.
 Pay salaries,
 Payment of salaries should be setup. 
 
+Regular tournament. Instead of 1 versus 1, everybody against everbody onto multiple tracks. Then extract winner from that.
+
 Car challenge, you can bet your car. 
 
 Remove a a part or a car from market if nobody buys. It should create a return report. 
+
+Diamonds,
+using: repairing car, repairing part, improving part, improving car, finish race immediately, buy some stuff. 
