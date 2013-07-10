@@ -121,7 +121,13 @@ Bugs
 Race calculation, if a car has a current speed, which is too high for the next section, the current section is *expanded*. 
 Looking into the algorithms. 
 
-Car locking, sometimes car is not unlocked sometimes. 
+Car locking, sometimes car is not unlocked. 
+
+Tournament/Race can be seen into another city where it is created. You cannot accept, it should not be visible. 
+
+If somebody has broken car, tournament will never finish. We need to have a time limit, which disqualifies the player. 
+
+If car/part is sold, car is gone, and the image server doesn't keep a image. The reports and images should syncronised. 
 
 
 Features
@@ -132,3 +138,9 @@ We need a resource for mission descriptions and mission rewards.
 This should also resource to create missions by level etc. 
 A mission is itself an action. 
 
+Pay salaries,
+Payment of salaries should be setup. 
+
+Car challenge, you can bet your car. 
+
+Remove a a part or a car from market if nobody buys. It should create a return report. 
