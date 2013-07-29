@@ -73,7 +73,7 @@ genTable = let ops = [("&&", (&&)), ("||", (||)), ("xor", xor), ("-->", (-->)), 
                expand n (' ':xs) = replicate (10 - n) ' '  ++ expand 0 xs  
                expand n (x:xs) = x : expand (n + 1) xs 
                expand _ [] = [] 
-           in forM_ b (putStrLn . (expand 0))
+           in forM_ b (putStrLn . expand 0)
 
 internalError = CIO.throw . UE 
 
@@ -85,13 +85,12 @@ handleUpload pred subpath = do
                 b <- pred  
                 when (isNil b) $ internalError "Not allowed by predicate"
                 let past x z = (x:z) 
-                let fp_new b = foldr past [] b 
+                let fp_new  = foldr past [] 
                 let fp_new' = case fp_new b of 
                                     [x] -> x 
                                     (x:xs) -> foldl' (\z x -> z ++ "_" ++ x) x xs 
 
-                with img $ I.uploadImage (\x -> internalError x) (\sd fp mt -> liftIO $ do 
-                                                    step sd fp (fp_new') subpath mt)
+                with img $ I.uploadImage internalError (\sd fp mt -> liftIO $ step sd fp fp_new' subpath mt)
     where step sd fp fp_new sp mt | "image/png" `isPrefixOf` mt = renameFile fp (joinPath [sd, sp, addExtension fp_new ".png"])
                         | "image/jpg" `isPrefixOf` mt || "image/jpeg" `isPrefixOf` mt =  renameFile fp (joinPath [sd, sp, addExtension fp_new ".jpeg"])
                         | otherwise = internalError ("not allowed by mimetype: " ++ mt)
@@ -129,7 +128,7 @@ failImage = do
                             p <- getServDir
                             case xs of 
                                 Just rs -> redirect ("/image/dump/" <> rs)
-                                Nothing -> redirect ("/image/dump/notfound.jpeg") 
+                                Nothing -> redirect "/image/dump/notfound.jpeg" 
 
 
 enroute x = do 
@@ -137,7 +136,7 @@ enroute x = do
         g <- rqMethod <$> getRequest 
         case g of 
             OPTIONS -> allowAll 
-            otherwise -> allowAll *> CIO.catch x (\(UE e) -> do
+            otherwise -> allowAll *> CIO.catch x (\(UE e) -> 
                                 writeLBS (encode $ S.fromList [("error" :: String,  e)]))
 --
 
@@ -154,36 +153,36 @@ deleteFile = do
             let nm = takeBaseName s 
             let ext = takeExtension s
             let fs = joinPath [dir, addExtension nm ext]
-            p <- with img $ getServDir
+            p <- with img getServDir
             let fp = joinPath [p, "quarantine"]
             let path = joinPath [p, fs]
             let replace b s (x:xs) | b == x = s : replace b s xs 
                                    | otherwise = x : replace b s xs 
                 replace b s [] = [] 
-            let ps = (joinPath [fp, replace '/' '-' fs])
+            let ps = joinPath [fp, replace '/' '-' fs]
  
             b <- liftIO $ fileExist path  
-            when b $ do 
-                   liftIO $ renameFile path ps  
-            when (not b) $ internalError "file does not exists" 
+            when b $ liftIO $ renameFile path ps  
+            unless b $ internalError "file does not exists" 
             writeLBS (encode $ S.fromList [("result" :: String, ps)])
 
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = fmap (second enroute) $ [ 
+routes = fmap (second enroute)  [ 
            ("/upload/parts", handleUpload partModel  "parts")
          , ("/upload/car", handleUpload carModel "car")
          , ("/upload/dump", handleUpload fileName "dump")
          , ("/upload/track", handleUpload trackId "track")
          , ("/upload/tournament", handleUpload tournamentId "tournament") 
-         , ("/user/car", handleUpload (carInstance) "user_car")
-         , ("/user/parts", handleUpload (partInstance) "user_parts")
-         , ("/user/image", handleUpload (userExist) "user_image")
+         , ("/user/car", handleUpload carInstance "user_car")
+         , ("/user/parts", handleUpload partInstance "user_parts")
+         , ("/user/image", handleUpload userExist "user_image")
          , ("/crossdomain.xml", crossDomain)
          , ("/delete", deleteFile)
          , ("/image/user_car/:image", serveCar)
          , ("/image/:dir/:image", serveImage) 
          , ("/image/listing/:dir", dumpListing)
+         , ("/3dmodels", serveDirectory "3dmodels")
          , ("/", internalError "not allowed top")
         ]
 
