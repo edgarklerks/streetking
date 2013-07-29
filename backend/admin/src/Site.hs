@@ -125,7 +125,7 @@ writeSVG s = writeAeson $ S.fromList  [("result" :: String, unlines $ drop 4 $ l
 ------------------------------------------------------------------------------
 -- | The application's routes.
 routes :: [(ByteString, Handler App App ())]
-routes = fmap (second enroute) $ [ 
+routes = fmap (second enroute)  [ 
           ("/account_garage/get", getModel (def :: AG.AccountGarage))
          , ("/car_model/get", getModel (def :: C.Car)) 
          , ("/car_model/put", putModel (def :: C.Car))
@@ -206,7 +206,7 @@ routes = fmap (second enroute) $ [
 loadTemplate :: Application ()
 loadTemplate = do 
         name <- getOParam "name"
-        let pth =  ("resources/static/" ++ C.unpack name ++ ".tpl")
+        let pth =  "resources/static/" ++ C.unpack name ++ ".tpl"
         let dirs = splitDirectories pth
         if ".." `elem` dirs 
             then internalError "hi my friend, we are using snap 0.9 "
