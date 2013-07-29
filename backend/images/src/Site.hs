@@ -10,7 +10,7 @@ module Site
 
 ------------------------------------------------------------------------------
 import           Control.Applicative
-import           Control.Monad hiding (when, forM_)
+import           Control.Monad hiding (when, forM_, unless)
 import           Data.ByteString (ByteString)
 import           Data.Database hiding (sql, Delete)
 import           Data.Maybe
@@ -27,7 +27,7 @@ import qualified SqlTransactionSnaplet as S (runDb)
 import          SqlTransactionSnaplet hiding (runDb)
 import qualified ImageSnapLet as I (uploadImage, serveImage)
 import           ImageSnapLet hiding (uploadImage, serveImage)
-import          Control.Monad.State hiding (when,forM_) 
+import          Control.Monad.State hiding (when,forM_, unless) 
 import          Control.Arrow hiding (app)
 import          Data.Monoid 
 import          Control.Monad.Trans
