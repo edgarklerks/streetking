@@ -37,7 +37,7 @@ Executable images
     HDBC-postgresql,
     HDBC,
     array,
-    stm,
+    stm >= 2.4,
     pointed,
     regex-tdfa,
     unordered-containers,
