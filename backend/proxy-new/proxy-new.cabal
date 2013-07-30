@@ -23,8 +23,12 @@ Executable proxy-new
     base >= 4 && < 5,
     bytestring >= 0.9.1,
     lens, 
+    boxes,
     conduit,
+    base64-bytestring,
+    attoparsec,
     http-conduit,
+    data-object,
     heist >= 0.8,
     MonadCatchIO-transformers >= 0.2.1 && < 0.4,
     mtl >= 2 && < 3,
@@ -68,6 +72,7 @@ Executable proxy-new
     haskell-src,
     aeson,
     lens-family-core,
+    quicklz,
     QuickCheck,
     http-conduit
 --    http-enumerator
