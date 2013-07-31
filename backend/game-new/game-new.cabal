@@ -71,7 +71,6 @@ Executable game-new
     attoparsec,
     data-object,
     MonadRandom,
-    hslua,
     filepath,
     cryptohash,
     entropy,
