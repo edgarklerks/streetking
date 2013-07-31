@@ -350,7 +350,9 @@ marketAllowedParts = do
     p <- runDb $ do 
             x <- fromJust <$> load uid :: SqlTransaction Connection A.Account 
     	    n <- (search ["menu_type" |== (toSql ("market_tabs" :: String)) .&& "module" |== (toSql ("parts" :: String)) ] [Order ("number", []) True] 1000 0) :: SqlTransaction Connection [MM.MenuModel] 
+            liftIO $ print n 
 	    xs <- forM n $ \p -> do 
+                   liftIO $ print p 
 		           (search ["car_id" |== (toSql $ MPT.car_id d) .&& "level" |<= (toSql $ A.level x) .&& "name" |== (toSql $ MM.label p)] [Order ("sort_part_type",[]) True] 1000 0) :: SqlTransaction Connection [MPT.MarketPartType]
 	    return (concat xs)
     writeResult (AS.toJSON $ MM.mkTabs "PARTS" (fmap MPT.name p))
