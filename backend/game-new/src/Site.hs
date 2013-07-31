@@ -62,9 +62,6 @@ import           Data.Track
 import           Database.HDBC (toSql, fromSql)
 import           Debug.Trace
 import           GHC.Exception (SomeException)
-import           Lua.Instances
-import           Lua.Monad
-import           Lua.Prim
 import           Model.General (Mapable(..), Default(..), Database(..), aload, adeny, aget, agetlist)
 import           Model.Transaction (transactionMoney)
 import           NodeSnapletTest 
@@ -396,6 +393,7 @@ marketBuy = do
                 
     writeResult ("You bought part"  :: String)
 
+{--
 evalLua x xs = do 
             p <- rl 
             case p of 
@@ -405,6 +403,7 @@ evalLua x xs = do
                         forM_ xs (uncurry saveLuaValue)
                         eval x
                         peekGlobal "res"
+            --}
 
 -- Second hand shop 
 marketSell :: Application ()
@@ -413,9 +412,11 @@ marketSell = do
             xs <- getJson >>= scheck ["price", "part_instance_id"]
             let d = updateHashMap xs (def :: MI.MarketItem)
             prg <- loadConfig "market_fee"
-            x <- evalLua prg [
+            let x = min 100 $ (fromIntegral (MI.price d) * 0.10)
+{--            x <- evalLua prg [
                           ("price", LuaNum (fromIntegral $ MI.price d))
                           ]
+                          --}
             -- -5.6 -> -5
             -- floor -5.6 -> -6
             -- ceil -5.6 -> -5
@@ -566,10 +567,13 @@ carSell = do
     xs <- getJson >>= scheck ["car_instance_id", "price"]
     let d = updateHashMap xs (def :: MI.MarketItem)
     prg <- loadConfig "market_fee"
+
+    let fee = min 100 $ (fromIntegral (MI.price d) * 0.10)
+        {-- 
     fee <- evalLua prg [
             ("price", LuaNum (fromIntegral $ MI.price d))
             ]
- 
+ --}
     p uid d (fee :: Double)
     writeResult ("You car is in the market place" :: String)
  where p uid d (fromIntegral . floor -> fee) = runDb $ do
