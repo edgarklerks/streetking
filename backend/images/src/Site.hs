@@ -100,9 +100,10 @@ handleUpload pred subpath = do
 serveImage = with img $ I.serveImage (const failImage) $ do 
                 image <- fromJust <$> getParam "image"
                 dir <- fromJust <$> getParam "dir"  
-
-                let b = joinPath [takeBaseName (B.unpack dir), addExtension (takeBaseName (B.unpack image)) (takeExtension $ B.unpack image)]
-                return b 
+                prefix <- getParam "prefix"
+                case prefix of
+                    Nothing -> return $ joinPath [takeBaseName (B.unpack dir), addExtension (takeBaseName (B.unpack image)) (takeExtension $ B.unpack image)] 
+                    Just pref -> return $ joinPath [takeBaseName (B.unpack dir), addExtension (B.unpack pref ++ "_" ++ takeBaseName (B.unpack image)) (takeExtension $ B.unpack image)] 
 
 
 
@@ -180,6 +181,7 @@ routes = fmap (second enroute)  [
          , ("/crossdomain.xml", crossDomain)
          , ("/delete", deleteFile)
          , ("/image/user_car/:image", serveCar)
+         , ("/image/:dir/:prefix/:image", serveImage) 
          , ("/image/:dir/:image", serveImage) 
          , ("/image/listing/:dir", dumpListing)
          , ("/3dmodels", serveDirectory "3dmodels")
