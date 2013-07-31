@@ -14,14 +14,14 @@ type Args = [Arg]
 type Ret = Name 
 type FName = String 
 type Definition = String 
-type Arity = Int 
+type FArity = Int 
 
 data FType = Row | Scalar 
     deriving Show
 data Function = F FType FName Args Ret 
     deriving Show
 
-data SqlFunction = SF FName FType Arity Args Definition Ret 
+data SqlFunction = SF FName FType FArity Args Definition Ret 
     deriving Show 
 
 
