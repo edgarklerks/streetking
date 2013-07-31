@@ -352,7 +352,10 @@ marketAllowedParts = do
     let d = updateHashMap xs (def :: MPT.MarketPartType)
     p <- runDb $ do 
             x <- fromJust <$> load uid :: SqlTransaction Connection A.Account 
-            (search ["car_id" |== (toSql $ MPT.car_id d) .&& "level" |<= (toSql $ A.level x)] [Order ("sort_part_type",[]) True] 1000 0) :: SqlTransaction Connection [MPT.MarketPartType]
+    	    n <- (search ["menu_type" |== (toSql ("market_tabs" :: String)) .&& "module" |== (toSql ("parts" :: String)) ] [Order ("number", []) True] 1000 0) :: SqlTransaction Connection [MM.MenuModel] 
+	    xs <- forM n $ \p -> do 
+		           (search ["car_id" |== (toSql $ MPT.car_id d) .&& "level" |<= (toSql $ A.level x) .&& "name" |== (toSql $ MM.label p)] [Order ("sort_part_type",[]) True] 1000 0) :: SqlTransaction Connection [MPT.MarketPartType]
+	    return (concat xs)
     writeResult (AS.toJSON $ MM.mkTabs "PARTS" (fmap MPT.name p))
 
 marketBuy :: Application ()
