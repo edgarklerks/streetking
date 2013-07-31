@@ -1,0 +1,843 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >ProtoExtended</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_ProtoExtended.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>ProtoExtended</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Proto" class="def"
+	    >Proto</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:TTLReq" class="def"
+		  >TTLReq</a
+		  > <a href="ProtoExtended.html#t:TTL"
+		  >TTL</a
+		  > <a href="Data-MemTimeState.html#t:Query"
+		  >Query</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Version" class="def"
+		  >Version</a
+		  > Int <a href="ProtoExtended.html#t:Proto"
+		  >Proto</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Route" class="def"
+		  >Route</a
+		  > <a href="ProtoExtended.html#t:NodeAddr"
+		  >NodeAddr</a
+		  > <a href="ProtoExtended.html#t:Proto"
+		  >Proto</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:NodeList" class="def"
+		  >NodeList</a
+		  > [<a href="ProtoExtended.html#t:NodeAddr"
+		  >NodeAddr</a
+		  >]</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Advertisement" class="def"
+		  >Advertisement</a
+		  > <a href="ProtoExtended.html#t:NodeAddr"
+		  >NodeAddr</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Error" class="def"
+		  >Error</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Sync" class="def"
+		  >Sync</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:StartSync" class="def"
+		  >StartSync</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:DumpInfo" class="def"
+		  >DumpInfo</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Result" class="def"
+		  >Result</a
+		  > <a href="Data-MemTimeState.html#t:Result"
+		  >Result</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Proto" class="caption collapser" onclick="toggleSection('i:Proto')"
+	    >Instances</p
+	    ><div id="section.i:Proto" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="ProtoExtended.html#t:Proto"
+		    >Proto</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="ProtoExtended.html#t:Proto"
+		    >Proto</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Arbitrary <a href="ProtoExtended.html#t:Proto"
+		    >Proto</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Serialize <a href="ProtoExtended.html#t:Proto"
+		    >Proto</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getResult" class="def"
+	    >getResult</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Maybe <a href="Data-MemTimeState.html#t:Result"
+	    >Result</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getQuery" class="def"
+	    >getQuery</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Maybe <a href="Data-MemTimeState.html#t:Query"
+	    >Query</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getCommand" class="def"
+	    >getCommand</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Maybe <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:isQuery" class="def"
+	    >isQuery</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:isCommand" class="def"
+	    >isCommand</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:isResult" class="def"
+	    >isResult</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:casePayload" class="def"
+	    >casePayload</a
+	    > :: Monad m =&gt; (<a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; m ()) -&gt; (<a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; m ()) -&gt; (<a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; m ()) -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:predTTL" class="def"
+	    >predTTL</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getTTL" class="def"
+	    >getTTL</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Maybe <a href="ProtoExtended.html#t:TTL"
+	    >TTL</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:hasRoute" class="def"
+	    >hasRoute</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:stripRoute" class="def"
+	    >stripRoute</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:headRoute" class="def"
+	    >headRoute</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Maybe <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:listRoute" class="def"
+	    >listRoute</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; [<a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tailRoute" class="def"
+	    >tailRoute</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Maybe <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRoute" class="def"
+	    >addRoute</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRoutes" class="def"
+	    >addRoutes</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:inRoute" class="def"
+	    >inRoute</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:versionConst" class="def"
+	    >versionConst</a
+	    > :: Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withVersion" class="def"
+	    >withVersion</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:result" class="def"
+	    >result</a
+	    > :: <a href="Data-MemTimeState.html#t:Result"
+	    >Result</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:route" class="def"
+	    >route</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withTTL" class="def"
+	    >withTTL</a
+	    > :: <a href="ProtoExtended.html#t:TTL"
+	    >TTL</a
+	    > -&gt; <a href="Data-MemTimeState.html#t:Query"
+	    >Query</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dumpInfo" class="def"
+	    >dumpInfo</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:query" class="def"
+	    >query</a
+	    > :: <a href="ProtoExtended.html#t:TTL"
+	    >TTL</a
+	    > -&gt; ByteString -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:nodeList" class="def"
+	    >nodeList</a
+	    > :: [<a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    >] -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:advertise" class="def"
+	    >advertise</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:insert" class="def"
+	    >insert</a
+	    > :: ByteString -&gt; ByteString -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:delete" class="def"
+	    >delete</a
+	    > :: <a href="ProtoExtended.html#t:TTL"
+	    >TTL</a
+	    > -&gt; ByteString -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sync" class="def"
+	    >sync</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:startSync" class="def"
+	    >startSync</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:TTL" class="def"
+	    >TTL</a
+	    > = Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:NodeAddr" class="def"
+	    >NodeAddr</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Addr" class="def"
+		  >Addr</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Local" class="def"
+		  >Local</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:NodeAddr" class="caption collapser" onclick="toggleSection('i:NodeAddr')"
+	    >Instances</p
+	    ><div id="section.i:NodeAddr" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="ProtoExtended.html#t:NodeAddr"
+		    >NodeAddr</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="ProtoExtended.html#t:NodeAddr"
+		    >NodeAddr</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Hashable <a href="ProtoExtended.html#t:NodeAddr"
+		    >NodeAddr</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Arbitrary <a href="ProtoExtended.html#t:NodeAddr"
+		    >NodeAddr</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Serialize <a href="ProtoExtended.html#t:NodeAddr"
+		    >NodeAddr</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:ProtoException" class="def"
+	    >ProtoException</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:VersionMisMatch" class="def"
+		  >VersionMisMatch</a
+		  > Int Int</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:UnspecifiedFailure" class="def"
+		  >UnspecifiedFailure</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SpecifiedFailure" class="def"
+		  >SpecifiedFailure</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:DecodeError" class="def"
+		  >DecodeError</a
+		  > String ByteString</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:UnexpectedResponse" class="def"
+		  >UnexpectedResponse</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:IOException" class="def"
+		  >IOException</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:MissingRouting" class="def"
+		  >MissingRouting</a
+		  > <a href="ProtoExtended.html#t:Proto"
+		  >Proto</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:NakedRequest" class="def"
+		  >NakedRequest</a
+		  > <a href="ProtoExtended.html#t:Proto"
+		  >Proto</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ProtoException" class="caption collapser" onclick="toggleSection('i:ProtoException')"
+	    >Instances</p
+	    ><div id="section.i:ProtoException" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="ProtoExtended.html#t:ProtoException"
+		    >ProtoException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Typeable <a href="ProtoExtended.html#t:ProtoException"
+		    >ProtoException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Exception <a href="ProtoExtended.html#t:ProtoException"
+		    >ProtoException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Error <a href="ProtoExtended.html#t:ProtoException"
+		    >ProtoException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:ServerException" class="def"
+	    >ServerException</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:NotFoundException" class="def"
+		  >NotFoundException</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SocketGone" class="def"
+		  >SocketGone</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ServerException" class="caption collapser" onclick="toggleSection('i:ServerException')"
+	    >Instances</p
+	    ><div id="section.i:ServerException" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="ProtoExtended.html#t:ServerException"
+		    >ServerException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Typeable <a href="ProtoExtended.html#t:ServerException"
+		    >ServerException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Exception <a href="ProtoExtended.html#t:ServerException"
+		    >ServerException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:missingRouting" class="def"
+	    >missingRouting</a
+	    > :: MonadError <a href="ProtoExtended.html#t:ProtoException"
+	    >ProtoException</a
+	    > m =&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:versionMismatch" class="def"
+	    >versionMismatch</a
+	    > :: MonadError <a href="ProtoExtended.html#t:ProtoException"
+	    >ProtoException</a
+	    > m =&gt; Int -&gt; Int -&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:unspecifiedFailure" class="def"
+	    >unspecifiedFailure</a
+	    > :: MonadError <a href="ProtoExtended.html#t:ProtoException"
+	    >ProtoException</a
+	    > m =&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:specifiedFailure" class="def"
+	    >specifiedFailure</a
+	    > :: MonadError <a href="ProtoExtended.html#t:ProtoException"
+	    >ProtoException</a
+	    > m =&gt; String -&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:decodeError" class="def"
+	    >decodeError</a
+	    > :: MonadError <a href="ProtoExtended.html#t:ProtoException"
+	    >ProtoException</a
+	    > m =&gt; String -&gt; ByteString -&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:unexpectedResponse" class="def"
+	    >unexpectedResponse</a
+	    > :: MonadError <a href="ProtoExtended.html#t:ProtoException"
+	    >ProtoException</a
+	    > m =&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:ioException" class="def"
+	    >ioException</a
+	    > :: MonadError <a href="ProtoExtended.html#t:ProtoException"
+	    >ProtoException</a
+	    > m =&gt; String -&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:nakedRequest" class="def"
+	    >nakedRequest</a
+	    > :: MonadError <a href="ProtoExtended.html#t:ProtoException"
+	    >ProtoException</a
+	    > m =&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:iso_decode_test" class="def"
+	    >iso_decode_test</a
+	    > :: Property</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

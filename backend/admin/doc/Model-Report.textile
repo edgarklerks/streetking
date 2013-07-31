@@ -1,0 +1,82 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.Report
+
+h1. Documentation
+
+data Type
+
+Constructors
+
+
+|Race| |
+|Shopper| |
+|Personnel| |
+|Garage| |
+
+
+Instances
+
+
+|Enum "Type":Model-Report.html#t:Type| |
+|Eq "Type":Model-Report.html#t:Type| |
+|Show "Type":Model-Report.html#t:Type| |
+|IsString "Type":Model-Report.html#t:Type| |
+|ToJSON "Type":Model-Report.html#t:Type| |
+|FromJSON "Type":Model-Report.html#t:Type| |
+|Default "Type":Model-Report.html#t:Type| |
+|"FromInRule":Data-InRules.html#t:FromInRule "Type":Model-Report.html#t:Type| |
+|"ToInRule":Data-InRules.html#t:ToInRule "Type":Model-Report.html#t:Type| |
+
+
+data Report
+
+Constructors
+
+Report
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>account&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>time :: Integer</dt>
+<dd> </dd>
+<dt>type :: "Type":Model-Report.html#t:Type</dt>
+<dd> </dd>
+<dt>data :: "Data":Data-DataPack.html#t:Data</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "Report":Model-Report.html#t:Report| |
+|Show "Report":Model-Report.html#t:Report| |
+|ToJSON "Report":Model-Report.html#t:Report| |
+|FromJSON "Report":Model-Report.html#t:Report| |
+|Default "Report":Model-Report.html#t:Report| |
+|"FromInRule":Data-InRules.html#t:FromInRule "Report":Model-Report.html#t:Report| |
+|"ToInRule":Data-InRules.html#t:ToInRule "Report":Model-Report.html#t:Report| |
+|"Mapable":Model-General.html#t:Mapable "Report":Model-Report.html#t:Report| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Report":Model-Report.html#t:Report| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+report :: "Type":Model-Report.html#t:Type -&gt; Integer -&gt; Integer -&gt; "Data":Data-DataPack.html#t:Data -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Integer
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

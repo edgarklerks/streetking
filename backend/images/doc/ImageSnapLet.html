@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >ImageSnapLet</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_ImageSnapLet.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>ImageSnapLet</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:ImageConfig" class="def"
+	    >ImageConfig</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:IC" class="def"
+		  >IC</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:_dumpdir" class="def"
+			>_dumpdir</a
+			> :: String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_servdir" class="def"
+			>_servdir</a
+			> :: String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_allowedTypes" class="def"
+			>_allowedTypes</a
+			> :: [String]</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_magicctx" class="def"
+			>_magicctx</a
+			> :: Magic</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ImageConfig" class="caption collapser" onclick="toggleSection('i:ImageConfig')"
+	    >Instances</p
+	    ><div id="section.i:ImageConfig" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="ImageSnapLet.html#t:ImageConfig"
+		    >ImageConfig</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dumpdir" class="def"
+	    >dumpdir</a
+	    > :: Lens' <a href="ImageSnapLet.html#t:ImageConfig"
+	    >ImageConfig</a
+	    > String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:servdir" class="def"
+	    >servdir</a
+	    > :: Lens' <a href="ImageSnapLet.html#t:ImageConfig"
+	    >ImageConfig</a
+	    > String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:allowedTypes" class="def"
+	    >allowedTypes</a
+	    > :: Lens' <a href="ImageSnapLet.html#t:ImageConfig"
+	    >ImageConfig</a
+	    > [String]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:uploadImage" class="def"
+	    >uploadImage</a
+	    > :: (MonadState <a href="ImageSnapLet.html#t:ImageConfig"
+	    >ImageConfig</a
+	    > m, MonadSnap m) =&gt; (String -&gt; m ()) -&gt; (String -&gt; FilePath -&gt; String -&gt; m ()) -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:serveImage" class="def"
+	    >serveImage</a
+	    > :: (MonadState <a href="ImageSnapLet.html#t:ImageConfig"
+	    >ImageConfig</a
+	    > m, MonadSnap m) =&gt; ([Char] -&gt; m ()) -&gt; m FilePath -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initImage" class="def"
+	    >initImage</a
+	    > ::  FilePath -&gt; SnapletInit b <a href="ImageSnapLet.html#t:ImageConfig"
+	    >ImageConfig</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getServDir" class="def"
+	    >getServDir</a
+	    > :: MonadState <a href="ImageSnapLet.html#t:ImageConfig"
+	    >ImageConfig</a
+	    > m =&gt; m String</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

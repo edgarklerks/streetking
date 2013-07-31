@@ -1,0 +1,937 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.RacingNew</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-RacingNew.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.RacingNew</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RaceResult" class="def"
+	    >RaceResult</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:RaceResult" class="def"
+		  >RaceResult</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:trackId" class="def"
+			>trackId</a
+			> :: Integer</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:raceTime" class="def"
+			>raceTime</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:raceSpeedTop" class="def"
+			>raceSpeedTop</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:raceSpeedFin" class="def"
+			>raceSpeedFin</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:raceSpeedAvg" class="def"
+			>raceSpeedAvg</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionResults" class="def"
+			>sectionResults</a
+			> :: SectionResultList</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RaceResult" class="caption collapser" onclick="toggleSection('i:RaceResult')"
+	    >Instances</p
+	    ><div id="section.i:RaceResult" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Ord <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToJSON <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >FromJSON <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Default <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-InRules.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-InRules.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Mapable"
+		    >Mapable</a
+		    > <a href="Data-RacingNew.html#t:RaceResult"
+		    >RaceResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:raceResult2FE" class="def"
+	    >raceResult2FE</a
+	    > :: <a href="Data-RacingNew.html#t:RaceResult"
+	    >RaceResult</a
+	    > -&gt; <a href="Data-RacingNew.html#t:RaceResult"
+	    >RaceResult</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:SectionResult" class="def"
+	    >SectionResult</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:SectionResult" class="def"
+		  >SectionResult</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:sectionId" class="def"
+			>sectionId</a
+			> :: Integer</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:performance" class="def"
+			>performance</a
+			> :: <a href="Data-RaceSectionPerformance.html#t:RaceSectionPerformance"
+			>RaceSectionPerformance</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:effectiveRadius" class="def"
+			>effectiveRadius</a
+			> :: MDouble</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:effectiveArclength" class="def"
+			>effectiveArclength</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:lengthAccelerationPhase" class="def"
+			>lengthAccelerationPhase</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:lengthBrakingPhase" class="def"
+			>lengthBrakingPhase</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:lengthConstantPhase" class="def"
+			>lengthConstantPhase</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionLength" class="def"
+			>sectionLength</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:timeAccelerationPhase" class="def"
+			>timeAccelerationPhase</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:timeBrakingPhase" class="def"
+			>timeBrakingPhase</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:timeConstantPhase" class="def"
+			>timeConstantPhase</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionTime" class="def"
+			>sectionTime</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionSpeedIn" class="def"
+			>sectionSpeedIn</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionSpeedOut" class="def"
+			>sectionSpeedOut</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionSpeedCap" class="def"
+			>sectionSpeedCap</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionSpeedMax" class="def"
+			>sectionSpeedMax</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionSpeedAvg" class="def"
+			>sectionSpeedAvg</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:SectionResult" class="caption collapser" onclick="toggleSection('i:SectionResult')"
+	    >Instances</p
+	    ><div id="section.i:SectionResult" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToJSON <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >FromJSON <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Default <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-InRules.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-InRules.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Mapable"
+		    >Mapable</a
+		    > <a href="Data-RacingNew.html#t:SectionResult"
+		    >SectionResult</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RaceConfig" class="def"
+	    >RaceConfig</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:RaceConfig" class="def"
+		  >RaceConfig</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:car" class="def"
+			>car</a
+			> :: <a href="Data-Car.html#t:Car"
+			>Car</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:driver" class="def"
+			>driver</a
+			> :: <a href="Data-Driver.html#t:Driver"
+			>Driver</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:environment" class="def"
+			>environment</a
+			> :: <a href="Data-Environment.html#t:Environment"
+			>Environment</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:track" class="def"
+			>track</a
+			> :: <a href="Data-Track.html#t:Track"
+			>Track</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RaceConfig" class="caption collapser" onclick="toggleSection('i:RaceConfig')"
+	    >Instances</p
+	    ><div id="section.i:RaceConfig" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-RacingNew.html#t:RaceConfig"
+		    >RaceConfig</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:SectionConfig" class="def"
+	    >SectionConfig</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:SectionConfig" class="def"
+		  >SectionConfig</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:section" class="def"
+			>section</a
+			> :: <a href="Data-Section.html#t:Section"
+			>Section</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:sectionPerformance" class="def"
+			>sectionPerformance</a
+			> :: <a href="Data-RaceSectionPerformance.html#t:RaceSectionPerformance"
+			>RaceSectionPerformance</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:mass" class="def"
+			>mass</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:aero" class="def"
+			>aero</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:downforce" class="def"
+			>downforce</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:power" class="def"
+			>power</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:braking" class="def"
+			>braking</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:traction" class="def"
+			>traction</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:handling" class="def"
+			>handling</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:topSpeed" class="def"
+			>topSpeed</a
+			> :: Double</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:SectionConfig" class="caption collapser" onclick="toggleSection('i:SectionConfig')"
+	    >Instances</p
+	    ><div id="section.i:SectionConfig" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-RacingNew.html#t:SectionConfig"
+		    >SectionConfig</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RaceData" class="def"
+	    >RaceData</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:RaceData" class="def"
+		  >RaceData</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:rd_user" class="def"
+			>rd_user</a
+			> :: <a href="Model-AccountProfileMin.html#t:AccountProfileMin"
+			>AccountProfileMin</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:rd_car" class="def"
+			>rd_car</a
+			> :: <a href="Model-CarMinimal.html#t:CarMinimal"
+			>CarMinimal</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:rd_result" class="def"
+			>rd_result</a
+			> :: <a href="Data-RacingNew.html#t:RaceResult"
+			>RaceResult</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RaceData" class="caption collapser" onclick="toggleSection('i:RaceData')"
+	    >Instances</p
+	    ><div id="section.i:RaceData" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToJSON <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >FromJSON <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Default <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-InRules.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-InRules.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Mapable"
+		    >Mapable</a
+		    > <a href="Data-RacingNew.html#t:RaceData"
+		    >RaceData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:RaceDataList" class="def"
+	    >RaceDataList</a
+	    > = [<a href="Data-RacingNew.html#t:RaceData"
+	    >RaceData</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:RaceM" class="def"
+	    >RaceM</a
+	    > a = RandomGen g =&gt; ErrorT String (RandT g (Reader <a href="Data-RacingNew.html#t:RaceConfig"
+	    >RaceConfig</a
+	    >)) a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:SectionM" class="def"
+	    >SectionM</a
+	    > a = ErrorT String (Reader <a href="Data-RacingNew.html#t:SectionConfig"
+	    >SectionConfig</a
+	    >) a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sectionConfig" class="def"
+	    >sectionConfig</a
+	    > :: <a href="Data-Section.html#t:Section"
+	    >Section</a
+	    > -&gt; <a href="Data-RaceSectionPerformance.html#t:RaceSectionPerformance"
+	    >RaceSectionPerformance</a
+	    > -&gt; <a href="Data-RacingNew.html#t:RaceM"
+	    >RaceM</a
+	    > <a href="Data-RacingNew.html#t:SectionConfig"
+	    >SectionConfig</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runSectionM" class="def"
+	    >runSectionM</a
+	    > ::  <a href="Data-RacingNew.html#t:SectionM"
+	    >SectionM</a
+	    > a -&gt; <a href="Data-RacingNew.html#t:SectionConfig"
+	    >SectionConfig</a
+	    > -&gt; Either String a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runRaceM" class="def"
+	    >runRaceM</a
+	    > :: RandomGen g =&gt; <a href="Data-RacingNew.html#t:RaceM"
+	    >RaceM</a
+	    > a -&gt; g -&gt; <a href="Data-RacingNew.html#t:RaceConfig"
+	    >RaceConfig</a
+	    > -&gt; Either String a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:raceWithParticipant" class="def"
+	    >raceWithParticipant</a
+	    > :: RandomGen g =&gt; <a href="Data-RaceParticipant.html#t:RaceParticipant"
+	    >RaceParticipant</a
+	    > -&gt; <a href="Data-Track.html#t:Track"
+	    >Track</a
+	    > -&gt; g -&gt; Either String <a href="Data-RacingNew.html#t:RaceResult"
+	    >RaceResult</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runRaceWithParticipant" class="def"
+	    >runRaceWithParticipant</a
+	    > :: <a href="Data-RaceParticipant.html#t:RaceParticipant"
+	    >RaceParticipant</a
+	    > -&gt; <a href="Data-Track.html#t:Track"
+	    >Track</a
+	    > -&gt; <a href="Data-Environment.html#t:Environment"
+	    >Environment</a
+	    > -&gt; <a href="Data-RacingNew.html#t:RaceResult"
+	    >RaceResult</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:race" class="def"
+	    >race</a
+	    > :: RandomGen g =&gt; <a href="Data-RacingNew.html#t:RaceConfig"
+	    >RaceConfig</a
+	    > -&gt; g -&gt; Either String <a href="Data-RacingNew.html#t:RaceResult"
+	    >RaceResult</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:raceData" class="def"
+	    >raceData</a
+	    > :: <a href="Data-RaceParticipant.html#t:RaceParticipant"
+	    >RaceParticipant</a
+	    > -&gt; <a href="Data-RacingNew.html#t:RaceResult"
+	    >RaceResult</a
+	    > -&gt; <a href="Data-RacingNew.html#t:RaceData"
+	    >RaceData</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:accelerationTime" class="def"
+	    >accelerationTime</a
+	    > :: Speed -&gt; Speed -&gt; <a href="Data-RacingNew.html#t:SectionM"
+	    >SectionM</a
+	    > Time</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:brakingDistance" class="def"
+	    >brakingDistance</a
+	    > :: Speed -&gt; Speed -&gt; <a href="Data-RacingNew.html#t:SectionM"
+	    >SectionM</a
+	    > Double</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lateralAcceleration" class="def"
+	    >lateralAcceleration</a
+	    > :: <a href="Data-RacingNew.html#t:SectionM"
+	    >SectionM</a
+	    > Double</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:partsWear" class="def"
+	    >partsWear</a
+	    > :: Integer -&gt; <a href="Data-RacingNew.html#t:RaceResult"
+	    >RaceResult</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:healthLost" class="def"
+	    >healthLost</a
+	    > :: Integer -&gt; <a href="Data-RacingNew.html#t:RaceResult"
+	    >RaceResult</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:testDefRace" class="def"
+	    >testDefRace</a
+	    > :: IO ()</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

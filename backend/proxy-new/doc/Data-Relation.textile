@@ -1,0 +1,167 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Relation
+
+h1. Documentation
+
+data Relation
+
+Instances
+
+
+|Show "Relation":Data-Relation.html#t:Relation| |
+|ToValues "Relation":Data-Relation.html#t:Relation| |
+|ToSql "Relation":Data-Relation.html#t:Relation| |
+
+
+type RelationM = State "Relation":Data-Relation.html#t:Relation ()
+
+getResult :: "RelationM":Data-Relation.html#t:RelationM -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Result
+
+getAssoc :: "RelationM":Data-Relation.html#t:RelationM -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ResultAssoc
+
+toAssoc :: Result -&gt; ResultAssoc
+
+fromAssoc :: Schema -&gt; ResultAssoc -&gt; Result
+
+raw :: Sql -&gt; ["SqlValue":Data-SqlTransaction.html#t:SqlValue] -&gt; Schema -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+table :: String -&gt; Schema -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+view :: String -&gt; Schema -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+identity :: "RelationM":Data-Relation.html#t:RelationM
+
+project :: Schema -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+projectAs :: [(Key, Key)] -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+select :: Condition -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+unite :: "RelationM":Data-Relation.html#t:RelationM -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+intersect :: "RelationM":Data-Relation.html#t:RelationM -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+diff :: "RelationM":Data-Relation.html#t:RelationM -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+cross :: "RelationM":Data-Relation.html#t:RelationM -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+rename :: [(Key, Key)] -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+join :: Condition -&gt; "RelationM":Data-Relation.html#t:RelationM -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+take :: Integer -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+drop :: Integer -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+sort :: Orderings -&gt; "RelationM":Data-Relation.html#t:RelationM
+
+data Direction
+
+Constructors
+
+
+|Asc| |
+|Desc| |
+
+
+Instances
+
+
+|Show "Direction":Data-Relation.html#t:Direction| |
+|ToValues "Direction":Data-Relation.html#t:Direction| |
+|ToValues Orderings| |
+|ToValues Ordering| |
+|ToSql "Direction":Data-Relation.html#t:Direction| |
+|ToSql Orderings| |
+|ToSql Ordering| |
+
+
+(&lt;&amp;&amp;&gt;) :: Condition -&gt; Condition -&gt; Condition
+
+(&lt;&#124;&#124;&gt;) :: Condition -&gt; Condition -&gt; Condition
+
+(&#124;==&#124;) :: String -&gt; String -&gt; Condition
+
+(&#124;&gt;&#124;) :: String -&gt; String -&gt; Condition
+
+(&#124;&gt;=&#124;) :: String -&gt; String -&gt; Condition
+
+(&#124;&lt;&gt;&#124;) :: String -&gt; String -&gt; Condition
+
+(&#124;&lt;&#124;) :: String -&gt; String -&gt; Condition
+
+(&#124;&lt;=&#124;) :: String -&gt; String -&gt; Condition
+
+(&#124;%&#124;) :: String -&gt; String -&gt; Condition
+
+(&#124;%%&#124;) :: String -&gt; String -&gt; Condition
+
+(&#42;==&#124;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; String -&gt; Condition
+
+(&#42;&gt;&#124;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; String -&gt; Condition
+
+(&#42;&gt;=&#124;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; String -&gt; Condition
+
+(&#42;&lt;&gt;&#124;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; String -&gt; Condition
+
+(&#42;&lt;&#124;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; String -&gt; Condition
+
+(&#42;&lt;=&#124;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; String -&gt; Condition
+
+(&#42;%&#124;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; String -&gt; Condition
+
+(&#42;%%&#124;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; String -&gt; Condition
+
+(&#124;==&#42;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#124;&gt;&#42;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#124;&gt;=&#42;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#124;&lt;&gt;&#42;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#124;&lt;&#42;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#124;&lt;=&#42;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#124;%&#42;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#124;%%&#42;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#42;==&#42;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#42;&gt;&#42;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#42;&gt;=&#42;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#42;&lt;&gt;&#42;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#42;&lt;&#42;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#42;&lt;=&#42;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#42;%&#42;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+(&#42;%%&#42;) :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Condition
+
+and :: [Condition] -&gt; Condition
+
+or :: [Condition] -&gt; Condition
+
+as :: Sql -&gt; ["SqlValue":Data-SqlTransaction.html#t:SqlValue] -&gt; Condition
+
+not :: Bool -&gt; Bool
+
+isnull :: String -&gt; Condition
+
+notnull :: String -&gt; Condition
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

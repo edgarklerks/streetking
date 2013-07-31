@@ -1,0 +1,115 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.AccountGarage
+
+h1. Documentation
+
+type MString = Maybe String
+
+type MInteger = Maybe Integer
+
+data AccountGarage
+
+Constructors
+
+AccountGarage
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>firstname :: "MString":Model-AccountGarage.html#t:MString</dt>
+<dd> </dd>
+<dt>lastname :: "MString":Model-AccountGarage.html#t:MString</dt>
+<dd> </dd>
+<dt>nickname :: "MString":Model-AccountGarage.html#t:MString</dt>
+<dd> </dd>
+<dt>picture&#95;small :: "MString":Model-AccountGarage.html#t:MString</dt>
+<dd> </dd>
+<dt>picture&#95;medium :: "MString":Model-AccountGarage.html#t:MString</dt>
+<dd> </dd>
+<dt>picture&#95;large :: "MString":Model-AccountGarage.html#t:MString</dt>
+<dd> </dd>
+<dt>level :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>skill&#95;acceleration :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>skill&#95;braking :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>skill&#95;control :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>skill&#95;reactions :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>skill&#95;intelligence :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>money :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>respect :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>diamonds :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>energy :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>max&#95;energy :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>energy&#95;recovery :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>energy&#95;updated :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>busy&#95;until :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>email :: String</dt>
+<dd> </dd>
+<dt>till :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>city&#95;id :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>city&#95;name :: String</dt>
+<dd> </dd>
+<dt>continent&#95;id :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>continent&#95;name :: String</dt>
+<dd> </dd>
+<dt>skill&#95;unused :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>busy&#95;subject&#95;id :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>busy&#95;type :: String</dt>
+<dd> </dd>
+<dt>busy&#95;timeleft :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+<dt>free&#95;car :: Bool</dt>
+<dd> </dd>
+<dt>garage&#95;id :: "MInteger":Model-AccountGarage.html#t:MInteger</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|Show "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|ToJSON "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|FromJSON "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|Default "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|"FromInRule":Data-InRules.html#t:FromInRule "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|"ToInRule":Data-InRules.html#t:ToInRule "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|"Mapable":Model-General.html#t:Mapable "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

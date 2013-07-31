@@ -1,0 +1,144 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+RoleSnaplet
+
+Synopsis
+
+<ul>
+<li>"may":#v:may :: (MonadState "DHTConfig":NodeSnapletTest.html#t:DHTConfig (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadState "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet), MonadState "Cycle":Data-ExternalLog.html#t:Cycle (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadIO (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadIO (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadSnaplet m, MonadSnap (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet)) =&gt; "Resource":RoleSnaplet.html#t:Resource -&gt; "RestRight":RoleSnaplet.html#t:RestRight -&gt; m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet Bool</li>
+<li>"addRole":#v:addRole :: (MonadState "DHTConfig":NodeSnapletTest.html#t:DHTConfig (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadState "Cycle":Data-ExternalLog.html#t:Cycle (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadState "RandomConfig":RandomSnaplet.html#t:RandomConfig (m b "RandomConfig":RandomSnaplet.html#t:RandomConfig), MonadState "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet), MonadIO (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadIO (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadIO (m b "RandomConfig":RandomSnaplet.html#t:RandomConfig), Binary a, MonadSnaplet m, MonadSnap (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet)) =&gt; ByteString -&gt; a -&gt; m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet ()</li>
+<li>"withRoleState":#v:withRoleState :: MonadState "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet m =&gt; ("RolePair":Data-Role.html#t:RolePair ByteString -&gt; m a) -&gt; m a</li>
+<li>"dumpAll":#v:dumpAll :: MonadIO m =&gt; "RolePair":Data-Role.html#t:RolePair ByteString -&gt; m String</li>
+<li>data "Role":#t:Role
+<ul>
+<li>= "Developer":#v:Developer (Maybe "Id":RoleSnaplet.html#t:Id)</li>
+<li>&#124; "User":#v:User (Maybe "Id":RoleSnaplet.html#t:Id)</li>
+<li>&#124; "Server":#v:Server (Maybe "Id":RoleSnaplet.html#t:Id)</li>
+<li>&#124; "All":#v:All</li>
+</ul>
+</li>
+<li>data "RestRight":#t:RestRight
+<ul>
+<li>= "Put":#v:Put</li>
+<li>&#124; "Get":#v:Get</li>
+<li>&#124; "Post":#v:Post</li>
+<li>&#124; "Delete":#v:Delete</li>
+</ul>
+</li>
+<li>type "Resource":#t:Resource = String</li>
+<li>"dropRoles":#v:dropRoles :: (MonadState "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet m, MonadSnap m) =&gt; ByteString -&gt; m ()</li>
+<li>"getRoles":#v:getRoles :: (MonadState "DHTConfig":NodeSnapletTest.html#t:DHTConfig (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadState "Cycle":Data-ExternalLog.html#t:Cycle (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadIO (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadIO (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadSnaplet m, MonadSnap (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet)) =&gt; ByteString -&gt; m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet ["Role":RoleSnaplet.html#t:Role]</li>
+<li>type "Id":#t:Id = Integer</li>
+<li>data "RoleSnaplet":#t:RoleSnaplet = "RoleSnaplet":#v:RoleSnaplet {
+<ul>
+<li>"runRS":#v:runRS :: "RolePair":Data-Role.html#t:RolePair ByteString</li>
+<li>"&#95;random":#v:_random :: Snaplet "RandomConfig":RandomSnaplet.html#t:RandomConfig</li>
+<li>"&#95;dht":#v:_dht :: Snaplet "DHTConfig":NodeSnapletTest.html#t:DHTConfig</li>
+<li>"&#95;log&#95;cycler":#v:_log_cycler :: Snaplet "Cycle":Data-ExternalLog.html#t:Cycle</li>
+</ul>
+
+}</li>
+<li>class "HasRoleSnaplet":#t:HasRoleSnaplet b where
+<ul>
+<li>"roleLens":#v:roleLens :: SnapletLens (Snaplet b) (Snaplet "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet)</li>
+</ul>
+</li>
+<li>"initRoleSnaplet":#v:initRoleSnaplet :: Snaplet "RandomConfig":RandomSnaplet.html#t:RandomConfig -&gt; Snaplet "DHTConfig":NodeSnapletTest.html#t:DHTConfig -&gt; Snaplet "Cycle":Data-ExternalLog.html#t:Cycle -&gt; SnapletInit b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet</li>
+</ul>
+
+h1. Documentation
+
+may :: (MonadState "DHTConfig":NodeSnapletTest.html#t:DHTConfig (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadState "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet), MonadState "Cycle":Data-ExternalLog.html#t:Cycle (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadIO (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadIO (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadSnaplet m, MonadSnap (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet)) =&gt; "Resource":RoleSnaplet.html#t:Resource -&gt; "RestRight":RoleSnaplet.html#t:RestRight -&gt; m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet Bool
+
+addRole :: (MonadState "DHTConfig":NodeSnapletTest.html#t:DHTConfig (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadState "Cycle":Data-ExternalLog.html#t:Cycle (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadState "RandomConfig":RandomSnaplet.html#t:RandomConfig (m b "RandomConfig":RandomSnaplet.html#t:RandomConfig), MonadState "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet), MonadIO (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadIO (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadIO (m b "RandomConfig":RandomSnaplet.html#t:RandomConfig), Binary a, MonadSnaplet m, MonadSnap (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet)) =&gt; ByteString -&gt; a -&gt; m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet ()
+
+withRoleState :: MonadState "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet m =&gt; ("RolePair":Data-Role.html#t:RolePair ByteString -&gt; m a) -&gt; m a
+
+dumpAll :: MonadIO m =&gt; "RolePair":Data-Role.html#t:RolePair ByteString -&gt; m String
+
+Debug function to dump the internal state
+
+data Role
+
+Constructors
+
+
+|Developer (Maybe "Id":RoleSnaplet.html#t:Id)| |
+|User (Maybe "Id":RoleSnaplet.html#t:Id)| |
+|Server (Maybe "Id":RoleSnaplet.html#t:Id)| |
+|All| |
+
+
+Instances
+
+
+|Eq "Role":RoleSnaplet.html#t:Role| |
+|Ord "Role":RoleSnaplet.html#t:Role| |
+|Read "Role":RoleSnaplet.html#t:Role| |
+|Show "Role":RoleSnaplet.html#t:Role| |
+|Binary "Role":RoleSnaplet.html#t:Role| |
+
+
+data RestRight
+
+Constructors
+
+
+|Put| |
+|Get| |
+|Post| |
+|Delete| |
+
+
+Instances
+
+
+|Eq "RestRight":RoleSnaplet.html#t:RestRight| |
+|Show "RestRight":RoleSnaplet.html#t:RestRight| |
+
+
+type Resource = String
+
+dropRoles :: (MonadState "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet m, MonadSnap m) =&gt; ByteString -&gt; m ()
+
+getRoles :: (MonadState "DHTConfig":NodeSnapletTest.html#t:DHTConfig (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadState "Cycle":Data-ExternalLog.html#t:Cycle (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadIO (m b "DHTConfig":NodeSnapletTest.html#t:DHTConfig), MonadIO (m b "Cycle":Data-ExternalLog.html#t:Cycle), MonadSnaplet m, MonadSnap (m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet)) =&gt; ByteString -&gt; m b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet ["Role":RoleSnaplet.html#t:Role]
+
+type Id = Integer
+
+data RoleSnaplet
+
+Constructors
+
+RoleSnaplet
+
+ 
+
+Fields
+
+<dl>
+<dt>runRS :: "RolePair":Data-Role.html#t:RolePair ByteString</dt>
+<dd> </dd>
+<dt>&#95;random :: Snaplet "RandomConfig":RandomSnaplet.html#t:RandomConfig</dt>
+<dd> </dd>
+<dt>&#95;dht :: Snaplet "DHTConfig":NodeSnapletTest.html#t:DHTConfig</dt>
+<dd> </dd>
+<dt>&#95;log&#95;cycler :: Snaplet "Cycle":Data-ExternalLog.html#t:Cycle</dt>
+<dd> </dd>
+</dl>
+
+class HasRoleSnaplet b where
+
+Methods
+
+roleLens :: SnapletLens (Snaplet b) (Snaplet "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet)
+
+initRoleSnaplet :: Snaplet "RandomConfig":RandomSnaplet.html#t:RandomConfig -&gt; Snaplet "DHTConfig":NodeSnapletTest.html#t:DHTConfig -&gt; Snaplet "Cycle":Data-ExternalLog.html#t:Cycle -&gt; SnapletInit b "RoleSnaplet":RoleSnaplet.html#t:RoleSnaplet
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

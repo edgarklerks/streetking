@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >MemServerAsyncTest</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();};
+//]]>
+</script
+    ></head
+  ><body id="mini"
+  ><div id="module-header"
+    ><p class="caption"
+      >MemServerAsyncTest</p
+      ></div
+    ><div id="interface"
+    ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="MemServerAsyncTest.html#t:ProtoMonad" target="main"
+	  >ProtoMonad</a
+	  > c a</p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:runProtoMonad" target="main"
+	  >runProtoMonad</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:RequestMonad" target="main"
+	  >RequestMonad</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:startNode" target="main"
+	  >startNode</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="MemServerAsyncTest.html#t:ConfigParameters" target="main"
+	  >ConfigParameters</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="MemServerAsyncTest.html#t:RequestConfig" target="main"
+	  >RequestConfig</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:UpstreamMap" target="main"
+	  >UpstreamMap</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:RequestSocket" target="main"
+	  >RequestSocket</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:UpstreamSocket" target="main"
+	  >UpstreamSocket</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:requestEngine" target="main"
+	  >requestEngine</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:handleQuery" target="main"
+	  >handleQuery</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:sendAnswer" target="main"
+	  >sendAnswer</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:handleCommand" target="main"
+	  >handleCommand</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:connectToNode" target="main"
+	  >connectToNode</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:runMemQuery" target="main"
+	  >runMemQuery</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:toNodes" target="main"
+	  >toNodes</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:sendUpstream" target="main"
+	  >sendUpstream</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:UpdateMonad" target="main"
+	  >UpdateMonad</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="MemServerAsyncTest.html#t:UpdateConfig" target="main"
+	  >UpdateConfig</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:UpdatesMap" target="main"
+	  >UpdatesMap</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:UpdatesSocket" target="main"
+	  >UpdatesSocket</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:updateEngine" target="main"
+	  >updateEngine</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:toClient" target="main"
+	  >toClient</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >data</span
+	  > <a href="MemServerAsyncTest.html#t:IncomingConfig" target="main"
+	  >IncomingConfig</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:Incoming" target="main"
+	  >Incoming</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >type</span
+	  > <a href="MemServerAsyncTest.html#t:IncomingMonad" target="main"
+	  >IncomingMonad</a
+	  > </p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:incomingEngine" target="main"
+	  >incomingEngine</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:receiveProto" target="main"
+	  >receiveProto</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:sendProto" target="main"
+	  >sendProto</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:asksTVar" target="main"
+	  >asksTVar</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:modifysTVar" target="main"
+	  >modifysTVar</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:liftSTM" target="main"
+	  >liftSTM</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:queryNode" target="main"
+	  >queryNode</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:get_ic_config" target="main"
+	  >get_ic_config</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:get_pc_config" target="main"
+	  >get_pc_config</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:get_uc_config" target="main"
+	  >get_uc_config</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:client-39-" target="main"
+	  >client'</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:tryTakeMVarT" target="main"
+	  >tryTakeMVarT</a
+	  ></p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><span class="keyword"
+	  >class</span
+	  > <a href="MemServerAsyncTest.html#t:PrintDebug" target="main"
+	  >PrintDebug</a
+	  > m</p
+	></div
+      ><div class="top"
+      ><p class="src"
+	><a href="MemServerAsyncTest.html#v:clientCommand" target="main"
+	  >clientCommand</a
+	  ></p
+	></div
+      ></div
+    ></body
+  ></html
+>
