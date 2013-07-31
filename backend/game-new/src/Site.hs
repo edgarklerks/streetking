@@ -353,7 +353,7 @@ marketAllowedParts = do
             liftIO $ print n 
     	    xs <- forM n $ \p -> do 
                    liftIO $ print p 
-		           (search ["car_id" |== (toSql $ MPT.car_id d) .&& "level" |<= (toSql $ A.level x) .&& "name" |== (toSql $ MM.label p)] [Order ("sort_part_type",[]) True] 1000 0) :: SqlTransaction Connection [MPT.MarketPartType]
+                   search ["car_id" |== (toSql $ MPT.car_id d) .&& "level" |<= (toSql $ A.level x) .&& "name" |== (toSql $ MM.label p)] [Order ("sort_part_type",[]) True] 1000 0 :: SqlTransaction Connection [MPT.MarketPartType]
 	    return (concat xs)
     writeResult (AS.toJSON $ MM.mkTabs "PARTS" (fmap MPT.name p))
 
