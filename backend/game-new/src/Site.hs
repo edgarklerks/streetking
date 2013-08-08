@@ -281,6 +281,7 @@ marketPlace = do
 
                     "weight" +<= "weight-max" +&&
                     "weight" +>= "weight-min" +&&
+                    "manufacturer_id" +== "manufacturer_id" +&&
 
                     ifdtd "unique" (=="1")
                         ("unique" +==| (toSql True))
@@ -919,6 +920,7 @@ marketParts = do
 
                 "weight" +<= "weight-max" +&&
                 "weight" +>= "weight-min" +&&
+                "manufacturer_id" +== "manufacturer_id" +&&
 
                 "level" +<=| (toSql $ A.level puser)
             )
@@ -966,6 +968,7 @@ garageParts = do
                 "level" +>= "level-min" +&&
                 "price" +>= "price-min" +&&
                 "price" +<= "price-max" +&&
+                "manufacturer_id" +== "manufacturer_id" +&&
 
                 ifdtd "unique" (=="1")
                     ("unique" +==| (toSql True))

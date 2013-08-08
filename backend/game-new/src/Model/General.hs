@@ -124,3 +124,10 @@ adeny cs f = do
         [] -> return ss
         xs ->  f 
 
+withDisableTriggers :: Database Connection a => a -> SqlTransaction Connection b -> SqlTransaction Connection b 
+withDisableTriggers tb m = do 
+                    quickQuery' ("ALTER TABLE " ++ tableName tb ++ " DISABLE TRIGGER ALL") [] 
+                    xs <- m 
+                    quickQuery' ("ALTER TABLE " ++ tableName tb ++ " ENABLE TRIGGER ALL") [] 
+                    return xs 
+

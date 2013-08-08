@@ -420,7 +420,7 @@ upsert t m = do
     let mi x = fromSql x :: Integer
     n <- mi <$> (transaction sqlGetOne $ Select (table t) [express "count(*)"] con [] NullLimit NullOffset)
     case n of
-        0 -> insert t [] $ M.toList (M.delete "id" m)
+        0 -> insert t [] $ M.toList m -- (M.delete "id" m)
         otherwise -> i <$ update t con [] (M.toList m)
 
     where con = ["id" |== i]
