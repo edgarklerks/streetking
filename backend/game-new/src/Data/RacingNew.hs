@@ -164,8 +164,8 @@ partsWear x rr = let speed  = fromRational $ toRational $ raceSpeedAvg rr * 3.6
                 
                     xs <- search ["car_instance_id" |==  toSql x ] [] 1000 0 :: SqlTransaction Connection [PI.PartInstance]
                     forM_ xs $ \c -> do 
-                        s <- calcWear wpm speed rt (10000 - fromInteger (PI.wear c)) 
-                        save (c { PI.wear = PI.wear c + floor s})
+                        s <- calcWear wpm speed rt (fromInteger (PI.wear c)) 
+                        save (c { PI.wear = floor s})
 
 healthLost :: Integer -> RaceResult -> SqlTransaction Connection ()
 healthLost uid rr = do 
