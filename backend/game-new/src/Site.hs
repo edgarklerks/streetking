@@ -2027,7 +2027,7 @@ raceChallengeAccept = do
 
             -- check user location
             track_master <- aget ["track_id" |== SqlInteger tid] $ rollback "track not found" :: SqlTransaction Connection TT.TrackMaster
-            unless (fromJust (A.id a) == TT.city_id track_master) $ rollback "You are not in that city"
+            unless (fromJust (A.city a) == TT.city_id track_master) $ rollback "You are not in that city"
 
             -- check track level
             when (A.level a < TT.track_level track_master) $ rollback "Your are not ready for this track"
