@@ -875,6 +875,7 @@ marketCars = do
                 "level" +>= "level-min" +&&
                 "price" +>= "price-min" +&&
                 "price" +<= "price-max" +&&
+                "manufacturer_name" +== "manufacturer_name" +&& 
                      ifdtd "me" (=="1") 
                                 ("account_id" +==| toSql uid) 
                                 ("account_id" +<>| toSql uid +&& 
