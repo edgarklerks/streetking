@@ -1,0 +1,67 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.Challenge
+
+h1. Documentation
+
+type MInteger = Maybe Integer
+
+data Challenge
+
+Constructors
+
+Challenge
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>account&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>track&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>participants :: Integer</dt>
+<dd> </dd>
+<dt>type :: Integer</dt>
+<dd> </dd>
+<dt>account&#95;min :: "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin</dt>
+<dd> </dd>
+<dt>car&#95;min :: "CarMinimal":Model-CarMinimal.html#t:CarMinimal</dt>
+<dd> </dd>
+<dt>challenger :: "RaceParticipant":Data-RaceParticipant.html#t:RaceParticipant</dt>
+<dd> </dd>
+<dt>deleted :: Bool</dt>
+<dd> </dd>
+<dt>amount :: Integer</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "Challenge":Model-Challenge.html#t:Challenge| |
+|Show "Challenge":Model-Challenge.html#t:Challenge| |
+|ToJSON "Challenge":Model-Challenge.html#t:Challenge| |
+|FromJSON "Challenge":Model-Challenge.html#t:Challenge| |
+|Default "Challenge":Model-Challenge.html#t:Challenge| |
+|"FromInRule":Data-InRules.html#t:FromInRule "Challenge":Model-Challenge.html#t:Challenge| |
+|"ToInRule":Data-InRules.html#t:ToInRule "Challenge":Model-Challenge.html#t:Challenge| |
+|"Mapable":Model-General.html#t:Mapable "Challenge":Model-Challenge.html#t:Challenge| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Challenge":Model-Challenge.html#t:Challenge| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,213 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Notifications
+
+Synopsis
+
+<ul>
+<li>type "Letters":#t:Letters = ["Letter":Data-Notifications.html#t:Letter]</li>
+<li>type "Letter":#t:Letter = "PreLetter":Model-PreLetter.html#t:PreLetter</li>
+<li>type "Time":#t:Time = Integer</li>
+<li>newtype "PrioService":#t:PrioService = "PQS":#v:PQS {
+<ul>
+<li>"runPrioService":#v:runPrioService :: TVar ("Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int)</li>
+</ul>
+
+}</li>
+<li>newtype "PostSorter":#t:PostSorter = "PS":#v:PS {
+<ul>
+<li>"runPostSorter":#v:runPostSorter :: TVar (IntMap "Letter":Data-Notifications.html#t:Letter)</li>
+</ul>
+
+}</li>
+<li>newtype "UserBoxes":#t:UserBoxes = "UB":#v:UB {
+<ul>
+<li>"runUserBoxes":#v:runUserBoxes :: TVar (IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int)))</li>
+</ul>
+
+}</li>
+<li>"readPostSorter":#v:readPostSorter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; STM (IntMap "Letter":Data-Notifications.html#t:Letter)</li>
+<li>"modifyPostSorter":#v:modifyPostSorter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; (IntMap "Letter":Data-Notifications.html#t:Letter -&gt; IntMap "Letter":Data-Notifications.html#t:Letter) -&gt; STM ()</li>
+<li>"writePostSorter":#v:writePostSorter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; IntMap "Letter":Data-Notifications.html#t:Letter -&gt; STM ()</li>
+<li>"readUserBoxes":#v:readUserBoxes :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; STM (IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int)))</li>
+<li>"modifyUserBoxes":#v:modifyUserBoxes :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; (IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int)) -&gt; IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int))) -&gt; STM ()</li>
+<li>"writeUserBoxes":#v:writeUserBoxes :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int)) -&gt; STM ()</li>
+<li>"readPrioService":#v:readPrioService :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; STM ("Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int)</li>
+<li>"modifyPrioService":#v:modifyPrioService :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; ("Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int -&gt; "Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int) -&gt; STM ()</li>
+<li>"writePrioService":#v:writePrioService :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int -&gt; STM ()</li>
+<li>"modifyLetter":#v:modifyLetter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; Int -&gt; ("Letter":Data-Notifications.html#t:Letter -&gt; "Letter":Data-Notifications.html#t:Letter) -&gt; STM ()</li>
+<li>"deleteLetter":#v:deleteLetter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; Int -&gt; STM ()</li>
+<li>type "UserId":#t:UserId = Integer</li>
+<li>"getId":#v:getId :: "Letter":Data-Notifications.html#t:Letter -&gt; Int</li>
+<li>"withPriority":#v:withPriority :: Monad m =&gt; "Letter":Data-Notifications.html#t:Letter -&gt; ("Time":Data-Notifications.html#t:Time -&gt; m ()) -&gt; m ()</li>
+<li>"getPrio":#v:getPrio :: "Letter":Data-Notifications.html#t:Letter -&gt; Maybe "Time":Data-Notifications.html#t:Time</li>
+<li>newtype "PostOffice":#t:PostOffice = "PO":#v:PO {
+<ul>
+<li>"closePostOffice":#v:closePostOffice :: ("PrioService":Data-Notifications.html#t:PrioService, "PostSorter":Data-Notifications.html#t:PostSorter, "UserBoxes":Data-Notifications.html#t:UserBoxes)</li>
+</ul>
+
+}</li>
+<li>"sendLocal":#v:sendLocal :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; IO ()</li>
+<li>"openPostOffice":#v:openPostOffice :: IO "PostOffice":Data-Notifications.html#t:PostOffice</li>
+<li>"sendLetter":#v:sendLetter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Letter":Data-Notifications.html#t:Letter</li>
+<li>"sendCentral":#v:sendCentral :: "UserId":Data-Notifications.html#t:UserId -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Letter":Data-Notifications.html#t:Letter</li>
+<li>"setRead":#v:setRead :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()</li>
+<li>"setArchive":#v:setArchive :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()</li>
+<li>"checkMailBox":#v:checkMailBox :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Letters":Data-Notifications.html#t:Letters</li>
+<li>"haulPost":#v:haulPost :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()</li>
+<li>"extractSince":#v:extractSince :: "Time":Data-Notifications.html#t:Time -&gt; "PostOffice":Data-Notifications.html#t:PostOffice -&gt; STM [Int]</li>
+<li>"goin'Postal":#v:goin-39-Postal :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; IO ()</li>
+<li>"sendBulkMail":#v:sendBulkMail :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()</li>
+<li>"sendBulkLocal":#v:sendBulkLocal :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; IO ()</li>
+<li>"sendBulkCentral":#v:sendBulkCentral :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()</li>
+<li>"milliTime":#v:milliTime :: "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Time":Data-Notifications.html#t:Time</li>
+</ul>
+
+h1. Documentation
+
+type Letters = ["Letter":Data-Notifications.html#t:Letter]
+
+type Letter = "PreLetter":Model-PreLetter.html#t:PreLetter
+
+type Time = Integer
+
+newtype PrioService
+
+Constructors
+
+PQS
+
+ 
+
+Fields
+
+<dl>
+<dt>runPrioService :: TVar ("Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int)</dt>
+<dd> </dd>
+</dl>
+
+newtype PostSorter
+
+Constructors
+
+PS
+
+ 
+
+Fields
+
+<dl>
+<dt>runPostSorter :: TVar (IntMap "Letter":Data-Notifications.html#t:Letter)</dt>
+<dd> </dd>
+</dl>
+
+newtype UserBoxes
+
+Constructors
+
+UB
+
+ 
+
+Fields
+
+<dl>
+<dt>runUserBoxes :: TVar (IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int)))</dt>
+<dd> </dd>
+</dl>
+
+readPostSorter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; STM (IntMap "Letter":Data-Notifications.html#t:Letter)
+
+modifyPostSorter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; (IntMap "Letter":Data-Notifications.html#t:Letter -&gt; IntMap "Letter":Data-Notifications.html#t:Letter) -&gt; STM ()
+
+writePostSorter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; IntMap "Letter":Data-Notifications.html#t:Letter -&gt; STM ()
+
+readUserBoxes :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; STM (IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int)))
+
+modifyUserBoxes :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; (IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int)) -&gt; IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int))) -&gt; STM ()
+
+writeUserBoxes :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; IntMap (TVar ("LimitList":Data-LimitList.html#t:LimitList Int)) -&gt; STM ()
+
+readPrioService :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; STM ("Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int)
+
+modifyPrioService :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; ("Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int -&gt; "Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int) -&gt; STM ()
+
+writePrioService :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "Prio":Data-PriorityQueue.html#t:Prio "Time":Data-Notifications.html#t:Time Int -&gt; STM ()
+
+modifyLetter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; Int -&gt; ("Letter":Data-Notifications.html#t:Letter -&gt; "Letter":Data-Notifications.html#t:Letter) -&gt; STM ()
+
+deleteLetter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; Int -&gt; STM ()
+
+type UserId = Integer
+
+getId :: "Letter":Data-Notifications.html#t:Letter -&gt; Int
+
+withPriority :: Monad m =&gt; "Letter":Data-Notifications.html#t:Letter -&gt; ("Time":Data-Notifications.html#t:Time -&gt; m ()) -&gt; m ()
+
+getPrio :: "Letter":Data-Notifications.html#t:Letter -&gt; Maybe "Time":Data-Notifications.html#t:Time
+
+newtype PostOffice
+
+Constructors
+
+PO
+
+ 
+
+Fields
+
+<dl>
+<dt>closePostOffice :: ("PrioService":Data-Notifications.html#t:PrioService, "PostSorter":Data-Notifications.html#t:PostSorter, "UserBoxes":Data-Notifications.html#t:UserBoxes)</dt>
+<dd><p>close the post office</p></dd>
+</dl>
+
+sendLocal :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; IO ()
+
+openPostOffice :: IO "PostOffice":Data-Notifications.html#t:PostOffice
+
+open the post office
+
+sendLetter :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Letter":Data-Notifications.html#t:Letter
+
+send a message to that users
+
+sendCentral :: "UserId":Data-Notifications.html#t:UserId -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Letter":Data-Notifications.html#t:Letter
+
+setRead :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+setArchive :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+checkMailBox :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Letters":Data-Notifications.html#t:Letters
+
+receive your messages
+
+haulPost :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "UserId":Data-Notifications.html#t:UserId -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+Get post from the regional office (database)
+
+extractSince :: "Time":Data-Notifications.html#t:Time -&gt; "PostOffice":Data-Notifications.html#t:PostOffice -&gt; STM [Int]
+
+goin'Postal :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; IO ()
+
+clean up that postoffice a bit
+
+sendBulkMail :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+Sending bulk mail to everybody
+
+sendBulkLocal :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; IO ()
+
+sendBulkCentral :: "PostOffice":Data-Notifications.html#t:PostOffice -&gt; "Letter":Data-Notifications.html#t:Letter -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+milliTime :: "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Time":Data-Notifications.html#t:Time
+
+Some tools
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,46 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.ComposeModel
+
+h1. Documentation
+
+action :: "ToInRule":Data-InRules.html#t:ToInRule a =&gt; String -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c a -&gt; "ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c a
+
+label :: "ToInRule":Data-InRules.html#t:ToInRule a =&gt; String -&gt; a -&gt; "ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c ()
+
+runComposeMonad :: (Applicative m, MonadIO m, "IConnection":Data-SqlTransaction.html#t:IConnection conn) =&gt; "Lock":LockSnaplet.html#t:Lock -&gt; "ComposeMonad":Data-ComposeModel.html#t:ComposeMonad a conn a -&gt; (String -&gt; m (HashMap String "InRule":Data-InRules.html#t:InRule)) -&gt; conn -&gt; m (HashMap String "InRule":Data-InRules.html#t:InRule)
+
+data ComposeMonad r c a
+
+Instances
+
+
+|MonadReader c ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|MonadError String ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|MonadWriter ComposeMap ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|Monad ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|Functor ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|MonadPlus ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|Applicative ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|Alternative ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|MonadIO ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|MonadCont ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c)| |
+|Monoid ("ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c ())| |
+
+
+deep :: String -&gt; "ComposeMonad":Data-ComposeModel.html#t:ComposeMonad a "Connection":Data-SqlTransaction.html#t:Connection a -&gt; "ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r "Connection":Data-SqlTransaction.html#t:Connection ()
+
+abort :: r -&gt; "ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c a
+
+liftDb :: "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c a -&gt; "ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c a
+
+getComposeUser :: "ComposeMonad":Data-ComposeModel.html#t:ComposeMonad r c "Lock":LockSnaplet.html#t:Lock
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

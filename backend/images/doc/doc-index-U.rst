@@ -1,0 +1,96 @@
+===========
+(Index - U)
+===========
+
+-  `Contents <index.html>`__
+-  `Index <doc-index.html>`__
+
+ 
+
+-  `A <doc-index-A.html>`__
+-  `B <doc-index-B.html>`__
+-  `C <doc-index-C.html>`__
+-  `D <doc-index-D.html>`__
+-  `E <doc-index-E.html>`__
+-  `F <doc-index-F.html>`__
+-  `G <doc-index-G.html>`__
+-  `H <doc-index-H.html>`__
+-  `I <doc-index-I.html>`__
+-  `J <doc-index-J.html>`__
+-  `K <doc-index-K.html>`__
+-  `L <doc-index-L.html>`__
+-  `M <doc-index-M.html>`__
+-  `N <doc-index-N.html>`__
+-  `O <doc-index-O.html>`__
+-  `P <doc-index-P.html>`__
+-  `Q <doc-index-Q.html>`__
+-  `R <doc-index-R.html>`__
+-  `S <doc-index-S.html>`__
+-  `T <doc-index-T.html>`__
+-  `U <doc-index-U.html>`__
+-  `V <doc-index-V.html>`__
+-  `W <doc-index-W.html>`__
+-  `Z <doc-index-Z.html>`__
+-  `\* <doc-index-42.html>`__
+-  `. <doc-index-46.html>`__
+-  `< <doc-index-60.html>`__
+-  `= <doc-index-61.html>`__
+-  `\| <doc-index-124.html>`__
+-  `\_ <doc-index-95.html>`__
+-  `All <doc-index-All.html>`__
+
+Index - U
+
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| UError                 | `Data.SqlTransaction <Data-SqlTransaction.html#v:UError>`__                                                  |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unConnectionContext    | `Data.ConnectionPool <Data-ConnectionPool.html#v:unConnectionContext>`__                                     |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unConnectionPool       | `Data.ConnectionPool <Data-ConnectionPool.html#v:unConnectionPool>`__                                        |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unHS                   | `Data.Hstore <Data-Hstore.html#v:unHS>`__                                                                    |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unIM                   | `Data.InRules <Data-InRules.html#v:unIM>`__, `Data.Conversion <Data-Conversion.html#v:unIM>`__               |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unionObj               | `Data.InRules <Data-InRules.html#v:unionObj>`__, `Data.Conversion <Data-Conversion.html#v:unionObj>`__       |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unionRecObj            | `Data.InRules <Data-InRules.html#v:unionRecObj>`__                                                           |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unionsObj              | `Data.InRules <Data-InRules.html#v:unionsObj>`__, `Data.Conversion <Data-Conversion.html#v:unionsObj>`__     |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unit                   | `Model.ParameterTable <Model-ParameterTable.html#v:unit>`__                                                  |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unite                  | `Data.Relation <Data-Relation.html#v:unite>`__                                                               |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unPM                   | `Data.InRules <Data-InRules.html#v:unPM>`__, `Data.Conversion <Data-Conversion.html#v:unPM>`__               |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unReadable             | `Data.InRules <Data-InRules.html#v:unReadable>`__, `Data.Conversion <Data-Conversion.html#v:unReadable>`__   |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unsafeGetConnection    | `Data.ConnectionPool <Data-ConnectionPool.html#v:unsafeGetConnection>`__                                     |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| unwrapContext          | `Data.ConnectionPool <Data-ConnectionPool.html#v:unwrapContext>`__                                           |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| Update                 |                                                                                                              |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| 1 (Type/Class)         | `Data.Database <Data-Database.html#t:Update>`__                                                              |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| 2 (Data Constructor)   | `Data.Database <Data-Database.html#v:Update>`__                                                              |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| update                 | `Data.Database <Data-Database.html#v:update>`__                                                              |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| updateHashMap          | `Model.General <Model-General.html#v:updateHashMap>`__                                                       |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| updateMap              | `Model.General <Model-General.html#v:updateMap>`__                                                           |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| Updates                | `Data.Database <Data-Database.html#v:Updates>`__                                                             |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| updates                | `Data.Database <Data-Database.html#v:updates>`__                                                             |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| uploadImage            | `ImageSnapLet <ImageSnapLet.html#v:uploadImage>`__                                                           |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| upsert                 | `Data.Database <Data-Database.html#v:upsert>`__                                                              |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+| upsertWithTables       | `Model.TH <Model-TH.html#v:upsertWithTables>`__                                                              |
++------------------------+--------------------------------------------------------------------------------------------------------------+
+
+Produced by `Haddock <http://www.haskell.org/haddock/>`__ version 2.11.0

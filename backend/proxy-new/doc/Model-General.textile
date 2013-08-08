@@ -1,0 +1,90 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.General
+
+h1. Documentation
+
+class "IConnection":Data-SqlTransaction.html#t:IConnection c =&gt; Database c a &#124; a -&gt; c where
+
+Methods
+
+save :: a -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c Integer
+
+load :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c (Maybe a)
+
+search :: "Constraints":Data-Database.html#t:Constraints -&gt; "Orders":Data-Database.html#t:Orders -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c [a]
+
+delete :: a -&gt; "Constraints":Data-Database.html#t:Constraints -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c ()
+
+fields :: a -&gt; [(String, String)]
+
+tableName :: a -&gt; String
+
+Instances
+
+
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Application":Model-Application.html#t:Application| |
+
+
+class Mapable a where
+
+Methods
+
+fromMap :: Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe a
+
+toMap :: a -&gt; Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+fromHashMap :: HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe a
+
+toHashMap :: a -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+updateMap :: Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; a -&gt; a
+
+updateHashMap :: HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; a -&gt; a
+
+Instances
+
+
+|"Mapable":Model-General.html#t:Mapable "Application":Model-Application.html#t:Application| |
+
+
+type Id = Maybe Integer
+
+nlookup :: Convertible "SqlValue":Data-SqlTransaction.html#t:SqlValue a =&gt; String -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe a
+
+nempty :: HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+htsql :: Convertible a "SqlValue":Data-SqlTransaction.html#t:SqlValue =&gt; a -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+thsql :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Integer
+
+ninsert :: (Eq k, Hashable k) =&gt; k -&gt; v -&gt; HashMap k v -&gt; HashMap k v
+
+sinsert :: Ord k =&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
+
+mlookup :: Convertible "SqlValue":Data-SqlTransaction.html#t:SqlValue a =&gt; String -&gt; Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe a
+
+mco :: Functor f =&gt; f "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; f Integer
+
+mfp :: (Functor f, "Mapable":Model-General.html#t:Mapable a) =&gt; f [HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue] -&gt; f [a]
+
+nhead :: (Functor f, "Mapable":Model-General.html#t:Mapable a) =&gt; f [HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue] -&gt; f (Maybe a)
+
+sempty :: Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+aget :: "Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection a =&gt; "Constraints":Data-Database.html#t:Constraints -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a
+
+agetlist :: "Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection a =&gt; "Constraints":Data-Database.html#t:Constraints -&gt; "Orders":Data-Database.html#t:Orders -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [a] -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [a]
+
+aload :: "Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection a =&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a
+
+adeny :: "Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection a =&gt; "Constraints":Data-Database.html#t:Constraints -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [a] -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [a]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

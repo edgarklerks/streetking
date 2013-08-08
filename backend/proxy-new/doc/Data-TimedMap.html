@@ -1,0 +1,662 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.TimedMap</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-TimedMap.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.TimedMap</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:TimedMap"
+	    >TimedMap</a
+	    > k a = <a href="#v:TimedMap"
+	    >TimedMap</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unTimeMap"
+		>unTimeMap</a
+		> :: TVar (<a href="Data-TimedMap.html#t:TMap"
+		>TMap</a
+		> k a)</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > k a = IO [(Int64, k, a)]</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > k a = [(Int64, k, a)] -&gt; IO ()</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:TMap"
+	    >TMap</a
+	    > k a = <a href="#v:TMap"
+	    >TMap</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unTMap"
+		>unTMap</a
+		> :: (Map k Int64, Map k a)</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:newTimedMap"
+	    >newTimedMap</a
+	    > :: Ord k =&gt; IO (<a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a)</li
+	  ><li class="src short"
+	  ><a href="#v:getTimeStamp"
+	    >getTimeStamp</a
+	    > :: IO Int64</li
+	  ><li class="src short"
+	  ><a href="#v:withNow0"
+	    >withNow0</a
+	    > ::  (a -&gt; Int64 -&gt; IO b) -&gt; a -&gt; IO b</li
+	  ><li class="src short"
+	  ><a href="#v:withNow1"
+	    >withNow1</a
+	    > ::  (a -&gt; Int64 -&gt; b -&gt; IO c) -&gt; a -&gt; b -&gt; IO c</li
+	  ><li class="src short"
+	  ><a href="#v:withNow2"
+	    >withNow2</a
+	    > ::  (a -&gt; Int64 -&gt; b -&gt; c -&gt; IO d) -&gt; a -&gt; b -&gt; c -&gt; IO d</li
+	  ><li class="src short"
+	  ><a href="#v:withNow3"
+	    >withNow3</a
+	    > ::  (a -&gt; Int64 -&gt; b -&gt; c -&gt; d -&gt; IO e) -&gt; a -&gt; b -&gt; c -&gt; d -&gt; IO e</li
+	  ><li class="src short"
+	  ><a href="#v:lookup"
+	    >lookup</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM (Maybe a)</li
+	  ><li class="src short"
+	  ><a href="#v:lookupTime"
+	    >lookupTime</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM (Maybe Int64)</li
+	  ><li class="src short"
+	  ><a href="#v:lookupBoth-39-"
+	    >lookupBoth'</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM (Maybe (Int64, a))</li
+	  ><li class="src short"
+	  ><a href="#v:tupleMaybe"
+	    >tupleMaybe</a
+	    > ::  (Maybe Int64, Maybe b) -&gt; Maybe (Int64, b)</li
+	  ><li class="src short"
+	  ><a href="#v:lookupBoth"
+	    >lookupBoth</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM (Maybe Int64, Maybe a)</li
+	  ><li class="src short"
+	  ><a href="#v:insert"
+	    >insert</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; Int64 -&gt; k -&gt; a -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:cleanup"
+	    >cleanup</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; Int64 -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:updateTime"
+	    >updateTime</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; Int64 -&gt; k -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:delete"
+	    >delete</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:tlookup"
+	    >tlookup</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; k -&gt; Maybe a</li
+	  ><li class="src short"
+	  ><a href="#v:tlookupTime"
+	    >tlookupTime</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; k -&gt; Maybe Int64</li
+	  ><li class="src short"
+	  ><a href="#v:tlookupBoth"
+	    >tlookupBoth</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; k -&gt; (Maybe Int64, Maybe a)</li
+	  ><li class="src short"
+	  ><a href="#v:tinsert"
+	    >tinsert</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; Int64 -&gt; k -&gt; a -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a</li
+	  ><li class="src short"
+	  ><a href="#v:tupdateTime"
+	    >tupdateTime</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; Int64 -&gt; k -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a</li
+	  ><li class="src short"
+	  ><a href="#v:tcleanup"
+	    >tcleanup</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; Int64 -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a</li
+	  ><li class="src short"
+	  ><a href="#v:tremove"
+	    >tremove</a
+	    > :: Ord a =&gt; Int64 -&gt; Map a Int64 -&gt; (Map a Int64, [a])</li
+	  ><li class="src short"
+	  ><a href="#v:tdelete"
+	    >tdelete</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; k -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a</li
+	  ><li class="src short"
+	  ><a href="#v:storeTimedMap"
+	    >storeTimedMap</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > k a -&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:restoreTimedMap"
+	    >restoreTimedMap</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > k a -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:storeTMap"
+	    >storeTMap</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > k a -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:restoreTMap"
+	    >restoreTMap</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > k a -&gt; IO (<a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a)</li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:TimedMap" class="def"
+	    >TimedMap</a
+	    > k a </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:TimedMap" class="def"
+		  >TimedMap</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unTimeMap" class="def"
+			>unTimeMap</a
+			> :: TVar (<a href="Data-TimedMap.html#t:TMap"
+			>TMap</a
+			> k a)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:TimedMapRestore" class="def"
+	    >TimedMapRestore</a
+	    > k a = IO [(Int64, k, a)]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:TimedMapStore" class="def"
+	    >TimedMapStore</a
+	    > k a = [(Int64, k, a)] -&gt; IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:TMap" class="def"
+	    >TMap</a
+	    > k a </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:TMap" class="def"
+		  >TMap</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unTMap" class="def"
+			>unTMap</a
+			> :: (Map k Int64, Map k a)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:TMap" class="caption collapser" onclick="toggleSection('i:TMap')"
+	    >Instances</p
+	    ><div id="section.i:TMap" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >(Show k, Show a) =&gt; Show (<a href="Data-TimedMap.html#t:TMap"
+		    >TMap</a
+		    > k a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:newTimedMap" class="def"
+	    >newTimedMap</a
+	    > :: Ord k =&gt; IO (<a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a)</p
+	  ><div class="doc"
+	  ><p
+	    >creates a new timed map 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getTimeStamp" class="def"
+	    >getTimeStamp</a
+	    > :: IO Int64</p
+	  ><div class="doc"
+	  ><p
+	    >Helper function, gets a time stamp as a 64 bits  integer
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withNow0" class="def"
+	    >withNow0</a
+	    > ::  (a -&gt; Int64 -&gt; IO b) -&gt; a -&gt; IO b</p
+	  ><div class="doc"
+	  ><p
+	    >Some helper functions to work with the now 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withNow1" class="def"
+	    >withNow1</a
+	    > ::  (a -&gt; Int64 -&gt; b -&gt; IO c) -&gt; a -&gt; b -&gt; IO c</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withNow2" class="def"
+	    >withNow2</a
+	    > ::  (a -&gt; Int64 -&gt; b -&gt; c -&gt; IO d) -&gt; a -&gt; b -&gt; c -&gt; IO d</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withNow3" class="def"
+	    >withNow3</a
+	    > ::  (a -&gt; Int64 -&gt; b -&gt; c -&gt; d -&gt; IO e) -&gt; a -&gt; b -&gt; c -&gt; d -&gt; IO e</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lookup" class="def"
+	    >lookup</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM (Maybe a)</p
+	  ><div class="doc"
+	  ><p
+	    >Lookup a value from a TimedMap
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lookupTime" class="def"
+	    >lookupTime</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM (Maybe Int64)</p
+	  ><div class="doc"
+	  ><p
+	    >Lookup a time from a TimedMap
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lookupBoth-39-" class="def"
+	    >lookupBoth'</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM (Maybe (Int64, a))</p
+	  ><div class="doc"
+	  ><p
+	    >Lookup a time and other value from a TimedMap
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tupleMaybe" class="def"
+	    >tupleMaybe</a
+	    > ::  (Maybe Int64, Maybe b) -&gt; Maybe (Int64, b)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lookupBoth" class="def"
+	    >lookupBoth</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM (Maybe Int64, Maybe a)</p
+	  ><div class="doc"
+	  ><p
+	    >Lookup a time and other value from a TimedMap
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:insert" class="def"
+	    >insert</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; Int64 -&gt; k -&gt; a -&gt; STM ()</p
+	  ><div class="doc"
+	  ><p
+	    >Insert a value in a TimedMap 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:cleanup" class="def"
+	    >cleanup</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; Int64 -&gt; STM ()</p
+	  ><div class="doc"
+	  ><p
+	    >Cleanup old variables from a TimedMap, the expiration time is given  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:updateTime" class="def"
+	    >updateTime</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; Int64 -&gt; k -&gt; STM ()</p
+	  ><div class="doc"
+	  ><p
+	    >Update the time from a key 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:delete" class="def"
+	    >delete</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; k -&gt; STM ()</p
+	  ><div class="doc"
+	  ><p
+	    >Delete a key from a TimedMap
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tlookup" class="def"
+	    >tlookup</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; k -&gt; Maybe a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tlookupTime" class="def"
+	    >tlookupTime</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; k -&gt; Maybe Int64</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tlookupBoth" class="def"
+	    >tlookupBoth</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; k -&gt; (Maybe Int64, Maybe a)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tinsert" class="def"
+	    >tinsert</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; Int64 -&gt; k -&gt; a -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tupdateTime" class="def"
+	    >tupdateTime</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; Int64 -&gt; k -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tcleanup" class="def"
+	    >tcleanup</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; Int64 -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tremove" class="def"
+	    >tremove</a
+	    > :: Ord a =&gt; Int64 -&gt; Map a Int64 -&gt; (Map a Int64, [a])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tdelete" class="def"
+	    >tdelete</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; k -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:storeTimedMap" class="def"
+	    >storeTimedMap</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > k a -&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:restoreTimedMap" class="def"
+	    >restoreTimedMap</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k a -&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > k a -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >This is not an atomically safe action! Restores the map with the given handler.
+ An insert to the map will be overwritten 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:storeTMap" class="def"
+	    >storeTMap</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > k a -&gt; <a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a -&gt; IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:restoreTMap" class="def"
+	    >restoreTMap</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > k a -&gt; IO (<a href="Data-TimedMap.html#t:TMap"
+	    >TMap</a
+	    > k a)</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

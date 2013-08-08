@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.DatabaseTemplate</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-DatabaseTemplate.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.DatabaseTemplate</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:DTD" class="def"
+	    >DTD</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Con" class="def"
+		  >Con</a
+		  > <a href="Data-Database.html#t:ConOp"
+		  >ConOp</a
+		  > String <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:And" class="def"
+		  >And</a
+		  > <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  > <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Or" class="def"
+		  >Or</a
+		  > <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  > <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Lift" class="def"
+		  >Lift</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Fix" class="def"
+		  >Fix</a
+		  > <a href="Data-SqlTransaction.html#t:SqlValue"
+		  >SqlValue</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:If" class="def"
+		  >If</a
+		  > String (String -&gt; Bool) <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  > <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:OrderedBy" class="def"
+		  >OrderedBy</a
+		  > <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  > [String]</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Nop" class="def"
+		  >Nop</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:orderedBy" class="def"
+	    >orderedBy</a
+	    > :: <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; [String] -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:transformDTD" class="def"
+	    >transformDTD</a
+	    > :: (<a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    >) -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:filterDTD" class="def"
+	    >filterDTD</a
+	    > :: (<a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; Bool) -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--38--38-" class="def"
+	    >(+&amp;&amp;)</a
+	    > :: <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--124--124-" class="def"
+	    >(+||)</a
+	    > :: <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--61--61-" class="def"
+	    >(+==)</a
+	    > :: String -&gt; String -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--62--61-" class="def"
+	    >(+&gt;=)</a
+	    > :: String -&gt; String -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--62-" class="def"
+	    >(+&gt;)</a
+	    > :: String -&gt; String -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--60-" class="def"
+	    >(+&lt;)</a
+	    > :: String -&gt; String -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--60--61-" class="def"
+	    >(+&lt;=)</a
+	    > :: String -&gt; String -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--37-" class="def"
+	    >(+%)</a
+	    > :: String -&gt; String -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--37--37-" class="def"
+	    >(+%%)</a
+	    > :: String -&gt; String -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--60--62-" class="def"
+	    >(+&lt;&gt;)</a
+	    > :: String -&gt; String -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:ifdtd" class="def"
+	    >ifdtd</a
+	    > :: String -&gt; (String -&gt; Bool) -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--61--61--124-" class="def"
+	    >(+==|)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--62--61--124-" class="def"
+	    >(+&gt;=|)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--62--124-" class="def"
+	    >(+&gt;|)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--60--124-" class="def"
+	    >(+&lt;|)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--60--61--124-" class="def"
+	    >(+&lt;=|)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--37--124-" class="def"
+	    >(+%|)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--37--37--124-" class="def"
+	    >(+%%|)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--60--62--124-" class="def"
+	    >(+&lt;&gt;|)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dtd" class="def"
+	    >dtd</a
+	    > :: <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; HashMap String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-Database.html#t:Constraints"
+	    >Constraints</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:evalDTD" class="def"
+	    >evalDTD</a
+	    > :: <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; HashMap String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Maybe <a href="Data-Database.html#t:Constraint"
+	    >Constraint</a
+	    ></p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

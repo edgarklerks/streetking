@@ -1,0 +1,70 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.DataPack
+
+h1. Documentation
+
+data Data
+
+Instances
+
+
+|Eq "Data":Data-DataPack.html#t:Data| |
+|Show "Data":Data-DataPack.html#t:Data| |
+|ToJSON "Data":Data-DataPack.html#t:Data| |
+|FromJSON "Data":Data-DataPack.html#t:Data| |
+|Default "Data":Data-DataPack.html#t:Data| |
+|"FromInRule":Data-InRules.html#t:FromInRule "Data":Data-DataPack.html#t:Data| |
+|"ToInRule":Data-InRules.html#t:ToInRule "Data":Data-DataPack.html#t:Data| |
+
+
+emptyData :: "Data":Data-DataPack.html#t:Data
+
+type Pack = ByteString
+
+emptyData :: "Data":Data-DataPack.html#t:Data
+
+setField :: forall a. ToJSON a =&gt; (Key, a) -&gt; "Data":Data-DataPack.html#t:Data -&gt; "Data":Data-DataPack.html#t:Data
+
+(.&gt;) :: forall a. ToJSON a =&gt; (Key, a) -&gt; "Data":Data-DataPack.html#t:Data -&gt; "Data":Data-DataPack.html#t:Data
+
+(.&lt;) :: forall a. FromJSON a =&gt; Key -&gt; "Data":Data-DataPack.html#t:Data -&gt; Maybe a
+
+getField :: forall a. FromJSON a =&gt; Key -&gt; "Data":Data-DataPack.html#t:Data -&gt; Maybe a
+
+getFieldWithDefault :: forall a. FromJSON a =&gt; a -&gt; Key -&gt; "Data":Data-DataPack.html#t:Data -&gt; a
+
+getFieldForced :: forall a. FromJSON a =&gt; Key -&gt; "Data":Data-DataPack.html#t:Data -&gt; a
+
+(.&lt;&lt;) :: forall a. FromJSON a =&gt; Key -&gt; "Data":Data-DataPack.html#t:Data -&gt; a
+
+packData :: forall a. ToJSON a =&gt; a -&gt; "Pack":Data-DataPack.html#t:Pack
+
+unpackData :: forall a. FromJSON a =&gt; "Pack":Data-DataPack.html#t:Pack -&gt; Maybe a
+
+data DataM s a
+
+Instances
+
+
+|Monad ("DataM":Data-DataPack.html#t:DataM s)| |
+
+
+set :: forall a. ToJSON a =&gt; Key -&gt; a -&gt; "DataM":Data-DataPack.html#t:DataM "Data":Data-DataPack.html#t:Data ()
+
+get :: forall a. FromJSON a =&gt; Key -&gt; "DataM":Data-DataPack.html#t:DataM "Data":Data-DataPack.html#t:Data a
+
+readData :: "Data":Data-DataPack.html#t:Data -&gt; "DataM":Data-DataPack.html#t:DataM "Data":Data-DataPack.html#t:Data a -&gt; a
+
+withData :: "Data":Data-DataPack.html#t:Data -&gt; "DataM":Data-DataPack.html#t:DataM "Data":Data-DataPack.html#t:Data () -&gt; "Data":Data-DataPack.html#t:Data
+
+mkData :: "DataM":Data-DataPack.html#t:DataM "Data":Data-DataPack.html#t:Data () -&gt; "Data":Data-DataPack.html#t:Data
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

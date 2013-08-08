@@ -1,0 +1,67 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.TournamentResult
+
+h1. Documentation
+
+type RaceResultTuple = Maybe ("RaceParticipant":Data-RaceParticipant.html#t:RaceParticipant, "RaceResult":Data-RacingNew.html#t:RaceResult)
+
+data TournamentResult
+
+Constructors
+
+TournamentResult
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>tournament&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>race&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>participant1&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>participant2&#95;id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>round :: Integer</dt>
+<dd> </dd>
+<dt>race&#95;time1 :: Double</dt>
+<dd> </dd>
+<dt>race&#95;time2 :: Double</dt>
+<dd> </dd>
+<dt>car1&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>car2&#95;id :: Integer</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|Show "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|ToJSON "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|FromJSON "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|Default "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|"FromInRule":Data-InRules.html#t:FromInRule "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|"ToInRule":Data-InRules.html#t:ToInRule "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|"Mapable":Model-General.html#t:Mapable "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0
