@@ -18,6 +18,7 @@ import qualified Data.Relation as Rel
 
 
 type MInteger = Maybe Integer 
+type MString= Maybe String 
 
 $(genAllId "MarketPlaceCar" "market_place_car" "car_instance_id" [
         ("car_instance_id", ''Id),
@@ -31,7 +32,7 @@ $(genAllId "MarketPlaceCar" "market_place_car" "car_instance_id" [
 --        ("handling", ''Integer),
 --        ("nos", ''Integer),
         ("weight", ''Integer),
-        ("manufacturer_name", ''String),
+        ("manufacturer_name", ''MString),
         ("level", ''Integer),
         ("year", ''Integer),
         ("wear", ''Integer),
