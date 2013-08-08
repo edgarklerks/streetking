@@ -20,6 +20,7 @@ import Data.SqlTransaction as S
 -- import Model.GetViews  
 import Control.Monad.Trans
 import qualified Data.Relation as Rel
+import Debug.Trace 
 
 {--
 getUpdateStatements :: String -> Q [(String, [String])]
