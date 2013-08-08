@@ -18,6 +18,7 @@ import qualified Data.Relation as Rel
 import qualified Data.Relation as Rel
 
 type MString = Maybe String 
+type MInteger = Maybe Integer 
 
 $(genAll "Account" "account" [
                     ("id", ''Id),
@@ -44,7 +45,7 @@ $(genAll "Account" "account" [
                     ("password", ''String),
                     ("email", ''String),
                     ("skill_unused", ''Integer),
-                    ("city", ''Integer),
+                    ("city", ''MInteger),
                     ("busy_type", ''Integer),
                     ("busy_subject_id", ''Integer),
                     ("free_car", ''Bool)

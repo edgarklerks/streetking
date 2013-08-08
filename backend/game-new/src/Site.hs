@@ -1561,7 +1561,7 @@ cityTravel = do
                                         [] -> rollback "Cannot find city, is it lost?"
                                         [city] -> do
                                                 when ( (TCY.city_level city) > (A.level a)) $ rollback "Kid, you're not ready for this city"
-                                                save $ a { A.city = TCY.city_id city }
+                                                save $ a { A.city = Just $ TCY.city_id city }
                                                 return True 
         t <- tr
         writeResult ("you travel to the city" :: String)
