@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.ConnectionPool</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-ConnectionPool.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.ConnectionPool</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><a name="v:c" class="def"
+	    >c</a
+	    > :: IO <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:happyTest" class="def"
+	    >happyTest</a
+	    > :: IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Pointer" class="def"
+	    >Pointer</a
+	    > = Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:ConnectionContext" class="def"
+	    >ConnectionContext</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:ConnectionContext" class="def"
+		  >ConnectionContext</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unConnectionContext" class="def"
+			>unConnectionContext</a
+			> :: (Int, <a href="Data-SqlTransaction.html#t:Connection"
+			>Connection</a
+			>)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:ConnectionBucket" class="def"
+	    >ConnectionBucket</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Empty" class="def"
+		  >Empty</a
+		  > <a href="Data-SqlTransaction.html#t:Connection"
+		  >Connection</a
+		  > Int</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Filled" class="def"
+		  >Filled</a
+		  > <a href="Data-SqlTransaction.html#t:Connection"
+		  >Connection</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ConnectionBucket" class="caption collapser" onclick="toggleSection('i:ConnectionBucket')"
+	    >Instances</p
+	    ><div id="section.i:ConnectionBucket" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-ConnectionPool.html#t:ConnectionBucket"
+		    >ConnectionBucket</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:ConnectionPool" class="def"
+	    >ConnectionPool</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:ConnectionPool" class="def"
+		  >ConnectionPool</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unConnectionPool" class="def"
+			>unConnectionPool</a
+			> :: (TQueue <a href="Data-ConnectionPool.html#t:Pointer"
+			>Pointer</a
+			>, TArray Int <a href="Data-ConnectionPool.html#t:ConnectionBucket"
+			>ConnectionBucket</a
+			>)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initConnectionPool" class="def"
+	    >initConnectionPool</a
+	    > :: Int -&gt; IO <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > -&gt; IO <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:emptyConnectionBucket" class="def"
+	    >emptyConnectionBucket</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    > -&gt; Int -&gt; Int -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fillConnectionBucket" class="def"
+	    >fillConnectionBucket</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    > -&gt; Int -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:reviveConnection" class="def"
+	    >reviveConnection</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    > -&gt; <a href="Data-ConnectionPool.html#t:ConnectionContext"
+	    >ConnectionContext</a
+	    > -&gt; IO <a href="Data-ConnectionPool.html#t:ConnectionContext"
+	    >ConnectionContext</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:putConnection" class="def"
+	    >putConnection</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    > -&gt; Int -&gt; <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getConnection" class="def"
+	    >getConnection</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    > -&gt; IO <a href="Data-ConnectionPool.html#t:ConnectionContext"
+	    >ConnectionContext</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:returnConnection" class="def"
+	    >returnConnection</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    > -&gt; <a href="Data-ConnectionPool.html#t:ConnectionContext"
+	    >ConnectionContext</a
+	    > -&gt; IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:unwrapContext" class="def"
+	    >unwrapContext</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionContext"
+	    >ConnectionContext</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:unsafeGetConnection" class="def"
+	    >unsafeGetConnection</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    > -&gt; Int -&gt; STM <a href="Data-ConnectionPool.html#t:ConnectionContext"
+	    >ConnectionContext</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initConnectionReclaimer" class="def"
+	    >initConnectionReclaimer</a
+	    > :: <a href="Data-ConnectionPool.html#t:ConnectionPool"
+	    >ConnectionPool</a
+	    > -&gt; Int -&gt; IO ThreadId</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

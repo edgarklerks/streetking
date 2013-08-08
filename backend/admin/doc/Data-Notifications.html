@@ -1,0 +1,1017 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.Notifications</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-Notifications.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.Notifications</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Letters"
+	    >Letters</a
+	    > = [<a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    >]</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Letter"
+	    >Letter</a
+	    > = <a href="Model-PreLetter.html#t:PreLetter"
+	    >PreLetter</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Time"
+	    >Time</a
+	    > = Integer</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:PrioService"
+	    >PrioService</a
+	    >  = <a href="#v:PQS"
+	    >PQS</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:runPrioService"
+		>runPrioService</a
+		> :: TVar (<a href="Data-PriorityQueue.html#t:Prio"
+		>Prio</a
+		> <a href="Data-Notifications.html#t:Time"
+		>Time</a
+		> Int)</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:PostSorter"
+	    >PostSorter</a
+	    >  = <a href="#v:PS"
+	    >PS</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:runPostSorter"
+		>runPostSorter</a
+		> :: TVar (IntMap <a href="Data-Notifications.html#t:Letter"
+		>Letter</a
+		>)</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:UserBoxes"
+	    >UserBoxes</a
+	    >  = <a href="#v:UB"
+	    >UB</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:runUserBoxes"
+		>runUserBoxes</a
+		> :: TVar (IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+		>LimitList</a
+		> Int)))</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:readPostSorter"
+	    >readPostSorter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; STM (IntMap <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:modifyPostSorter"
+	    >modifyPostSorter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; (IntMap <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; IntMap <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    >) -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:writePostSorter"
+	    >writePostSorter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; IntMap <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:readUserBoxes"
+	    >readUserBoxes</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; STM (IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+	    >LimitList</a
+	    > Int)))</li
+	  ><li class="src short"
+	  ><a href="#v:modifyUserBoxes"
+	    >modifyUserBoxes</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; (IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+	    >LimitList</a
+	    > Int)) -&gt; IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+	    >LimitList</a
+	    > Int))) -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:writeUserBoxes"
+	    >writeUserBoxes</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+	    >LimitList</a
+	    > Int)) -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:readPrioService"
+	    >readPrioService</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; STM (<a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > Int)</li
+	  ><li class="src short"
+	  ><a href="#v:modifyPrioService"
+	    >modifyPrioService</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; (<a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > Int -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > Int) -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:writePrioService"
+	    >writePrioService</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > Int -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:modifyLetter"
+	    >modifyLetter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; Int -&gt; (<a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    >) -&gt; STM ()</li
+	  ><li class="src short"
+	  ><a href="#v:deleteLetter"
+	    >deleteLetter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; Int -&gt; STM ()</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:UserId"
+	    >UserId</a
+	    > = Integer</li
+	  ><li class="src short"
+	  ><a href="#v:getId"
+	    >getId</a
+	    > :: <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; Int</li
+	  ><li class="src short"
+	  ><a href="#v:withPriority"
+	    >withPriority</a
+	    > :: Monad m =&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; (<a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > -&gt; m ()) -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:getPrio"
+	    >getPrio</a
+	    > :: <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; Maybe <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:PostOffice"
+	    >PostOffice</a
+	    >  = <a href="#v:PO"
+	    >PO</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:closePostOffice"
+		>closePostOffice</a
+		> :: (<a href="Data-Notifications.html#t:PrioService"
+		>PrioService</a
+		>, <a href="Data-Notifications.html#t:PostSorter"
+		>PostSorter</a
+		>, <a href="Data-Notifications.html#t:UserBoxes"
+		>UserBoxes</a
+		>)</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:sendLocal"
+	    >sendLocal</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:openPostOffice"
+	    >openPostOffice</a
+	    > :: IO <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:sendLetter"
+	    >sendLetter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:sendCentral"
+	    >sendCentral</a
+	    > :: <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:setRead"
+	    >setRead</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:setArchive"
+	    >setArchive</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:checkMailBox"
+	    >checkMailBox</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-Notifications.html#t:Letters"
+	    >Letters</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:haulPost"
+	    >haulPost</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:extractSince"
+	    >extractSince</a
+	    > :: <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > -&gt; <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; STM [Int]</li
+	  ><li class="src short"
+	  ><a href="#v:goin-39-Postal"
+	    >goin'Postal</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:sendBulkMail"
+	    >sendBulkMail</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:sendBulkLocal"
+	    >sendBulkLocal</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:sendBulkCentral"
+	    >sendBulkCentral</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:milliTime"
+	    >milliTime</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    ></li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Letters" class="def"
+	    >Letters</a
+	    > = [<a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Letter" class="def"
+	    >Letter</a
+	    > = <a href="Model-PreLetter.html#t:PreLetter"
+	    >PreLetter</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Time" class="def"
+	    >Time</a
+	    > = Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:PrioService" class="def"
+	    >PrioService</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:PQS" class="def"
+		  >PQS</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:runPrioService" class="def"
+			>runPrioService</a
+			> :: TVar (<a href="Data-PriorityQueue.html#t:Prio"
+			>Prio</a
+			> <a href="Data-Notifications.html#t:Time"
+			>Time</a
+			> Int)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:PostSorter" class="def"
+	    >PostSorter</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:PS" class="def"
+		  >PS</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:runPostSorter" class="def"
+			>runPostSorter</a
+			> :: TVar (IntMap <a href="Data-Notifications.html#t:Letter"
+			>Letter</a
+			>)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:UserBoxes" class="def"
+	    >UserBoxes</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:UB" class="def"
+		  >UB</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:runUserBoxes" class="def"
+			>runUserBoxes</a
+			> :: TVar (IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+			>LimitList</a
+			> Int)))</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:readPostSorter" class="def"
+	    >readPostSorter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; STM (IntMap <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:modifyPostSorter" class="def"
+	    >modifyPostSorter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; (IntMap <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; IntMap <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    >) -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writePostSorter" class="def"
+	    >writePostSorter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; IntMap <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:readUserBoxes" class="def"
+	    >readUserBoxes</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; STM (IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+	    >LimitList</a
+	    > Int)))</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:modifyUserBoxes" class="def"
+	    >modifyUserBoxes</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; (IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+	    >LimitList</a
+	    > Int)) -&gt; IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+	    >LimitList</a
+	    > Int))) -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeUserBoxes" class="def"
+	    >writeUserBoxes</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; IntMap (TVar (<a href="Data-LimitList.html#t:LimitList"
+	    >LimitList</a
+	    > Int)) -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:readPrioService" class="def"
+	    >readPrioService</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; STM (<a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > Int)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:modifyPrioService" class="def"
+	    >modifyPrioService</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; (<a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > Int -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > Int) -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writePrioService" class="def"
+	    >writePrioService</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-PriorityQueue.html#t:Prio"
+	    >Prio</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > Int -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:modifyLetter" class="def"
+	    >modifyLetter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; Int -&gt; (<a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    >) -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:deleteLetter" class="def"
+	    >deleteLetter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; Int -&gt; STM ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:UserId" class="def"
+	    >UserId</a
+	    > = Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getId" class="def"
+	    >getId</a
+	    > :: <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withPriority" class="def"
+	    >withPriority</a
+	    > :: Monad m =&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; (<a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > -&gt; m ()) -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getPrio" class="def"
+	    >getPrio</a
+	    > :: <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; Maybe <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:PostOffice" class="def"
+	    >PostOffice</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:PO" class="def"
+		  >PO</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:closePostOffice" class="def"
+			>closePostOffice</a
+			> :: (<a href="Data-Notifications.html#t:PrioService"
+			>PrioService</a
+			>, <a href="Data-Notifications.html#t:PostSorter"
+			>PostSorter</a
+			>, <a href="Data-Notifications.html#t:UserBoxes"
+			>UserBoxes</a
+			>)</dt
+		      ><dd class="doc"
+		      ><p
+			>close the post office 
+</p
+			></dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendLocal" class="def"
+	    >sendLocal</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:openPostOffice" class="def"
+	    >openPostOffice</a
+	    > :: IO <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >open the post office 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendLetter" class="def"
+	    >sendLetter</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >send a message to that users 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendCentral" class="def"
+	    >sendCentral</a
+	    > :: <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:setRead" class="def"
+	    >setRead</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:setArchive" class="def"
+	    >setArchive</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:checkMailBox" class="def"
+	    >checkMailBox</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-Notifications.html#t:Letters"
+	    >Letters</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >receive your messages 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:haulPost" class="def"
+	    >haulPost</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Get post from the regional office (database)
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:extractSince" class="def"
+	    >extractSince</a
+	    > :: <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    > -&gt; <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; STM [Int]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:goin-39-Postal" class="def"
+	    >goin'Postal</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >clean up that postoffice a bit 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendBulkMail" class="def"
+	    >sendBulkMail</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Sending bulk mail to everybody 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendBulkLocal" class="def"
+	    >sendBulkLocal</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendBulkCentral" class="def"
+	    >sendBulkCentral</a
+	    > :: <a href="Data-Notifications.html#t:PostOffice"
+	    >PostOffice</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:milliTime" class="def"
+	    >milliTime</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-Notifications.html#t:Time"
+	    >Time</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Some tools 
+</p
+	    ></div
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

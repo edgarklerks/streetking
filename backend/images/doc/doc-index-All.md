@@ -1,0 +1,646 @@
+-   [Contents](index.html)
+-   [Index](doc-index.html)
+
+ 
+
+Index
+
+||
+|\*%%\*|[Data.Relation](Data-Relation.html#v:-42--37--37--42-)|
+|\*%%||[Data.Relation](Data-Relation.html#v:-42--37--37--124-)|
+|\*%\*|[Data.Relation](Data-Relation.html#v:-42--37--42-)|
+|\*%||[Data.Relation](Data-Relation.html#v:-42--37--124-)|
+|\*\<\*|[Data.Relation](Data-Relation.html#v:-42--60--42-)|
+|\*\<=\*|[Data.Relation](Data-Relation.html#v:-42--60--61--42-)|
+|\*\<=||[Data.Relation](Data-Relation.html#v:-42--60--61--124-)|
+|\*\<\>\*|[Data.Relation](Data-Relation.html#v:-42--60--62--42-)|
+|\*\<\>||[Data.Relation](Data-Relation.html#v:-42--60--62--124-)|
+|\*\<||[Data.Relation](Data-Relation.html#v:-42--60--124-)|
+|\*==\*|[Data.Relation](Data-Relation.html#v:-42--61--61--42-)|
+|\*==||[Data.Relation](Data-Relation.html#v:-42--61--61--124-)|
+|\*\>\*|[Data.Relation](Data-Relation.html#v:-42--62--42-)|
+|\*\>=\*|[Data.Relation](Data-Relation.html#v:-42--62--61--42-)|
+|\*\>=||[Data.Relation](Data-Relation.html#v:-42--62--61--124-)|
+|\*\>||[Data.Relation](Data-Relation.html#v:-42--62--124-)|
+|.\#\>|[Data.Database](Data-Database.html#v:.-35--62-)|
+|.&&|[Data.Database](Data-Database.html#v:.-38--38-)|
+|.\*|[Data.Database](Data-Database.html#v:.-42-)|
+|.-\>|[Data.Database](Data-Database.html#v:.-45--62-)|
+|..\>|[Data.InRules](Data-InRules.html#v:..-62-), [Data.Conversion](Data-Conversion.html#v:..-62-)|
+|.\>|[Data.InRules](Data-InRules.html#v:.-62-), [Data.Conversion](Data-Conversion.html#v:.-62-)|
+|.\>\>|[Data.InRules](Data-InRules.html#v:.-62--62-), [Data.Conversion](Data-Conversion.html#v:.-62--62-)|
+|.|||[Data.Database](Data-Database.html#v:.-124--124-)|
+|\<&&\>|[Data.Relation](Data-Relation.html#v:-60--38--38--62-)|
+|\<||[Data.And](Data-And.html#v:-60--124-)|
+|\<||\>|[Data.Relation](Data-Relation.html#v:-60--124--124--62-)|
+|==\>|[Data.InRules](Data-InRules.html#v:-61--61--62-), [Data.Conversion](Data-Conversion.html#v:-61--61--62-)|
+|Accept|[Data.InRules](Data-InRules.html#v:Accept), [Data.Conversion](Data-Conversion.html#v:Accept)|
+|accept|[Data.InRules](Data-InRules.html#v:accept), [Data.Conversion](Data-Conversion.html#v:accept)|
+|acceptor|[Data.InRules](Data-InRules.html#v:acceptor), [Data.Conversion](Data-Conversion.html#v:acceptor)|
+|AccessExclusive|[Data.SqlTransaction](Data-SqlTransaction.html#v:AccessExclusive)|
+|AccessShare|[Data.SqlTransaction](Data-SqlTransaction.html#v:AccessShare)|
+|adeny|[Model.General](Model-General.html#v:adeny)|
+|aget|[Model.General](Model-General.html#v:aget)|
+|agetlist|[Model.General](Model-General.html#v:agetlist)|
+|allowedTypes|[ImageSnapLet](ImageSnapLet.html#v:allowedTypes)|
+|aload|[Model.General](Model-General.html#v:aload)|
+|alter|[Data.InRules](Data-InRules.html#v:alter), [Data.Conversion](Data-Conversion.html#v:alter)|
+|alternate|[Data.Tools](Data-Tools.html#v:alternate)|
+|And| |
+|1 (Type/Class)|[Data.And](Data-And.html#t:And)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:And)|
+|and|[Data.Relation](Data-Relation.html#v:and)|
+|andcf|[Data.Tools](Data-Tools.html#v:andcf)|
+|apoint|[Data.InRules](Data-InRules.html#v:apoint), [Data.Conversion](Data-Conversion.html#v:apoint)|
+|App| |
+|1 (Type/Class)|[Application](Application.html#t:App)|
+|2 (Data Constructor)|[Application](Application.html#v:App)|
+|app|[Site](Site.html#v:app)|
+|AppHandler|[Application](Application.html#t:AppHandler)|
+|Application| |
+|1 (Type/Class)|[Model.Application](Model-Application.html#t:Application)|
+|2 (Data Constructor)|[Model.Application](Model-Application.html#v:Application)|
+|ArrayC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:ArrayC), [ConfigSnaplet](ConfigSnaplet.html#v:ArrayC)|
+|arrayToObj|[Data.InRules](Data-InRules.html#v:arrayToObj)|
+|as|[Data.Relation](Data-Relation.html#v:as)|
+|Asc|[Data.Relation](Data-Relation.html#v:Asc)|
+|asc|[Data.Database](Data-Database.html#v:asc)|
+|asReadable|[Data.InRules](Data-InRules.html#v:asReadable), [Data.Conversion](Data-Conversion.html#v:asReadable)|
+|assert|[Data.Tools](Data-Tools.html#v:assert)|
+|Assign|[Data.Database](Data-Database.html#v:Assign)|
+|Assignment|[Data.Database](Data-Database.html#t:Assignment)|
+|Assignments|[Data.Database](Data-Database.html#t:Assignments)|
+|assigns|[Data.Database](Data-Database.html#v:assigns)|
+|Assoc|[Data.InRules](Data-InRules.html#v:Assoc), [Data.Conversion](Data-Conversion.html#v:Assoc)|
+|atomical|[Data.SqlTransaction](Data-SqlTransaction.html#v:atomical)|
+|between|[Data.Tools](Data-Tools.html#v:between)|
+|BoolC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:BoolC), [ConfigSnaplet](ConfigSnaplet.html#v:BoolC)|
+|c|[Data.ConnectionPool](Data-ConnectionPool.html#v:c)|
+|CarInstance| |
+|1 (Type/Class)|[Model.CarInstance](Model-CarInstance.html#t:CarInstance)|
+|2 (Data Constructor)|[Model.CarInstance](Model-CarInstance.html#v:CarInstance)|
+|car\_id|[Model.CarInstance](Model-CarInstance.html#v:car_id)|
+|catchSqlError|[Data.SqlTransaction](Data-SqlTransaction.html#v:catchSqlError)|
+|CE|[Data.Tools](Data-Tools.html#v:CE)|
+|cEQ|[Data.Database](Data-Database.html#v:cEQ)|
+|CF|[Data.Tools](Data-Tools.html#v:CF)|
+|CFilter| |
+|1 (Type/Class)|[Data.Tools](Data-Tools.html#t:CFilter)|
+|2 (Data Constructor)|[Data.Tools](Data-Tools.html#v:CFilter)|
+|cfilter|[Data.Tools](Data-Tools.html#v:cfilter)|
+|cfilterPure|[Data.Tools](Data-Tools.html#v:cfilterPure)|
+|cfmap|[Data.Tools](Data-Tools.html#v:cfmap)|
+|cGT|[Data.Database](Data-Database.html#v:cGT)|
+|cGTE|[Data.Database](Data-Database.html#v:cGTE)|
+|CheckException|[Data.Tools](Data-Tools.html#t:CheckException)|
+|checkTables|[Model.TH](Model-TH.html#v:checkTables)|
+|cIn|[Data.Database](Data-Database.html#v:cIn)|
+|cIni|[Data.Database](Data-Database.html#v:cIni)|
+|cInList|[Data.Database](Data-Database.html#v:cInList)|
+|ckey|[Data.InRules](Data-InRules.html#v:ckey)|
+|cLT|[Data.Database](Data-Database.html#v:cLT)|
+|cLTE|[Data.Database](Data-Database.html#v:cLTE)|
+|cNEQ|[Data.Database](Data-Database.html#v:cNEQ)|
+|column|[Data.Database](Data-Database.html#v:column)|
+|commit|[Data.SqlTransaction](Data-SqlTransaction.html#v:commit)|
+|Config|[Config.ConfigFileParser](Config-ConfigFileParser.html#t:Config), [ConfigSnaplet](ConfigSnaplet.html#t:Config)|
+|config|[Application](Application.html#v:config)|
+|configData|[ConfigSnaplet](ConfigSnaplet.html#v:configData)|
+|configDir|[ConfigSnaplet](ConfigSnaplet.html#v:configDir)|
+|ConfigSnaplet| |
+|1 (Type/Class)|[ConfigSnaplet](ConfigSnaplet.html#t:ConfigSnaplet)|
+|2 (Data Constructor)|[ConfigSnaplet](ConfigSnaplet.html#v:ConfigSnaplet)|
+|Connection|[Data.SqlTransaction](Data-SqlTransaction.html#t:Connection)|
+|ConnectionBucket|[Data.ConnectionPool](Data-ConnectionPool.html#t:ConnectionBucket)|
+|ConnectionContext| |
+|1 (Type/Class)|[Data.ConnectionPool](Data-ConnectionPool.html#t:ConnectionContext)|
+|2 (Data Constructor)|[Data.ConnectionPool](Data-ConnectionPool.html#v:ConnectionContext)|
+|ConnectionPool| |
+|1 (Type/Class)|[Data.ConnectionPool](Data-ConnectionPool.html#t:ConnectionPool)|
+|2 (Data Constructor)|[Data.ConnectionPool](Data-ConnectionPool.html#v:ConnectionPool)|
+|ConOp|[Data.Database](Data-Database.html#t:ConOp)|
+|Constraint| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Constraint)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Constraint)|
+|Constraints|[Data.Database](Data-Database.html#t:Constraints)|
+|constraints|[Data.Database](Data-Database.html#v:constraints)|
+|continue|[Data.InRules](Data-InRules.html#v:continue), [Data.Conversion](Data-Conversion.html#v:continue)|
+|convFromSql|[Data.ConversionInstances](Data-ConversionInstances.html#v:convFromSql)|
+|convSql|[Data.ConversionInstances](Data-ConversionInstances.html#v:convSql)|
+|cross|[Data.Relation](Data-Relation.html#v:cross)|
+|Database|[Model.General](Model-General.html#t:Database)|
+|dbconn|[Data.Database](Data-Database.html#v:dbconn)|
+|dbcons|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:dbcons)|
+|DBError|[Data.SqlTransaction](Data-SqlTransaction.html#v:DBError)|
+|dbWithLockBlock|[Data.SqlTransaction](Data-SqlTransaction.html#v:dbWithLockBlock)|
+|dbWithLockNonBlock|[Data.SqlTransaction](Data-SqlTransaction.html#v:dbWithLockNonBlock)|
+|def|Model.General|
+|Default| |
+|1 (Type/Class)|Model.General|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Default)|
+|Delete| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Delete)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Delete)|
+|delete|[Model.General](Model-General.html#v:delete)|
+|deleted|[Model.CarInstance](Model-CarInstance.html#v:deleted)|
+|deleteDb|[Model.TH](Model-TH.html#v:deleteDb)|
+|Desc|[Data.Relation](Data-Relation.html#v:Desc)|
+|desc|[Data.Database](Data-Database.html#v:desc)|
+|devault|[Data.Database](Data-Database.html#v:devault)|
+|diff|[Data.Relation](Data-Relation.html#v:diff)|
+|Direction| |
+|1 (Type/Class)|[Data.Relation](Data-Relation.html#t:Direction)|
+|2 (Type/Class)|[Data.Database](Data-Database.html#t:Direction)|
+|disconnect|[Data.SqlTransaction](Data-SqlTransaction.html#v:disconnect)|
+|doneFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:doneFuture)|
+|doSql|[Data.Database](Data-Database.html#v:doSql)|
+|double2Float|[Data.ConversionInstances](Data-ConversionInstances.html#v:double2Float)|
+|drop|[Data.Relation](Data-Relation.html#v:drop)|
+|dsn|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:dsn)|
+|dumpdir|[ImageSnapLet](ImageSnapLet.html#v:dumpdir)|
+|email|[Data.Tools](Data-Tools.html#v:email)|
+|Empty|[Data.ConnectionPool](Data-ConnectionPool.html#v:Empty)|
+|emptyConnectionBucket|[Data.ConnectionPool](Data-ConnectionPool.html#v:emptyConnectionBucket)|
+|emptyFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:emptyFuture)|
+|emptyObj|[Data.InRules](Data-InRules.html#v:emptyObj), [Data.Conversion](Data-Conversion.html#v:emptyObj)|
+|enclose|[Data.Tools](Data-Tools.html#v:enclose)|
+|encWith|[Data.Tools](Data-Tools.html#v:encWith)|
+|escInChar|[Data.InRules](Data-InRules.html#v:escInChar)|
+|escInStr|[Data.InRules](Data-InRules.html#v:escInStr)|
+|execute|[Data.SqlTransaction](Data-SqlTransaction.html#v:execute)|
+|executeMany|[Data.SqlTransaction](Data-SqlTransaction.html#v:executeMany)|
+|executeRaw|[Data.SqlTransaction](Data-SqlTransaction.html#v:executeRaw)|
+|express|[Data.Database](Data-Database.html#v:express)|
+|Expressable|[Data.Database](Data-Database.html#t:Expressable)|
+|Expression|[Data.Database](Data-Database.html#t:Expression)|
+|fetchAllRows|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRows)|
+|fetchAllRows'|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRows-39-)|
+|fetchAllRowsAL|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsAL)|
+|fetchAllRowsAL'|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsAL-39-)|
+|fetchAllRowsMap|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchAllRowsMap)|
+|fetchRow|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRow)|
+|fetchRowAl|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRowAl)|
+|fetchRowMap|[Data.SqlTransaction](Data-SqlTransaction.html#v:fetchRowMap)|
+|fields|[Model.General](Model-General.html#v:fields)|
+|fieldsDb|[Model.TH](Model-TH.html#v:fieldsDb)|
+|fillConnectionBucket|[Data.ConnectionPool](Data-ConnectionPool.html#v:fillConnectionBucket)|
+|Filled|[Data.ConnectionPool](Data-ConnectionPool.html#v:Filled)|
+|fillFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:fillFuture)|
+|Final|[Data.InRules](Data-InRules.html#v:Final), [Data.Conversion](Data-Conversion.html#v:Final)|
+|finish|[Data.SqlTransaction](Data-SqlTransaction.html#v:finish)|
+|float2Double|[Data.ConversionInstances](Data-ConversionInstances.html#v:float2Double)|
+|FloatC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:FloatC), [ConfigSnaplet](ConfigSnaplet.html#v:FloatC)|
+|forkSqlTransaction|[Data.SqlTransaction](Data-SqlTransaction.html#v:forkSqlTransaction)|
+|frmHashMap|[Model.TH](Model-TH.html#v:frmHashMap)|
+|frmMap|[Model.TH](Model-TH.html#v:frmMap)|
+|fromAssoc|[Data.Relation](Data-Relation.html#v:fromAssoc)|
+|fromHashMap|[Model.General](Model-General.html#v:fromHashMap)|
+|FromInRule|[Data.InRules](Data-InRules.html#t:FromInRule), [Data.Conversion](Data-Conversion.html#t:FromInRule)|
+|fromInRule|[Data.InRules](Data-InRules.html#v:fromInRule), [Data.Conversion](Data-Conversion.html#v:fromInRule)|
+|fromList| |
+|1 (Function)|[Data.InRules](Data-InRules.html#v:fromList), [Data.Conversion](Data-Conversion.html#v:fromList)|
+|2 (Function)|[Data.And](Data-And.html#v:fromList)|
+|fromMap|[Model.General](Model-General.html#v:fromMap)|
+|garage\_id|[Model.CarInstance](Model-CarInstance.html#v:garage_id)|
+|genAll|[Model.TH](Model-TH.html#v:genAll)|
+|genAllId|[Model.TH](Model-TH.html#v:genAllId)|
+|genDatabase|[Model.TH](Model-TH.html#v:genDatabase)|
+|genDefaultInstance|[Model.TH](Model-TH.html#v:genDefaultInstance)|
+|genDependenciesUpdate|[Model.TH](Model-TH.html#v:genDependenciesUpdate)|
+|genInstance|[Model.TH](Model-TH.html#v:genInstance)|
+|genInstanceFromInRule|[Model.TH](Model-TH.html#v:genInstanceFromInRule)|
+|genInstanceFromJSON|[Model.TH](Model-TH.html#v:genInstanceFromJSON)|
+|genInstanceToInRule|[Model.TH](Model-TH.html#v:genInstanceToInRule)|
+|genInstanceToJSON|[Model.TH](Model-TH.html#v:genInstanceToJSON)|
+|genMapableRecord|[Model.TH](Model-TH.html#v:genMapableRecord)|
+|genRecord|[Model.TH](Model-TH.html#v:genRecord)|
+|genRelation|[Model.TH](Model-TH.html#v:genRelation)|
+|genRelationSchema|[Model.TH](Model-TH.html#v:genRelationSchema)|
+|geometry|[Data.Database](Data-Database.html#v:geometry)|
+|get|[Data.SqlTransaction](Data-SqlTransaction.html#v:get)|
+|getAnyColumn|[Model.TH](Model-TH.html#v:getAnyColumn)|
+|getAssoc|[Data.Relation](Data-Relation.html#v:getAssoc)|
+|getConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:getConnection)|
+|getDatabase|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:getDatabase)|
+|getLock|[LockSnaplet](LockSnaplet.html#v:getLock)|
+|getResult|[Data.Relation](Data-Relation.html#v:getResult)|
+|getServDir|[ImageSnapLet](ImageSnapLet.html#v:getServDir)|
+|getUser|[Data.SqlTransaction](Data-SqlTransaction.html#v:getUser)|
+|happyTest|[Data.ConnectionPool](Data-ConnectionPool.html#v:happyTest)|
+|heist|[Application](Application.html#v:heist)|
+|hempty|[Model.TH](Model-TH.html#v:hempty)|
+|hfromlist|[Model.TH](Model-TH.html#v:hfromlist)|
+|hiempty|[Model.TH](Model-TH.html#v:hiempty)|
+|hmapKeys|[Data.InRules](Data-InRules.html#v:hmapKeys), [Data.Conversion](Data-Conversion.html#v:hmapKeys)|
+|hmapWithKey|[Data.InRules](Data-InRules.html#v:hmapWithKey), [Data.Conversion](Data-Conversion.html#v:hmapWithKey)|
+|hmlookup|[Model.TH](Model-TH.html#v:hmlookup)|
+|HS|[Data.Hstore](Data-Hstore.html#v:HS)|
+|HStore|[Data.Hstore](Data-Hstore.html#t:HStore)|
+|htsql|[Model.General](Model-General.html#v:htsql)|
+|IC|[ImageSnapLet](ImageSnapLet.html#v:IC)|
+|IConnection|[Data.SqlTransaction](Data-SqlTransaction.html#t:IConnection)|
+|Id|[Model.General](Model-General.html#t:Id)|
+|id| |
+|1 (Function)|[Model.Application](Model-Application.html#v:id)|
+|2 (Function)|[Model.CarInstance](Model-CarInstance.html#v:id)|
+|3 (Function)|[Model.ParameterTable](Model-ParameterTable.html#v:id)|
+|identity|[Data.Relation](Data-Relation.html#v:identity)|
+|IdentityMonoid|[Data.InRules](Data-InRules.html#t:IdentityMonoid), [Data.Conversion](Data-Conversion.html#t:IdentityMonoid)|
+|idq|[Model.TH](Model-TH.html#v:idq)|
+|IM|[Data.InRules](Data-InRules.html#v:IM), [Data.Conversion](Data-Conversion.html#v:IM)|
+|ImageConfig|[ImageSnapLet](ImageSnapLet.html#t:ImageConfig)|
+|img|[Application](Application.html#v:img)|
+|immutable|[Model.CarInstance](Model-CarInstance.html#v:immutable)|
+|InArray|[Data.InRules](Data-InRules.html#v:InArray), [Data.Conversion](Data-Conversion.html#v:InArray)|
+|InBool|[Data.InRules](Data-InRules.html#v:InBool), [Data.Conversion](Data-Conversion.html#v:InBool)|
+|InByteString|[Data.InRules](Data-InRules.html#v:InByteString), [Data.Conversion](Data-Conversion.html#v:InByteString)|
+|Index|[Data.InRules](Data-InRules.html#v:Index), [Data.Conversion](Data-Conversion.html#v:Index)|
+|InDouble|[Data.InRules](Data-InRules.html#v:InDouble), [Data.Conversion](Data-Conversion.html#v:InDouble)|
+|InInteger|[Data.InRules](Data-InRules.html#v:InInteger), [Data.Conversion](Data-Conversion.html#v:InInteger)|
+|initConfig|[ConfigSnaplet](ConfigSnaplet.html#v:initConfig)|
+|initConnectionPool|[Data.ConnectionPool](Data-ConnectionPool.html#v:initConnectionPool)|
+|initConnectionReclaimer|[Data.ConnectionPool](Data-ConnectionPool.html#v:initConnectionReclaimer)|
+|initImage|[ImageSnapLet](ImageSnapLet.html#v:initImage)|
+|initLock|[LockSnaplet](LockSnaplet.html#v:initLock)|
+|initSqlTransactionSnaplet|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:initSqlTransactionSnaplet)|
+|InKey|[Data.InRules](Data-InRules.html#t:InKey), [Data.Conversion](Data-Conversion.html#t:InKey)|
+|InNull|[Data.InRules](Data-InRules.html#v:InNull), [Data.Conversion](Data-Conversion.html#v:InNull)|
+|InNumber|[Data.InRules](Data-InRules.html#v:InNumber), [Data.Conversion](Data-Conversion.html#v:InNumber)|
+|InObject|[Data.InRules](Data-InRules.html#v:InObject), [Data.Conversion](Data-Conversion.html#v:InObject)|
+|InRule|[Data.InRules](Data-InRules.html#t:InRule), [Data.Conversion](Data-Conversion.html#t:InRule)|
+|InRules|[Data.InRules](Data-InRules.html#t:InRules)|
+|Insert| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Insert)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Insert)|
+|insert|[Data.Database](Data-Database.html#v:insert)|
+|Inserts|[Data.Database](Data-Database.html#v:Inserts)|
+|inserts|[Data.Database](Data-Database.html#v:inserts)|
+|InString|[Data.InRules](Data-InRules.html#v:InString), [Data.Conversion](Data-Conversion.html#v:InString)|
+|IntegerC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:IntegerC), [ConfigSnaplet](ConfigSnaplet.html#v:IntegerC)|
+|intersect|[Data.Relation](Data-Relation.html#v:intersect)|
+|isMaybe|[Model.TH](Model-TH.html#v:isMaybe)|
+|isNil|[Data.And](Data-And.html#v:isNil)|
+|isnull|[Data.Relation](Data-Relation.html#v:isnull)|
+|isNullable|[Model.Ansi](Model-Ansi.html#v:isNullable)|
+|isNumber|[Data.Tools](Data-Tools.html#v:isNumber)|
+|join| |
+|1 (Function)|[Data.Tools](Data-Tools.html#v:join)|
+|2 (Function)|[Data.Relation](Data-Relation.html#v:join)|
+|keyFilter|[Data.Conversion](Data-Conversion.html#v:keyFilter)|
+|kfold|[Data.InRules](Data-InRules.html#v:kfold), [Data.Conversion](Data-Conversion.html#v:kfold)|
+|KindView|[Data.InRules](Data-InRules.html#t:KindView), [Data.Conversion](Data-Conversion.html#t:KindView)|
+|kmap|[Data.InRules](Data-InRules.html#v:kmap), [Data.Conversion](Data-Conversion.html#v:kmap)|
+|ladd|[Data.Tools](Data-Tools.html#v:ladd)|
+|latitude|[Data.Tools](Data-Tools.html#v:latitude)|
+|lfilter|[Data.Tools](Data-Tools.html#v:lfilter)|
+|Limit| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Limit)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Limit)|
+|limit|[Data.Database](Data-Database.html#v:limit)|
+|List|[Data.And](Data-And.html#v:List)|
+|list|[Data.InRules](Data-InRules.html#v:list), [Data.Conversion](Data-Conversion.html#v:list)|
+|lnub|[Data.Tools](Data-Tools.html#v:lnub)|
+|load|[Model.General](Model-General.html#v:load)|
+|loadDb|[Model.TH](Model-TH.html#v:loadDb)|
+|Lock| |
+|1 (Type/Class)|[LockSnaplet](LockSnaplet.html#t:Lock)|
+|2 (Type/Class)|[Data.SqlTransaction](Data-SqlTransaction.html#t:Lock)|
+|lock|[Data.SqlTransaction](Data-SqlTransaction.html#v:lock)|
+|longest\_path|[Data.InRules](Data-InRules.html#v:longest_path)|
+|longitude|[Data.Tools](Data-Tools.html#v:longitude)|
+|lookupConfig| |
+|1 (Function)|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:lookupConfig)|
+|2 (Function)|[ConfigSnaplet](ConfigSnaplet.html#v:lookupConfig)|
+|lookupVal|[ConfigSnaplet](ConfigSnaplet.html#v:lookupVal)|
+|lookupVar| |
+|1 (Function)|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:lookupVar)|
+|2 (Function)|[ConfigSnaplet](ConfigSnaplet.html#v:lookupVar)|
+|Mapable|[Model.General](Model-General.html#t:Mapable)|
+|mapWithKey|[Data.InRules](Data-InRules.html#v:mapWithKey)|
+|maxl|[Data.Tools](Data-Tools.html#v:maxl)|
+|mco|[Model.General](Model-General.html#v:mco)|
+|mfp|[Model.General](Model-General.html#v:mfp)|
+|minl|[Data.Tools](Data-Tools.html#v:minl)|
+|MInteger|[Model.CarInstance](Model-CarInstance.html#t:MInteger)|
+|mkCFilter|[Data.Tools](Data-Tools.html#v:mkCFilter)|
+|mkCRegex|[Data.Tools](Data-Tools.html#v:mkCRegex)|
+|mkFromInRule|[Model.TH](Model-TH.html#v:mkFromInRule)|
+|mkParser|[Model.TH](Model-TH.html#v:mkParser)|
+|mkToInRule|[Model.TH](Model-TH.html#v:mkToInRule)|
+|mkToJson|[Model.TH](Model-TH.html#v:mkToJson)|
+|mlookup|[Model.General](Model-General.html#v:mlookup)|
+|must|[Data.Tools](Data-Tools.html#v:must)|
+|name|[Model.ParameterTable](Model-ParameterTable.html#v:name)|
+|natural|[Data.Tools](Data-Tools.html#v:natural)|
+|nempty|[Model.General](Model-General.html#v:nempty)|
+|newFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:newFuture)|
+|Next|[Data.InRules](Data-InRules.html#v:Next), [Data.Conversion](Data-Conversion.html#v:Next)|
+|nhead|[Model.General](Model-General.html#v:nhead)|
+|Nil|[Data.And](Data-And.html#v:Nil)|
+|ninsert|[Model.General](Model-General.html#v:ninsert)|
+|nlookup|[Model.General](Model-General.html#v:nlookup)|
+|None|[Data.InRules](Data-InRules.html#v:None), [Data.Conversion](Data-Conversion.html#v:None)|
+|not|[Data.Relation](Data-Relation.html#v:not)|
+|notnull|[Data.Relation](Data-Relation.html#v:notnull)|
+|NullLimit|[Data.Database](Data-Database.html#v:NullLimit)|
+|NullOffset|[Data.Database](Data-Database.html#v:NullOffset)|
+|object|[Data.InRules](Data-InRules.html#v:object), [Data.Conversion](Data-Conversion.html#v:object)|
+|Offset| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Offset)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Offset)|
+|offset|[Data.Database](Data-Database.html#v:offset)|
+|One|[Data.And](Data-And.html#v:One)|
+|OpContains|[Data.Database](Data-Database.html#v:OpContains)|
+|OpEQ|[Data.Database](Data-Database.html#v:OpEQ)|
+|OpGT|[Data.Database](Data-Database.html#v:OpGT)|
+|OpGTE|[Data.Database](Data-Database.html#v:OpGTE)|
+|OpIContains|[Data.Database](Data-Database.html#v:OpIContains)|
+|OpInList|[Data.Database](Data-Database.html#v:OpInList)|
+|OpLT|[Data.Database](Data-Database.html#v:OpLT)|
+|OpLTE|[Data.Database](Data-Database.html#v:OpLTE)|
+|OpNEQ|[Data.Database](Data-Database.html#v:OpNEQ)|
+|Or|[Data.Database](Data-Database.html#v:Or)|
+|or|[Data.Relation](Data-Relation.html#v:or)|
+|orcf|[Data.Tools](Data-Tools.html#v:orcf)|
+|Order| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Order)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Order)|
+|order|[Data.Database](Data-Database.html#v:order)|
+|Orders|[Data.Database](Data-Database.html#t:Orders)|
+|orders|[Data.Database](Data-Database.html#v:orders)|
+|orM|[Data.InRules](Data-InRules.html#v:orM)|
+|Pair|[Data.Database](Data-Database.html#t:Pair)|
+|pair|[Data.Database](Data-Database.html#v:pair)|
+|par2|[Data.SqlTransaction](Data-SqlTransaction.html#v:par2)|
+|par3|[Data.SqlTransaction](Data-SqlTransaction.html#v:par3)|
+|par4|[Data.SqlTransaction](Data-SqlTransaction.html#v:par4)|
+|ParameterTable| |
+|1 (Type/Class)|[Model.ParameterTable](Model-ParameterTable.html#t:ParameterTable)|
+|2 (Data Constructor)|[Model.ParameterTable](Model-ParameterTable.html#v:ParameterTable)|
+|parN|[Data.SqlTransaction](Data-SqlTransaction.html#v:parN)|
+|parSafe|[Data.SqlTransaction](Data-SqlTransaction.html#v:parSafe)|
+|parseHStore|[Data.Hstore](Data-Hstore.html#v:parseHStore)|
+|PathAcceptor|[Data.InRules](Data-InRules.html#t:PathAcceptor), [Data.Conversion](Data-Conversion.html#t:PathAcceptor)|
+|PathState|[Data.InRules](Data-InRules.html#t:PathState), [Data.Conversion](Data-Conversion.html#t:PathState)|
+|PathStep|[Data.InRules](Data-InRules.html#t:PathStep), [Data.Conversion](Data-Conversion.html#t:PathStep)|
+|pfold|[Data.InRules](Data-InRules.html#v:pfold), [Data.Conversion](Data-Conversion.html#v:pfold)|
+|platform|[Model.Application](Model-Application.html#v:platform)|
+|PM|[Data.InRules](Data-InRules.html#v:PM), [Data.Conversion](Data-Conversion.html#v:PM)|
+|pmap|[Data.InRules](Data-InRules.html#v:pmap), [Data.Conversion](Data-Conversion.html#v:pmap)|
+|Pointer|[Data.ConnectionPool](Data-ConnectionPool.html#t:Pointer)|
+|pool|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:pool)|
+|ppHStore|[Data.Hstore](Data-Hstore.html#v:ppHStore)|
+|pprint|[Data.InRules](Data-InRules.html#v:pprint), [Data.Conversion](Data-Conversion.html#v:pprint)|
+|pprint'|[Data.InRules](Data-InRules.html#v:pprint-39-)|
+|pprints|[Data.InRules](Data-InRules.html#v:pprints), [Data.Conversion](Data-Conversion.html#v:pprints)|
+|prepare|[Data.SqlTransaction](Data-SqlTransaction.html#v:prepare)|
+|printLocks|[LockSnaplet](LockSnaplet.html#v:printLocks)|
+|project| |
+|1 (Function)|[Data.InRules](Data-InRules.html#v:project), [Data.Conversion](Data-Conversion.html#v:project)|
+|2 (Function)|[Data.Relation](Data-Relation.html#v:project)|
+|projectAs|[Data.Relation](Data-Relation.html#v:projectAs)|
+|put8|[Data.ConversionInstances](Data-ConversionInstances.html#v:put8)|
+|put8b|[Data.ConversionInstances](Data-ConversionInstances.html#v:put8b)|
+|putConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:putConnection)|
+|putUser|[Data.SqlTransaction](Data-SqlTransaction.html#v:putUser)|
+|quickInsert|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickInsert)|
+|quickQuery|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery)|
+|quickQuery'|[Data.SqlTransaction](Data-SqlTransaction.html#v:quickQuery-39-)|
+|randomPick|[Data.Tools](Data-Tools.html#v:randomPick)|
+|randomPick'|[Data.Tools](Data-Tools.html#v:randomPick-39-)|
+|raw|[Data.Relation](Data-Relation.html#v:raw)|
+|Readable| |
+|1 (Type/Class)|[Data.InRules](Data-InRules.html#t:Readable), [Data.Conversion](Data-Conversion.html#t:Readable)|
+|2 (Data Constructor)|[Data.InRules](Data-InRules.html#v:Readable), [Data.Conversion](Data-Conversion.html#v:Readable)|
+|readable|[Data.InRules](Data-InRules.html#v:readable), [Data.Conversion](Data-Conversion.html#v:readable)|
+|readConfig|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:readConfig)|
+|readFuture|[Data.SqlTransaction](Data-SqlTransaction.html#v:readFuture)|
+|readS|[Data.Tools](Data-Tools.html#v:readS)|
+|Reject|[Data.InRules](Data-InRules.html#v:Reject), [Data.Conversion](Data-Conversion.html#v:Reject)|
+|reject|[Data.InRules](Data-InRules.html#v:reject), [Data.Conversion](Data-Conversion.html#v:reject)|
+|rejector|[Data.InRules](Data-InRules.html#v:rejector)|
+|Relation|[Data.Relation](Data-Relation.html#t:Relation)|
+|relation| |
+|1 (Function)|[Model.Application](Model-Application.html#v:relation)|
+|2 (Function)|[Model.CarInstance](Model-CarInstance.html#v:relation)|
+|3 (Function)|[Model.ParameterTable](Model-ParameterTable.html#v:relation)|
+|RelationM|[Data.Relation](Data-Relation.html#t:RelationM)|
+|rename|[Data.Relation](Data-Relation.html#v:rename)|
+|renderTable|[Data.Tools](Data-Tools.html#v:renderTable)|
+|returnConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:returnConnection)|
+|returnDatabase|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:returnDatabase)|
+|reviveConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:reviveConnection)|
+|rollback|[Data.SqlTransaction](Data-SqlTransaction.html#v:rollback)|
+|RowExclusive|[Data.SqlTransaction](Data-SqlTransaction.html#v:RowExclusive)|
+|RowShare|[Data.SqlTransaction](Data-SqlTransaction.html#v:RowShare)|
+|run|[Data.SqlTransaction](Data-SqlTransaction.html#v:run)|
+|runCFilter|[Data.Tools](Data-Tools.html#v:runCFilter)|
+|runDb| |
+|1 (Function)|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:runDb)|
+|2 (Function)|[Application](Application.html#v:runDb)|
+|runPath|[Data.InRules](Data-InRules.html#v:runPath), [Data.Conversion](Data-Conversion.html#v:runPath)|
+|runSqlTransaction|[Data.SqlTransaction](Data-SqlTransaction.html#v:runSqlTransaction)|
+|runTestDb|[Data.SqlTransaction](Data-SqlTransaction.html#v:runTestDb)|
+|sallowed|[Data.Tools](Data-Tools.html#v:sallowed)|
+|save|[Model.General](Model-General.html#v:save)|
+|saveDb|[Model.TH](Model-TH.html#v:saveDb)|
+|saveDb'|[Model.TH](Model-TH.html#v:saveDb-39-)|
+|scfilter|[Data.Tools](Data-Tools.html#v:scfilter)|
+|scheck|[Data.Tools](Data-Tools.html#v:scheck)|
+|schema| |
+|1 (Function)|[Model.Application](Model-Application.html#v:schema)|
+|2 (Function)|[Model.CarInstance](Model-CarInstance.html#v:schema)|
+|3 (Function)|[Model.ParameterTable](Model-ParameterTable.html#v:schema)|
+|search|[Model.General](Model-General.html#v:search)|
+|searchDB|[Model.TH](Model-TH.html#v:searchDB)|
+|Section|[Config.ConfigFileParser](Config-ConfigFileParser.html#t:Section), [ConfigSnaplet](ConfigSnaplet.html#t:Section)|
+|Sections|[Config.ConfigFileParser](Config-ConfigFileParser.html#t:Sections), [ConfigSnaplet](ConfigSnaplet.html#t:Sections)|
+|Select| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Select)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Select)|
+|select| |
+|1 (Function)|[Data.Relation](Data-Relation.html#v:select)|
+|2 (Function)|[Data.Database](Data-Database.html#v:select)|
+|selectAll|[Data.Database](Data-Database.html#v:selectAll)|
+|Selection|[Data.Database](Data-Database.html#t:Selection)|
+|Selections|[Data.Database](Data-Database.html#t:Selections)|
+|sempty|[Model.General](Model-General.html#v:sempty)|
+|serializeHashMap|[Data.ConversionInstances](Data-ConversionInstances.html#v:serializeHashMap)|
+|serializeHashMapb|[Data.ConversionInstances](Data-ConversionInstances.html#v:serializeHashMapb)|
+|servdir|[ImageSnapLet](ImageSnapLet.html#v:servdir)|
+|serveImage|[ImageSnapLet](ImageSnapLet.html#v:serveImage)|
+|sExecute|[Data.SqlTransaction](Data-SqlTransaction.html#v:sExecute)|
+|sExecuteMany|[Data.SqlTransaction](Data-SqlTransaction.html#v:sExecuteMany)|
+|sFetchAllRows|[Data.SqlTransaction](Data-SqlTransaction.html#v:sFetchAllRows)|
+|sFetchAllRows'|[Data.SqlTransaction](Data-SqlTransaction.html#v:sFetchAllRows-39-)|
+|sFetchRow|[Data.SqlTransaction](Data-SqlTransaction.html#v:sFetchRow)|
+|Share|[Data.SqlTransaction](Data-SqlTransaction.html#v:Share)|
+|ShareRowExclusive|[Data.SqlTransaction](Data-SqlTransaction.html#v:ShareRowExclusive)|
+|ShareUpdateExclusive|[Data.SqlTransaction](Data-SqlTransaction.html#v:ShareUpdateExclusive)|
+|showTable|[Data.Tools](Data-Tools.html#v:showTable)|
+|showTable'|[Data.Tools](Data-Tools.html#v:showTable-39-)|
+|showTableWithHeader|[Data.Tools](Data-Tools.html#v:showTableWithHeader)|
+|showTableWithHeader'|[Data.Tools](Data-Tools.html#v:showTableWithHeader-39-)|
+|shp|[Data.InRules](Data-InRules.html#v:shp)|
+|shpTestAB|[Data.InRules](Data-InRules.html#v:shpTestAB)|
+|shpTestArr|[Data.InRules](Data-InRules.html#v:shpTestArr)|
+|singleObj|[Data.InRules](Data-InRules.html#v:singleObj), [Data.Conversion](Data-Conversion.html#v:singleObj)|
+|singleton|[Data.And](Data-And.html#v:singleton)|
+|sinsert|[Model.General](Model-General.html#v:sinsert)|
+|smust|[Data.Tools](Data-Tools.html#v:smust)|
+|sort|[Data.Relation](Data-Relation.html#v:sort)|
+|Sql|[Data.Database](Data-Database.html#t:Sql)|
+|sql| |
+|1 (Function)|[Application](Application.html#v:sql)|
+|2 (Function)|[Data.Database](Data-Database.html#v:sql)|
+|SqlBool|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlBool)|
+|SqlByteString|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlByteString)|
+|SqlChar|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlChar)|
+|SqlDiffTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlDiffTime)|
+|SqlDouble|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlDouble)|
+|SqlEpochTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlEpochTime)|
+|SqlError|[Data.SqlTransaction](Data-SqlTransaction.html#t:SqlError)|
+|sqlExecute|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlExecute)|
+|sqlGetAll|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlGetAll)|
+|sqlGetAllAssoc|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlGetAllAssoc)|
+|sqlGetOne|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlGetOne)|
+|sqlGetRow|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlGetRow)|
+|SqlInt32|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlInt32)|
+|SqlInt64|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlInt64)|
+|SqlInteger|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlInteger)|
+|SqlLocalDate|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlLocalDate)|
+|SqlLocalTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlLocalTime)|
+|SqlLocalTimeOfDay|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlLocalTimeOfDay)|
+|SqlNull|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlNull)|
+|SqlPOSIXTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlPOSIXTime)|
+|SqlRational|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlRational)|
+|SqlString|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlString)|
+|SqlTimeDiff|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlTimeDiff)|
+|SqlTransaction|[Data.SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)|
+|SqlTransactionConfig|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#t:SqlTransactionConfig)|
+|SqlTransactionUser|[Data.SqlTransaction](Data-SqlTransaction.html#t:SqlTransactionUser)|
+|SqlUTCTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlUTCTime)|
+|SqlValue|[Data.SqlTransaction](Data-SqlTransaction.html#t:SqlValue)|
+|SqlWord32|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlWord32)|
+|SqlWord64|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlWord64)|
+|SqlZonedLocalTimeOfDay|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlZonedLocalTimeOfDay)|
+|SqlZonedTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlZonedTime)|
+|sRun|[Data.SqlTransaction](Data-SqlTransaction.html#v:sRun)|
+|Statement|[Data.SqlTransaction](Data-SqlTransaction.html#t:Statement)|
+|STC|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:STC)|
+|strength|[Data.Tools](Data-Tools.html#v:strength)|
+|StringC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:StringC), [ConfigSnaplet](ConfigSnaplet.html#v:StringC)|
+|StringLike|[Data.Tools](Data-Tools.html#t:StringLike)|
+|Table|[Data.Database](Data-Database.html#t:Table)|
+|table| |
+|1 (Function)|[Data.Relation](Data-Relation.html#v:table)|
+|2 (Function)|[Data.Database](Data-Database.html#v:table)|
+|tableDb|[Model.TH](Model-TH.html#v:tableDb)|
+|tableName|[Model.General](Model-General.html#v:tableName)|
+|take|[Data.Relation](Data-Relation.html#v:take)|
+|TArray|[Data.InRules](Data-InRules.html#v:TArray), [Data.Conversion](Data-Conversion.html#v:TArray)|
+|testMonad|[Data.And](Data-And.html#v:testMonad)|
+|thsql|[Model.General](Model-General.html#v:thsql)|
+|tmHashMap|[Model.TH](Model-TH.html#v:tmHashMap)|
+|tmMap|[Model.TH](Model-TH.html#v:tmMap)|
+|TNone|[Data.InRules](Data-InRules.html#v:TNone), [Data.Conversion](Data-Conversion.html#v:TNone)|
+|toAssoc|[Data.Relation](Data-Relation.html#v:toAssoc)|
+|TObject|[Data.InRules](Data-InRules.html#v:TObject), [Data.Conversion](Data-Conversion.html#v:TObject)|
+|toCompatible|[Data.InRules](Data-InRules.html#v:toCompatible)|
+|toHashMap|[Model.General](Model-General.html#v:toHashMap)|
+|ToInRule|[Data.InRules](Data-InRules.html#t:ToInRule), [Data.Conversion](Data-Conversion.html#t:ToInRule)|
+|toInRule|[Data.InRules](Data-InRules.html#v:toInRule), [Data.Conversion](Data-Conversion.html#v:toInRule)|
+|token|[Model.Application](Model-Application.html#v:token)|
+|toList|[Data.InRules](Data-InRules.html#v:toList), [Data.Conversion](Data-Conversion.html#v:toList)|
+|toListString|[Data.InRules](Data-InRules.html#v:toListString), [Data.Conversion](Data-Conversion.html#v:toListString)|
+|toMap|[Model.General](Model-General.html#v:toMap)|
+|toString| |
+|1 (Function)|[Data.InRules](Data-InRules.html#v:toString), [Data.Conversion](Data-Conversion.html#v:toString)|
+|2 (Function)|[Data.Tools](Data-Tools.html#v:toString)|
+|toWord64|[Data.ConversionInstances](Data-ConversionInstances.html#v:toWord64)|
+|transaction|[Data.Database](Data-Database.html#v:transaction)|
+|TScalar|[Data.InRules](Data-InRules.html#v:TScalar), [Data.Conversion](Data-Conversion.html#v:TScalar)|
+|UError|[Data.SqlTransaction](Data-SqlTransaction.html#v:UError)|
+|unConnectionContext|[Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionContext)|
+|unConnectionPool|[Data.ConnectionPool](Data-ConnectionPool.html#v:unConnectionPool)|
+|unHS|[Data.Hstore](Data-Hstore.html#v:unHS)|
+|unIM|[Data.InRules](Data-InRules.html#v:unIM), [Data.Conversion](Data-Conversion.html#v:unIM)|
+|unionObj|[Data.InRules](Data-InRules.html#v:unionObj), [Data.Conversion](Data-Conversion.html#v:unionObj)|
+|unionRecObj|[Data.InRules](Data-InRules.html#v:unionRecObj)|
+|unionsObj|[Data.InRules](Data-InRules.html#v:unionsObj), [Data.Conversion](Data-Conversion.html#v:unionsObj)|
+|unit|[Model.ParameterTable](Model-ParameterTable.html#v:unit)|
+|unite|[Data.Relation](Data-Relation.html#v:unite)|
+|unPM|[Data.InRules](Data-InRules.html#v:unPM), [Data.Conversion](Data-Conversion.html#v:unPM)|
+|unReadable|[Data.InRules](Data-InRules.html#v:unReadable), [Data.Conversion](Data-Conversion.html#v:unReadable)|
+|unsafeGetConnection|[Data.ConnectionPool](Data-ConnectionPool.html#v:unsafeGetConnection)|
+|unwrapContext|[Data.ConnectionPool](Data-ConnectionPool.html#v:unwrapContext)|
+|Update| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Update)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Update)|
+|update|[Data.Database](Data-Database.html#v:update)|
+|updateHashMap|[Model.General](Model-General.html#v:updateHashMap)|
+|updateMap|[Model.General](Model-General.html#v:updateMap)|
+|Updates|[Data.Database](Data-Database.html#v:Updates)|
+|updates|[Data.Database](Data-Database.html#v:updates)|
+|uploadImage|[ImageSnapLet](ImageSnapLet.html#v:uploadImage)|
+|upsert|[Data.Database](Data-Database.html#v:upsert)|
+|upsertWithTables|[Model.TH](Model-TH.html#v:upsertWithTables)|
+|validObject|[Data.InRules](Data-InRules.html#v:validObject), [Data.Conversion](Data-Conversion.html#v:validObject)|
+|Value|[Data.Database](Data-Database.html#t:Value)|
+|Values|[Data.Database](Data-Database.html#t:Values)|
+|values|[Data.Database](Data-Database.html#v:values)|
+|Var|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:Var), [ConfigSnaplet](ConfigSnaplet.html#v:Var)|
+|viaReadable|[Data.InRules](Data-InRules.html#v:viaReadable), [Data.Conversion](Data-Conversion.html#v:viaReadable)|
+|view|[Data.Relation](Data-Relation.html#v:view)|
+|viewKind|[Data.InRules](Data-InRules.html#v:viewKind), [Data.Conversion](Data-Conversion.html#v:viewKind)|
+|waitUnless|[Data.SqlTransaction](Data-SqlTransaction.html#v:waitUnless)|
+|waitWhen|[Data.SqlTransaction](Data-SqlTransaction.html#v:waitWhen)|
+|whenM|[Data.Tools](Data-Tools.html#v:whenM)|
+|withConnection|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:withConnection)|
+|withDefault|[Data.InRules](Data-InRules.html#v:withDefault)|
+|withEncoding|[Data.SqlTransaction](Data-SqlTransaction.html#v:withEncoding)|
+|withLockBlock|[LockSnaplet](LockSnaplet.html#v:withLockBlock)|
+|withLockNonBlock|[LockSnaplet](LockSnaplet.html#v:withLockNonBlock)|
+|zipKeyWith|[Data.Tools](Data-Tools.html#v:zipKeyWith)|
+|\_allowedTypes|[ImageSnapLet](ImageSnapLet.html#v:_allowedTypes)|
+|\_config|[Application](Application.html#v:_config)|
+|\_configData|[ConfigSnaplet](ConfigSnaplet.html#v:_configData)|
+|\_configDir|[ConfigSnaplet](ConfigSnaplet.html#v:_configDir)|
+|\_dbcons|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dbcons)|
+|\_dsn|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_dsn)|
+|\_dumpdir|[ImageSnapLet](ImageSnapLet.html#v:_dumpdir)|
+|\_heist|[Application](Application.html#v:_heist)|
+|\_img|[Application](Application.html#v:_img)|
+|\_magicctx|[ImageSnapLet](ImageSnapLet.html#v:_magicctx)|
+|\_pool|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:_pool)|
+|\_servdir|[ImageSnapLet](ImageSnapLet.html#v:_servdir)|
+|\_sql|[Application](Application.html#v:_sql)|
+||%|[Data.Database](Data-Database.html#v:-124--37-)|
+||%%|[Data.Database](Data-Database.html#v:-124--37--37-)|
+||%%\*|[Data.Relation](Data-Relation.html#v:-124--37--37--42-)|
+||%%||[Data.Relation](Data-Relation.html#v:-124--37--37--124-)|
+||%\*|[Data.Relation](Data-Relation.html#v:-124--37--42-)|
+||%||[Data.Relation](Data-Relation.html#v:-124--37--124-)|
+||\<|[Data.Database](Data-Database.html#v:-124--60-)|
+||\<\*|[Data.Relation](Data-Relation.html#v:-124--60--42-)|
+||\<=|[Data.Database](Data-Database.html#v:-124--60--61-)|
+||\<=\*|[Data.Relation](Data-Relation.html#v:-124--60--61--42-)|
+||\<=||[Data.Relation](Data-Relation.html#v:-124--60--61--124-)|
+||\<\>|[Data.Database](Data-Database.html#v:-124--60--62-)|
+||\<\>\*|[Data.Relation](Data-Relation.html#v:-124--60--62--42-)|
+||\<\>||[Data.Relation](Data-Relation.html#v:-124--60--62--124-)|
+||\<||[Data.Relation](Data-Relation.html#v:-124--60--124-)|
+||==|[Data.Database](Data-Database.html#v:-124--61--61-)|
+||==\*|[Data.Relation](Data-Relation.html#v:-124--61--61--42-)|
+||==||[Data.Relation](Data-Relation.html#v:-124--61--61--124-)|
+||\>| |
+|1 (Function)|[Data.And](Data-And.html#v:-124--62-)|
+|2 (Function)|[Data.Database](Data-Database.html#v:-124--62-)|
+||\>\*|[Data.Relation](Data-Relation.html#v:-124--62--42-)|
+||\>=|[Data.Database](Data-Database.html#v:-124--62--61-)|
+||\>=\*|[Data.Relation](Data-Relation.html#v:-124--62--61--42-)|
+||\>=||[Data.Relation](Data-Relation.html#v:-124--62--61--124-)|
+||\>||[Data.Relation](Data-Relation.html#v:-124--62--124-)|
+||\~|[Data.Database](Data-Database.html#v:-124--126-)|
+
+Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0

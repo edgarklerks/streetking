@@ -1,0 +1,53 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.Rule
+
+h1. Documentation
+
+data Rule
+
+Constructors
+
+Rule
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>rule :: String</dt>
+<dd> </dd>
+<dt>name :: String</dt>
+<dd> </dd>
+<dt>once :: Bool</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "Rule":Model-Rule.html#t:Rule| |
+|Show "Rule":Model-Rule.html#t:Rule| |
+|ToJSON "Rule":Model-Rule.html#t:Rule| |
+|FromJSON "Rule":Model-Rule.html#t:Rule| |
+|Default "Rule":Model-Rule.html#t:Rule| |
+|"FromInRule":Data-InRules.html#t:FromInRule "Rule":Model-Rule.html#t:Rule| |
+|"ToInRule":Data-InRules.html#t:ToInRule "Rule":Model-Rule.html#t:Rule| |
+|"Mapable":Model-General.html#t:Mapable "Rule":Model-Rule.html#t:Rule| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Rule":Model-Rule.html#t:Rule| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

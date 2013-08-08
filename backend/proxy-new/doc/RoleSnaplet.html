@@ -1,0 +1,694 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >RoleSnaplet</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_RoleSnaplet.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>RoleSnaplet</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><a href="#v:may"
+	    >may</a
+	    > :: (MonadState <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadState <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >), MonadState <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    > (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadIO (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadIO (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >)) =&gt; <a href="RoleSnaplet.html#t:Resource"
+	    >Resource</a
+	    > -&gt; <a href="RoleSnaplet.html#t:RestRight"
+	    >RestRight</a
+	    > -&gt; m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > Bool</li
+	  ><li class="src short"
+	  ><a href="#v:addRole"
+	    >addRole</a
+	    > :: (MonadState <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadState <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    > (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadState <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    > (m b <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    >), MonadState <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >), MonadIO (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadIO (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadIO (m b <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    >), Binary a, MonadSnaplet m, MonadSnap (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >)) =&gt; ByteString -&gt; a -&gt; m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:withRoleState"
+	    >withRoleState</a
+	    > :: MonadState <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > m =&gt; (<a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; m a) -&gt; m a</li
+	  ><li class="src short"
+	  ><a href="#v:dumpAll"
+	    >dumpAll</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; m String</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Role"
+	    >Role</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:Developer"
+		>Developer</a
+		> (Maybe <a href="RoleSnaplet.html#t:Id"
+		>Id</a
+		>)  </li
+	      ><li
+	      >| <a href="#v:User"
+		>User</a
+		> (Maybe <a href="RoleSnaplet.html#t:Id"
+		>Id</a
+		>)  </li
+	      ><li
+	      >| <a href="#v:Server"
+		>Server</a
+		> (Maybe <a href="RoleSnaplet.html#t:Id"
+		>Id</a
+		>)  </li
+	      ><li
+	      >| <a href="#v:All"
+		>All</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:RestRight"
+	    >RestRight</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:Put"
+		>Put</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Get"
+		>Get</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Post"
+		>Post</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Delete"
+		>Delete</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Resource"
+	    >Resource</a
+	    > = String</li
+	  ><li class="src short"
+	  ><a href="#v:dropRoles"
+	    >dropRoles</a
+	    > :: (MonadState <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > m, MonadSnap m) =&gt; ByteString -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:getRoles"
+	    >getRoles</a
+	    > :: (MonadState <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadState <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    > (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadIO (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadIO (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >)) =&gt; ByteString -&gt; m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > [<a href="RoleSnaplet.html#t:Role"
+	    >Role</a
+	    >]</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Id"
+	    >Id</a
+	    > = Integer</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >  = <a href="#v:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:runRS"
+		>runRS</a
+		> :: <a href="Data-Role.html#t:RolePair"
+		>RolePair</a
+		> ByteString</li
+	      ><li
+	      ><a href="#v:_random"
+		>_random</a
+		> :: Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+		>RandomConfig</a
+		></li
+	      ><li
+	      ><a href="#v:_dht"
+		>_dht</a
+		> :: Snaplet <a href="NodeSnapletTest.html#t:DHTConfig"
+		>DHTConfig</a
+		></li
+	      ><li
+	      ><a href="#v:_log_cycler"
+		>_log_cycler</a
+		> :: Snaplet <a href="Data-ExternalLog.html#t:Cycle"
+		>Cycle</a
+		></li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a href="#t:HasRoleSnaplet"
+	    >HasRoleSnaplet</a
+	    > b  <span class="keyword"
+	    >where</span
+	    ><ul class="subs"
+	    ><li
+	      ><a href="#v:roleLens"
+		>roleLens</a
+		> :: SnapletLens (Snaplet b) (Snaplet <a href="RoleSnaplet.html#t:RoleSnaplet"
+		>RoleSnaplet</a
+		>)</li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:initRoleSnaplet"
+	    >initRoleSnaplet</a
+	    > ::  Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    > -&gt; Snaplet <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > -&gt; Snaplet <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    > -&gt; SnapletInit b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    ></li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><a name="v:may" class="def"
+	    >may</a
+	    > :: (MonadState <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadState <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >), MonadState <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    > (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadIO (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadIO (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >)) =&gt; <a href="RoleSnaplet.html#t:Resource"
+	    >Resource</a
+	    > -&gt; <a href="RoleSnaplet.html#t:RestRight"
+	    >RestRight</a
+	    > -&gt; m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRole" class="def"
+	    >addRole</a
+	    > :: (MonadState <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadState <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    > (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadState <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    > (m b <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    >), MonadState <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >), MonadIO (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadIO (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadIO (m b <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    >), Binary a, MonadSnaplet m, MonadSnap (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >)) =&gt; ByteString -&gt; a -&gt; m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withRoleState" class="def"
+	    >withRoleState</a
+	    > :: MonadState <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > m =&gt; (<a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; m a) -&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dumpAll" class="def"
+	    >dumpAll</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; m String</p
+	  ><div class="doc"
+	  ><p
+	    >Debug function to dump the internal state 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Role" class="def"
+	    >Role</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Developer" class="def"
+		  >Developer</a
+		  > (Maybe <a href="RoleSnaplet.html#t:Id"
+		  >Id</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:User" class="def"
+		  >User</a
+		  > (Maybe <a href="RoleSnaplet.html#t:Id"
+		  >Id</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Server" class="def"
+		  >Server</a
+		  > (Maybe <a href="RoleSnaplet.html#t:Id"
+		  >Id</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:All" class="def"
+		  >All</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Role" class="caption collapser" onclick="toggleSection('i:Role')"
+	    >Instances</p
+	    ><div id="section.i:Role" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="RoleSnaplet.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Ord <a href="RoleSnaplet.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Read <a href="RoleSnaplet.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="RoleSnaplet.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Binary <a href="RoleSnaplet.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RestRight" class="def"
+	    >RestRight</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Put" class="def"
+		  >Put</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Get" class="def"
+		  >Get</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Post" class="def"
+		  >Post</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Delete" class="def"
+		  >Delete</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RestRight" class="caption collapser" onclick="toggleSection('i:RestRight')"
+	    >Instances</p
+	    ><div id="section.i:RestRight" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="RoleSnaplet.html#t:RestRight"
+		    >RestRight</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="RoleSnaplet.html#t:RestRight"
+		    >RestRight</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Resource" class="def"
+	    >Resource</a
+	    > = String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dropRoles" class="def"
+	    >dropRoles</a
+	    > :: (MonadState <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > m, MonadSnap m) =&gt; ByteString -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getRoles" class="def"
+	    >getRoles</a
+	    > :: (MonadState <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadState <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    > (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadIO (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadIO (m b <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    >)) =&gt; ByteString -&gt; m b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    > [<a href="RoleSnaplet.html#t:Role"
+	    >Role</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Id" class="def"
+	    >Id</a
+	    > = Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RoleSnaplet" class="def"
+	    >RoleSnaplet</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:RoleSnaplet" class="def"
+		  >RoleSnaplet</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:runRS" class="def"
+			>runRS</a
+			> :: <a href="Data-Role.html#t:RolePair"
+			>RolePair</a
+			> ByteString</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_random" class="def"
+			>_random</a
+			> :: Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+			>RandomConfig</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_dht" class="def"
+			>_dht</a
+			> :: Snaplet <a href="NodeSnapletTest.html#t:DHTConfig"
+			>DHTConfig</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_log_cycler" class="def"
+			>_log_cycler</a
+			> :: Snaplet <a href="Data-ExternalLog.html#t:Cycle"
+			>Cycle</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a name="t:HasRoleSnaplet" class="def"
+	    >HasRoleSnaplet</a
+	    > b  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs methods"
+	  ><p class="caption"
+	    >Methods</p
+	    ><p class="src"
+	    ><a name="v:roleLens" class="def"
+	      >roleLens</a
+	      > :: SnapletLens (Snaplet b) (Snaplet <a href="RoleSnaplet.html#t:RoleSnaplet"
+	      >RoleSnaplet</a
+	      >)</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initRoleSnaplet" class="def"
+	    >initRoleSnaplet</a
+	    > ::  Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    > -&gt; Snaplet <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > -&gt; Snaplet <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    > -&gt; SnapletInit b <a href="RoleSnaplet.html#t:RoleSnaplet"
+	    >RoleSnaplet</a
+	    ></p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

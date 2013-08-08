@@ -1,0 +1,10 @@
+<table>
+<tr>
+    <th>name</th>
+    <th>result</th>
+    <th>time</th>
+    <th>user_agent</th>
+    <th>ip</th>
+</tr>
+{$rows}
+</table>

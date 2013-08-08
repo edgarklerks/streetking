@@ -1,0 +1,32 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.ConversionInstances
+
+h1. Documentation
+
+double2Float :: Double -&gt; Float
+
+float2Double :: Float -&gt; Double
+
+convFromSql :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "InRule":Data-InRules.html#t:InRule
+
+convSql :: "InRule":Data-InRules.html#t:InRule -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+put8 :: Word8 -&gt; Put
+
+toWord64 :: Int -&gt; Word64
+
+put8b :: Word8 -&gt; Put
+
+serializeHashMapb :: (Binary t1, Binary t) =&gt; HashMap t t1 -&gt; PutM ()
+
+serializeHashMap :: (Serialize t1, Serialize t) =&gt; HashMap t t1 -&gt; PutM ()
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

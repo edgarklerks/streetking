@@ -1,0 +1,3028 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.SqlTransaction</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-SqlTransaction.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.SqlTransaction</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><a href="#v:quickInsert"
+	    >quickInsert</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [(String, <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >)] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Connection"
+	    >Connection</a
+	    > </li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a href="#t:IConnection"
+	    >IConnection</a
+	    > conn  <span class="keyword"
+	    >where</span
+	    ><ul class="subs"
+	    ><li
+	      ><a href="#v:disconnect"
+		>disconnect</a
+		> :: conn -&gt; IO ()</li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:SqlValue"
+	    >SqlValue</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:SqlString"
+		>SqlString</a
+		> String  </li
+	      ><li
+	      >| <a href="#v:SqlByteString"
+		>SqlByteString</a
+		> ByteString  </li
+	      ><li
+	      >| <a href="#v:SqlWord32"
+		>SqlWord32</a
+		> Word32  </li
+	      ><li
+	      >| <a href="#v:SqlWord64"
+		>SqlWord64</a
+		> Word64  </li
+	      ><li
+	      >| <a href="#v:SqlInt32"
+		>SqlInt32</a
+		> Int32  </li
+	      ><li
+	      >| <a href="#v:SqlInt64"
+		>SqlInt64</a
+		> Int64  </li
+	      ><li
+	      >| <a href="#v:SqlInteger"
+		>SqlInteger</a
+		> Integer  </li
+	      ><li
+	      >| <a href="#v:SqlChar"
+		>SqlChar</a
+		> Char  </li
+	      ><li
+	      >| <a href="#v:SqlBool"
+		>SqlBool</a
+		> Bool  </li
+	      ><li
+	      >| <a href="#v:SqlDouble"
+		>SqlDouble</a
+		> Double  </li
+	      ><li
+	      >| <a href="#v:SqlRational"
+		>SqlRational</a
+		> Rational  </li
+	      ><li
+	      >| <a href="#v:SqlLocalDate"
+		>SqlLocalDate</a
+		> Day  </li
+	      ><li
+	      >| <a href="#v:SqlLocalTimeOfDay"
+		>SqlLocalTimeOfDay</a
+		> TimeOfDay  </li
+	      ><li
+	      >| <a href="#v:SqlZonedLocalTimeOfDay"
+		>SqlZonedLocalTimeOfDay</a
+		> TimeOfDay TimeZone  </li
+	      ><li
+	      >| <a href="#v:SqlLocalTime"
+		>SqlLocalTime</a
+		> LocalTime  </li
+	      ><li
+	      >| <a href="#v:SqlZonedTime"
+		>SqlZonedTime</a
+		> ZonedTime  </li
+	      ><li
+	      >| <a href="#v:SqlUTCTime"
+		>SqlUTCTime</a
+		> UTCTime  </li
+	      ><li
+	      >| <a href="#v:SqlDiffTime"
+		>SqlDiffTime</a
+		> NominalDiffTime  </li
+	      ><li
+	      >| <a href="#v:SqlPOSIXTime"
+		>SqlPOSIXTime</a
+		> POSIXTime  </li
+	      ><li
+	      >| <a href="#v:SqlEpochTime"
+		>SqlEpochTime</a
+		> Integer  </li
+	      ><li
+	      >| <a href="#v:SqlTimeDiff"
+		>SqlTimeDiff</a
+		> Integer  </li
+	      ><li
+	      >| <a href="#v:SqlNull"
+		>SqlNull</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Statement"
+	    >Statement</a
+	    > </li
+	  ><li class="src short"
+	  ><a href="#v:disconnect"
+	    >disconnect</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > conn =&gt; conn -&gt; IO ()</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Lock"
+	    >Lock</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:AccessShare"
+		>AccessShare</a
+		>  </li
+	      ><li
+	      >| <a href="#v:RowShare"
+		>RowShare</a
+		>  </li
+	      ><li
+	      >| <a href="#v:RowExclusive"
+		>RowExclusive</a
+		>  </li
+	      ><li
+	      >| <a href="#v:ShareUpdateExclusive"
+		>ShareUpdateExclusive</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Share"
+		>Share</a
+		>  </li
+	      ><li
+	      >| <a href="#v:ShareRowExclusive"
+		>ShareRowExclusive</a
+		>  </li
+	      ><li
+	      >| <a href="#v:AccessExclusive"
+		>AccessExclusive</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a = <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c a</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c a</li
+	  ><li class="src short"
+	  ><a href="#v:atomical"
+	    >atomical</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:catchSqlError"
+	    >catchSqlError</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c a -&gt; (<a href="Data-SqlTransaction.html#t:SqlError"
+	    >SqlError</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c a) -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c a</li
+	  ><li class="src short"
+	  ><a href="#v:commit"
+	    >commit</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:dbWithLockBlock"
+	    >dbWithLockBlock</a
+	    > :: Show a =&gt; Namespace -&gt; a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c b -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c b</li
+	  ><li class="src short"
+	  ><a href="#v:dbWithLockNonBlock"
+	    >dbWithLockNonBlock</a
+	    > :: Show a =&gt; Namespace -&gt; a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c () -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c ()</li
+	  ><li class="src short"
+	  ><a href="#v:doneFuture"
+	    >doneFuture</a
+	    > ::  Future a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Bool</li
+	  ><li class="src short"
+	  ><a href="#v:emptyFuture"
+	    >emptyFuture</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Future a)</li
+	  ><li class="src short"
+	  ><a href="#v:execute"
+	    >execute</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Integer</li
+	  ><li class="src short"
+	  ><a href="#v:executeMany"
+	    >executeMany</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</li
+	  ><li class="src short"
+	  ><a href="#v:executeRaw"
+	    >executeRaw</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</li
+	  ><li class="src short"
+	  ><a href="#v:fetchAllRows-39-"
+	    >fetchAllRows'</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</li
+	  ><li class="src short"
+	  ><a href="#v:fetchAllRows"
+	    >fetchAllRows</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</li
+	  ><li class="src short"
+	  ><a href="#v:fetchAllRowsAL-39-"
+	    >fetchAllRowsAL'</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[(String, <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >)]]</li
+	  ><li class="src short"
+	  ><a href="#v:fetchAllRowsAL"
+	    >fetchAllRowsAL</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[(String, <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >)]]</li
+	  ><li class="src short"
+	  ><a href="#v:fetchAllRowsMap"
+	    >fetchAllRowsMap</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [Map String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:fetchRow"
+	    >fetchRow</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Maybe [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >])</li
+	  ><li class="src short"
+	  ><a href="#v:fetchRowAl"
+	    >fetchRowAl</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Maybe [(String, <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >)])</li
+	  ><li class="src short"
+	  ><a href="#v:fetchRowMap"
+	    >fetchRowMap</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Maybe (Map String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >))</li
+	  ><li class="src short"
+	  ><a href="#v:fillFuture"
+	    >fillFuture</a
+	    > ::  Future a -&gt; Either <a href="Data-SqlTransaction.html#t:SqlError"
+	    >SqlError</a
+	    > a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</li
+	  ><li class="src short"
+	  ><a href="#v:finish"
+	    >finish</a
+	    > ::  <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</li
+	  ><li class="src short"
+	  ><a href="#v:forkSqlTransaction"
+	    >forkSqlTransaction</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > () -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ThreadId</li
+	  ><li class="src short"
+	  ><a href="#v:get"
+	    >get</a
+	    > :: MonadState s m =&gt; m s</li
+	  ><li class="src short"
+	  ><a href="#v:getUser"
+	    >getUser</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c l</li
+	  ><li class="src short"
+	  ><a href="#v:lock"
+	    >lock</a
+	    > ::  String -&gt; <a href="Data-SqlTransaction.html#t:Lock"
+	    >Lock</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:newFuture"
+	    >newFuture</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Future a)</li
+	  ><li class="src short"
+	  ><a href="#v:par2"
+	    >par2</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c b -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (a, b)</li
+	  ><li class="src short"
+	  ><a href="#v:par3"
+	    >par3</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c b -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c c -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (a, b, c)</li
+	  ><li class="src short"
+	  ><a href="#v:par4"
+	    >par4</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c p -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c q -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c r -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c s -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (p, q, r, s)</li
+	  ><li class="src short"
+	  ><a href="#v:parN"
+	    >parN</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; [<a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c p] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [p]</li
+	  ><li class="src short"
+	  ><a href="#v:parSafe"
+	    >parSafe</a
+	    > ::  [<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > b] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > [b]</li
+	  ><li class="src short"
+	  ><a href="#v:prepare"
+	    >prepare</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:putUser"
+	    >putUser</a
+	    > ::  l -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c ()</li
+	  ><li class="src short"
+	  ><a href="#v:quickQuery-39-"
+	    >quickQuery'</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</li
+	  ><li class="src short"
+	  ><a href="#v:quickQuery"
+	    >quickQuery</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</li
+	  ><li class="src short"
+	  ><a href="#v:readFuture"
+	    >readFuture</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; Future a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a</li
+	  ><li class="src short"
+	  ><a href="#v:rollback"
+	    >rollback</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > m =&gt; String -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > m t</li
+	  ><li class="src short"
+	  ><a href="#v:run"
+	    >run</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Integer</li
+	  ><li class="src short"
+	  ><a href="#v:runSqlTransaction"
+	    >runSqlTransaction</a
+	    > :: (Applicative m, MonadIO m, <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > conn) =&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l conn b -&gt; (String -&gt; m b) -&gt; conn -&gt; l -&gt; m b</li
+	  ><li class="src short"
+	  ><a href="#v:runTestDb"
+	    >runTestDb</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > b -&gt; IO b</li
+	  ><li class="src short"
+	  ><a href="#v:sExecute"
+	    >sExecute</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; [Maybe String] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Integer</li
+	  ><li class="src short"
+	  ><a href="#v:sExecuteMany"
+	    >sExecuteMany</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; [[Maybe String]] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</li
+	  ><li class="src short"
+	  ><a href="#v:sFetchAllRows-39-"
+	    >sFetchAllRows'</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[Maybe String]]</li
+	  ><li class="src short"
+	  ><a href="#v:sFetchAllRows"
+	    >sFetchAllRows</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[Maybe String]]</li
+	  ><li class="src short"
+	  ><a href="#v:sFetchRow"
+	    >sFetchRow</a
+	    > ::  <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Maybe [Maybe String])</li
+	  ><li class="src short"
+	  ><a href="#v:sRun"
+	    >sRun</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [Maybe String] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Integer</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:SqlError"
+	    >SqlError</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:UError"
+		>UError</a
+		> String  </li
+	      ><li
+	      >| <a href="#v:DBError"
+		>DBError</a
+		> String  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:sqlExecute"
+	    >sqlExecute</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</li
+	  ><li class="src short"
+	  ><a href="#v:sqlGetAll"
+	    >sqlGetAll</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</li
+	  ><li class="src short"
+	  ><a href="#v:sqlGetAllAssoc"
+	    >sqlGetAllAssoc</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [HashMap String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:sqlGetOne"
+	    >sqlGetOne</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:sqlGetRow"
+	    >sqlGetRow</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:waitUnless"
+	    >waitUnless</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > Bool -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:waitWhen"
+	    >waitWhen</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > Bool -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:withEncoding"
+	    >withEncoding</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a</li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><a name="v:quickInsert" class="def"
+	    >quickInsert</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [(String, <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >)] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >quickInsert: insert data map into a single specified table. data map has the form [(field, value)]. values are SqlValues. lastval() is returned.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Connection" class="def"
+	    >Connection</a
+	    >  </p
+	  ><div class="subs instances"
+	  ><p id="control.i:Connection" class="caption collapser" onclick="toggleSection('i:Connection')"
+	    >Instances</p
+	    ><div id="section.i:Connection" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="Data-SqlTransaction.html#t:IConnection"
+		    >IConnection</a
+		    > <a href="Data-SqlTransaction.html#t:Connection"
+		    >Connection</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Database"
+		    >Database</a
+		    > <a href="Data-SqlTransaction.html#t:Connection"
+		    >Connection</a
+		    > <a href="Model-PreLetter.html#t:PreLetter"
+		    >PreLetter</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Database"
+		    >Database</a
+		    > <a href="Data-SqlTransaction.html#t:Connection"
+		    >Connection</a
+		    > <a href="Model-PartType.html#t:PartType"
+		    >PartType</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Database"
+		    >Database</a
+		    > <a href="Data-SqlTransaction.html#t:Connection"
+		    >Connection</a
+		    > <a href="Model-CarInstanceParts.html#t:CarInstanceParts"
+		    >CarInstanceParts</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Database"
+		    >Database</a
+		    > <a href="Data-SqlTransaction.html#t:Connection"
+		    >Connection</a
+		    > <a href="Model-Task.html#t:Task"
+		    >Task</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Database"
+		    >Database</a
+		    > <a href="Data-SqlTransaction.html#t:Connection"
+		    >Connection</a
+		    > <a href="Model-Account.html#t:Account"
+		    >Account</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Model-General.html#t:Database"
+		    >Database</a
+		    > <a href="Data-SqlTransaction.html#t:Connection"
+		    >Connection</a
+		    > <a href="Model-Garage.html#t:Garage"
+		    >Garage</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a name="t:IConnection" class="def"
+	    >IConnection</a
+	    > conn  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs methods"
+	  ><p class="caption"
+	    >Methods</p
+	    ><p class="src"
+	    ><a name="v:disconnect" class="def"
+	      >disconnect</a
+	      > :: conn -&gt; IO ()</p
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:IConnection" class="caption collapser" onclick="toggleSection('i:IConnection')"
+	    >Instances</p
+	    ><div id="section.i:IConnection" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="Data-SqlTransaction.html#t:IConnection"
+		    >IConnection</a
+		    > ConnWrapper</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-SqlTransaction.html#t:IConnection"
+		    >IConnection</a
+		    > <a href="Data-SqlTransaction.html#t:Connection"
+		    >Connection</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:SqlValue" class="def"
+	    >SqlValue</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:SqlString" class="def"
+		  >SqlString</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlByteString" class="def"
+		  >SqlByteString</a
+		  > ByteString</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlWord32" class="def"
+		  >SqlWord32</a
+		  > Word32</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlWord64" class="def"
+		  >SqlWord64</a
+		  > Word64</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlInt32" class="def"
+		  >SqlInt32</a
+		  > Int32</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlInt64" class="def"
+		  >SqlInt64</a
+		  > Int64</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlInteger" class="def"
+		  >SqlInteger</a
+		  > Integer</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlChar" class="def"
+		  >SqlChar</a
+		  > Char</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlBool" class="def"
+		  >SqlBool</a
+		  > Bool</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlDouble" class="def"
+		  >SqlDouble</a
+		  > Double</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlRational" class="def"
+		  >SqlRational</a
+		  > Rational</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlLocalDate" class="def"
+		  >SqlLocalDate</a
+		  > Day</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlLocalTimeOfDay" class="def"
+		  >SqlLocalTimeOfDay</a
+		  > TimeOfDay</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlZonedLocalTimeOfDay" class="def"
+		  >SqlZonedLocalTimeOfDay</a
+		  > TimeOfDay TimeZone</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlLocalTime" class="def"
+		  >SqlLocalTime</a
+		  > LocalTime</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlZonedTime" class="def"
+		  >SqlZonedTime</a
+		  > ZonedTime</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlUTCTime" class="def"
+		  >SqlUTCTime</a
+		  > UTCTime</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlDiffTime" class="def"
+		  >SqlDiffTime</a
+		  > NominalDiffTime</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlPOSIXTime" class="def"
+		  >SqlPOSIXTime</a
+		  > POSIXTime</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlEpochTime" class="def"
+		  >SqlEpochTime</a
+		  > Integer</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlTimeDiff" class="def"
+		  >SqlTimeDiff</a
+		  > Integer</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:SqlNull" class="def"
+		  >SqlNull</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:SqlValue" class="caption collapser" onclick="toggleSection('i:SqlValue')"
+	    >Instances</p
+	    ><div id="section.i:SqlValue" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show Result</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Typeable <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >IsString <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-InRules.html#t:FromInRule"
+		    >FromInRule</a
+		    > <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-InRules.html#t:ToInRule"
+		    >ToInRule</a
+		    > <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc"
+		  ><p
+		    >Renders InRule to String.
+</p
+		    ></td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Tools.html#t:StringLike"
+		    >StringLike</a
+		    > <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToValues Query</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToSql Query</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Database.html#t:Expressable"
+		    >Expressable</a
+		    > <a href="Data-Database.html#t:Values"
+		    >Values</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Database.html#t:Expressable"
+		    >Expressable</a
+		    > <a href="Data-Database.html#t:Value"
+		    >Value</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Database.html#t:Expression"
+		    >Expression</a
+		    > <a href="Data-Database.html#t:Selections"
+		    >Selections</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Database.html#t:Expression"
+		    >Expression</a
+		    > <a href="Data-Database.html#t:Pair"
+		    >Pair</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Bool <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Char <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Double <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Int <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Int32 <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Int64 <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Integer <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Rational <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Word32 <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Word64 <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible String <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible UTCTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible NominalDiffTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible DiffTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Day <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Bool</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Char</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Double</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Int</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Int32</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Int64</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Integer</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Rational</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Word32</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Word64</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > String</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > UTCTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > NominalDiffTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > DiffTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Day</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > TimeDiff</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Text</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > Text</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > ZonedTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > LocalTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > ClockTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > CalendarTime</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > TimeOfDay</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > <a href="Data-Hstore.html#t:HStore"
+		    >HStore</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible ByteString <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible ByteString <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible TimeDiff <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Text <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible Text <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible ZonedTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible LocalTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible ClockTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible CalendarTime <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible TimeOfDay <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-Hstore.html#t:HStore"
+		    >HStore</a
+		    > <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > a =&gt; Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > (Maybe a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > (TimeOfDay, TimeZone)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible a <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    > =&gt; Convertible (Maybe a) <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Convertible (TimeOfDay, TimeZone) <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Statement" class="def"
+	    >Statement</a
+	    >  </p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:disconnect" class="def"
+	    >disconnect</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > conn =&gt; conn -&gt; IO ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Lock" class="def"
+	    >Lock</a
+	    >  </p
+	  ><div class="doc"
+	  ><p
+	    >Several locks in the postgresql database 
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:AccessShare" class="def"
+		  >AccessShare</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:RowShare" class="def"
+		  >RowShare</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:RowExclusive" class="def"
+		  >RowExclusive</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:ShareUpdateExclusive" class="def"
+		  >ShareUpdateExclusive</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Share" class="def"
+		  >Share</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:ShareRowExclusive" class="def"
+		  >ShareRowExclusive</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:AccessExclusive" class="def"
+		  >AccessExclusive</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Lock" class="caption collapser" onclick="toggleSection('i:Lock')"
+	    >Instances</p
+	    ><div id="section.i:Lock" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-SqlTransaction.html#t:Lock"
+		    >Lock</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:SqlTransaction" class="def"
+	    >SqlTransaction</a
+	    > c a = <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c a</p
+	  ><div class="doc"
+	  ><p
+	    >Sql transaction is a monad, which encapsulate computations in a transaction
+   By throwing an error the transaction will be rolled back
+   The SqlTransactionUser gives the possibility to add a user state
+   In SqlTransaction the user state is a mechanism to lock a certain operation
+   Other capabilities are: 
+</p
+	    ><ul
+	    ><li
+	      > paralel queries 
+</li
+	      ><li
+	      > atomical actions
+</li
+	      ><li
+	      > exception catching (<code
+		><a href="Control-Monad.html#t:Error"
+		  >Error</a
+		  ></code
+		>)
+</li
+	      ><li
+	      > error handling 
+</li
+	      ><li
+	      > server level locking 
+</li
+	      ></ul
+	    ><p
+	    >The monad is hand rolled and CPS transformed for efficiency 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:SqlTransactionUser" class="def"
+	    >SqlTransactionUser</a
+	    > l c a </p
+	  ><div class="doc"
+	  ><p
+	    >This is the core monad. It is a hand rolled CPS transformed monadstack. It handles state and exception handling
+</p
+	    ><p
+	    >It is derived from the following stack:
+</p
+	    ><pre
+	    >
+   newtype SqlTransaction l c a = SqlTransaction {
+     unsafeRunSqlTransaction :: StateT (c,l) (ErrorT String IO) a 
+   } deriving (Functor, Alternative, Applicative, Monad, MonadPlus, MonadFix, MonadState c, MonadError String, MonadIO) 
+</pre
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:SqlTransactionUser" class="caption collapser" onclick="toggleSection('i:SqlTransactionUser')"
+	    >Instances</p
+	    ><div id="section.i:SqlTransactionUser" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >MonadState c (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadReader c (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc"
+		  ><p
+		    >The Reader class is accessing the state. This was needed for some legacy code.  
+</p
+		    ></td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-SqlTransaction.html#t:IConnection"
+		    >IConnection</a
+		    > c =&gt; MonadError <a href="Data-SqlTransaction.html#t:SqlError"
+		    >SqlError</a
+		    > (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Monad (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Functor (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-SqlTransaction.html#t:IConnection"
+		    >IConnection</a
+		    > c =&gt; MonadPlus (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc"
+		  ><p
+		    >The same as alternative 
+</p
+		    ></td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Applicative (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-SqlTransaction.html#t:IConnection"
+		    >IConnection</a
+		    > c =&gt; Alternative (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc"
+		  ><p
+		    >The alternative instance catches an error and runs the next computation when failed 
+</p
+		    ></td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadIO (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:atomical" class="def"
+	    >atomical</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Explicitly encapsulates a computation in a transaction block.
+   This commits the previous computation
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:catchSqlError" class="def"
+	    >catchSqlError</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c a -&gt; (<a href="Data-SqlTransaction.html#t:SqlError"
+	    >SqlError</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c a) -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c a</p
+	  ><div class="doc"
+	  ><p
+	    >Catch an error thrown in the SqlTransaction monad, if there is an error the continuation provided by the user will be run  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:commit" class="def"
+	    >commit</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Commits the current data to the database and starts a new transaction
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dbWithLockBlock" class="def"
+	    >dbWithLockBlock</a
+	    > :: Show a =&gt; Namespace -&gt; a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c b -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c b</p
+	  ><div class="doc"
+	  ><p
+	    >Do a SqlTransaction action, lock on server level only blocks until lock is acquired  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dbWithLockNonBlock" class="def"
+	    >dbWithLockNonBlock</a
+	    > :: Show a =&gt; Namespace -&gt; a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c () -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > c ()</p
+	  ><div class="doc"
+	  ><p
+	    >Do a SqlTransaction action and put a lock on the provided label. If the lock can't be acquired, don't block.    
+</p
+	    ><p
+	    >Example
+</p
+	    ><pre
+	    >
+ withLockNonBlock <a href="namespace.html"
+	      >namespace</a
+	      > <a href="key.html"
+	      >key</a
+	      > $ do ... 
+</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:doneFuture" class="def"
+	    >doneFuture</a
+	    > ::  Future a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Bool</p
+	  ><div class="doc"
+	  ><p
+	    >Check if the future is done calculating 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:emptyFuture" class="def"
+	    >emptyFuture</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Future a)</p
+	  ><div class="doc"
+	  ><p
+	    >Create an empty future 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:execute" class="def"
+	    >execute</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:executeMany" class="def"
+	    >executeMany</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:executeRaw" class="def"
+	    >executeRaw</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fetchAllRows-39-" class="def"
+	    >fetchAllRows'</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fetchAllRows" class="def"
+	    >fetchAllRows</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fetchAllRowsAL-39-" class="def"
+	    >fetchAllRowsAL'</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[(String, <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >)]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fetchAllRowsAL" class="def"
+	    >fetchAllRowsAL</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[(String, <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >)]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fetchAllRowsMap" class="def"
+	    >fetchAllRowsMap</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [Map String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fetchRow" class="def"
+	    >fetchRow</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Maybe [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fetchRowAl" class="def"
+	    >fetchRowAl</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Maybe [(String, <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >)])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fetchRowMap" class="def"
+	    >fetchRowMap</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Maybe (Map String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >))</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fillFuture" class="def"
+	    >fillFuture</a
+	    > ::  Future a -&gt; Either <a href="Data-SqlTransaction.html#t:SqlError"
+	    >SqlError</a
+	    > a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</p
+	  ><div class="doc"
+	  ><p
+	    >Fill a future with a value
+   This is an internal function 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:finish" class="def"
+	    >finish</a
+	    > ::  <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:forkSqlTransaction" class="def"
+	    >forkSqlTransaction</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > () -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ThreadId</p
+	  ><div class="doc"
+	  ><p
+	    >Fork a SqlTransaction, so it can calculate the computation concurrently 
+   This shares the database connection, so it the parent should be done with all the operations on the database. 
+   Errors don't roll back the parent 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:get" class="def"
+	    >get</a
+	    > :: MonadState s m =&gt; m s</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getUser" class="def"
+	    >getUser</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c l</p
+	  ><div class="doc"
+	  ><p
+	    >Retrieve the user state 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lock" class="def"
+	    >lock</a
+	    > ::  String -&gt; <a href="Data-SqlTransaction.html#t:Lock"
+	    >Lock</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Lock a table with Lock and do a computation when locked 
+</p
+	    ><p
+	    >Example
+</p
+	    ><pre
+	    >
+ f = lock <a href="account.html"
+	      >account</a
+	      > RowExclusive $ do ... 
+</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:newFuture" class="def"
+	    >newFuture</a
+	    ></p
+	  ><div class="subs arguments"
+	  ><p class="caption"
+	    >Arguments</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		>:: <a href="Data-SqlTransaction.html#t:IConnection"
+		  >IConnection</a
+		  > c</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>=&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+		  >SqlTransaction</a
+		  > c a</td
+		><td class="doc"
+		><p
+		  >calculation needed in the future 
+</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+		  >SqlTransaction</a
+		  > c (Future a)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="doc"
+	  ><p
+	    >Creates a new future in the SqlTransaction monad with a calculation 
+   The database connection will be cloned, so it is safe for the parent 
+   to operate on the database 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:par2" class="def"
+	    >par2</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c b -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (a, b)</p
+	  ><div class="doc"
+	  ><p
+	    >Run two computations paralel
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:par3" class="def"
+	    >par3</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c b -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c c -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (a, b, c)</p
+	  ><div class="doc"
+	  ><p
+	    >Run three computations paralel
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:par4" class="def"
+	    >par4</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c p -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c q -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c r -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c s -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (p, q, r, s)</p
+	  ><div class="doc"
+	  ><p
+	    >Run four computations in paralel
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:parN" class="def"
+	    >parN</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; [<a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c p] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [p]</p
+	  ><div class="doc"
+	  ><p
+	    >run n computations in paralel
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:parSafe" class="def"
+	    >parSafe</a
+	    > ::  [<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > b] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > [b]</p
+	  ><div class="doc"
+	  ><p
+	    >Run queries in paralel
+   Example:
+</p
+	    ><p
+	    ><code
+	      >
+ parSafe [comp1, comp2, comp3]
+ </code
+	      >
+ This will return all the results or roll back the parent computation on an error 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:prepare" class="def"
+	    >prepare</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:putUser" class="def"
+	    >putUser</a
+	    > ::  l -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l c ()</p
+	  ><div class="doc"
+	  ><p
+	    >Put the user state 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:quickQuery-39-" class="def"
+	    >quickQuery'</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:quickQuery" class="def"
+	    >quickQuery</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:readFuture" class="def"
+	    >readFuture</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; Future a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a</p
+	  ><div class="doc"
+	  ><p
+	    >Read the future, this will force the calculation.
+   Any exception will be thrown in the parent 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:rollback" class="def"
+	    >rollback</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > m =&gt; String -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > m t</p
+	  ><div class="doc"
+	  ><p
+	    >Rollback the computation, throws an user error 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:run" class="def"
+	    >run</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runSqlTransaction" class="def"
+	    >runSqlTransaction</a
+	    > :: (Applicative m, MonadIO m, <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > conn) =&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l conn b -&gt; (String -&gt; m b) -&gt; conn -&gt; l -&gt; m b</p
+	  ><div class="doc"
+	  ><p
+	    >Encapsulates the computation in a transaction and handles any errors in the user supplied function
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runTestDb" class="def"
+	    >runTestDb</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > b -&gt; IO b</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sExecute" class="def"
+	    >sExecute</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; [Maybe String] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sExecuteMany" class="def"
+	    >sExecuteMany</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; [[Maybe String]] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sFetchAllRows-39-" class="def"
+	    >sFetchAllRows'</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[Maybe String]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sFetchAllRows" class="def"
+	    >sFetchAllRows</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[Maybe String]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sFetchRow" class="def"
+	    >sFetchRow</a
+	    > ::  <a href="Data-SqlTransaction.html#t:Statement"
+	    >Statement</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c (Maybe [Maybe String])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sRun" class="def"
+	    >sRun</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [Maybe String] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:SqlError" class="def"
+	    >SqlError</a
+	    >  </p
+	  ><div class="doc"
+	  ><p
+	    >Exception data type.
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:UError" class="def"
+		  >UError</a
+		  > String</td
+		><td class="doc"
+		><p
+		  >User error  
+</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:DBError" class="def"
+		  >DBError</a
+		  > String</td
+		><td class="doc"
+		><p
+		  >Database error 
+</p
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:SqlError" class="caption collapser" onclick="toggleSection('i:SqlError')"
+	    >Instances</p
+	    ><div id="section.i:SqlError" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-SqlTransaction.html#t:SqlError"
+		    >SqlError</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >IsString <a href="Data-SqlTransaction.html#t:SqlError"
+		    >SqlError</a
+		    ></td
+		  ><td class="doc"
+		  ><p
+		    >For usability SqlError is a <code
+		      >IsString</code
+		      >
+</p
+		    ></td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Error <a href="Data-SqlTransaction.html#t:SqlError"
+		    >SqlError</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-SqlTransaction.html#t:IConnection"
+		    >IConnection</a
+		    > c =&gt; MonadError <a href="Data-SqlTransaction.html#t:SqlError"
+		    >SqlError</a
+		    > (<a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+		    >SqlTransactionUser</a
+		    > l c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-SqlTransaction.html#t:IConnection"
+		    >IConnection</a
+		    > c =&gt; MonadError <a href="Data-SqlTransaction.html#t:SqlError"
+		    >SqlError</a
+		    > (<a href="Data-ComposeModel.html#t:ComposeMonad"
+		    >ComposeMonad</a
+		    > r c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sqlExecute" class="def"
+	    >sqlExecute</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c ()</p
+	  ><div class="doc"
+	  ><p
+	    >Execute a statement 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sqlGetAll" class="def"
+	    >sqlGetAll</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [[<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]]</p
+	  ><div class="doc"
+	  ><p
+	    >Get all rows from the query 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sqlGetAllAssoc" class="def"
+	    >sqlGetAllAssoc</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [HashMap String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]</p
+	  ><div class="doc"
+	  ><p
+	    >Get all rows as a <code
+	      >HashMap</code
+	      >
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sqlGetOne" class="def"
+	    >sqlGetOne</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Get the first value from the query 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sqlGetRow" class="def"
+	    >sqlGetRow</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >]</p
+	  ><div class="doc"
+	  ><p
+	    >get one row from the query 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:waitUnless" class="def"
+	    >waitUnless</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > Bool -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >The reverse of waitWhen
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:waitWhen" class="def"
+	    >waitWhen</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > Bool -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Wait on an event in the database. If the computation returns true, go further
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withEncoding" class="def"
+	    >withEncoding</a
+	    > :: <a href="Data-SqlTransaction.html#t:IConnection"
+	    >IConnection</a
+	    > c =&gt; String -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > c a</p
+	  ><div class="doc"
+	  ><p
+	    >Change the encoding of the database 
+</p
+	    ></div
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

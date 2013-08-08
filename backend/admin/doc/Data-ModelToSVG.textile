@@ -1,0 +1,418 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.ModelToSVG
+
+Synopsis
+
+<ul>
+<li>type "X":#t:X = Double</li>
+<li>type "Y":#t:Y = Double</li>
+<li>type "Radius":#t:Radius = Double</li>
+<li>type "Label":#t:Label = String</li>
+<li>type "Name":#t:Name = String</li>
+<li>data "Connect":#t:Connect a where
+<ul>
+<li>"Many":#v:Many :: [a] -&gt; "Connect":Data-ModelToSVG.html#t:Connect a</li>
+<li>"None":#v:None :: "Connect":Data-ModelToSVG.html#t:Connect a</li>
+</ul>
+</li>
+<li>type "Action":#t:Action = String</li>
+<li>data "SVGTree":#t:SVGTree where
+<ul>
+<li>"Box":#v:Box :: "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree</li>
+<li>"Circle":#v:Circle :: "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Radius":Data-ModelToSVG.html#t:Radius -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree</li>
+<li>"Button":#v:Button :: Integer -&gt; "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Action":Data-ModelToSVG.html#t:Action -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree</li>
+<li>"Line":#v:Line :: "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree</li>
+<li>"Modifier":#v:Modifier :: "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "Options":Data-ModelToSVG.html#t:Options -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree</li>
+</ul>
+</li>
+<li>data "Option":#t:Option
+<ul>
+<li>= "FGColor":#v:FGColor (Int, Int, Int)</li>
+<li>&#124; "BGColor":#v:BGColor (Int, Int, Int)</li>
+<li>&#124; "CSS":#v:CSS (String, String)</li>
+<li>&#124; "Attribute":#v:Attribute (String, String)</li>
+</ul>
+</li>
+<li>type "Options":#t:Options = ["Option":Data-ModelToSVG.html#t:Option]</li>
+<li>newtype "SVGDef":#t:SVGDef = "SVGDef":#v:SVGDef {
+<ul>
+<li>"unSVGDef":#v:unSVGDef :: Seq "SVGTree":Data-ModelToSVG.html#t:SVGTree</li>
+</ul>
+
+}</li>
+<li>type "SVGPair":#t:SVGPair = ("SVGTree":Data-ModelToSVG.html#t:SVGTree, "Options":Data-ModelToSVG.html#t:Options)</li>
+<li>data "RenderData":#t:RenderData = "RD":#v:RD {
+<ul>
+<li>"&#95;cons":#v:_cons :: [(("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y))]</li>
+<li>"&#95;boxes":#v:_boxes :: ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</li>
+<li>"&#95;circles":#v:_circles :: ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</li>
+<li>"&#95;buttons":#v:_buttons :: ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</li>
+<li>"&#95;lines":#v:_lines :: ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</li>
+<li>"&#95;opts":#v:_opts :: "Options":Data-ModelToSVG.html#t:Options</li>
+<li>"&#95;cpoint":#v:_cpoint :: Maybe ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y)</li>
+</ul>
+
+}</li>
+<li>"defaultRenderData":#v:defaultRenderData :: "RenderData":Data-ModelToSVG.html#t:RenderData</li>
+<li>"cpoint":#v:cpoint :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData (Maybe ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y))</li>
+<li>"opts":#v:opts :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData "Options":Data-ModelToSVG.html#t:Options</li>
+<li>"lines":#v:lines :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</li>
+<li>"buttons":#v:buttons :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</li>
+<li>"circles":#v:circles :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</li>
+<li>"boxes":#v:boxes :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</li>
+<li>"cons":#v:cons :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData [(("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y))]</li>
+<li>"def":#v:def :: "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"box":#v:box :: "Label":Data-ModelToSVG.html#t:Label -&gt; (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y)) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"circle":#v:circle :: "Label":Data-ModelToSVG.html#t:Label -&gt; (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "Radius":Data-ModelToSVG.html#t:Radius) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"line":#v:line :: "Label":Data-ModelToSVG.html#t:Label -&gt; (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y)) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"button":#v:button :: Integer -&gt; "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Action":Data-ModelToSVG.html#t:Action -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"(&lt;-&gt;)":#v:-60--45--62- :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"(&#124;-&gt;)":#v:-124--45--62- :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"(&lt;-&#124;)":#v:-60--45--124- :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"multi":#v:multi :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; ["SVGDef":Data-ModelToSVG.html#t:SVGDef] -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"insert":#v:insert :: "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree</li>
+<li>"test":#v:test :: "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"(&lt;!&gt;)":#v:-60--33--62- :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "Options":Data-ModelToSVG.html#t:Options -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>type "Renderer":#t:Renderer = State "RenderData":Data-ModelToSVG.html#t:RenderData</li>
+<li>"renderData":#v:renderData :: "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer ()</li>
+<li>"interpRenderData":#v:interpRenderData :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "RenderData":Data-ModelToSVG.html#t:RenderData</li>
+<li>"makeConnected":#v:makeConnected :: ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer ()</li>
+<li>"renderLocal":#v:renderLocal :: ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; ["SVGTree":Data-ModelToSVG.html#t:SVGTree] -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer ()</li>
+<li>"localConnect":#v:localConnect :: ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer a -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer a</li>
+<li>"svgData":#v:svgData :: "RenderData":Data-ModelToSVG.html#t:RenderData -&gt; Svg</li>
+<li>"renderBox":#v:renderBox :: "SVGPair":Data-ModelToSVG.html#t:SVGPair -&gt; Svg</li>
+<li>"modelAttribute":#v:modelAttribute :: (Functor f, ToValue (f Char)) =&gt; f Char -&gt; Attribute</li>
+<li>"testBox":#v:testBox :: "SVGPair":Data-ModelToSVG.html#t:SVGPair</li>
+<li>"addOpts":#v:addOpts :: (Foldable t, Attributable b) =&gt; t "Option":Data-ModelToSVG.html#t:Option -&gt; b -&gt; b</li>
+<li>"renderCircle":#v:renderCircle :: Foldable t =&gt; ("SVGTree":Data-ModelToSVG.html#t:SVGTree, t "Option":Data-ModelToSVG.html#t:Option) -&gt; Svg</li>
+<li>"renderLine":#v:renderLine :: ("SVGTree":Data-ModelToSVG.html#t:SVGTree, t) -&gt; a</li>
+<li>"renderCon":#v:renderCon :: (ToValue a3, ToValue a2, ToValue a1, ToValue a) =&gt; ((a, a2), (a1, a3)) -&gt; Svg</li>
+<li>"renderButton":#v:renderButton :: Foldable t =&gt; ("SVGTree":Data-ModelToSVG.html#t:SVGTree, t "Option":Data-ModelToSVG.html#t:Option) -&gt; Svg</li>
+<li>"(++=)":#v:-43--43--61- :: (Monad m, Monoid b) =&gt; Lens a b -&gt; b -&gt; StateT a m b</li>
+<li>"render":#v:render :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; String</li>
+<li>"connect":#v:connect :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree</li>
+<li>"headr":#v:headr :: Seq a -&gt; a</li>
+<li>"headl":#v:headl :: Seq a -&gt; a</li>
+<li>"tailr":#v:tailr :: Seq a -&gt; Seq a</li>
+<li>"taill":#v:taill :: Seq a -&gt; Seq a</li>
+<li>"records":#v:records :: "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"record":#v:record :: String -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; Integer -&gt; String -&gt; [String] -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"addButtons":#v:addButtons :: ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; Integer -&gt; String -&gt; [String] -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"testdb":#v:testdb :: IO "Connection":Data-SqlTransaction.html#t:Connection</li>
+<li>"loadContinent'":#v:loadContinent-39- :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"loadContinent":#v:loadContinent :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"trackRecord":#v:trackRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Track":Model-Track.html#t:Track -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"continentRecord":#v:continentRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Continent":Model-Continent.html#t:Continent -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"cityRecord":#v:cityRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "City":Model-City.html#t:City -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"loadCarInstance":#v:loadCarInstance :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"carInstanceRecord":#v:carInstanceRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "CarInstance":Model-CarInstance.html#t:CarInstance -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"carModelRecord":#v:carModelRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Car":Model-Car.html#t:Car -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"accountRecord":#v:accountRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Account":Model-Account.html#t:Account -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"loadPartModel":#v:loadPartModel :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"partTypeRecord":#v:partTypeRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "PartType":Model-PartType.html#t:PartType -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"partInstanceRecord":#v:partInstanceRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "PartInstance":Model-PartInstance.html#t:PartInstance -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"partModelRecord":#v:partModelRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Part":Model-Part.html#t:Part -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"loadPartInstance":#v:loadPartInstance :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"loadPartType":#v:loadPartType :: Convertible a "SqlValue":Data-SqlTransaction.html#t:SqlValue =&gt; a -&gt; "SqlTransactionUser":Data-SqlTransaction.html#t:SqlTransactionUser "Lock":LockSnaplet.html#t:Lock "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"recId":#v:recId :: Monad m =&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef) -&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)</li>
+<li>"addRecordsPaged":#v:addRecordsPaged :: (Monad f, Applicative f) =&gt; Int -&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; [a] -&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; f (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)) -&gt; f (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)</li>
+<li>"addRecords'":#v:addRecords-39- :: Monad m =&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; [a] -&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)) -&gt; m (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)</li>
+<li>"addRecordsDivided":#v:addRecordsDivided :: Monad m =&gt; Int -&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; [a] -&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef) -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"divide":#v:divide :: Int -&gt; [t] -&gt; [[a] -&gt; [a]]</li>
+<li>"test2":#v:test2 :: "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"test3":#v:test3 :: "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"addRecords":#v:addRecords :: Monad m =&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; [a] -&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef) -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef</li>
+<li>"runl":#v:runl :: "SqlTransactionUser":Data-SqlTransaction.html#t:SqlTransactionUser l "Connection":Data-SqlTransaction.html#t:Connection b -&gt; IO b</li>
+</ul>
+
+h1. Documentation
+
+type X = Double
+
+type Y = Double
+
+type Radius = Double
+
+type Label = String
+
+type Name = String
+
+data Connect a where
+
+Constructors
+
+
+|Many :: [a] -&gt; "Connect":Data-ModelToSVG.html#t:Connect a| |
+|None :: "Connect":Data-ModelToSVG.html#t:Connect a| |
+
+
+Instances
+
+
+|Eq a =&gt; Eq ("Connect":Data-ModelToSVG.html#t:Connect a)| |
+|Show a =&gt; Show ("Connect":Data-ModelToSVG.html#t:Connect a)| |
+|Monoid ("Connect":Data-ModelToSVG.html#t:Connect a)| |
+
+
+type Action = String
+
+data SVGTree where
+
+Constructors
+
+
+|Box :: "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree| |
+|Circle :: "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Radius":Data-ModelToSVG.html#t:Radius -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree| |
+|Button :: Integer -&gt; "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Action":Data-ModelToSVG.html#t:Action -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree| |
+|Line :: "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree| |
+|Modifier :: "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "Options":Data-ModelToSVG.html#t:Options -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree| |
+
+
+Instances
+
+
+|Eq "SVGTree":Data-ModelToSVG.html#t:SVGTree| |
+|Show "SVGTree":Data-ModelToSVG.html#t:SVGTree| |
+
+
+data Option
+
+Constructors
+
+
+|FGColor (Int, Int, Int)| |
+|BGColor (Int, Int, Int)| |
+|CSS (String, String)| |
+|Attribute (String, String)| |
+
+
+Instances
+
+
+|Eq "Option":Data-ModelToSVG.html#t:Option| |
+|Show "Option":Data-ModelToSVG.html#t:Option| |
+
+
+type Options = ["Option":Data-ModelToSVG.html#t:Option]
+
+newtype SVGDef
+
+Constructors
+
+SVGDef
+
+ 
+
+Fields
+
+<dl>
+<dt>unSVGDef :: Seq "SVGTree":Data-ModelToSVG.html#t:SVGTree</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "SVGDef":Data-ModelToSVG.html#t:SVGDef| |
+|Show "SVGDef":Data-ModelToSVG.html#t:SVGDef| |
+|Monoid "SVGDef":Data-ModelToSVG.html#t:SVGDef| |
+
+
+type SVGPair = ("SVGTree":Data-ModelToSVG.html#t:SVGTree, "Options":Data-ModelToSVG.html#t:Options)
+
+data RenderData
+
+Constructors
+
+RD
+
+ 
+
+Fields
+
+<dl>
+<dt>&#95;cons :: [(("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y))]</dt>
+<dd> </dd>
+<dt>&#95;boxes :: ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</dt>
+<dd> </dd>
+<dt>&#95;circles :: ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</dt>
+<dd> </dd>
+<dt>&#95;buttons :: ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</dt>
+<dd> </dd>
+<dt>&#95;lines :: ["SVGPair":Data-ModelToSVG.html#t:SVGPair]</dt>
+<dd> </dd>
+<dt>&#95;opts :: "Options":Data-ModelToSVG.html#t:Options</dt>
+<dd> </dd>
+<dt>&#95;cpoint :: Maybe ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y)</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Show "RenderData":Data-ModelToSVG.html#t:RenderData| |
+
+
+defaultRenderData :: "RenderData":Data-ModelToSVG.html#t:RenderData
+
+cpoint :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData (Maybe ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y))
+
+opts :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData "Options":Data-ModelToSVG.html#t:Options
+
+lines :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData ["SVGPair":Data-ModelToSVG.html#t:SVGPair]
+
+buttons :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData ["SVGPair":Data-ModelToSVG.html#t:SVGPair]
+
+circles :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData ["SVGPair":Data-ModelToSVG.html#t:SVGPair]
+
+boxes :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData ["SVGPair":Data-ModelToSVG.html#t:SVGPair]
+
+cons :: Lens "RenderData":Data-ModelToSVG.html#t:RenderData [(("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y))]
+
+def :: "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+Lift a SVGTree in SVGDef
+
+box :: "Label":Data-ModelToSVG.html#t:Label -&gt; (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y)) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+Box create a box with a label. (Shown in box) The coordinates are topright, bottomleft. The name can be use for actions
+
+circle :: "Label":Data-ModelToSVG.html#t:Label -&gt; (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "Radius":Data-ModelToSVG.html#t:Radius) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+Circle creates a circle with center (x,y) and radius Radius. Name can &#124; be used for actions
+
+line :: "Label":Data-ModelToSVG.html#t:Label -&gt; (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y)) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+Line creates a line from (x,y) to (x',y'). Name can be used for &#124; actions. Label is shown above
+
+button :: Integer -&gt; "Label":Data-ModelToSVG.html#t:Label -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Name":Data-ModelToSVG.html#t:Name -&gt; "Action":Data-ModelToSVG.html#t:Action -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+Creates a button with center (X,Y). Name can be used for the action. &#124; Label is placed in the box
+
+(&lt;-&gt;) :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+Connect combinator. Connects the new whole (left) element to the right last element. &#124; The element is not a part of the visual SVGDef
+
+(&#124;-&gt;) :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+(&lt;-&#124;) :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+multi :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; ["SVGDef":Data-ModelToSVG.html#t:SVGDef] -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+insert :: "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "SVGTree":Data-ModelToSVG.html#t:SVGTree
+
+test :: "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+(&lt;!&gt;) :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "Options":Data-ModelToSVG.html#t:Options -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+Apply a modifier to the right last element
+
+type Renderer = State "RenderData":Data-ModelToSVG.html#t:RenderData
+
+renderData :: "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer ()
+
+interpRenderData :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "RenderData":Data-ModelToSVG.html#t:RenderData
+
+makeConnected :: ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer ()
+
+renderLocal :: ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; ["SVGTree":Data-ModelToSVG.html#t:SVGTree] -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer ()
+
+localConnect :: ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer a -&gt; "Renderer":Data-ModelToSVG.html#t:Renderer a
+
+svgData :: "RenderData":Data-ModelToSVG.html#t:RenderData -&gt; Svg
+
+renderBox :: "SVGPair":Data-ModelToSVG.html#t:SVGPair -&gt; Svg
+
+modelAttribute :: (Functor f, ToValue (f Char)) =&gt; f Char -&gt; Attribute
+
+testBox :: "SVGPair":Data-ModelToSVG.html#t:SVGPair
+
+addOpts :: (Foldable t, Attributable b) =&gt; t "Option":Data-ModelToSVG.html#t:Option -&gt; b -&gt; b
+
+renderCircle :: Foldable t =&gt; ("SVGTree":Data-ModelToSVG.html#t:SVGTree, t "Option":Data-ModelToSVG.html#t:Option) -&gt; Svg
+
+renderLine :: ("SVGTree":Data-ModelToSVG.html#t:SVGTree, t) -&gt; a
+
+renderCon :: (ToValue a3, ToValue a2, ToValue a1, ToValue a) =&gt; ((a, a2), (a1, a3)) -&gt; Svg
+
+renderButton :: Foldable t =&gt; ("SVGTree":Data-ModelToSVG.html#t:SVGTree, t "Option":Data-ModelToSVG.html#t:Option) -&gt; Svg
+
+(++=) :: (Monad m, Monoid b) =&gt; Lens a b -&gt; b -&gt; StateT a m b
+
+render :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; String
+
+connect :: "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree -&gt; "Connect":Data-ModelToSVG.html#t:Connect "SVGTree":Data-ModelToSVG.html#t:SVGTree
+
+headr :: Seq a -&gt; a
+
+headl :: Seq a -&gt; a
+
+tailr :: Seq a -&gt; Seq a
+
+taill :: Seq a -&gt; Seq a
+
+records :: "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+record :: String -&gt; ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; Integer -&gt; String -&gt; [String] -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+addButtons :: ("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y) -&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; Integer -&gt; String -&gt; [String] -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+testdb :: IO "Connection":Data-SqlTransaction.html#t:Connection
+
+loadContinent' :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+loadContinent :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+trackRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Track":Model-Track.html#t:Track -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+continentRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Continent":Model-Continent.html#t:Continent -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+cityRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "City":Model-City.html#t:City -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+loadCarInstance :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+carInstanceRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "CarInstance":Model-CarInstance.html#t:CarInstance -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+carModelRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Car":Model-Car.html#t:Car -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+accountRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Account":Model-Account.html#t:Account -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+loadPartModel :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+partTypeRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "PartType":Model-PartType.html#t:PartType -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+partInstanceRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "PartInstance":Model-PartInstance.html#t:PartInstance -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+partModelRecord :: "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Part":Model-Part.html#t:Part -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+loadPartInstance :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+loadPartType :: Convertible a "SqlValue":Data-SqlTransaction.html#t:SqlValue =&gt; a -&gt; "SqlTransactionUser":Data-SqlTransaction.html#t:SqlTransactionUser "Lock":LockSnaplet.html#t:Lock "Connection":Data-SqlTransaction.html#t:Connection "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+recId :: Monad m =&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef) -&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)
+
+addRecordsPaged :: (Monad f, Applicative f) =&gt; Int -&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; [a] -&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; f (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)) -&gt; f (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)
+
+addRecords' :: Monad m =&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; [a] -&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)) -&gt; m (("X":Data-ModelToSVG.html#t:X, "Y":Data-ModelToSVG.html#t:Y), "SVGDef":Data-ModelToSVG.html#t:SVGDef)
+
+addRecordsDivided :: Monad m =&gt; Int -&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; [a] -&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef) -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+divide :: Int -&gt; [t] -&gt; [[a] -&gt; [a]]
+
+test2 :: "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+test3 :: "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+addRecords :: Monad m =&gt; "X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; "SVGDef":Data-ModelToSVG.html#t:SVGDef -&gt; [a] -&gt; ("X":Data-ModelToSVG.html#t:X -&gt; "Y":Data-ModelToSVG.html#t:Y -&gt; a -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef) -&gt; m "SVGDef":Data-ModelToSVG.html#t:SVGDef
+
+runl :: "SqlTransactionUser":Data-SqlTransaction.html#t:SqlTransactionUser l "Connection":Data-SqlTransaction.html#t:Connection b -&gt; IO b
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0
