@@ -179,12 +179,13 @@ healthLost uid rr = do
 -- wpm : 100 
 --
 calcWear wpm speed rt wear = do 
-        pt <- liftIO $ randomRIO (0,2)
-        return $ parm2 pt wpm speed rt wear
+        pt <- getKey "random_wear_per_section"
+        ps <- liftIO $ randomRIO (0,pt)
+        return $ parm2 ps wpm speed rt wear
 
 -- parm2 100 100 (4.6 * 60) 100   
 parm2 :: (Floating a) => a -> a -> a -> a -> a -> a
-parm2 pt wpm speed rt wear = wear * (1 - 1 / (1 + (exp (- (wpm / pt * 1000 * 3.6) / (3.6 * speed * rt)))))
+parm2 pt wpm speed rt wear = wear + (rt * speed / 1000) * (wpm + pt)
 
 
                 
