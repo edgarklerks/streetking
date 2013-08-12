@@ -416,7 +416,7 @@ marketSell = do
             xs <- getJson >>= scheck ["price", "part_instance_id"]
             let d = updateHashMap xs (def :: MI.MarketItem)
             prg <- loadConfig "market_fee"
-            let x = min 100 $ (fromIntegral (MI.price d) * 0.10)
+            let x = maximum 100 $ (fromIntegral (MI.price d) * 0.10)
 {--            x <- evalLua prg [
                           ("price", LuaNum (fromIntegral $ MI.price d))
                           ]
@@ -425,7 +425,7 @@ marketSell = do
             -- floor -5.6 -> -6
             -- ceil -5.6 -> -5
             --
-            pts uid d (floor (x :: Double)) 
+            dbWithLockNonBlock "marketparts-sell" uid $  pts uid d (floor (x :: Double)) 
             writeResult True 
     where pts uid d fee = runDb $ do 
            p <- search [("id" |== toSql ( MI.part_instance_id d)) .&& ("account_id" |== toSql uid)] [] 1 0 :: SqlTransaction Connection [PI.PartInstance]
@@ -434,6 +434,7 @@ marketSell = do
                 [x] -> do 
                     when (MI.price d < 0) $ rollback "Price should be positive" 
                     -- save part to market  
+                    
                     save (d {MI.account_id = uid, MI.price = abs (MI.price d)})
 
                     -- save part_instance as loon item 
