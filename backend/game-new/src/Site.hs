@@ -1977,6 +1977,7 @@ raceChallengeWithdraw = do
         -- delete
 
         runDb $ update "challenge" p [] [("deleted", toSql True)]
+        CarInstance.setMutable (fromJust $ Chg.car_min $ CMI.id cm)
 
         writeResult ("challenge withdrawn" :: String)
  
