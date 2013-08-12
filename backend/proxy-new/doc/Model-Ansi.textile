@@ -1,0 +1,16 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.Ansi
+
+h1. Documentation
+
+isNullable :: String -&gt; String -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Bool
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

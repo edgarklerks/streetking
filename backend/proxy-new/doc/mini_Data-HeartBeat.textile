@@ -1,0 +1,19 @@
+Data.HeartBeat
+
+type "Address":Data-HeartBeat.html#t:Address
+
+data "Beat":Data-HeartBeat.html#t:Beat
+
+type "ClientC":Data-HeartBeat.html#t:ClientC
+
+type "ServerC":Data-HeartBeat.html#t:ServerC
+
+"delay":Data-HeartBeat.html#v:delay
+
+"checkin":Data-HeartBeat.html#v:checkin
+
+"hotelManager":Data-HeartBeat.html#v:hotelManager
+
+"hotelManager'":Data-HeartBeat.html#v:hotelManager-39-
+
+"testHeartBeat":Data-HeartBeat.html#v:testHeartBeat

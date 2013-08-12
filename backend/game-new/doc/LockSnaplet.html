@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >LockSnaplet</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_LockSnaplet.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>LockSnaplet</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Lock"
+	    >Lock</a
+	    > </li
+	  ><li class="src short"
+	  ><a href="#v:getLock"
+	    >getLock</a
+	    > :: MonadState <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > m =&gt; m <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:initLock"
+	    >initLock</a
+	    > ::  SnapletInit b <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:printLocks"
+	    >printLocks</a
+	    > :: <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:withLockBlock"
+	    >withLockBlock</a
+	    > :: (MonadIO m, Applicative m, Show a) =&gt; <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; Namespace -&gt; a -&gt; m b -&gt; m b</li
+	  ><li class="src short"
+	  ><a href="#v:withLockNonBlock"
+	    >withLockNonBlock</a
+	    > :: (MonadIO m, Applicative m, Show a) =&gt; <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; Namespace -&gt; a -&gt; m () -&gt; m ()</li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Lock" class="def"
+	    >Lock</a
+	    >  </p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getLock" class="def"
+	    >getLock</a
+	    > :: MonadState <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > m =&gt; m <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Get the current lock manager 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initLock" class="def"
+	    >initLock</a
+	    > ::  SnapletInit b <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Initialize the lock snaplet 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:printLocks" class="def"
+	    >printLocks</a
+	    > :: <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >(Debug) print out all the locks 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withLockBlock" class="def"
+	    >withLockBlock</a
+	    > :: (MonadIO m, Applicative m, Show a) =&gt; <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; Namespace -&gt; a -&gt; m b -&gt; m b</p
+	  ><div class="doc"
+	  ><p
+	    >Do some action with a lock, block if lock isn't possible 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withLockNonBlock" class="def"
+	    >withLockNonBlock</a
+	    > :: (MonadIO m, Applicative m, Show a) =&gt; <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > -&gt; Namespace -&gt; a -&gt; m () -&gt; m ()</p
+	  ><div class="doc"
+	  ><p
+	    >Do some action with a lock, don't block if lock isn't possible 
+</p
+	    ></div
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

@@ -1,0 +1,26 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+LockSnaplet
+
+h1. Documentation
+
+data Lock
+
+getLock :: MonadState "Lock":LockSnaplet.html#t:Lock m =&gt; m "Lock":LockSnaplet.html#t:Lock
+
+initLock :: SnapletInit b "Lock":LockSnaplet.html#t:Lock
+
+printLocks :: "Lock":LockSnaplet.html#t:Lock -&gt; IO ()
+
+withLockBlock :: (MonadIO m, Applicative m, Show a) =&gt; "Lock":LockSnaplet.html#t:Lock -&gt; Namespace -&gt; a -&gt; m b -&gt; m b
+
+withLockNonBlock :: (MonadIO m, Applicative m, Show a) =&gt; "Lock":LockSnaplet.html#t:Lock -&gt; Namespace -&gt; a -&gt; m () -&gt; m ()
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

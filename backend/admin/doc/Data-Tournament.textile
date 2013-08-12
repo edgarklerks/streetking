@@ -1,0 +1,52 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Tournament
+
+h1. Documentation
+
+createTournament :: "Tournament":Data-Tournament.html#t:Tournament -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+joinTournament :: Integer -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ()
+
+data Tournament
+
+Instances
+
+
+|Eq "Tournament":Data-Tournament.html#t:Tournament| |
+|Show "Tournament":Data-Tournament.html#t:Tournament| |
+|ToJSON "Tournament":Data-Tournament.html#t:Tournament| |
+|FromJSON "Tournament":Data-Tournament.html#t:Tournament| |
+|Default "Tournament":Data-Tournament.html#t:Tournament| |
+|"FromInRule":Data-InRules.html#t:FromInRule "Tournament":Data-Tournament.html#t:Tournament| |
+|"ToInRule":Data-InRules.html#t:ToInRule "Tournament":Data-Tournament.html#t:Tournament| |
+|"Mapable":Model-General.html#t:Mapable "Tournament":Data-Tournament.html#t:Tournament| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Tournament":Data-Tournament.html#t:Tournament| |
+
+
+runTournament :: "Task":Model-Task.html#t:Task -&gt; t -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection Bool
+
+initTournament :: t -&gt; IO ()
+
+getResults :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection ["TournamentResult":Model-TournamentResult.html#t:TournamentResult]
+
+getPlayers :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [[("AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin, "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin, "Id":Model-General.html#t:Id)]]
+
+processTournamentRace :: Integer -&gt; ["RaceParticipant":Data-RaceParticipant.html#t:RaceParticipant] -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection (Integer, [("RaceParticipant":Data-RaceParticipant.html#t:RaceParticipant, "RaceResult":Data-RacingNew.html#t:RaceResult)], Integer)
+
+runTournamentRounds :: t -&gt; TournamentFullData -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [[(Integer, [("RaceParticipant":Data-RaceParticipant.html#t:RaceParticipant, "RaceResult":Data-RacingNew.html#t:RaceResult)])]]
+
+loadTournamentFull :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection TournamentFullData
+
+testTournament :: IO ()
+
+loadTournament :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Tournament":Data-Tournament.html#t:Tournament
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,40 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Track
+
+h1. Documentation
+
+data Track
+
+Constructors
+
+Track
+
+ 
+
+Fields
+
+<dl>
+<dt>track&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>sections :: ["Section":Data-Section.html#t:Section]</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "Track":Data-Track.html#t:Track| |
+|Show "Track":Data-Track.html#t:Track| |
+
+
+trackDetailsTrack :: ["TrackDetails":Model-TrackDetails.html#t:TrackDetails] -&gt; "Track":Data-Track.html#t:Track
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0
