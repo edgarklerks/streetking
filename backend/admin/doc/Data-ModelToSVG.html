@@ -1,0 +1,2488 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.ModelToSVG</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-ModelToSVG.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.ModelToSVG</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:X"
+	    >X</a
+	    > = Double</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Y"
+	    >Y</a
+	    > = Double</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Radius"
+	    >Radius</a
+	    > = Double</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Label"
+	    >Label</a
+	    > = String</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Name"
+	    >Name</a
+	    > = String</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Connect"
+	    >Connect</a
+	    > a <span class="keyword"
+	    >where</span
+	    ><ul class="subs"
+	    ><li
+	      ><a href="#v:Many"
+		>Many</a
+		> ::  [a] -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		>Connect</a
+		> a  </li
+	      ><li
+	      ><a href="#v:None"
+		>None</a
+		> ::  <a href="Data-ModelToSVG.html#t:Connect"
+		>Connect</a
+		> a  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Action"
+	    >Action</a
+	    > = String</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:SVGTree"
+	    >SVGTree</a
+	    >  <span class="keyword"
+	    >where</span
+	    ><ul class="subs"
+	    ><li
+	      ><a href="#v:Box"
+		>Box</a
+		> ::  <a href="Data-ModelToSVG.html#t:Label"
+		>Label</a
+		> -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>) -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+		>Name</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		>Connect</a
+		> <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		>  </li
+	      ><li
+	      ><a href="#v:Circle"
+		>Circle</a
+		> ::  <a href="Data-ModelToSVG.html#t:Label"
+		>Label</a
+		> -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>) -&gt; <a href="Data-ModelToSVG.html#t:Radius"
+		>Radius</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:Name"
+		>Name</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		>Connect</a
+		> <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		>  </li
+	      ><li
+	      ><a href="#v:Button"
+		>Button</a
+		> ::  Integer -&gt; <a href="Data-ModelToSVG.html#t:Label"
+		>Label</a
+		> -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+		>Name</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:Action"
+		>Action</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		>Connect</a
+		> <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		>  </li
+	      ><li
+	      ><a href="#v:Line"
+		>Line</a
+		> ::  <a href="Data-ModelToSVG.html#t:Label"
+		>Label</a
+		> -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>) -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+		>Name</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		>Connect</a
+		> <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		>  </li
+	      ><li
+	      ><a href="#v:Modifier"
+		>Modifier</a
+		> ::  <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:Options"
+		>Options</a
+		> -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Option"
+	    >Option</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:FGColor"
+		>FGColor</a
+		> (Int, Int, Int)  </li
+	      ><li
+	      >| <a href="#v:BGColor"
+		>BGColor</a
+		> (Int, Int, Int)  </li
+	      ><li
+	      >| <a href="#v:CSS"
+		>CSS</a
+		> (String, String)  </li
+	      ><li
+	      >| <a href="#v:Attribute"
+		>Attribute</a
+		> (String, String)  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Options"
+	    >Options</a
+	    > = [<a href="Data-ModelToSVG.html#t:Option"
+	    >Option</a
+	    >]</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:SVGDef"
+	    >SVGDef</a
+	    >  = <a href="#v:SVGDef"
+	    >SVGDef</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unSVGDef"
+		>unSVGDef</a
+		> :: Seq <a href="Data-ModelToSVG.html#t:SVGTree"
+		>SVGTree</a
+		></li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:SVGPair"
+	    >SVGPair</a
+	    > = (<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >, <a href="Data-ModelToSVG.html#t:Options"
+	    >Options</a
+	    >)</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:RenderData"
+	    >RenderData</a
+	    >  = <a href="#v:RD"
+	    >RD</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:_cons"
+		>_cons</a
+		> :: [((<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>), (<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>))]</li
+	      ><li
+	      ><a href="#v:_boxes"
+		>_boxes</a
+		> :: [<a href="Data-ModelToSVG.html#t:SVGPair"
+		>SVGPair</a
+		>]</li
+	      ><li
+	      ><a href="#v:_circles"
+		>_circles</a
+		> :: [<a href="Data-ModelToSVG.html#t:SVGPair"
+		>SVGPair</a
+		>]</li
+	      ><li
+	      ><a href="#v:_buttons"
+		>_buttons</a
+		> :: [<a href="Data-ModelToSVG.html#t:SVGPair"
+		>SVGPair</a
+		>]</li
+	      ><li
+	      ><a href="#v:_lines"
+		>_lines</a
+		> :: [<a href="Data-ModelToSVG.html#t:SVGPair"
+		>SVGPair</a
+		>]</li
+	      ><li
+	      ><a href="#v:_opts"
+		>_opts</a
+		> :: <a href="Data-ModelToSVG.html#t:Options"
+		>Options</a
+		></li
+	      ><li
+	      ><a href="#v:_cpoint"
+		>_cpoint</a
+		> :: Maybe (<a href="Data-ModelToSVG.html#t:X"
+		>X</a
+		>, <a href="Data-ModelToSVG.html#t:Y"
+		>Y</a
+		>)</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:defaultRenderData"
+	    >defaultRenderData</a
+	    > :: <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:cpoint"
+	    >cpoint</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > (Maybe (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >))</li
+	  ><li class="src short"
+	  ><a href="#v:opts"
+	    >opts</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > <a href="Data-ModelToSVG.html#t:Options"
+	    >Options</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:lines"
+	    >lines</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [<a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:buttons"
+	    >buttons</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [<a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:circles"
+	    >circles</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [<a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:boxes"
+	    >boxes</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [<a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:cons"
+	    >cons</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >))]</li
+	  ><li class="src short"
+	  ><a href="#v:def"
+	    >def</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:box"
+	    >box</a
+	    > :: <a href="Data-ModelToSVG.html#t:Label"
+	    >Label</a
+	    > -&gt; ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >)) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+	    >Name</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:circle"
+	    >circle</a
+	    > :: <a href="Data-ModelToSVG.html#t:Label"
+	    >Label</a
+	    > -&gt; ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:Radius"
+	    >Radius</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+	    >Name</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:line"
+	    >line</a
+	    > :: <a href="Data-ModelToSVG.html#t:Label"
+	    >Label</a
+	    > -&gt; ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >)) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+	    >Name</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:button"
+	    >button</a
+	    > :: Integer -&gt; <a href="Data-ModelToSVG.html#t:Label"
+	    >Label</a
+	    > -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+	    >Name</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Action"
+	    >Action</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:-60--45--62-"
+	    >(&lt;-&gt;)</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:-124--45--62-"
+	    >(|-&gt;)</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:-60--45--124-"
+	    >(&lt;-|)</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:multi"
+	    >multi</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [<a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >] -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:insert"
+	    >insert</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:test"
+	    >test</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:-60--33--62-"
+	    >(&lt;!&gt;)</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Options"
+	    >Options</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Renderer"
+	    >Renderer</a
+	    > = State <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:renderData"
+	    >renderData</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:interpRenderData"
+	    >interpRenderData</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:makeConnected"
+	    >makeConnected</a
+	    > :: (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:renderLocal"
+	    >renderLocal</a
+	    > :: (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; [<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >] -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:localConnect"
+	    >localConnect</a
+	    > ::  (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > a -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:svgData"
+	    >svgData</a
+	    > :: <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > -&gt; Svg</li
+	  ><li class="src short"
+	  ><a href="#v:renderBox"
+	    >renderBox</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    > -&gt; Svg</li
+	  ><li class="src short"
+	  ><a href="#v:modelAttribute"
+	    >modelAttribute</a
+	    > :: (Functor f, ToValue (f Char)) =&gt; f Char -&gt; Attribute</li
+	  ><li class="src short"
+	  ><a href="#v:testBox"
+	    >testBox</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:addOpts"
+	    >addOpts</a
+	    > :: (Foldable t, Attributable b) =&gt; t <a href="Data-ModelToSVG.html#t:Option"
+	    >Option</a
+	    > -&gt; b -&gt; b</li
+	  ><li class="src short"
+	  ><a href="#v:renderCircle"
+	    >renderCircle</a
+	    > :: Foldable t =&gt; (<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >, t <a href="Data-ModelToSVG.html#t:Option"
+	    >Option</a
+	    >) -&gt; Svg</li
+	  ><li class="src short"
+	  ><a href="#v:renderLine"
+	    >renderLine</a
+	    > ::  (<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >, t) -&gt; a</li
+	  ><li class="src short"
+	  ><a href="#v:renderCon"
+	    >renderCon</a
+	    > :: (ToValue a3, ToValue a2, ToValue a1, ToValue a) =&gt; ((a, a2), (a1, a3)) -&gt; Svg</li
+	  ><li class="src short"
+	  ><a href="#v:renderButton"
+	    >renderButton</a
+	    > :: Foldable t =&gt; (<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >, t <a href="Data-ModelToSVG.html#t:Option"
+	    >Option</a
+	    >) -&gt; Svg</li
+	  ><li class="src short"
+	  ><a href="#v:-43--43--61-"
+	    >(++=)</a
+	    > :: (Monad m, Monoid b) =&gt; Lens a b -&gt; b -&gt; StateT a m b</li
+	  ><li class="src short"
+	  ><a href="#v:render"
+	    >render</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; String</li
+	  ><li class="src short"
+	  ><a href="#v:connect"
+	    >connect</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+	    >Connect</a
+	    > <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+	    >Connect</a
+	    > <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:headr"
+	    >headr</a
+	    > ::  Seq a -&gt; a</li
+	  ><li class="src short"
+	  ><a href="#v:headl"
+	    >headl</a
+	    > ::  Seq a -&gt; a</li
+	  ><li class="src short"
+	  ><a href="#v:tailr"
+	    >tailr</a
+	    > ::  Seq a -&gt; Seq a</li
+	  ><li class="src short"
+	  ><a href="#v:taill"
+	    >taill</a
+	    > ::  Seq a -&gt; Seq a</li
+	  ><li class="src short"
+	  ><a href="#v:records"
+	    >records</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:record"
+	    >record</a
+	    > :: String -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; Integer -&gt; String -&gt; [String] -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:addButtons"
+	    >addButtons</a
+	    > :: (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; Integer -&gt; String -&gt; [String] -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:testdb"
+	    >testdb</a
+	    > :: IO <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:loadContinent-39-"
+	    >loadContinent'</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:loadContinent"
+	    >loadContinent</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:trackRecord"
+	    >trackRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Track.html#t:Track"
+	    >Track</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:continentRecord"
+	    >continentRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Continent.html#t:Continent"
+	    >Continent</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:cityRecord"
+	    >cityRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-City.html#t:City"
+	    >City</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:loadCarInstance"
+	    >loadCarInstance</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:carInstanceRecord"
+	    >carInstanceRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-CarInstance.html#t:CarInstance"
+	    >CarInstance</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:carModelRecord"
+	    >carModelRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Car.html#t:Car"
+	    >Car</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:accountRecord"
+	    >accountRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Account.html#t:Account"
+	    >Account</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:loadPartModel"
+	    >loadPartModel</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:partTypeRecord"
+	    >partTypeRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-PartType.html#t:PartType"
+	    >PartType</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:partInstanceRecord"
+	    >partInstanceRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-PartInstance.html#t:PartInstance"
+	    >PartInstance</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:partModelRecord"
+	    >partModelRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Part.html#t:Part"
+	    >Part</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:loadPartInstance"
+	    >loadPartInstance</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:loadPartType"
+	    >loadPartType</a
+	    > :: Convertible a <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > =&gt; a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:recId"
+	    >recId</a
+	    > :: Monad m =&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:addRecordsPaged"
+	    >addRecordsPaged</a
+	    > :: (Monad f, Applicative f) =&gt; Int -&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [a] -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; f ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)) -&gt; f ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:addRecords-39-"
+	    >addRecords'</a
+	    > :: Monad m =&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [a] -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)) -&gt; m ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:addRecordsDivided"
+	    >addRecordsDivided</a
+	    > :: Monad m =&gt; Int -&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [a] -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >) -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:divide"
+	    >divide</a
+	    > ::  Int -&gt; [t] -&gt; [[a] -&gt; [a]]</li
+	  ><li class="src short"
+	  ><a href="#v:test2"
+	    >test2</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:test3"
+	    >test3</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:addRecords"
+	    >addRecords</a
+	    > :: Monad m =&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [a] -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >) -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:runl"
+	    >runl</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > b -&gt; IO b</li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:X" class="def"
+	    >X</a
+	    > = Double</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Y" class="def"
+	    >Y</a
+	    > = Double</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Radius" class="def"
+	    >Radius</a
+	    > = Double</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Label" class="def"
+	    >Label</a
+	    > = String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Name" class="def"
+	    >Name</a
+	    > = String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Connect" class="def"
+	    >Connect</a
+	    > a <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Many" class="def"
+		  >Many</a
+		  > ::  [a] -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		  >Connect</a
+		  > a</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:None" class="def"
+		  >None</a
+		  > ::  <a href="Data-ModelToSVG.html#t:Connect"
+		  >Connect</a
+		  > a</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Connect" class="caption collapser" onclick="toggleSection('i:Connect')"
+	    >Instances</p
+	    ><div id="section.i:Connect" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq a =&gt; Eq (<a href="Data-ModelToSVG.html#t:Connect"
+		    >Connect</a
+		    > a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show a =&gt; Show (<a href="Data-ModelToSVG.html#t:Connect"
+		    >Connect</a
+		    > a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Monoid (<a href="Data-ModelToSVG.html#t:Connect"
+		    >Connect</a
+		    > a)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Action" class="def"
+	    >Action</a
+	    > = String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:SVGTree" class="def"
+	    >SVGTree</a
+	    >  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Box" class="def"
+		  >Box</a
+		  > ::  <a href="Data-ModelToSVG.html#t:Label"
+		  >Label</a
+		  > -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		  >X</a
+		  >, <a href="Data-ModelToSVG.html#t:Y"
+		  >Y</a
+		  >) -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		  >X</a
+		  >, <a href="Data-ModelToSVG.html#t:Y"
+		  >Y</a
+		  >) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+		  >Name</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		  >Connect</a
+		  > <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Circle" class="def"
+		  >Circle</a
+		  > ::  <a href="Data-ModelToSVG.html#t:Label"
+		  >Label</a
+		  > -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		  >X</a
+		  >, <a href="Data-ModelToSVG.html#t:Y"
+		  >Y</a
+		  >) -&gt; <a href="Data-ModelToSVG.html#t:Radius"
+		  >Radius</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:Name"
+		  >Name</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		  >Connect</a
+		  > <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Button" class="def"
+		  >Button</a
+		  > ::  Integer -&gt; <a href="Data-ModelToSVG.html#t:Label"
+		  >Label</a
+		  > -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		  >X</a
+		  >, <a href="Data-ModelToSVG.html#t:Y"
+		  >Y</a
+		  >) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+		  >Name</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:Action"
+		  >Action</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		  >Connect</a
+		  > <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Line" class="def"
+		  >Line</a
+		  > ::  <a href="Data-ModelToSVG.html#t:Label"
+		  >Label</a
+		  > -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		  >X</a
+		  >, <a href="Data-ModelToSVG.html#t:Y"
+		  >Y</a
+		  >) -&gt; (<a href="Data-ModelToSVG.html#t:X"
+		  >X</a
+		  >, <a href="Data-ModelToSVG.html#t:Y"
+		  >Y</a
+		  >) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+		  >Name</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+		  >Connect</a
+		  > <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Modifier" class="def"
+		  >Modifier</a
+		  > ::  <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:Options"
+		  >Options</a
+		  > -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+		  >SVGTree</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:SVGTree" class="caption collapser" onclick="toggleSection('i:SVGTree')"
+	    >Instances</p
+	    ><div id="section.i:SVGTree" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-ModelToSVG.html#t:SVGTree"
+		    >SVGTree</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-ModelToSVG.html#t:SVGTree"
+		    >SVGTree</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Option" class="def"
+	    >Option</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:FGColor" class="def"
+		  >FGColor</a
+		  > (Int, Int, Int)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:BGColor" class="def"
+		  >BGColor</a
+		  > (Int, Int, Int)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:CSS" class="def"
+		  >CSS</a
+		  > (String, String)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Attribute" class="def"
+		  >Attribute</a
+		  > (String, String)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Option" class="caption collapser" onclick="toggleSection('i:Option')"
+	    >Instances</p
+	    ><div id="section.i:Option" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-ModelToSVG.html#t:Option"
+		    >Option</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-ModelToSVG.html#t:Option"
+		    >Option</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Options" class="def"
+	    >Options</a
+	    > = [<a href="Data-ModelToSVG.html#t:Option"
+	    >Option</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:SVGDef" class="def"
+	    >SVGDef</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:SVGDef" class="def"
+		  >SVGDef</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unSVGDef" class="def"
+			>unSVGDef</a
+			> :: Seq <a href="Data-ModelToSVG.html#t:SVGTree"
+			>SVGTree</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:SVGDef" class="caption collapser" onclick="toggleSection('i:SVGDef')"
+	    >Instances</p
+	    ><div id="section.i:SVGDef" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-ModelToSVG.html#t:SVGDef"
+		    >SVGDef</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-ModelToSVG.html#t:SVGDef"
+		    >SVGDef</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Monoid <a href="Data-ModelToSVG.html#t:SVGDef"
+		    >SVGDef</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:SVGPair" class="def"
+	    >SVGPair</a
+	    > = (<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >, <a href="Data-ModelToSVG.html#t:Options"
+	    >Options</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RenderData" class="def"
+	    >RenderData</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:RD" class="def"
+		  >RD</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:_cons" class="def"
+			>_cons</a
+			> :: [((<a href="Data-ModelToSVG.html#t:X"
+			>X</a
+			>, <a href="Data-ModelToSVG.html#t:Y"
+			>Y</a
+			>), (<a href="Data-ModelToSVG.html#t:X"
+			>X</a
+			>, <a href="Data-ModelToSVG.html#t:Y"
+			>Y</a
+			>))]</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_boxes" class="def"
+			>_boxes</a
+			> :: [<a href="Data-ModelToSVG.html#t:SVGPair"
+			>SVGPair</a
+			>]</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_circles" class="def"
+			>_circles</a
+			> :: [<a href="Data-ModelToSVG.html#t:SVGPair"
+			>SVGPair</a
+			>]</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_buttons" class="def"
+			>_buttons</a
+			> :: [<a href="Data-ModelToSVG.html#t:SVGPair"
+			>SVGPair</a
+			>]</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_lines" class="def"
+			>_lines</a
+			> :: [<a href="Data-ModelToSVG.html#t:SVGPair"
+			>SVGPair</a
+			>]</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_opts" class="def"
+			>_opts</a
+			> :: <a href="Data-ModelToSVG.html#t:Options"
+			>Options</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_cpoint" class="def"
+			>_cpoint</a
+			> :: Maybe (<a href="Data-ModelToSVG.html#t:X"
+			>X</a
+			>, <a href="Data-ModelToSVG.html#t:Y"
+			>Y</a
+			>)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RenderData" class="caption collapser" onclick="toggleSection('i:RenderData')"
+	    >Instances</p
+	    ><div id="section.i:RenderData" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-ModelToSVG.html#t:RenderData"
+		    >RenderData</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:defaultRenderData" class="def"
+	    >defaultRenderData</a
+	    > :: <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:cpoint" class="def"
+	    >cpoint</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > (Maybe (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >))</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:opts" class="def"
+	    >opts</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > <a href="Data-ModelToSVG.html#t:Options"
+	    >Options</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lines" class="def"
+	    >lines</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [<a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:buttons" class="def"
+	    >buttons</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [<a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:circles" class="def"
+	    >circles</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [<a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:boxes" class="def"
+	    >boxes</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [<a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:cons" class="def"
+	    >cons</a
+	    > :: Lens <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > [((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >))]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:def" class="def"
+	    >def</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Lift a SVGTree in SVGDef 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:box" class="def"
+	    >box</a
+	    > :: <a href="Data-ModelToSVG.html#t:Label"
+	    >Label</a
+	    > -&gt; ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >)) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+	    >Name</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Box create a box with a label. (Shown in box) The coordinates are topright, bottomleft. The name can be use for actions 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:circle" class="def"
+	    >circle</a
+	    > :: <a href="Data-ModelToSVG.html#t:Label"
+	    >Label</a
+	    > -&gt; ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:Radius"
+	    >Radius</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+	    >Name</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Circle creates a circle with center (x,y) and radius Radius. Name can
+ | be used for actions 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:line" class="def"
+	    >line</a
+	    > :: <a href="Data-ModelToSVG.html#t:Label"
+	    >Label</a
+	    > -&gt; ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >)) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+	    >Name</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Line creates a line from (x,y) to (x',y'). Name can be used  for
+ | actions. Label is shown above 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:button" class="def"
+	    >button</a
+	    > :: Integer -&gt; <a href="Data-ModelToSVG.html#t:Label"
+	    >Label</a
+	    > -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:Name"
+	    >Name</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Action"
+	    >Action</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Creates a button with center (X,Y). Name can be used for the action.
+ | Label is placed in the box 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-60--45--62-" class="def"
+	    >(&lt;-&gt;)</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Connect combinator. Connects the new whole (left) element to the right last element.
+ | The element is not a part of the visual SVGDef 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--45--62-" class="def"
+	    >(|-&gt;)</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-60--45--124-" class="def"
+	    >(&lt;-|)</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:multi" class="def"
+	    >multi</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [<a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >] -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:insert" class="def"
+	    >insert</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:test" class="def"
+	    >test</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-60--33--62-" class="def"
+	    >(&lt;!&gt;)</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Options"
+	    >Options</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Apply a modifier to the right last element
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Renderer" class="def"
+	    >Renderer</a
+	    > = State <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:renderData" class="def"
+	    >renderData</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:interpRenderData" class="def"
+	    >interpRenderData</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:makeConnected" class="def"
+	    >makeConnected</a
+	    > :: (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:renderLocal" class="def"
+	    >renderLocal</a
+	    > :: (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; [<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >] -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:localConnect" class="def"
+	    >localConnect</a
+	    > ::  (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > a -&gt; <a href="Data-ModelToSVG.html#t:Renderer"
+	    >Renderer</a
+	    > a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:svgData" class="def"
+	    >svgData</a
+	    > :: <a href="Data-ModelToSVG.html#t:RenderData"
+	    >RenderData</a
+	    > -&gt; Svg</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:renderBox" class="def"
+	    >renderBox</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    > -&gt; Svg</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:modelAttribute" class="def"
+	    >modelAttribute</a
+	    > :: (Functor f, ToValue (f Char)) =&gt; f Char -&gt; Attribute</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:testBox" class="def"
+	    >testBox</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGPair"
+	    >SVGPair</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addOpts" class="def"
+	    >addOpts</a
+	    > :: (Foldable t, Attributable b) =&gt; t <a href="Data-ModelToSVG.html#t:Option"
+	    >Option</a
+	    > -&gt; b -&gt; b</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:renderCircle" class="def"
+	    >renderCircle</a
+	    > :: Foldable t =&gt; (<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >, t <a href="Data-ModelToSVG.html#t:Option"
+	    >Option</a
+	    >) -&gt; Svg</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:renderLine" class="def"
+	    >renderLine</a
+	    > ::  (<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >, t) -&gt; a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:renderCon" class="def"
+	    >renderCon</a
+	    > :: (ToValue a3, ToValue a2, ToValue a1, ToValue a) =&gt; ((a, a2), (a1, a3)) -&gt; Svg</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:renderButton" class="def"
+	    >renderButton</a
+	    > :: Foldable t =&gt; (<a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    >, t <a href="Data-ModelToSVG.html#t:Option"
+	    >Option</a
+	    >) -&gt; Svg</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-43--43--61-" class="def"
+	    >(++=)</a
+	    > :: (Monad m, Monoid b) =&gt; Lens a b -&gt; b -&gt; StateT a m b</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:render" class="def"
+	    >render</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:connect" class="def"
+	    >connect</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+	    >Connect</a
+	    > <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Connect"
+	    >Connect</a
+	    > <a href="Data-ModelToSVG.html#t:SVGTree"
+	    >SVGTree</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:headr" class="def"
+	    >headr</a
+	    > ::  Seq a -&gt; a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:headl" class="def"
+	    >headl</a
+	    > ::  Seq a -&gt; a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tailr" class="def"
+	    >tailr</a
+	    > ::  Seq a -&gt; Seq a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:taill" class="def"
+	    >taill</a
+	    > ::  Seq a -&gt; Seq a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:records" class="def"
+	    >records</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:record" class="def"
+	    >record</a
+	    > :: String -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; Integer -&gt; String -&gt; [String] -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addButtons" class="def"
+	    >addButtons</a
+	    > :: (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; Integer -&gt; String -&gt; [String] -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:testdb" class="def"
+	    >testdb</a
+	    > :: IO <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadContinent-39-" class="def"
+	    >loadContinent'</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadContinent" class="def"
+	    >loadContinent</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:trackRecord" class="def"
+	    >trackRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Track.html#t:Track"
+	    >Track</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:continentRecord" class="def"
+	    >continentRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Continent.html#t:Continent"
+	    >Continent</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:cityRecord" class="def"
+	    >cityRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-City.html#t:City"
+	    >City</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadCarInstance" class="def"
+	    >loadCarInstance</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:carInstanceRecord" class="def"
+	    >carInstanceRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-CarInstance.html#t:CarInstance"
+	    >CarInstance</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:carModelRecord" class="def"
+	    >carModelRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Car.html#t:Car"
+	    >Car</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:accountRecord" class="def"
+	    >accountRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Account.html#t:Account"
+	    >Account</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadPartModel" class="def"
+	    >loadPartModel</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:partTypeRecord" class="def"
+	    >partTypeRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-PartType.html#t:PartType"
+	    >PartType</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:partInstanceRecord" class="def"
+	    >partInstanceRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-PartInstance.html#t:PartInstance"
+	    >PartInstance</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:partModelRecord" class="def"
+	    >partModelRecord</a
+	    > :: <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Model-Part.html#t:Part"
+	    >Part</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadPartInstance" class="def"
+	    >loadPartInstance</a
+	    > :: Integer -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:loadPartType" class="def"
+	    >loadPartType</a
+	    > :: Convertible a <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > =&gt; a -&gt; <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:recId" class="def"
+	    >recId</a
+	    > :: Monad m =&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >) -&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRecordsPaged" class="def"
+	    >addRecordsPaged</a
+	    > :: (Monad f, Applicative f) =&gt; Int -&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [a] -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; f ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)) -&gt; f ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRecords-39-" class="def"
+	    >addRecords'</a
+	    > :: Monad m =&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [a] -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)) -&gt; m ((<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    >, <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    >), <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRecordsDivided" class="def"
+	    >addRecordsDivided</a
+	    > :: Monad m =&gt; Int -&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [a] -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >) -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:divide" class="def"
+	    >divide</a
+	    > ::  Int -&gt; [t] -&gt; [[a] -&gt; [a]]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:test2" class="def"
+	    >test2</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:test3" class="def"
+	    >test3</a
+	    > :: <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRecords" class="def"
+	    >addRecords</a
+	    > :: Monad m =&gt; <a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    > -&gt; [a] -&gt; (<a href="Data-ModelToSVG.html#t:X"
+	    >X</a
+	    > -&gt; <a href="Data-ModelToSVG.html#t:Y"
+	    >Y</a
+	    > -&gt; a -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    >) -&gt; m <a href="Data-ModelToSVG.html#t:SVGDef"
+	    >SVGDef</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runl" class="def"
+	    >runl</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransactionUser"
+	    >SqlTransactionUser</a
+	    > l <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > b -&gt; IO b</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

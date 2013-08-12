@@ -1,0 +1,209 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.General
+
+h1. Documentation
+
+class "IConnection":Data-SqlTransaction.html#t:IConnection c =&gt; Database c a &#124; a -&gt; c where
+
+Methods
+
+save :: a -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c Integer
+
+load :: Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c (Maybe a)
+
+search :: "Constraints":Data-Database.html#t:Constraints -&gt; "Orders":Data-Database.html#t:Orders -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c [a]
+
+delete :: a -&gt; "Constraints":Data-Database.html#t:Constraints -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction c ()
+
+fields :: a -&gt; [(String, String)]
+
+tableName :: a -&gt; String
+
+Instances
+
+
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "PartDetails":Model-PartDetails.html#t:PartDetails| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Tournament":Model-Tournament.html#t:Tournament| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TournamentType":Model-TournamentType.html#t:TournamentType| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "EventStream":Model-EventStream.html#t:EventStream| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "RaceReward":Model-RaceReward.html#t:RaceReward| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Report":Model-Report.html#t:Report| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Task":Model-Task.html#t:Task| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TrackDetails":Model-TrackDetails.html#t:TrackDetails| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "PreLetter":Model-PreLetter.html#t:PreLetter| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TaskTrigger":Model-TaskTrigger.html#t:TaskTrigger| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "MenuModel":Model-MenuModel.html#t:MenuModel| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Reward":Model-Reward.html#t:Reward| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "RuleReward":Model-RuleReward.html#t:RuleReward| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Action":Model-Action.html#t:Action| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Rule":Model-Rule.html#t:Rule| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "RewardLog":Model-RewardLog.html#t:RewardLog| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "PartType":Model-PartType.html#t:PartType| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Part":Model-Part.html#t:Part| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "PartMarket":Model-PartMarket.html#t:PartMarket| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "ParameterTable":Model-ParameterTable.html#t:ParameterTable| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "PersonnelInstance":Model-PersonnelInstance.html#t:PersonnelInstance| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Personnel":Model-Personnel.html#t:Personnel| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Notification":Model-Notification.html#t:Notification| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Garage":Model-Garage.html#t:Garage| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Config":Model-Config.html#t:Config| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Continent":Model-Continent.html#t:Continent| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Country":Model-Country.html#t:Country| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "City":Model-City.html#t:City| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Track":Model-Track.html#t:Track| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "ChallengeType":Model-ChallengeType.html#t:ChallengeType| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "ChallengeAccept":Model-ChallengeAccept.html#t:ChallengeAccept| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Application":Model-Application.html#t:Application| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "CarInstanceParts":Model-CarInstanceParts.html#t:CarInstanceParts| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "PartInstance":Model-PartInstance.html#t:PartInstance| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "PartModifier":Model-PartModifier.html#t:PartModifier| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Account":Model-Account.html#t:Account| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Transaction":Model-Transaction.html#t:Transaction| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Escrow":Model-Escrow.html#t:Escrow| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "CarOptions":Model-CarOptions.html#t:CarOptions| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "CarInGarage":Model-CarInGarage.html#t:CarInGarage| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "CarMinimal":Model-CarMinimal.html#t:CarMinimal| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Challenge":Model-Challenge.html#t:Challenge| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TournamentPlayer":Model-TournamentPlayers.html#t:TournamentPlayer| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Race":Model-Race.html#t:Race| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "TournamentReport":Model-TournamentReport.html#t:TournamentReport| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "Car":Model-Car.html#t:Car| |
+
+
+class Mapable a where
+
+Methods
+
+fromMap :: Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe a
+
+toMap :: a -&gt; Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+fromHashMap :: HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe a
+
+toHashMap :: a -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+updateMap :: Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; a -&gt; a
+
+updateHashMap :: HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; a -&gt; a
+
+Instances
+
+
+|"Mapable":Model-General.html#t:Mapable "PartDetails":Model-PartDetails.html#t:PartDetails| |
+|"Mapable":Model-General.html#t:Mapable "RaceRewards":Data-RaceReward.html#t:RaceRewards| |
+|"Mapable":Model-General.html#t:Mapable "Tournament":Model-Tournament.html#t:Tournament| |
+|"Mapable":Model-General.html#t:Mapable "TournamentType":Model-TournamentType.html#t:TournamentType| |
+|"Mapable":Model-General.html#t:Mapable "EventStream":Model-EventStream.html#t:EventStream| |
+|"Mapable":Model-General.html#t:Mapable "RaceReward":Model-RaceReward.html#t:RaceReward| |
+|"Mapable":Model-General.html#t:Mapable "Report":Model-Report.html#t:Report| |
+|"Mapable":Model-General.html#t:Mapable "Task":Model-Task.html#t:Task| |
+|"Mapable":Model-General.html#t:Mapable "TrackDetails":Model-TrackDetails.html#t:TrackDetails| |
+|"Mapable":Model-General.html#t:Mapable "TrackMaster":Model-TrackMaster.html#t:TrackMaster| |
+|"Mapable":Model-General.html#t:Mapable "PreLetter":Model-PreLetter.html#t:PreLetter| |
+|"Mapable":Model-General.html#t:Mapable "RaceSectionPerformance":Data-RaceSectionPerformance.html#t:RaceSectionPerformance| |
+|"Mapable":Model-General.html#t:Mapable "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|"Mapable":Model-General.html#t:Mapable "TaskTrigger":Model-TaskTrigger.html#t:TaskTrigger| |
+|"Mapable":Model-General.html#t:Mapable "MenuModel":Model-MenuModel.html#t:MenuModel| |
+|"Mapable":Model-General.html#t:Mapable "Reward":Model-Reward.html#t:Reward| |
+|"Mapable":Model-General.html#t:Mapable "RuleReward":Model-RuleReward.html#t:RuleReward| |
+|"Mapable":Model-General.html#t:Mapable "Action":Model-Action.html#t:Action| |
+|"Mapable":Model-General.html#t:Mapable "Rule":Model-Rule.html#t:Rule| |
+|"Mapable":Model-General.html#t:Mapable "RewardLog":Model-RewardLog.html#t:RewardLog| |
+|"Mapable":Model-General.html#t:Mapable "PartType":Model-PartType.html#t:PartType| |
+|"Mapable":Model-General.html#t:Mapable "Part":Model-Part.html#t:Part| |
+|"Mapable":Model-General.html#t:Mapable "AccountGarage":Model-AccountGarage.html#t:AccountGarage| |
+|"Mapable":Model-General.html#t:Mapable "PartMarket":Model-PartMarket.html#t:PartMarket| |
+|"Mapable":Model-General.html#t:Mapable "ParameterTable":Model-ParameterTable.html#t:ParameterTable| |
+|"Mapable":Model-General.html#t:Mapable "PersonnelInstance":Model-PersonnelInstance.html#t:PersonnelInstance| |
+|"Mapable":Model-General.html#t:Mapable "Personnel":Model-Personnel.html#t:Personnel| |
+|"Mapable":Model-General.html#t:Mapable "Notification":Model-Notification.html#t:Notification| |
+|"Mapable":Model-General.html#t:Mapable "GaragePart":Model-GarageParts.html#t:GaragePart| |
+|"Mapable":Model-General.html#t:Mapable "Garage":Model-Garage.html#t:Garage| |
+|"Mapable":Model-General.html#t:Mapable "Config":Model-Config.html#t:Config| |
+|"Mapable":Model-General.html#t:Mapable "Continent":Model-Continent.html#t:Continent| |
+|"Mapable":Model-General.html#t:Mapable "Country":Model-Country.html#t:Country| |
+|"Mapable":Model-General.html#t:Mapable "City":Model-City.html#t:City| |
+|"Mapable":Model-General.html#t:Mapable "Track":Model-Track.html#t:Track| |
+|"Mapable":Model-General.html#t:Mapable "ChallengeType":Model-ChallengeType.html#t:ChallengeType| |
+|"Mapable":Model-General.html#t:Mapable "ChallengeAccept":Model-ChallengeAccept.html#t:ChallengeAccept| |
+|"Mapable":Model-General.html#t:Mapable "Application":Model-Application.html#t:Application| |
+|"Mapable":Model-General.html#t:Mapable "CarInstanceParts":Model-CarInstanceParts.html#t:CarInstanceParts| |
+|"Mapable":Model-General.html#t:Mapable "PartInstance":Model-PartInstance.html#t:PartInstance| |
+|"Mapable":Model-General.html#t:Mapable "PartModifier":Model-PartModifier.html#t:PartModifier| |
+|"Mapable":Model-General.html#t:Mapable "Account":Model-Account.html#t:Account| |
+|"Mapable":Model-General.html#t:Mapable "Transaction":Model-Transaction.html#t:Transaction| |
+|"Mapable":Model-General.html#t:Mapable "Escrow":Model-Escrow.html#t:Escrow| |
+|"Mapable":Model-General.html#t:Mapable "AccountProfileMin":Model-AccountProfileMin.html#t:AccountProfileMin| |
+|"Mapable":Model-General.html#t:Mapable "CarOptions":Model-CarOptions.html#t:CarOptions| |
+|"Mapable":Model-General.html#t:Mapable "CarInGarage":Model-CarInGarage.html#t:CarInGarage| |
+|"Mapable":Model-General.html#t:Mapable "CarMinimal":Model-CarMinimal.html#t:CarMinimal| |
+|"Mapable":Model-General.html#t:Mapable "TrackTime":Model-TrackTime.html#t:TrackTime| |
+|"Mapable":Model-General.html#t:Mapable "RaceParticipant":Data-RaceParticipant.html#t:RaceParticipant| |
+|"Mapable":Model-General.html#t:Mapable "Challenge":Model-Challenge.html#t:Challenge| |
+|"Mapable":Model-General.html#t:Mapable SectionResult| |
+|"Mapable":Model-General.html#t:Mapable RaceResult| |
+|"Mapable":Model-General.html#t:Mapable RaceParticipant| |
+|"Mapable":Model-General.html#t:Mapable RaceRewards| |
+|"Mapable":Model-General.html#t:Mapable RaceData| |
+|"Mapable":Model-General.html#t:Mapable "TournamentPlayer":Model-TournamentPlayers.html#t:TournamentPlayer| |
+|"Mapable":Model-General.html#t:Mapable "CarInstance":Model-CarInstance.html#t:CarInstance| |
+|"Mapable":Model-General.html#t:Mapable "SectionResult":Data-RacingNew.html#t:SectionResult| |
+|"Mapable":Model-General.html#t:Mapable "RaceResult":Data-RacingNew.html#t:RaceResult| |
+|"Mapable":Model-General.html#t:Mapable "RaceData":Data-RacingNew.html#t:RaceData| |
+|"Mapable":Model-General.html#t:Mapable "Race":Model-Race.html#t:Race| |
+|"Mapable":Model-General.html#t:Mapable "TournamentResult":Model-TournamentResult.html#t:TournamentResult| |
+|"Mapable":Model-General.html#t:Mapable "TournamentReport":Model-TournamentReport.html#t:TournamentReport| |
+|"Mapable":Model-General.html#t:Mapable RoundResult| |
+|"Mapable":Model-General.html#t:Mapable TournamentFullData| |
+|"Mapable":Model-General.html#t:Mapable "Car":Model-Car.html#t:Car| |
+
+
+type Id = Maybe Integer
+
+nlookup :: Convertible "SqlValue":Data-SqlTransaction.html#t:SqlValue a =&gt; String -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe a
+
+nempty :: HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+htsql :: Convertible a "SqlValue":Data-SqlTransaction.html#t:SqlValue =&gt; a -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+thsql :: "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Integer
+
+ninsert :: (Eq k, Hashable k) =&gt; k -&gt; v -&gt; HashMap k v -&gt; HashMap k v
+
+sinsert :: Ord k =&gt; k -&gt; a -&gt; Map k a -&gt; Map k a
+
+mlookup :: Convertible "SqlValue":Data-SqlTransaction.html#t:SqlValue a =&gt; String -&gt; Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe a
+
+mco :: Functor f =&gt; f "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; f Integer
+
+mfp :: (Functor f, "Mapable":Model-General.html#t:Mapable a) =&gt; f [HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue] -&gt; f [a]
+
+nhead :: (Functor f, "Mapable":Model-General.html#t:Mapable a) =&gt; f [HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue] -&gt; f (Maybe a)
+
+sempty :: Map String "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+aget :: "Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection a =&gt; "Constraints":Data-Database.html#t:Constraints -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a
+
+agetlist :: "Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection a =&gt; "Constraints":Data-Database.html#t:Constraints -&gt; "Orders":Data-Database.html#t:Orders -&gt; Integer -&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [a] -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [a]
+
+aload :: "Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection a =&gt; Integer -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a
+
+adeny :: "Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection a =&gt; "Constraints":Data-Database.html#t:Constraints -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [a] -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection [a]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

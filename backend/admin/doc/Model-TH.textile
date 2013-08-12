@@ -1,0 +1,135 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.TH
+
+Synopsis
+
+* "getAnyColumn":#v:getAnyColumn :: String -&gt; Q String
+* "checkTables":#v:checkTables :: String -&gt; [(String, Name)] -&gt; Q ()
+* "isMaybe":#v:isMaybe :: Name -&gt; Q Bool
+* "genAll":#v:genAll :: String -&gt; String -&gt; [(String, Name)] -&gt; Q [Dec]
+* "genAllId":#v:genAllId :: String -&gt; String -&gt; String -&gt; [(String, Name)] -&gt; Q [Dec]
+* "genMapableRecord":#v:genMapableRecord :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+* "genRecord":#v:genRecord :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+* "genDependenciesUpdate":#v:genDependenciesUpdate :: [(String, String)] -&gt; String
+* "genDatabase":#v:genDatabase :: String -&gt; String -&gt; String -&gt; [(String, Name)] -&gt; Q [Dec]
+* "genInstance":#v:genInstance :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+* "genDefaultInstance":#v:genDefaultInstance :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+* "tmMap":#v:tmMap :: t -&gt; [String] -&gt; [DecQ]
+* "frmMap":#v:frmMap :: String -&gt; [String] -&gt; [DecQ]
+* "loadDb":#v:loadDb :: String -&gt; String -&gt; [DecQ]
+* "fieldsDb":#v:fieldsDb :: [(String, Name)] -&gt; [DecQ]
+* "tableDb":#v:tableDb :: String -&gt; [DecQ]
+* "searchDB":#v:searchDB :: String -&gt; [DecQ]
+* "deleteDb":#v:deleteDb :: String -&gt; [DecQ]
+* "idq":#v:idq :: Q ()
+* "upsertWithTables":#v:upsertWithTables :: [(String, [String])] -&gt; "Sql":Data-Database.html#t:Sql -&gt; HashMap "Sql":Data-Database.html#t:Sql "Value":Data-Database.html#t:Value -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Value":Data-Database.html#t:Value
+* "saveDb":#v:saveDb :: String -&gt; [DecQ]
+* "saveDb'":#v:saveDb-39- :: String -&gt; [DecQ]
+* "tmHashMap":#v:tmHashMap :: t -&gt; [String] -&gt; [DecQ]
+* "frmHashMap":#v:frmHashMap :: String -&gt; [String] -&gt; [DecQ]
+* "genInstanceToJSON":#v:genInstanceToJSON :: String -&gt; [(String, b)] -&gt; Q [Dec]
+* "genInstanceFromJSON":#v:genInstanceFromJSON :: String -&gt; [(String, b)] -&gt; Q [Dec]
+* "mkParser":#v:mkParser :: String -&gt; [String] -&gt; Q Dec
+* "mkToJson":#v:mkToJson :: [String] -&gt; Q Dec
+* "hempty":#v:hempty :: HashMap String Value
+* "hiempty":#v:hiempty :: HashMap String "InRule":Data-InRules.html#t:InRule
+* "hfromlist":#v:hfromlist :: [(String, Value)] -&gt; HashMap String Value
+* "hmlookup":#v:hmlookup :: String -&gt; HashMap String b -&gt; b
+* "genInstanceToInRule":#v:genInstanceToInRule :: String -&gt; [(String, b)] -&gt; Q [Dec]
+* "genInstanceFromInRule":#v:genInstanceFromInRule :: String -&gt; [(String, b)] -&gt; Q [Dec]
+* "mkFromInRule":#v:mkFromInRule :: String -&gt; [String] -&gt; Q Dec
+* "mkToInRule":#v:mkToInRule :: [String] -&gt; Q Dec
+* "genRelationSchema":#v:genRelationSchema :: [(String, Name)] -&gt; Q [Dec]
+* "genRelation":#v:genRelation :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+h1. Documentation
+
+getAnyColumn :: String -&gt; Q String
+
+checkTables :: String -&gt; [(String, Name)] -&gt; Q ()
+
+isMaybe :: Name -&gt; Q Bool
+
+genAll :: String -&gt; String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+genAllId :: String -&gt; String -&gt; String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+genMapableRecord :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+genRecord :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+genDependenciesUpdate :: [(String, String)] -&gt; String
+
+genDatabase :: String -&gt; String -&gt; String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+genInstance :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+genDefaultInstance :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+tmMap :: t -&gt; [String] -&gt; [DecQ]
+
+frmMap :: String -&gt; [String] -&gt; [DecQ]
+
+loadDb :: String -&gt; String -&gt; [DecQ]
+
+fieldsDb :: [(String, Name)] -&gt; [DecQ]
+
+tableDb :: String -&gt; [DecQ]
+
+searchDB :: String -&gt; [DecQ]
+
+deleteDb :: String -&gt; [DecQ]
+
+idq :: Q ()
+
+upsertWithTables :: [(String, [String])] -&gt; "Sql":Data-Database.html#t:Sql -&gt; HashMap "Sql":Data-Database.html#t:Sql "Value":Data-Database.html#t:Value -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection "Value":Data-Database.html#t:Value
+
+Like upset with extra update statements
+
+saveDb :: String -&gt; [DecQ]
+
+save i = mco $ upsertWithTables undefined tablename (toHashMap i)
+
+saveDb' :: String -&gt; [DecQ]
+
+tmHashMap :: t -&gt; [String] -&gt; [DecQ]
+
+frmHashMap :: String -&gt; [String] -&gt; [DecQ]
+
+genInstanceToJSON :: String -&gt; [(String, b)] -&gt; Q [Dec]
+
+genInstanceFromJSON :: String -&gt; [(String, b)] -&gt; Q [Dec]
+
+mkParser :: String -&gt; [String] -&gt; Q Dec
+
+mkToJson :: [String] -&gt; Q Dec
+
+hempty :: HashMap String Value
+
+hiempty :: HashMap String "InRule":Data-InRules.html#t:InRule
+
+hfromlist :: [(String, Value)] -&gt; HashMap String Value
+
+hmlookup :: String -&gt; HashMap String b -&gt; b
+
+genInstanceToInRule :: String -&gt; [(String, b)] -&gt; Q [Dec]
+
+genInstanceFromInRule :: String -&gt; [(String, b)] -&gt; Q [Dec]
+
+mkFromInRule :: String -&gt; [String] -&gt; Q Dec
+
+mkToInRule :: [String] -&gt; Q Dec
+
+genRelationSchema :: [(String, Name)] -&gt; Q [Dec]
+
+genRelation :: String -&gt; [(String, Name)] -&gt; Q [Dec]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

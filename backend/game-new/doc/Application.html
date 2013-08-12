@@ -1,0 +1,1289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Application</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Application.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Application</p
+	></div
+      ><div id="description"
+      ><p class="caption"
+	>Description</p
+	><div class="doc"
+	><p
+	  >This module defines our application's state type and an alias for its
+ handler monad.
+</p
+	  ></div
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:ApplicationException"
+	    >ApplicationException</a
+	    >  = <a href="#v:UserErrorE"
+	    >UserErrorE</a
+	    > ByteString</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:App"
+	    >App</a
+	    >  = <a href="#v:App"
+	    >App</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:_db"
+		>_db</a
+		> :: Snaplet <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+		>SqlTransactionConfig</a
+		></li
+	      ><li
+	      ><a href="#v:_config"
+		>_config</a
+		> :: Snaplet <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+		>ConfigSnaplet</a
+		></li
+	      ><li
+	      ><a href="#v:_rnd"
+		>_rnd</a
+		> :: Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+		>RandomConfig</a
+		></li
+	      ><li
+	      ><a href="#v:_nde"
+		>_nde</a
+		> :: Snaplet <a href="NodeSnapletTest.html#t:DHTConfig"
+		>DHTConfig</a
+		></li
+	      ><li
+	      ><a href="#v:_notf"
+		>_notf</a
+		> :: Snaplet <a href="NotificationSnaplet.html#t:NotificationConfig"
+		>NotificationConfig</a
+		></li
+	      ><li
+	      ><a href="#v:_slock"
+		>_slock</a
+		> :: Snaplet <a href="LockSnaplet.html#t:Lock"
+		>Lock</a
+		></li
+	      ><li
+	      ><a href="#v:_logcycle"
+		>_logcycle</a
+		> :: Snaplet <a href="Data-ExternalLog.html#t:Cycle"
+		>Cycle</a
+		></li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:slock"
+	    >slock</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:rnd"
+	    >rnd</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:notf"
+	    >notf</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:nde"
+	    >nde</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:logcycle"
+	    >logcycle</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:db"
+	    >db</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:config"
+	    >config</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+	    >ConfigSnaplet</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:getUniqueKey"
+	    >getUniqueKey</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > ByteString</li
+	  ><li class="src short"
+	  ><a href="#v:runDb"
+	    >runDb</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > b -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    > b</li
+	  ><li class="src short"
+	  ><a href="#v:sendLetter"
+	    >sendLetter</a
+	    > :: (MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:setRead"
+	    >setRead</a
+	    > :: (MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:setArchive"
+	    >setArchive</a
+	    > :: (MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:checkMailBox"
+	    >checkMailBox</a
+	    > :: (MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Data-Notifications.html#t:Letters"
+	    >Letters</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:AppHandler"
+	    >AppHandler</a
+	    > = Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Application"
+	    >Application</a
+	    > = <a href="Application.html#t:AppHandler"
+	    >AppHandler</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:toAeson"
+	    >toAeson</a
+	    > :: <a href="Data-InRules.html#t:InRule"
+	    >InRule</a
+	    > -&gt; ByteString</li
+	  ><li class="src short"
+	  ><a href="#v:writeAeson"
+	    >writeAeson</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:writeError"
+	    >writeError</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:writeResult"
+	    >writeResult</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:writeResult-39-"
+	    >writeResult'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:writeMapable"
+	    >writeMapable</a
+	    > :: <a href="Model-General.html#t:Mapable"
+	    >Mapable</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:writeMapables"
+	    >writeMapables</a
+	    > :: <a href="Model-General.html#t:Mapable"
+	    >Mapable</a
+	    > a =&gt; [a] -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:getUserId"
+	    >getUserId</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > Integer</li
+	  ><li class="src short"
+	  ><a href="#v:getOParam"
+	    >getOParam</a
+	    > :: ByteString -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ByteString</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:SqlMap"
+	    >SqlMap</a
+	    > = HashMap String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:getJson"
+	    >getJson</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > <a href="Application.html#t:SqlMap"
+	    >SqlMap</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:getJsons"
+	    >getJsons</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > [<a href="Application.html#t:SqlMap"
+	    >SqlMap</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:getPagesWithDTDOrdered"
+	    >getPagesWithDTDOrdered</a
+	    > :: [String] -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > (((Integer, Integer), <a href="Data-Database.html#t:Constraints"
+	    >Constraints</a
+	    >), <a href="Data-Database.html#t:Orders"
+	    >Orders</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:getPagesWithDTDOrderedAndParams"
+	    >getPagesWithDTDOrderedAndParams</a
+	    > :: <a href="Application.html#t:SqlMap"
+	    >SqlMap</a
+	    > -&gt; [String] -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > (((Integer, Integer), <a href="Data-Database.html#t:Constraints"
+	    >Constraints</a
+	    >), <a href="Data-Database.html#t:Orders"
+	    >Orders</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:getPagesWithDTD"
+	    >getPagesWithDTD</a
+	    > :: <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ((Integer, Integer), <a href="Data-Database.html#t:Constraints"
+	    >Constraints</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:addRole"
+	    >addRole</a
+	    > :: (MonadIO (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadState <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadSnaplet m) =&gt; <a href="Data-Role.html#t:Id"
+	    >Id</a
+	    > -&gt; ByteString -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:writeError-39-"
+	    >writeError'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:writeAeson-39-"
+	    >writeAeson'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:internalError"
+	    >internalError</a
+	    > ::  String -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:runCompose"
+	    >runCompose</a
+	    > ::  <a href="Data-ComposeModel.html#t:ComposeMonad"
+	    >ComposeMonad</a
+	    > a <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    > (HashMap String <a href="Data-InRules.html#t:InRule"
+	    >InRule</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:withLockBlock"
+	    >withLockBlock</a
+	    > :: Show a =&gt; Namespace -&gt; a -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > b -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    > b</li
+	  ><li class="src short"
+	  ><a href="#v:withLockNonBlock"
+	    >withLockNonBlock</a
+	    > :: Show a =&gt; Namespace -&gt; a -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > () -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:getLock"
+	    >getLock</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    ></li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:ApplicationException" class="def"
+	    >ApplicationException</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:UserErrorE" class="def"
+		  >UserErrorE</a
+		  > ByteString</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ApplicationException" class="caption collapser" onclick="toggleSection('i:ApplicationException')"
+	    >Instances</p
+	    ><div id="section.i:ApplicationException" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Application.html#t:ApplicationException"
+		    >ApplicationException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Typeable <a href="Application.html#t:ApplicationException"
+		    >ApplicationException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Exception <a href="Application.html#t:ApplicationException"
+		    >ApplicationException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:App" class="def"
+	    >App</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:App" class="def"
+		  >App</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:_db" class="def"
+			>_db</a
+			> :: Snaplet <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+			>SqlTransactionConfig</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_config" class="def"
+			>_config</a
+			> :: Snaplet <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+			>ConfigSnaplet</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_rnd" class="def"
+			>_rnd</a
+			> :: Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+			>RandomConfig</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_nde" class="def"
+			>_nde</a
+			> :: Snaplet <a href="NodeSnapletTest.html#t:DHTConfig"
+			>DHTConfig</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_notf" class="def"
+			>_notf</a
+			> :: Snaplet <a href="NotificationSnaplet.html#t:NotificationConfig"
+			>NotificationConfig</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_slock" class="def"
+			>_slock</a
+			> :: Snaplet <a href="LockSnaplet.html#t:Lock"
+			>Lock</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_logcycle" class="def"
+			>_logcycle</a
+			> :: Snaplet <a href="Data-ExternalLog.html#t:Cycle"
+			>Cycle</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:slock" class="def"
+	    >slock</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:rnd" class="def"
+	    >rnd</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:notf" class="def"
+	    >notf</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:nde" class="def"
+	    >nde</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:logcycle" class="def"
+	    >logcycle</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="Data-ExternalLog.html#t:Cycle"
+	    >Cycle</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:db" class="def"
+	    >db</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:config" class="def"
+	    >config</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="ConfigSnaplet.html#t:ConfigSnaplet"
+	    >ConfigSnaplet</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getUniqueKey" class="def"
+	    >getUniqueKey</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > ByteString</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runDb" class="def"
+	    >runDb</a
+	    > ::  <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > b -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    > b</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendLetter" class="def"
+	    >sendLetter</a
+	    > :: (MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    > -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Data-Notifications.html#t:Letter"
+	    >Letter</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:setRead" class="def"
+	    >setRead</a
+	    > :: (MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:setArchive" class="def"
+	    >setArchive</a
+	    > :: (MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; Integer -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:checkMailBox" class="def"
+	    >checkMailBox</a
+	    > :: (MonadState <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    > (m b <a href="NotificationSnaplet.html#t:NotificationConfig"
+	    >NotificationConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadSnap (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-Notifications.html#t:UserId"
+	    >UserId</a
+	    > -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Data-Notifications.html#t:Letters"
+	    >Letters</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:AppHandler" class="def"
+	    >AppHandler</a
+	    > = Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Application" class="def"
+	    >Application</a
+	    > = <a href="Application.html#t:AppHandler"
+	    >AppHandler</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:toAeson" class="def"
+	    >toAeson</a
+	    > :: <a href="Data-InRules.html#t:InRule"
+	    >InRule</a
+	    > -&gt; ByteString</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeAeson" class="def"
+	    >writeAeson</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Write Aeson to user 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeError" class="def"
+	    >writeError</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Write an error to the http client
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeResult" class="def"
+	    >writeResult</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Write a InRule to the http client  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeResult-39-" class="def"
+	    >writeResult'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Write a JSON to the http client  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeMapable" class="def"
+	    >writeMapable</a
+	    > :: <a href="Model-General.html#t:Mapable"
+	    >Mapable</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Write a mapable to the client 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeMapables" class="def"
+	    >writeMapables</a
+	    > :: <a href="Model-General.html#t:Mapable"
+	    >Mapable</a
+	    > a =&gt; [a] -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Write multiple mapables as a json array 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getUserId" class="def"
+	    >getUserId</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > Integer</p
+	  ><div class="doc"
+	  ><p
+	    >get the user id from the proxy 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getOParam" class="def"
+	    >getOParam</a
+	    > :: ByteString -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ByteString</p
+	  ><div class="doc"
+	  ><p
+	    >get a GET param faults when param doesn't exist 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:SqlMap" class="def"
+	    >SqlMap</a
+	    > = HashMap String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getJson" class="def"
+	    >getJson</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > <a href="Application.html#t:SqlMap"
+	    >SqlMap</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >get json in the form of a <code
+	      ><a href="Application.html#t:SqlMap"
+		>SqlMap</a
+		></code
+	      >  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getJsons" class="def"
+	    >getJsons</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > [<a href="Application.html#t:SqlMap"
+	    >SqlMap</a
+	    >]</p
+	  ><div class="doc"
+	  ><p
+	    >Get multiple jsons as a <code
+	      ><a href="Application.html#t:SqlMap"
+		>SqlMap</a
+		></code
+	      > 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getPagesWithDTDOrdered" class="def"
+	    >getPagesWithDTDOrdered</a
+	    ></p
+	  ><div class="subs arguments"
+	  ><p class="caption"
+	    >Arguments</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		>:: [String]</td
+		><td class="doc"
+		><p
+		  >Allowed order fields 
+</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  ></td
+		><td class="doc"
+		><p
+		  >search expression
+</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; <a href="Application.html#t:Application"
+		  >Application</a
+		  > (((Integer, Integer), <a href="Data-Database.html#t:Constraints"
+		  >Constraints</a
+		  >), <a href="Data-Database.html#t:Orders"
+		  >Orders</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="doc"
+	  ><p
+	    >Generates a constraint and returns an (((limit, offset), Constraints),Orders)
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getPagesWithDTDOrderedAndParams" class="def"
+	    >getPagesWithDTDOrderedAndParams</a
+	    ></p
+	  ><div class="subs arguments"
+	  ><p class="caption"
+	    >Arguments</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		>:: <a href="Application.html#t:SqlMap"
+		  >SqlMap</a
+		  ></td
+		><td class="doc"
+		><p
+		  >Default values 
+</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; [String]</td
+		><td class="doc"
+		><p
+		  >Allowed ordered fields 
+</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+		  >DTD</a
+		  ></td
+		><td class="doc"
+		><p
+		  >search expression, see <code
+		    ><a href="Data.html#t:DatabaseTemplate"
+		      >DatabaseTemplate</a
+		      ></code
+		    > 
+</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; <a href="Application.html#t:Application"
+		  >Application</a
+		  > (((Integer, Integer), <a href="Data-Database.html#t:Constraints"
+		  >Constraints</a
+		  >), <a href="Data-Database.html#t:Orders"
+		  >Orders</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="doc"
+	  ><p
+	    >Same as <code
+	      >getPagsWithDTDOrdered</code
+	      >, only then provide default values  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getPagesWithDTD" class="def"
+	    >getPagesWithDTD</a
+	    > :: <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ((Integer, Integer), <a href="Data-Database.html#t:Constraints"
+	    >Constraints</a
+	    >)</p
+	  ><div class="doc"
+	  ><p
+	    >Generate a constraint and a limit and offset 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRole" class="def"
+	    >addRole</a
+	    > :: (MonadIO (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadState <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    > (m b <a href="NodeSnapletTest.html#t:DHTConfig"
+	    >DHTConfig</a
+	    >), MonadSnaplet m) =&gt; <a href="Data-Role.html#t:Id"
+	    >Id</a
+	    > -&gt; ByteString -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Add a role to a user id 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeError-39-" class="def"
+	    >writeError'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >write an json error 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeAeson-39-" class="def"
+	    >writeAeson'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Write an error to the client
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:internalError" class="def"
+	    >internalError</a
+	    > ::  String -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > a</p
+	  ><div class="doc"
+	  ><p
+	    >Throws an internal error code 500
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runCompose" class="def"
+	    >runCompose</a
+	    > ::  <a href="Data-ComposeModel.html#t:ComposeMonad"
+	    >ComposeMonad</a
+	    > a <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    > (HashMap String <a href="Data-InRules.html#t:InRule"
+	    >InRule</a
+	    >)</p
+	  ><div class="doc"
+	  ><p
+	    >Run a composemonad in the SqlTransaction monad 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withLockBlock" class="def"
+	    >withLockBlock</a
+	    > :: Show a =&gt; Namespace -&gt; a -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > b -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    > b</p
+	  ><div class="doc"
+	  ><p
+	    >Do an SqlTransaction action with a non blocking lock 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:withLockNonBlock" class="def"
+	    >withLockNonBlock</a
+	    > :: Show a =&gt; Namespace -&gt; a -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    > () -&gt; Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    > ()</p
+	  ><div class="doc"
+	  ><p
+	    >Do a SqlTransaction with a blocking lock 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getLock" class="def"
+	    >getLock</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > <a href="LockSnaplet.html#t:Lock"
+	    >Lock</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Retrieve the lock manager
+</p
+	    ></div
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

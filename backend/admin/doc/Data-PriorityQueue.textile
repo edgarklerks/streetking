@@ -1,0 +1,53 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.PriorityQueue
+
+h1. Documentation
+
+data Prio q a
+
+Instances
+
+
+|Functor ("Prio":Data-PriorityQueue.html#t:Prio q)| |
+|Ord q =&gt; Foldable ("Prio":Data-PriorityQueue.html#t:Prio q)| |
+|Ord q =&gt; Traversable ("Prio":Data-PriorityQueue.html#t:Prio q)| |
+|(Show q, Show a) =&gt; Show ("Prio":Data-PriorityQueue.html#t:Prio q a)| |
+|Ord q =&gt; Monoid ("Prio":Data-PriorityQueue.html#t:Prio q a)| |
+
+
+view :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; "ViewMin":Data-PriorityQueue.html#t:ViewMin q a
+
+data ViewMin q a
+
+Constructors
+
+
+|a :&gt; ("Prio":Data-PriorityQueue.html#t:Prio q a)| |
+|Nil| |
+
+
+fromList :: Ord q =&gt; [(q, a)] -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+
+extractMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe (a, "Prio":Data-PriorityQueue.html#t:Prio q a)
+
+headMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe a
+
+tailMin :: Ord q =&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; Maybe ("Prio":Data-PriorityQueue.html#t:Prio q a)
+
+insert :: Ord q =&gt; q -&gt; a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+
+singleton :: q -&gt; a -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a
+
+extractTill :: Ord q =&gt; q -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; ([a], "Prio":Data-PriorityQueue.html#t:Prio q a)
+
+extractTillWithKey :: Ord q =&gt; q -&gt; "Prio":Data-PriorityQueue.html#t:Prio q a -&gt; ([(q, a)], "Prio":Data-PriorityQueue.html#t:Prio q a)
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

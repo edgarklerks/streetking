@@ -1,0 +1,937 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.Tools</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-Tools.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.Tools</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:CheckException"
+	    >CheckException</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:CE"
+		>CE</a
+		> [(String, [String])]  </li
+	      ><li
+	      >| <a href="#v:CF"
+		>CF</a
+		> String  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:CFilter"
+	    >CFilter</a
+	    > v = <a href="#v:CFilter"
+	    >CFilter</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:runCFilter"
+		>runCFilter</a
+		> :: v -&gt; Maybe [String]</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:mkCFilter"
+	    >mkCFilter</a
+	    > ::  (v -&gt; Bool) -&gt; String -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v</li
+	  ><li class="src short"
+	  ><a href="#v:cfmap"
+	    >cfmap</a
+	    > ::  (v' -&gt; v) -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v'</li
+	  ><li class="src short"
+	  ><a href="#v:must"
+	    >must</a
+	    > :: (MonadCatchIO m, Eq k) =&gt; [(k, v)] -&gt; [k] -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:cfilter"
+	    >cfilter</a
+	    > :: (<a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > v, Eq k, <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > k, MonadCatchIO m) =&gt; [(k, v)] -&gt; [(k, <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v)] -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:scfilter"
+	    >scfilter</a
+	    > :: (Show k, Show v, <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > v, Eq k, <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > k, MonadCatchIO m) =&gt; HashMap k v -&gt; [(k, <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v)] -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:andcf"
+	    >andcf</a
+	    > ::  <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v</li
+	  ><li class="src short"
+	  ><a href="#v:orcf"
+	    >orcf</a
+	    > ::  <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v</li
+	  ><li class="src short"
+	  ><a href="#v:cfilterPure"
+	    >cfilterPure</a
+	    > :: Eq k =&gt; [(k, v)] -&gt; [(k, <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v)] -&gt; [(k, [String])]</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >class</span
+	    > IsString s =&gt; <a href="#t:StringLike"
+	    >StringLike</a
+	    > s  <span class="keyword"
+	    >where</span
+	    ><ul class="subs"
+	    ><li
+	      ><a href="#v:toString"
+		>toString</a
+		> :: s -&gt; String</li
+	      ><li
+	      ><a href="#v:readS"
+		>readS</a
+		> :: Read a =&gt; s -&gt; Maybe a</li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:mkCRegex"
+	    >mkCRegex</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; String -&gt; String -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:minl"
+	    >minl</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; Int -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:maxl"
+	    >maxl</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; Int -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:email"
+	    >email</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:isNumber"
+	    >isNumber</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:natural"
+	    >natural</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:between"
+	    >between</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; (Double, Double) -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:longitude"
+	    >longitude</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:latitude"
+	    >latitude</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</li
+	  ><li class="src short"
+	  ><a href="#v:strength"
+	    >strength</a
+	    > :: Functor m =&gt; (a, m b) -&gt; m (a, b)</li
+	  ><li class="src short"
+	  ><a href="#v:zipKeyWith"
+	    >zipKeyWith</a
+	    > :: Eq k =&gt; (k -&gt; a -&gt; b -&gt; c) -&gt; [(k, a)] -&gt; [(k, b)] -&gt; [c]</li
+	  ><li class="src short"
+	  ><a href="#v:whenM"
+	    >whenM</a
+	    > :: Monad m =&gt; m Bool -&gt; m a -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:encWith"
+	    >encWith</a
+	    > ::  a -&gt; [a] -&gt; [a]</li
+	  ><li class="src short"
+	  ><a href="#v:enclose"
+	    >enclose</a
+	    > ::  [a] -&gt; [a] -&gt; [a]</li
+	  ><li class="src short"
+	  ><a href="#v:join"
+	    >join</a
+	    > ::  [a] -&gt; [[a]] -&gt; [a]</li
+	  ><li class="src short"
+	  ><a href="#v:alternate"
+	    >alternate</a
+	    > ::  [a] -&gt; [a] -&gt; [a]</li
+	  ><li class="src short"
+	  ><a href="#v:lfilter"
+	    >lfilter</a
+	    > :: Eq k =&gt; [k] -&gt; [(k, v)] -&gt; [(k, v)]</li
+	  ><li class="src short"
+	  ><a href="#v:lnub"
+	    >lnub</a
+	    > :: Eq k =&gt; [(k, v)] -&gt; [(k, v)]</li
+	  ><li class="src short"
+	  ><a href="#v:ladd"
+	    >ladd</a
+	    > :: Eq k =&gt; [(k, v)] -&gt; [(k, v)] -&gt; [(k, v)]</li
+	  ><li class="src short"
+	  ><a href="#v:sallowed"
+	    >sallowed</a
+	    > :: (Hashable k, Eq k) =&gt; [k] -&gt; HashMap k v -&gt; HashMap k v</li
+	  ><li class="src short"
+	  ><a href="#v:smust"
+	    >smust</a
+	    > :: (Show k, MonadCatchIO m, Eq k) =&gt; [k] -&gt; HashMap k v -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:scheck"
+	    >scheck</a
+	    > :: (Show k, Hashable k, Eq k, MonadCatchIO m) =&gt; [k] -&gt; HashMap k v -&gt; m (HashMap k v)</li
+	  ><li class="src short"
+	  ><a href="#v:assert"
+	    >assert</a
+	    > :: (Error e, MonadError e m) =&gt; Bool -&gt; String -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:randomPick"
+	    >randomPick</a
+	    > ::  [a] -&gt; IO a</li
+	  ><li class="src short"
+	  ><a href="#v:randomPick-39-"
+	    >randomPick'</a
+	    > ::  [a] -&gt; IO (a, [a])</li
+	  ><li class="src short"
+	  ><a href="#v:showTable"
+	    >showTable</a
+	    > :: Show a =&gt; [[a]] -&gt; String</li
+	  ><li class="src short"
+	  ><a href="#v:showTable-39-"
+	    >showTable'</a
+	    > :: [[String]] -&gt; String</li
+	  ><li class="src short"
+	  ><a href="#v:showTableWithHeader"
+	    >showTableWithHeader</a
+	    > :: (Show a, Show b) =&gt; [a] -&gt; [[b]] -&gt; String</li
+	  ><li class="src short"
+	  ><a href="#v:showTableWithHeader-39-"
+	    >showTableWithHeader'</a
+	    > :: [String] -&gt; [[String]] -&gt; String</li
+	  ><li class="src short"
+	  ><a href="#v:renderTable"
+	    >renderTable</a
+	    > :: [[Box]] -&gt; String</li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:CheckException" class="def"
+	    >CheckException</a
+	    >  </p
+	  ><div class="doc"
+	  ><p
+	    >CheckException signals a problem with user data verification 
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:CE" class="def"
+		  >CE</a
+		  > [(String, [String])]</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:CF" class="def"
+		  >CF</a
+		  > String</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:CheckException" class="caption collapser" onclick="toggleSection('i:CheckException')"
+	    >Instances</p
+	    ><div id="section.i:CheckException" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-Tools.html#t:CheckException"
+		    >CheckException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Typeable <a href="Data-Tools.html#t:CheckException"
+		    >CheckException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Exception <a href="Data-Tools.html#t:CheckException"
+		    >CheckException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:CFilter" class="def"
+	    >CFilter</a
+	    > v </p
+	  ><div class="doc"
+	  ><p
+	    >A CFilter is a composable (by monoidic) user data verifier.  
+</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:CFilter" class="def"
+		  >CFilter</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:runCFilter" class="def"
+			>runCFilter</a
+			> :: v -&gt; Maybe [String]</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:CFilter" class="caption collapser" onclick="toggleSection('i:CFilter')"
+	    >Instances</p
+	    ><div id="section.i:CFilter" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Monoid (<a href="Data-Tools.html#t:CFilter"
+		    >CFilter</a
+		    > v)</td
+		  ><td class="doc"
+		  ><p
+		    >Monoid instance for CFilter, to allow composable filters. 
+ | mappend is andcf, both filters must pass 
+</p
+		    ></td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:mkCFilter" class="def"
+	    >mkCFilter</a
+	    > ::  (v -&gt; Bool) -&gt; String -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v</p
+	  ><div class="doc"
+	  ><p
+	    >Create a new filter with a error message 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:cfmap" class="def"
+	    >cfmap</a
+	    > ::  (v' -&gt; v) -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v'</p
+	  ><div class="doc"
+	  ><p
+	    >Map the input type of the CFilter
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:must" class="def"
+	    >must</a
+	    > :: (MonadCatchIO m, Eq k) =&gt; [(k, v)] -&gt; [k] -&gt; m ()</p
+	  ><div class="doc"
+	  ><p
+	    >A list must have certain keys 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:cfilter" class="def"
+	    >cfilter</a
+	    > :: (<a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > v, Eq k, <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > k, MonadCatchIO m) =&gt; [(k, v)] -&gt; [(k, <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v)] -&gt; m ()</p
+	  ><div class="doc"
+	  ><p
+	    >Non pure version of cfilterPure, throws CheckException 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:scfilter" class="def"
+	    >scfilter</a
+	    > :: (Show k, Show v, <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > v, Eq k, <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > k, MonadCatchIO m) =&gt; HashMap k v -&gt; [(k, <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v)] -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:andcf" class="def"
+	    >andcf</a
+	    > ::  <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v</p
+	  ><div class="doc"
+	  ><p
+	    >andcf composes two CFilters. Both should pass 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:orcf" class="def"
+	    >orcf</a
+	    > ::  <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v</p
+	  ><div class="doc"
+	  ><p
+	    >orcf composes two CFilters. At least one should pass 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:cfilterPure" class="def"
+	    >cfilterPure</a
+	    > :: Eq k =&gt; [(k, v)] -&gt; [(k, <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > v)] -&gt; [(k, [String])]</p
+	  ><div class="doc"
+	  ><p
+	    >Evaluate a list to a list of key-error string pairs specified by the provided CFilters
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >class</span
+	    > IsString s =&gt; <a name="t:StringLike" class="def"
+	    >StringLike</a
+	    > s  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Many types are isomorph to Strings 
+</p
+	    ></div
+	  ><div class="subs methods"
+	  ><p class="caption"
+	    >Methods</p
+	    ><p class="src"
+	    ><a name="v:toString" class="def"
+	      >toString</a
+	      > :: s -&gt; String</p
+	    ><p class="src"
+	    ><a name="v:readS" class="def"
+	      >readS</a
+	      > :: Read a =&gt; s -&gt; Maybe a</p
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:StringLike" class="caption collapser" onclick="toggleSection('i:StringLike')"
+	    >Instances</p
+	    ><div id="section.i:StringLike" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="Data-Tools.html#t:StringLike"
+		    >StringLike</a
+		    > String</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Tools.html#t:StringLike"
+		    >StringLike</a
+		    > <a href="Data-SqlTransaction.html#t:SqlValue"
+		    >SqlValue</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Tools.html#t:StringLike"
+		    >StringLike</a
+		    > Text</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Tools.html#t:StringLike"
+		    >StringLike</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Tools.html#t:StringLike"
+		    >StringLike</a
+		    > ByteString</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="Data-Tools.html#t:StringLike"
+		    >StringLike</a
+		    > <a href="Data-InRules.html#t:InRule"
+		    >InRule</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:mkCRegex" class="def"
+	    >mkCRegex</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; String -&gt; String -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >Create a CFilter from a regex. First is the regex. Second is the error message.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:minl" class="def"
+	    >minl</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; Int -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >An empty CFilter 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:maxl" class="def"
+	    >maxl</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; Int -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >An empty CFilter 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:email" class="def"
+	    >email</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >An email CFilter 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:isNumber" class="def"
+	    >isNumber</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >A number format CFilter (Double)
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:natural" class="def"
+	    >natural</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >A integer format CFilter (i &gt; 0) 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:between" class="def"
+	    >between</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; (Double, Double) -&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >A number format CFilter. Test if value is between the borders. 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:longitude" class="def"
+	    >longitude</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >Check if the number is a valid longitude (-180, 180)
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:latitude" class="def"
+	    >latitude</a
+	    > :: <a href="Data-Tools.html#t:StringLike"
+	    >StringLike</a
+	    > s =&gt; <a href="Data-Tools.html#t:CFilter"
+	    >CFilter</a
+	    > s</p
+	  ><div class="doc"
+	  ><p
+	    >Check if the number is a valid latitude (-90,90)
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:strength" class="def"
+	    >strength</a
+	    > :: Functor m =&gt; (a, m b) -&gt; m (a, b)</p
+	  ><div class="doc"
+	  ><p
+	    >Haskell functors are strong functors. 
+ | Strong functors have the following property:
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:zipKeyWith" class="def"
+	    >zipKeyWith</a
+	    > :: Eq k =&gt; (k -&gt; a -&gt; b -&gt; c) -&gt; [(k, a)] -&gt; [(k, b)] -&gt; [c]</p
+	  ><div class="doc"
+	  ><p
+	    >ZipKeyWith zips two key-value lists together with a helper function if the keys matches
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:whenM" class="def"
+	    >whenM</a
+	    > :: Monad m =&gt; m Bool -&gt; m a -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:encWith" class="def"
+	    >encWith</a
+	    > ::  a -&gt; [a] -&gt; [a]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:enclose" class="def"
+	    >enclose</a
+	    > ::  [a] -&gt; [a] -&gt; [a]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:join" class="def"
+	    >join</a
+	    > ::  [a] -&gt; [[a]] -&gt; [a]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:alternate" class="def"
+	    >alternate</a
+	    > ::  [a] -&gt; [a] -&gt; [a]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lfilter" class="def"
+	    >lfilter</a
+	    > :: Eq k =&gt; [k] -&gt; [(k, v)] -&gt; [(k, v)]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lnub" class="def"
+	    >lnub</a
+	    > :: Eq k =&gt; [(k, v)] -&gt; [(k, v)]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:ladd" class="def"
+	    >ladd</a
+	    > :: Eq k =&gt; [(k, v)] -&gt; [(k, v)] -&gt; [(k, v)]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sallowed" class="def"
+	    >sallowed</a
+	    > :: (Hashable k, Eq k) =&gt; [k] -&gt; HashMap k v -&gt; HashMap k v</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:smust" class="def"
+	    >smust</a
+	    > :: (Show k, MonadCatchIO m, Eq k) =&gt; [k] -&gt; HashMap k v -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:scheck" class="def"
+	    >scheck</a
+	    > :: (Show k, Hashable k, Eq k, MonadCatchIO m) =&gt; [k] -&gt; HashMap k v -&gt; m (HashMap k v)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:assert" class="def"
+	    >assert</a
+	    > :: (Error e, MonadError e m) =&gt; Bool -&gt; String -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:randomPick" class="def"
+	    >randomPick</a
+	    > ::  [a] -&gt; IO a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:randomPick-39-" class="def"
+	    >randomPick'</a
+	    > ::  [a] -&gt; IO (a, [a])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:showTable" class="def"
+	    >showTable</a
+	    > :: Show a =&gt; [[a]] -&gt; String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:showTable-39-" class="def"
+	    >showTable'</a
+	    > :: [[String]] -&gt; String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:showTableWithHeader" class="def"
+	    >showTableWithHeader</a
+	    > :: (Show a, Show b) =&gt; [a] -&gt; [[b]] -&gt; String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:showTableWithHeader-39-" class="def"
+	    >showTableWithHeader'</a
+	    > :: [String] -&gt; [[String]] -&gt; String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:renderTable" class="def"
+	    >renderTable</a
+	    > :: [[Box]] -&gt; String</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

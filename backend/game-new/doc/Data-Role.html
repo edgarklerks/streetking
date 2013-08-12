@@ -1,0 +1,1163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.Role</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-Role.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.Role</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:RolePair"
+	    >RolePair</a
+	    > k = (<a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >], <a href="Data-Role.html#t:RoleSetMap"
+	    >RoleSetMap</a
+	    >)</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:RoleSetFile"
+	    >RoleSetFile</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:Roles"
+		>Roles</a
+		> [String] [<a href="Data-Role.html#t:RoleSetFile"
+		>RoleSetFile</a
+		>]  </li
+	      ><li
+	      >| <a href="#v:Resource"
+		>Resource</a
+		> String [String]  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:RestRight"
+	    >RestRight</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:Put"
+		>Put</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Get"
+		>Get</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Post"
+		>Post</a
+		>  </li
+	      ><li
+	      >| <a href="#v:Delete"
+		>Delete</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:RoleSetMap"
+	    >RoleSetMap</a
+	    >  = <a href="#v:RSM"
+	    >RSM</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unRSM"
+		>unRSM</a
+		> :: TVar <a href="Data-Role.html#t:RoleSet"
+		>RoleSet</a
+		></li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Resource"
+	    >Resource</a
+	    > = String</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Id"
+	    >Id</a
+	    > = Integer</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:Role"
+	    >Role</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:Developer"
+		>Developer</a
+		> (Maybe <a href="Data-Role.html#t:Id"
+		>Id</a
+		>)  </li
+	      ><li
+	      >| <a href="#v:User"
+		>User</a
+		> (Maybe <a href="Data-Role.html#t:Id"
+		>Id</a
+		>)  </li
+	      ><li
+	      >| <a href="#v:Server"
+		>Server</a
+		> (Maybe <a href="Data-Role.html#t:Id"
+		>Id</a
+		>)  </li
+	      ><li
+	      >| <a href="#v:All"
+		>All</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:OpaqueRole"
+	    >OpaqueRole</a
+	    > <ul class="subs"
+	    ><li
+	      >= <a href="#v:ODeveloper"
+		>ODeveloper</a
+		>  </li
+	      ><li
+	      >| <a href="#v:OUser"
+		>OUser</a
+		>  </li
+	      ><li
+	      >| <a href="#v:OServer"
+		>OServer</a
+		>  </li
+	      ><li
+	      >| <a href="#v:OAll"
+		>OAll</a
+		>  </li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:viewOpaque"
+	    >viewOpaque</a
+	    > :: <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    > -&gt; <a href="Data-Role.html#t:OpaqueRole"
+	    >OpaqueRole</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:RoleSet"
+	    >RoleSet</a
+	    >  = <a href="#v:RS"
+	    >RS</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unRS"
+		>unRS</a
+		> :: Map <a href="Data-Role.html#t:Resource"
+		>Resource</a
+		> (Map <a href="Data-Role.html#t:Role"
+		>Role</a
+		> [<a href="Data-Role.html#t:RestRight"
+		>RestRight</a
+		>])</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:initRP"
+	    >initRP</a
+	    > :: MonadIO m =&gt; FilePath -&gt; m (<a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString)</li
+	  ><li class="src short"
+	  ><a href="#v:fileStore"
+	    >fileStore</a
+	    > :: FilePath -&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > ByteString [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:fileRestore"
+	    >fileRestore</a
+	    > :: FilePath -&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > ByteString [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:voidStore"
+	    >voidStore</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > k a</li
+	  ><li class="src short"
+	  ><a href="#v:voidRestore"
+	    >voidRestore</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > k a</li
+	  ><li class="src short"
+	  ><a href="#v:getRoles"
+	    >getRoles</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; ByteString -&gt; m [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:updateTimeRole"
+	    >updateTimeRole</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; ByteString -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:may"
+	    >may</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; <a href="Data-Role.html#t:Resource"
+	    >Resource</a
+	    > -&gt; <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    > -&gt; <a href="Data-Role.html#t:RestRight"
+	    >RestRight</a
+	    > -&gt; m Bool</li
+	  ><li class="src short"
+	  ><a href="#v:addRole"
+	    >addRole</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; ByteString -&gt; <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    > -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:dropRoles"
+	    >dropRoles</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; ByteString -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:runCleanup"
+	    >runCleanup</a
+	    > :: <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; Int64 -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:initCleanup"
+	    >initCleanup</a
+	    > :: <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; Int64 -&gt; IO ThreadId</li
+	  ><li class="src short"
+	  ><a href="#v:initStore"
+	    >initStore</a
+	    > :: <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > ByteString [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >] -&gt; IO ThreadId</li
+	  ><li class="src short"
+	  ><a href="#v:runRestore"
+	    >runRestore</a
+	    > :: <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > ByteString [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >] -&gt; IO ()</li
+	  ><li class="src short"
+	  ><a href="#v:dumpAll"
+	    >dumpAll</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; m String</li
+	  ><li class="src short"
+	  ><a href="#v:may-39-"
+	    >may'</a
+	    > :: <a href="Data-Role.html#t:RoleSet"
+	    >RoleSet</a
+	    > -&gt; <a href="Data-Role.html#t:Resource"
+	    >Resource</a
+	    > -&gt; <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    > -&gt; <a href="Data-Role.html#t:RestRight"
+	    >RestRight</a
+	    > -&gt; Bool</li
+	  ><li class="src short"
+	  ><a href="#v:roleSet"
+	    >roleSet</a
+	    > :: Parser <a href="Data-Role.html#t:RoleSetFile"
+	    >RoleSetFile</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:roleResources"
+	    >roleResources</a
+	    > :: Parser [(String, [String])]</li
+	  ><li class="src short"
+	  ><a href="#v:roleHeader"
+	    >roleHeader</a
+	    > :: Parser [String]</li
+	  ><li class="src short"
+	  ><a href="#v:resourceRule"
+	    >resourceRule</a
+	    > :: Parser (String, [String])</li
+	  ><li class="src short"
+	  ><a href="#v:hsep"
+	    >hsep</a
+	    > :: Parser Char</li
+	  ><li class="src short"
+	  ><a href="#v:defs"
+	    >defs</a
+	    > :: Parser String</li
+	  ><li class="src short"
+	  ><a href="#v:vsepB"
+	    >vsepB</a
+	    > :: Parser Char</li
+	  ><li class="src short"
+	  ><a href="#v:vsepH0"
+	    >vsepH0</a
+	    > :: Parser String</li
+	  ><li class="src short"
+	  ><a href="#v:vsepH"
+	    >vsepH</a
+	    > :: Parser String</li
+	  ><li class="src short"
+	  ><a href="#v:roles"
+	    >roles</a
+	    > :: Parser String</li
+	  ><li class="src short"
+	  ><a href="#v:identifier"
+	    >identifier</a
+	    > :: Parser Char</li
+	  ><li class="src short"
+	  ><a href="#v:zipRoleSet"
+	    >zipRoleSet</a
+	    > :: <a href="Data-Role.html#t:RoleSetFile"
+	    >RoleSetFile</a
+	    > -&gt; <a href="Data-Role.html#t:RoleSet"
+	    >RoleSet</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:readRole"
+	    >readRole</a
+	    > :: String -&gt; <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    ></li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:RolePair" class="def"
+	    >RolePair</a
+	    > k = (<a href="Data-TimedMap.html#t:TimedMap"
+	    >TimedMap</a
+	    > k [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >], <a href="Data-Role.html#t:RoleSetMap"
+	    >RoleSetMap</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RoleSetFile" class="def"
+	    >RoleSetFile</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Roles" class="def"
+		  >Roles</a
+		  > [String] [<a href="Data-Role.html#t:RoleSetFile"
+		  >RoleSetFile</a
+		  >]</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Resource" class="def"
+		  >Resource</a
+		  > String [String]</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RoleSetFile" class="caption collapser" onclick="toggleSection('i:RoleSetFile')"
+	    >Instances</p
+	    ><div id="section.i:RoleSetFile" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-Role.html#t:RoleSetFile"
+		    >RoleSetFile</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RestRight" class="def"
+	    >RestRight</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Put" class="def"
+		  >Put</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Get" class="def"
+		  >Get</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Post" class="def"
+		  >Post</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Delete" class="def"
+		  >Delete</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RestRight" class="caption collapser" onclick="toggleSection('i:RestRight')"
+	    >Instances</p
+	    ><div id="section.i:RestRight" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-Role.html#t:RestRight"
+		    >RestRight</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-Role.html#t:RestRight"
+		    >RestRight</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:RoleSetMap" class="def"
+	    >RoleSetMap</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:RSM" class="def"
+		  >RSM</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unRSM" class="def"
+			>unRSM</a
+			> :: TVar <a href="Data-Role.html#t:RoleSet"
+			>RoleSet</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Resource" class="def"
+	    >Resource</a
+	    > = String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Id" class="def"
+	    >Id</a
+	    > = Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Role" class="def"
+	    >Role</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Developer" class="def"
+		  >Developer</a
+		  > (Maybe <a href="Data-Role.html#t:Id"
+		  >Id</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:User" class="def"
+		  >User</a
+		  > (Maybe <a href="Data-Role.html#t:Id"
+		  >Id</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Server" class="def"
+		  >Server</a
+		  > (Maybe <a href="Data-Role.html#t:Id"
+		  >Id</a
+		  >)</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:All" class="def"
+		  >All</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Role" class="caption collapser" onclick="toggleSection('i:Role')"
+	    >Instances</p
+	    ><div id="section.i:Role" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-Role.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Ord <a href="Data-Role.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Read <a href="Data-Role.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-Role.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Binary <a href="Data-Role.html#t:Role"
+		    >Role</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:OpaqueRole" class="def"
+	    >OpaqueRole</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:ODeveloper" class="def"
+		  >ODeveloper</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:OUser" class="def"
+		  >OUser</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:OServer" class="def"
+		  >OServer</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:OAll" class="def"
+		  >OAll</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:OpaqueRole" class="caption collapser" onclick="toggleSection('i:OpaqueRole')"
+	    >Instances</p
+	    ><div id="section.i:OpaqueRole" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-Role.html#t:OpaqueRole"
+		    >OpaqueRole</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Ord <a href="Data-Role.html#t:OpaqueRole"
+		    >OpaqueRole</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Show <a href="Data-Role.html#t:OpaqueRole"
+		    >OpaqueRole</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:viewOpaque" class="def"
+	    >viewOpaque</a
+	    > :: <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    > -&gt; <a href="Data-Role.html#t:OpaqueRole"
+	    >OpaqueRole</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:RoleSet" class="def"
+	    >RoleSet</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:RS" class="def"
+		  >RS</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unRS" class="def"
+			>unRS</a
+			> :: Map <a href="Data-Role.html#t:Resource"
+			>Resource</a
+			> (Map <a href="Data-Role.html#t:Role"
+			>Role</a
+			> [<a href="Data-Role.html#t:RestRight"
+			>RestRight</a
+			>])</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RoleSet" class="caption collapser" onclick="toggleSection('i:RoleSet')"
+	    >Instances</p
+	    ><div id="section.i:RoleSet" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-Role.html#t:RoleSet"
+		    >RoleSet</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initRP" class="def"
+	    >initRP</a
+	    > :: MonadIO m =&gt; FilePath -&gt; m (<a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fileStore" class="def"
+	    >fileStore</a
+	    > :: FilePath -&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > ByteString [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >]</p
+	  ><div class="doc"
+	  ><p
+	    >File store handler 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fileRestore" class="def"
+	    >fileRestore</a
+	    > :: FilePath -&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > ByteString [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >]</p
+	  ><div class="doc"
+	  ><p
+	    >File restore handler 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:voidStore" class="def"
+	    >voidStore</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > k a</p
+	  ><div class="doc"
+	  ><p
+	    >Empty Store handler
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:voidRestore" class="def"
+	    >voidRestore</a
+	    > :: Ord k =&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > k a</p
+	  ><div class="doc"
+	  ><p
+	    >Empty Restore handler 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getRoles" class="def"
+	    >getRoles</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; ByteString -&gt; m [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >]</p
+	  ><div class="doc"
+	  ><p
+	    >Retrieve all the roles from a RoleState from the given token. 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:updateTimeRole" class="def"
+	    >updateTimeRole</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; ByteString -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:may" class="def"
+	    >may</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; <a href="Data-Role.html#t:Resource"
+	    >Resource</a
+	    > -&gt; <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    > -&gt; <a href="Data-Role.html#t:RestRight"
+	    >RestRight</a
+	    > -&gt; m Bool</p
+	  ><div class="doc"
+	  ><p
+	    >Lookup from the RoleState if a user may access a resource as role with restright
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:addRole" class="def"
+	    >addRole</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; ByteString -&gt; <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    > -&gt; m ()</p
+	  ><div class="doc"
+	  ><p
+	    >Adds a role to the RoleState under the given token.
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dropRoles" class="def"
+	    >dropRoles</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; ByteString -&gt; m ()</p
+	  ><div class="doc"
+	  ><p
+	    >Drop all the roles from token in the RoleState
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runCleanup" class="def"
+	    >runCleanup</a
+	    > :: <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; Int64 -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >Cleanup all expired tokens 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initCleanup" class="def"
+	    >initCleanup</a
+	    > :: <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; Int64 -&gt; IO ThreadId</p
+	  ><div class="doc"
+	  ><p
+	    >Start separated thread to cleanup all tokens wich are expired
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initStore" class="def"
+	    >initStore</a
+	    > :: <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; <a href="Data-TimedMap.html#t:TimedMapStore"
+	    >TimedMapStore</a
+	    > ByteString [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >] -&gt; IO ThreadId</p
+	  ><div class="doc"
+	  ><p
+	    >Start the storing thread, which periodically stores the whole RoleState with the given handler
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runRestore" class="def"
+	    >runRestore</a
+	    > :: <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; <a href="Data-TimedMap.html#t:TimedMapRestore"
+	    >TimedMapRestore</a
+	    > ByteString [<a href="Data-Role.html#t:Role"
+	    >Role</a
+	    >] -&gt; IO ()</p
+	  ><div class="doc"
+	  ><p
+	    >Restore the roleState from the given handler  
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:dumpAll" class="def"
+	    >dumpAll</a
+	    > :: MonadIO m =&gt; <a href="Data-Role.html#t:RolePair"
+	    >RolePair</a
+	    > ByteString -&gt; m String</p
+	  ><div class="doc"
+	  ><p
+	    >Debug function to dump the internal state 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:may-39-" class="def"
+	    >may'</a
+	    > :: <a href="Data-Role.html#t:RoleSet"
+	    >RoleSet</a
+	    > -&gt; <a href="Data-Role.html#t:Resource"
+	    >Resource</a
+	    > -&gt; <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    > -&gt; <a href="Data-Role.html#t:RestRight"
+	    >RestRight</a
+	    > -&gt; Bool</p
+	  ><div class="doc"
+	  ><p
+	    >Pure function to lookup from a RoleSet if a Role can acces a resource under the given rights 
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:roleSet" class="def"
+	    >roleSet</a
+	    > :: Parser <a href="Data-Role.html#t:RoleSetFile"
+	    >RoleSetFile</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:roleResources" class="def"
+	    >roleResources</a
+	    > :: Parser [(String, [String])]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:roleHeader" class="def"
+	    >roleHeader</a
+	    > :: Parser [String]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:resourceRule" class="def"
+	    >resourceRule</a
+	    > :: Parser (String, [String])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:hsep" class="def"
+	    >hsep</a
+	    > :: Parser Char</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:defs" class="def"
+	    >defs</a
+	    > :: Parser String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:vsepB" class="def"
+	    >vsepB</a
+	    > :: Parser Char</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:vsepH0" class="def"
+	    >vsepH0</a
+	    > :: Parser String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:vsepH" class="def"
+	    >vsepH</a
+	    > :: Parser String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:roles" class="def"
+	    >roles</a
+	    > :: Parser String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:identifier" class="def"
+	    >identifier</a
+	    > :: Parser Char</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:zipRoleSet" class="def"
+	    >zipRoleSet</a
+	    > :: <a href="Data-Role.html#t:RoleSetFile"
+	    >RoleSetFile</a
+	    > -&gt; <a href="Data-Role.html#t:RoleSet"
+	    >RoleSet</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:readRole" class="def"
+	    >readRole</a
+	    > :: String -&gt; <a href="Data-Role.html#t:Role"
+	    >Role</a
+	    ></p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

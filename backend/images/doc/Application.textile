@@ -1,0 +1,51 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Application
+
+Description
+
+This module defines our application's state type and an alias for its handler monad.
+
+h1. Documentation
+
+data App
+
+Constructors
+
+App
+
+ 
+
+Fields
+
+<dl>
+<dt>&#95;heist :: Snaplet (Heist "App":Application.html#t:App)</dt>
+<dd> </dd>
+<dt>&#95;config :: Snaplet "ConfigSnaplet":ConfigSnaplet.html#t:ConfigSnaplet</dt>
+<dd> </dd>
+<dt>&#95;sql :: Snaplet "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig</dt>
+<dd> </dd>
+<dt>&#95;img :: Snaplet "ImageConfig":ImageSnapLet.html#t:ImageConfig</dt>
+<dd> </dd>
+</dl>
+
+sql :: Lens' "App":Application.html#t:App (Snaplet "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig)
+
+img :: Lens' "App":Application.html#t:App (Snaplet "ImageConfig":ImageSnapLet.html#t:ImageConfig)
+
+heist :: Lens' "App":Application.html#t:App (Snaplet (Heist "App":Application.html#t:App))
+
+config :: Lens' "App":Application.html#t:App (Snaplet "ConfigSnaplet":ConfigSnaplet.html#t:ConfigSnaplet)
+
+runDb :: (Applicative (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig), MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig), MonadCatchIO (m b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig), MonadSnaplet m) =&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a -&gt; m b "App":Application.html#t:App a
+
+type AppHandler = Handler "App":Application.html#t:App "App":Application.html#t:App
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,13 @@
+Data.Event
+
+data "Symbol":Data-Event.html#t:Symbol
+
+"matchEvent":Data-Event.html#v:matchEvent
+
+"eventDecider":Data-Event.html#v:eventDecider
+
+data "Event":Data-Event.html#t:Event
+
+"toInt":Data-Event.html#v:toInt
+
+"cmp":Data-Event.html#v:cmp
