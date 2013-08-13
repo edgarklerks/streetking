@@ -2566,7 +2566,7 @@ userMission = do
         (((l,o),xs),od) <- getPagesWithDTDOrdered ["id","time_start", "time_left"] $ 
                 "id" +== "id" +&& 
                 "account_id" +==| (toSql uid)
-        ys <- runDb $ search xs od l o 
+        ys <- runDb $ search xs od l o :: Application [MissionUser.MissionUser] 
         writeMapables ys 
 
 acceptMission :: Application ()
