@@ -306,7 +306,12 @@ matchSymbol =  try tournamentI
            <|> raceS 
            <|> try practiceI
            <|> practiceS 
+           <|> missionI
            <?> "undefined symbol"
+
+
+missionI :: Parser Symbol 
+missionI = string "M" *> (MissionI <$> integer)
 
 
 tournamentI :: Parser Symbol 

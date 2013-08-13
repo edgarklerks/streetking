@@ -20,8 +20,9 @@ data Symbol where
     LevelI :: Integer -> Symbol 
     RaceI :: Maybe Integer -> Maybe Integer -> Symbol 
     PracticeI :: Maybe Integer -> Symbol 
-    MissionI :: Maybe Integer -> Symbol 
+    MissionI :: Integer -> Symbol 
  deriving Show 
+
 
 
 matchEvent :: Expr g Symbol -> [Event] -> ([Event], Bool) 
@@ -42,6 +43,8 @@ data Event where
     ChallengeRace :: Integer -> Integer -> Integer -> Event 
     -- Level 
     Level :: Integer -> Event      
+    -- Missions 
+    Mission :: Integer -> Event 
         deriving (Show, Eq)
 
 
@@ -51,6 +54,7 @@ instance ToInRule Event where
     toInRule (PracticeRace p lid) = InArray [InString "P", InInteger p, InInteger lid]
     toInRule (ChallengeRace p t lid) = InArray [InString "R", InInteger p, InInteger t, InInteger lid]
     toInRule (Level p) = InArray [InString "L", InInteger p]
+    toInRule (Mission l) = InArray [InString "M", InInteger l]
 
 
 instance FromInRule Event where 
@@ -58,7 +62,7 @@ instance FromInRule Event where
     fromInRule (InArray [InString "P", InInteger p, InInteger l]) = PracticeRace p l
     fromInRule (InArray [InString "R", InInteger p, InInteger t, InInteger l]) = ChallengeRace p t l
     fromInRule (InArray [InString "L", InInteger p]) = Level p 
-
+    fromInRule (InArray [InString "M", InInteger p]) = Mission p 
 
 
 
@@ -88,5 +92,6 @@ instance Evaluate Event Symbol where
     match (PracticeRace track_id _) (PracticeI x) = cmp x track_id 
     match (ChallengeRace pos tid _) (RaceI x y) = cmp x pos && cmp y tid 
     match (Level i) (LevelI p) = i == p
+    match (Mission i) (MissionI p) = i == p 
     match _ _ = False  
                                                                                 

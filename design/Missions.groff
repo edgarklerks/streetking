@@ -19,7 +19,7 @@ delim $$
 .NH 1 
 Definition of mission structure 
 .LP 
-A mission is a set of (permutable) regular expressions together with a set of relations between those regular expressions described below, a time limit and an output alphabet of rewards.
+A mission is a set of (permutable) regular expressions together with a set of relations between those regular expressions described below, a time limit, a description and an output alphabet of rewards.
 The regular expressions describe the matching of events needed to end a mission.
 
 The relations describe an ordering between the various missions, where the ordering describes the sequence in which missions should be played. This ordering is transitive, irreflexive and asymmetric:
@@ -144,6 +144,11 @@ arrow dotted from C.s to CE.n
 .PE 
 
 In this diagram it is clear the missions have a specific sequence.  
+
+.NH 1
+Mission user description
+
+A mission carries a description, which can be unlocked by an event.
 
 
 

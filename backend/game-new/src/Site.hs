@@ -134,6 +134,8 @@ import qualified Model.MarketPartType as MPT
 import qualified Model.MarketPlace as MP
 import qualified Model.MarketPlaceCar as MPC
 import qualified Model.MenuModel as MM 
+import qualified Model.Mission as Mission 
+import qualified Model.MissionUser as MissionUser 
 import qualified Model.Part as Part 
 import qualified Model.PartDetails as PD 
 import qualified Model.PartInstance as PI 
@@ -2547,6 +2549,28 @@ tournamentRewards tid = do
                     xs <- rewardAction (Tournament p (fromJust $ TRM.id t) (TRM.tournament_type_id t))
                     return $ xs
 
+availableMissions :: Application ()
+availableMissions = do 
+            uid <- getUserId 
+            (((l,o),xs),od) <- getPagesWithDTDOrdered ["id", "description","time_limit"] $ 
+                    "id" +== "id" +&& 
+                    "time_limit" +>= "time_limit_min" +&& 
+                    "time_limit" +<= "time_limit_max" +&& 
+                    "time_limit" +== "time_limit"
+            ys <- runDb $ search xs od l o :: Application [Mission.Mission]
+            writeMapables ys 
+
+userMission :: Application ()
+userMission = do 
+        uid <- getUserId 
+        (((l,o),xs),od) <- getPagesWithDTDOrdered ["id","time_start", "time_left"] $ 
+                "id" +== "id" +&& 
+                "account_id" +==| (toSql uid)
+        ys <- runDb $ search xs od l o 
+        writeMapables ys 
+
+
+
 {-
 -- hiscore: take a worker that produces a list of mapables given an argument map, get user arguments, apply the worker and write the results
 -- e.g. hiscoreRespect = hiscore hsRespect
@@ -2797,7 +2821,11 @@ routes g = fmap (second (wrapErrors g)) $ [
                 ("/User/register", userRegister),
                 ("/User/reports", userReports),
                 ("/User/searchNotification", readArchive),
-                ("/User/testNotification", testNotification)
+                ("/User/testNotification", testNotification),
+                ("/Mission/get", availableMissions),
+                ("/Mission/my", userMission),
+                ("/Mission/accept", acceptMission)
+
           ]
 
 getRewards :: Application ()
