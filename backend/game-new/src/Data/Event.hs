@@ -24,7 +24,6 @@ data Symbol where
  deriving Show 
 
 
-
 matchEvent :: Expr g Symbol -> [Event] -> ([Event], Bool) 
 matchEvent e = runDecider (eventDecider e)
 
@@ -43,7 +42,6 @@ data Event where
     ChallengeRace :: Integer -> Integer -> Integer -> Event 
     -- Level 
     Level :: Integer -> Event      
-    -- Missions 
     Mission :: Integer -> Event 
         deriving (Show, Eq)
 

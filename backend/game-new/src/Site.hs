@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns, ImplicitParams #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, RankNTypes, ScopedTypeVariables, ViewPatterns, ImplicitParams, MultiParamTypeClasses #-}
 ------------------------------------------------------------------------------
 --
 -- | This module is where all the routes and handlers are defined for your
