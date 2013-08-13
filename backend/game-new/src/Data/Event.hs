@@ -20,6 +20,7 @@ data Symbol where
     LevelI :: Integer -> Symbol 
     RaceI :: Maybe Integer -> Maybe Integer -> Symbol 
     PracticeI :: Maybe Integer -> Symbol 
+    MissionI :: Maybe Integer -> Symbol 
  deriving Show 
 
 
