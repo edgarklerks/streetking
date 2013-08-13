@@ -2569,7 +2569,8 @@ userMission = do
         ys <- runDb $ search xs od l o 
         writeMapables ys 
 
-
+acceptMission :: Application ()
+acceptMission = undefined 
 
 {-
 -- hiscore: take a worker that produces a list of mapables given an argument map, get user arguments, apply the worker and write the results
