@@ -1,0 +1,745 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.InRules
+
+Contents
+
+* "Data types and classes":#g:1
+* "Pretty print":#g:2
+
+Description
+
+This module implements a dynamic type system
+
+Synopsis
+
+<ul>
+<li>"hmapKeys":#v:hmapKeys :: (Eq k, Hashable k) =&gt; (k1 -&gt; k) -&gt; HashMap k1 v -&gt; HashMap k v</li>
+<li>"hmapWithKey":#v:hmapWithKey :: (Eq k, Hashable k) =&gt; (k -&gt; v1 -&gt; v) -&gt; HashMap k v1 -&gt; HashMap k v</li>
+<li>data "InRule":#t:InRule
+<ul>
+<li>= "InString":#v:InString !String</li>
+<li>&#124; "InByteString":#v:InByteString !ByteString</li>
+<li>&#124; "InInteger":#v:InInteger !Integer</li>
+<li>&#124; "InDouble":#v:InDouble !Double</li>
+<li>&#124; "InNumber":#v:InNumber !Rational</li>
+<li>&#124; "InBool":#v:InBool !Bool</li>
+<li>&#124; "InNull":#v:InNull</li>
+<li>&#124; "InArray":#v:InArray ["InRule":Data-InRules.html#t:InRule]</li>
+<li>&#124; "InObject":#v:InObject (HashMap String "InRule":Data-InRules.html#t:InRule)</li>
+</ul>
+</li>
+<li>newtype "Readable":#t:Readable = "Readable":#v:Readable {
+<ul>
+<li>"unReadable":#v:unReadable :: String</li>
+</ul>
+
+}</li>
+<li>data "InKey":#t:InKey
+<ul>
+<li>= "Index":#v:Index Int</li>
+<li>&#124; "None":#v:None</li>
+<li>&#124; "Assoc":#v:Assoc String</li>
+</ul>
+</li>
+<li>newtype "IdentityMonoid":#t:IdentityMonoid a = "IM":#v:IM {
+<ul>
+<li>"unIM":#v:unIM :: a</li>
+</ul>
+
+}</li>
+<li>data "PathState":#t:PathState
+<ul>
+<li>= "Accept":#v:Accept</li>
+<li>&#124; "Reject":#v:Reject</li>
+</ul>
+</li>
+<li>data "PathStep":#t:PathStep a
+<ul>
+<li>= "Next":#v:Next ("PathAcceptor":Data-InRules.html#t:PathAcceptor a)</li>
+<li>&#124; "Final":#v:Final "PathState":Data-InRules.html#t:PathState</li>
+</ul>
+</li>
+<li>newtype "PathAcceptor":#t:PathAcceptor a = "PM":#v:PM {
+<ul>
+<li>"unPM":#v:unPM :: a -&gt; "PathStep":Data-InRules.html#t:PathStep a</li>
+</ul>
+
+}</li>
+<li>"accept":#v:accept :: "PathStep":Data-InRules.html#t:PathStep a</li>
+<li>"reject":#v:reject :: "PathStep":Data-InRules.html#t:PathStep a</li>
+<li>"acceptor":#v:acceptor :: "PathAcceptor":Data-InRules.html#t:PathAcceptor a</li>
+<li>"rejector":#v:rejector :: "PathAcceptor":Data-InRules.html#t:PathAcceptor a</li>
+<li>"continue":#v:continue :: "PathAcceptor":Data-InRules.html#t:PathAcceptor a</li>
+<li>"alter":#v:alter :: "PathAcceptor":Data-InRules.html#t:PathAcceptor a -&gt; "PathAcceptor":Data-InRules.html#t:PathAcceptor a -&gt; "PathAcceptor":Data-InRules.html#t:PathAcceptor a</li>
+<li>"apoint":#v:apoint :: Eq a =&gt; a -&gt; "PathAcceptor":Data-InRules.html#t:PathAcceptor a</li>
+<li>"runPath":#v:runPath :: Eq a =&gt; "PathAcceptor":Data-InRules.html#t:PathAcceptor a -&gt; [a] -&gt; Bool</li>
+<li>data "KindView":#t:KindView
+<ul>
+<li>= "TScalar":#v:TScalar</li>
+<li>&#124; "TArray":#v:TArray</li>
+<li>&#124; "TObject":#v:TObject</li>
+<li>&#124; "TNone":#v:TNone</li>
+</ul>
+</li>
+<li>"viewKind":#v:viewKind :: "InRule":Data-InRules.html#t:InRule -&gt; "KindView":Data-InRules.html#t:KindView</li>
+<li>"kmap":#v:kmap :: ("InKey":Data-InRules.html#t:InKey -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule) -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"pmap":#v:pmap :: (Monoid (f "InKey":Data-InRules.html#t:InKey), Pointed f) =&gt; (f "InKey":Data-InRules.html#t:InKey -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule) -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"pfold":#v:pfold :: (Monoid (f "InKey":Data-InRules.html#t:InKey), Pointed f) =&gt; (f "InKey":Data-InRules.html#t:InKey -&gt; "InRule":Data-InRules.html#t:InRule -&gt; b -&gt; b) -&gt; "InRule":Data-InRules.html#t:InRule -&gt; b -&gt; b</li>
+<li>"longest&#95;path":#v:longest_path :: "InRule":Data-InRules.html#t:InRule -&gt; Int</li>
+<li>"ckey":#v:ckey :: Num a =&gt; ["InKey":Data-InRules.html#t:InKey] -&gt; a</li>
+<li>"kfold":#v:kfold :: ("InKey":Data-InRules.html#t:InKey -&gt; "InRule":Data-InRules.html#t:InRule -&gt; b -&gt; b) -&gt; "InRule":Data-InRules.html#t:InRule -&gt; b -&gt; b</li>
+<li>"(.&gt;)":#v:.-62- :: "InRule":Data-InRules.html#t:InRule -&gt; String -&gt; Maybe "InRule":Data-InRules.html#t:InRule</li>
+<li>"(..&gt;)":#v:..-62- :: "FromInRule":Data-InRules.html#t:FromInRule a =&gt; "InRule":Data-InRules.html#t:InRule -&gt; String -&gt; Maybe a</li>
+<li>"(.&gt;&gt;)":#v:.-62--62- :: "InRule":Data-InRules.html#t:InRule -&gt; String -&gt; ["InRule":Data-InRules.html#t:InRule]</li>
+<li>"readable":#v:readable :: String -&gt; "Readable":Data-InRules.html#t:Readable</li>
+<li>"viaReadable":#v:viaReadable :: Read a =&gt; "InRule":Data-InRules.html#t:InRule -&gt; a</li>
+<li>"asReadable":#v:asReadable :: "InRule":Data-InRules.html#t:InRule -&gt; "Readable":Data-InRules.html#t:Readable</li>
+<li>type "InRules":#t:InRules = ["InRule":Data-InRules.html#t:InRule]</li>
+<li>class "ToInRule":#t:ToInRule a where
+<ul>
+<li>"toInRule":#v:toInRule :: a -&gt; "InRule":Data-InRules.html#t:InRule</li>
+</ul>
+</li>
+<li>class "FromInRule":#t:FromInRule a where
+<ul>
+<li>"fromInRule":#v:fromInRule :: "InRule":Data-InRules.html#t:InRule -&gt; a</li>
+</ul>
+</li>
+<li>"toCompatible":#v:toCompatible :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"validObject":#v:validObject :: "InRule":Data-InRules.html#t:InRule -&gt; Bool</li>
+<li>"emptyObj":#v:emptyObj :: "InRule":Data-InRules.html#t:InRule</li>
+<li>"object":#v:object :: [(String, "InRule":Data-InRules.html#t:InRule)] -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"list":#v:list :: ["InRule":Data-InRules.html#t:InRule] -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"project":#v:project :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"mapWithKey":#v:mapWithKey :: (k -&gt; a -&gt; b) -&gt; HashMap k a -&gt; HashMap k b</li>
+<li>"arrayToObj":#v:arrayToObj :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"shp":#v:shp :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule -&gt; Bool</li>
+<li>"shpTestAB":#v:shpTestAB :: Bool</li>
+<li>"shpTestArr":#v:shpTestArr :: Bool</li>
+<li>"singleObj":#v:singleObj :: "ToInRule":Data-InRules.html#t:ToInRule a =&gt; String -&gt; a -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"(==&gt;)":#v:-61--61--62- :: "ToInRule":Data-InRules.html#t:ToInRule a =&gt; String -&gt; a -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"orM":#v:orM :: Maybe a -&gt; a -&gt; Maybe a</li>
+<li>"withDefault":#v:withDefault :: a -&gt; Maybe a -&gt; Maybe a</li>
+<li>"fromList":#v:fromList :: "ToInRule":Data-InRules.html#t:ToInRule a =&gt; [(String, a)] -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"toList":#v:toList :: "FromInRule":Data-InRules.html#t:FromInRule a =&gt; "InRule":Data-InRules.html#t:InRule -&gt; [(String, a)]</li>
+<li>"toListString":#v:toListString :: "InRule":Data-InRules.html#t:InRule -&gt; [(String, String)]</li>
+<li>"unionObj":#v:unionObj :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"unionsObj":#v:unionsObj :: ["InRule":Data-InRules.html#t:InRule] -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"unionRecObj":#v:unionRecObj :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule</li>
+<li>"toString":#v:toString :: "InRule":Data-InRules.html#t:InRule -&gt; String</li>
+<li>"pprint":#v:pprint :: "InRule":Data-InRules.html#t:InRule -&gt; IO ()</li>
+<li>"pprint'":#v:pprint-39- :: String -&gt; Integer -&gt; "InRule":Data-InRules.html#t:InRule -&gt; String</li>
+<li>"pprints":#v:pprints :: ["InRule":Data-InRules.html#t:InRule] -&gt; IO ()</li>
+<li>"escInStr":#v:escInStr :: String -&gt; String</li>
+<li>"escInChar":#v:escInChar :: Char -&gt; String</li>
+</ul>
+
+h1. Documentation
+
+hmapKeys :: (Eq k, Hashable k) =&gt; (k1 -&gt; k) -&gt; HashMap k1 v -&gt; HashMap k v
+
+Map all the hash map keys
+
+hmapWithKey :: (Eq k, Hashable k) =&gt; (k -&gt; v1 -&gt; v) -&gt; HashMap k v1 -&gt; HashMap k v
+
+Map over all the hash map values with a key
+
+h1(#g:1). Data types and classes
+
+data InRule
+
+Primitive type, a subset of this type is isomorph to json and yaml
+
+Constructors
+
+
+|InString !String| |
+|InByteString !ByteString| |
+|InInteger !Integer| |
+|InDouble !Double| |
+|InNumber !Rational| |
+|InBool !Bool| |
+|InNull| |
+|InArray ["InRule":Data-InRules.html#t:InRule]| |
+|InObject (HashMap String "InRule":Data-InRules.html#t:InRule)| |
+
+
+Instances
+
+
+|Eq "InRule":Data-InRules.html#t:InRule| |
+|Show "InRule":Data-InRules.html#t:InRule| |
+|IsString "InRule":Data-InRules.html#t:InRule| |
+|Monoid "InRule":Data-InRules.html#t:InRule| |
+|Serialize "InRule":Data-InRules.html#t:InRule| |
+|Arbitrary "InRule":Data-InRules.html#t:InRule| |
+|"FromInRule":Data-InRules.html#t:FromInRule "InRule":Data-InRules.html#t:InRule| |
+|"ToInRule":Data-InRules.html#t:ToInRule "InRule":Data-InRules.html#t:InRule| |
+|Binary "InRule":Data-InRules.html#t:InRule| |
+|"StringLike":Data-Tools.html#t:StringLike "InRule":Data-InRules.html#t:InRule| |
+|"ToInRule":Data-InRules.html#t:ToInRule b =&gt; Convertible b "InRule":Data-InRules.html#t:InRule| |
+|"FromInRule":Data-InRules.html#t:FromInRule b =&gt; Convertible "InRule":Data-InRules.html#t:InRule b| |
+
+
+newtype Readable
+
+Constructors
+
+Readable
+
+ 
+
+Fields
+
+<dl>
+<dt>unReadable :: String</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+Show "Readable":Data-InRules.html#t:Readable
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule "Readable":Data-InRules.html#t:Readable
+
+Dirty fallback strategy
+
+Read a =&gt; Convertible "Readable":Data-InRules.html#t:Readable a
+
+ 
+
+data InKey
+
+Data type used for viewing the type of a index
+
+Constructors
+
+
+|Index Int| |
+|None| |
+|Assoc String| |
+
+
+Instances
+
+
+|Show "InKey":Data-InRules.html#t:InKey| |
+|Monoid "InKey":Data-InRules.html#t:InKey| |
+
+
+newtype IdentityMonoid a
+
+Identity monoid, doesn't exist in prelude or anywhere else
+
+Constructors
+
+IM
+
+ 
+
+Fields
+
+<dl>
+<dt>unIM :: a</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Functor "IdentityMonoid":Data-InRules.html#t:IdentityMonoid| |
+|Pointed "IdentityMonoid":Data-InRules.html#t:IdentityMonoid| |
+|Copointed "IdentityMonoid":Data-InRules.html#t:IdentityMonoid| |
+|Monoid a =&gt; Monoid ("IdentityMonoid":Data-InRules.html#t:IdentityMonoid a)| |
+
+
+data PathState
+
+Simple automaton for rejecting or accepting paths
+
+Constructors
+
+
+|Accept| |
+|Reject| |
+
+
+Instances
+
+
+|Show "PathState":Data-InRules.html#t:PathState| |
+
+
+data PathStep a
+
+One step of the automata. Automata can be in two states: &#124; next step or final path
+
+Constructors
+
+
+|Next ("PathAcceptor":Data-InRules.html#t:PathAcceptor a)| |
+|Final "PathState":Data-InRules.html#t:PathState| |
+
+
+newtype PathAcceptor a
+
+One machine step
+
+Constructors
+
+PM
+
+ 
+
+Fields
+
+<dl>
+<dt>unPM :: a -&gt; "PathStep":Data-InRules.html#t:PathStep a</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+Semigroup ("PathAcceptor":Data-InRules.html#t:PathAcceptor a)
+
+Path acceptor is a semigroup and acts semantically like a and operator
+
+accept :: "PathStep":Data-InRules.html#t:PathStep a
+
+The always acceptor
+
+reject :: "PathStep":Data-InRules.html#t:PathStep a
+
+The always rejector
+
+acceptor :: "PathAcceptor":Data-InRules.html#t:PathAcceptor a
+
+Always accept the input
+
+rejector :: "PathAcceptor":Data-InRules.html#t:PathAcceptor a
+
+Always reject the input
+
+continue :: "PathAcceptor":Data-InRules.html#t:PathAcceptor a
+
+Always accept the complete input stream (will always be false for finite streams and true for infinite ones)
+
+alter :: "PathAcceptor":Data-InRules.html#t:PathAcceptor a -&gt; "PathAcceptor":Data-InRules.html#t:PathAcceptor a -&gt; "PathAcceptor":Data-InRules.html#t:PathAcceptor a
+
+Alternate two acceptors. If the first rejects try the next. Behaves like an or &#124; operator
+
+apoint :: Eq a =&gt; a -&gt; "PathAcceptor":Data-InRules.html#t:PathAcceptor a
+
+Creates a pointed acceptor
+
+runPath :: Eq a =&gt; "PathAcceptor":Data-InRules.html#t:PathAcceptor a -&gt; [a] -&gt; Bool
+
+data KindView
+
+View the kind of a InRule
+
+Constructors
+
+
+|TScalar| |
+|TArray| |
+|TObject| |
+|TNone| |
+
+
+Instances
+
+
+|Eq "KindView":Data-InRules.html#t:KindView| |
+|Show "KindView":Data-InRules.html#t:KindView| |
+
+
+viewKind :: "InRule":Data-InRules.html#t:InRule -&gt; "KindView":Data-InRules.html#t:KindView
+
+kmap :: ("InKey":Data-InRules.html#t:InKey -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule) -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule
+
+Maps through the structure
+
+pmap :: (Monoid (f "InKey":Data-InRules.html#t:InKey), Pointed f) =&gt; (f "InKey":Data-InRules.html#t:InKey -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule) -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule
+
+Maps trough the structure with a history of the path kept in a monoid
+
+pfold :: (Monoid (f "InKey":Data-InRules.html#t:InKey), Pointed f) =&gt; (f "InKey":Data-InRules.html#t:InKey -&gt; "InRule":Data-InRules.html#t:InRule -&gt; b -&gt; b) -&gt; "InRule":Data-InRules.html#t:InRule -&gt; b -&gt; b
+
+Fold trough a structure with a history of the path kept in a monoid
+
+longest&#95;path :: "InRule":Data-InRules.html#t:InRule -&gt; Int
+
+Example of the longest path in the inrule structure
+
+ckey :: Num a =&gt; ["InKey":Data-InRules.html#t:InKey] -&gt; a
+
+kfold :: ("InKey":Data-InRules.html#t:InKey -&gt; "InRule":Data-InRules.html#t:InRule -&gt; b -&gt; b) -&gt; "InRule":Data-InRules.html#t:InRule -&gt; b -&gt; b
+
+Fold through the structure
+
+(.&gt;) :: "InRule":Data-InRules.html#t:InRule -&gt; String -&gt; Maybe "InRule":Data-InRules.html#t:InRule
+
+Find top level matching keyword
+
+(..&gt;) :: "FromInRule":Data-InRules.html#t:FromInRule a =&gt; "InRule":Data-InRules.html#t:InRule -&gt; String -&gt; Maybe a
+
+Find top level value and convert to normal value
+
+(.&gt;&gt;) :: "InRule":Data-InRules.html#t:InRule -&gt; String -&gt; ["InRule":Data-InRules.html#t:InRule]
+
+Search all occuring keywords recursively
+
+readable :: String -&gt; "Readable":Data-InRules.html#t:Readable
+
+Transform a string into a readable
+
+viaReadable :: Read a =&gt; "InRule":Data-InRules.html#t:InRule -&gt; a
+
+asReadable :: "InRule":Data-InRules.html#t:InRule -&gt; "Readable":Data-InRules.html#t:Readable
+
+type InRules = ["InRule":Data-InRules.html#t:InRule]
+
+class ToInRule a where
+
+Methods
+
+toInRule :: a -&gt; "InRule":Data-InRules.html#t:InRule
+
+Instances
+
+"ToInRule":Data-InRules.html#t:ToInRule Bool
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Char
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Double
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Float
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Int
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Int32
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Int64
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Integer
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Rational
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Word32
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Word64
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule String
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule ()
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+Renders InRule to String.
+
+"ToInRule":Data-InRules.html#t:ToInRule ByteString
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Value
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule ByteString
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule UTCTime
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule LocalTime
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule Day
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule TimeOfDay
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule "InRule":Data-InRules.html#t:InRule
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule "Application":Model-Application.html#t:Application
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule a =&gt; "ToInRule":Data-InRules.html#t:ToInRule [a]
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule a =&gt; "ToInRule":Data-InRules.html#t:ToInRule (Maybe a)
+
+ 
+
+("ToInRule":Data-InRules.html#t:ToInRule t1, "ToInRule":Data-InRules.html#t:ToInRule t2) =&gt; "ToInRule":Data-InRules.html#t:ToInRule (t1, t2)
+
+ 
+
+"ToInRule":Data-InRules.html#t:ToInRule a =&gt; "ToInRule":Data-InRules.html#t:ToInRule (HashMap String a)
+
+ 
+
+("ToInRule":Data-InRules.html#t:ToInRule k, "ToInRule":Data-InRules.html#t:ToInRule v) =&gt; "ToInRule":Data-InRules.html#t:ToInRule (HashMap k v)
+
+ 
+
+("ToInRule":Data-InRules.html#t:ToInRule t1, "ToInRule":Data-InRules.html#t:ToInRule t2, "ToInRule":Data-InRules.html#t:ToInRule t3) =&gt; "ToInRule":Data-InRules.html#t:ToInRule (t1, t2, t3)
+
+ 
+
+("ToInRule":Data-InRules.html#t:ToInRule t1, "ToInRule":Data-InRules.html#t:ToInRule t2, "ToInRule":Data-InRules.html#t:ToInRule t3, "ToInRule":Data-InRules.html#t:ToInRule t4) =&gt; "ToInRule":Data-InRules.html#t:ToInRule (t1, t2, t3, t4)
+
+ 
+
+("ToInRule":Data-InRules.html#t:ToInRule t1, "ToInRule":Data-InRules.html#t:ToInRule t2, "ToInRule":Data-InRules.html#t:ToInRule t3, "ToInRule":Data-InRules.html#t:ToInRule t4, "ToInRule":Data-InRules.html#t:ToInRule t5) =&gt; "ToInRule":Data-InRules.html#t:ToInRule (t1, t2, t3, t4, t5)
+
+ 
+
+class FromInRule a where
+
+Methods
+
+fromInRule :: "InRule":Data-InRules.html#t:InRule -&gt; a
+
+Instances
+
+"FromInRule":Data-InRules.html#t:FromInRule Bool
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Double
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Float
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Int
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Int32
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Int64
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Integer
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Rational
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Word32
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Word64
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule String
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule "SqlValue":Data-SqlTransaction.html#t:SqlValue
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule ByteString
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Value
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule ByteString
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule UTCTime
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule LocalTime
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule Day
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule TimeOfDay
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule "Readable":Data-InRules.html#t:Readable
+
+Dirty fallback strategy
+
+"FromInRule":Data-InRules.html#t:FromInRule "InRule":Data-InRules.html#t:InRule
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule "Application":Model-Application.html#t:Application
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule a =&gt; "FromInRule":Data-InRules.html#t:FromInRule [a]
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule a =&gt; "FromInRule":Data-InRules.html#t:FromInRule (Maybe a)
+
+ 
+
+("FromInRule":Data-InRules.html#t:FromInRule t1, "FromInRule":Data-InRules.html#t:FromInRule t2) =&gt; "FromInRule":Data-InRules.html#t:FromInRule (t1, t2)
+
+ 
+
+"FromInRule":Data-InRules.html#t:FromInRule a =&gt; "FromInRule":Data-InRules.html#t:FromInRule (HashMap String a)
+
+ 
+
+(Eq k, Hashable k, "FromInRule":Data-InRules.html#t:FromInRule k, "FromInRule":Data-InRules.html#t:FromInRule v) =&gt; "FromInRule":Data-InRules.html#t:FromInRule (HashMap k v)
+
+ 
+
+("FromInRule":Data-InRules.html#t:FromInRule t1, "FromInRule":Data-InRules.html#t:FromInRule t2, "FromInRule":Data-InRules.html#t:FromInRule t3) =&gt; "FromInRule":Data-InRules.html#t:FromInRule (t1, t2, t3)
+
+ 
+
+("FromInRule":Data-InRules.html#t:FromInRule t1, "FromInRule":Data-InRules.html#t:FromInRule t2, "FromInRule":Data-InRules.html#t:FromInRule t3, "FromInRule":Data-InRules.html#t:FromInRule t4) =&gt; "FromInRule":Data-InRules.html#t:FromInRule (t1, t2, t3, t4)
+
+ 
+
+("FromInRule":Data-InRules.html#t:FromInRule t1, "FromInRule":Data-InRules.html#t:FromInRule t2, "FromInRule":Data-InRules.html#t:FromInRule t3, "FromInRule":Data-InRules.html#t:FromInRule t4, "FromInRule":Data-InRules.html#t:FromInRule t5) =&gt; "FromInRule":Data-InRules.html#t:FromInRule (t1, t2, t3, t4, t5)
+
+ 
+
+toCompatible :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule
+
+validObject :: "InRule":Data-InRules.html#t:InRule -&gt; Bool
+
+emptyObj :: "InRule":Data-InRules.html#t:InRule
+
+object :: [(String, "InRule":Data-InRules.html#t:InRule)] -&gt; "InRule":Data-InRules.html#t:InRule
+
+list :: ["InRule":Data-InRules.html#t:InRule] -&gt; "InRule":Data-InRules.html#t:InRule
+
+project :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule
+
+mapWithKey :: (k -&gt; a -&gt; b) -&gt; HashMap k a -&gt; HashMap k b
+
+arrayToObj :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule
+
+shp :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule -&gt; Bool
+
+shpTestAB :: Bool
+
+shpTestArr :: Bool
+
+singleObj :: "ToInRule":Data-InRules.html#t:ToInRule a =&gt; String -&gt; a -&gt; "InRule":Data-InRules.html#t:InRule
+
+Create single InRule object.
+
+(==&gt;) :: "ToInRule":Data-InRules.html#t:ToInRule a =&gt; String -&gt; a -&gt; "InRule":Data-InRules.html#t:InRule
+
+@(==>@) Eq @singleObj@ .
+
+orM :: Maybe a -&gt; a -&gt; Maybe a
+
+withDefault :: a -&gt; Maybe a -&gt; Maybe a
+
+fromList :: "ToInRule":Data-InRules.html#t:ToInRule a =&gt; [(String, a)] -&gt; "InRule":Data-InRules.html#t:InRule
+
+Create InRule object from list.
+
+toList :: "FromInRule":Data-InRules.html#t:FromInRule a =&gt; "InRule":Data-InRules.html#t:InRule -&gt; [(String, a)]
+
+Create InRule object from list.
+
+toListString :: "InRule":Data-InRules.html#t:InRule -&gt; [(String, String)]
+
+unionObj :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule
+
+unionsObj :: ["InRule":Data-InRules.html#t:InRule] -&gt; "InRule":Data-InRules.html#t:InRule
+
+Merge InRule objects from list.
+
+unionRecObj :: "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule -&gt; "InRule":Data-InRules.html#t:InRule
+
+toString :: "InRule":Data-InRules.html#t:InRule -&gt; String
+
+Renders InRule to String.
+
+h1(#g:2). Pretty print
+
+pprint :: "InRule":Data-InRules.html#t:InRule -&gt; IO ()
+
+Pretty-prints InRule.
+
+pprint' :: String -&gt; Integer -&gt; "InRule":Data-InRules.html#t:InRule -&gt; String
+
+pprints :: ["InRule":Data-InRules.html#t:InRule] -&gt; IO ()
+
+Pretty-prints InRules.
+
+escInStr :: String -&gt; String
+
+escInChar :: Char -&gt; String
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

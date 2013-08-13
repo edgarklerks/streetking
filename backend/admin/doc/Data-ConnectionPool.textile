@@ -1,0 +1,85 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.ConnectionPool
+
+h1. Documentation
+
+c :: IO "Connection":Data-SqlTransaction.html#t:Connection
+
+happyTest :: IO ()
+
+type Pointer = Int
+
+newtype ConnectionContext
+
+Constructors
+
+ConnectionContext
+
+ 
+
+Fields
+
+<dl>
+<dt>unConnectionContext :: (Int, "Connection":Data-SqlTransaction.html#t:Connection)</dt>
+<dd> </dd>
+</dl>
+
+data ConnectionBucket
+
+Constructors
+
+
+|Empty "Connection":Data-SqlTransaction.html#t:Connection Int| |
+|Filled "Connection":Data-SqlTransaction.html#t:Connection| |
+
+
+Instances
+
+
+|Show "ConnectionBucket":Data-ConnectionPool.html#t:ConnectionBucket| |
+
+
+newtype ConnectionPool
+
+Constructors
+
+ConnectionPool
+
+ 
+
+Fields
+
+<dl>
+<dt>unConnectionPool :: (TQueue "Pointer":Data-ConnectionPool.html#t:Pointer, TArray Int "ConnectionBucket":Data-ConnectionPool.html#t:ConnectionBucket)</dt>
+<dd> </dd>
+</dl>
+
+initConnectionPool :: Int -&gt; IO "Connection":Data-SqlTransaction.html#t:Connection -&gt; IO "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool
+
+emptyConnectionBucket :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool -&gt; Int -&gt; Int -&gt; STM ()
+
+fillConnectionBucket :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool -&gt; Int -&gt; STM ()
+
+reviveConnection :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool -&gt; "ConnectionContext":Data-ConnectionPool.html#t:ConnectionContext -&gt; IO "ConnectionContext":Data-ConnectionPool.html#t:ConnectionContext
+
+putConnection :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool -&gt; Int -&gt; "Connection":Data-SqlTransaction.html#t:Connection -&gt; STM ()
+
+getConnection :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool -&gt; IO "ConnectionContext":Data-ConnectionPool.html#t:ConnectionContext
+
+returnConnection :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool -&gt; "ConnectionContext":Data-ConnectionPool.html#t:ConnectionContext -&gt; IO ()
+
+unwrapContext :: "ConnectionContext":Data-ConnectionPool.html#t:ConnectionContext -&gt; "Connection":Data-SqlTransaction.html#t:Connection
+
+unsafeGetConnection :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool -&gt; Int -&gt; STM "ConnectionContext":Data-ConnectionPool.html#t:ConnectionContext
+
+initConnectionReclaimer :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool -&gt; Int -&gt; IO ThreadId
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

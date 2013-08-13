@@ -1,0 +1,1420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >MemServerAsyncTest</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_MemServerAsyncTest.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>MemServerAsyncTest</p
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a href="#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c a = <a href="#v:ProtoMonad"
+	    >ProtoMonad</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unProtoMonad"
+		>unProtoMonad</a
+		> :: ReaderT c IO a</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:runProtoMonad"
+	    >runProtoMonad</a
+	    > ::  c -&gt; <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c a -&gt; IO a</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:RequestMonad"
+	    >RequestMonad</a
+	    > = <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > <a href="MemServerAsyncTest.html#t:RequestConfig"
+	    >RequestConfig</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:startNode"
+	    >startNode</a
+	    > :: <a href="MemServerAsyncTest.html#t:ConfigParameters"
+	    >ConfigParameters</a
+	    > -&gt; IO (<a href="MemServerAsyncTest.html#t:RequestConfig"
+	    >RequestConfig</a
+	    >, <a href="MemServerAsyncTest.html#t:IncomingConfig"
+	    >IncomingConfig</a
+	    >, <a href="MemServerAsyncTest.html#t:UpdateConfig"
+	    >UpdateConfig</a
+	    >)</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:ConfigParameters"
+	    >ConfigParameters</a
+	    >  = <a href="#v:RP"
+	    >RP</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:param_pull"
+		>param_pull</a
+		> :: String</li
+	      ><li
+	      ><a href="#v:param_req"
+		>param_req</a
+		> :: String</li
+	      ><li
+	      ><a href="#v:param_qc"
+		>param_qc</a
+		> :: <a href="Data-MemTimeState.html#t:QueryChan"
+		>QueryChan</a
+		></li
+	      ><li
+	      ><a href="#v:debug"
+		>debug</a
+		> :: Bool</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:RequestConfig"
+	    >RequestConfig</a
+	    >  = <a href="#v:PC"
+	    >PC</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:pc_context"
+		>pc_context</a
+		> :: Context</li
+	      ><li
+	      ><a href="#v:pc_memstate"
+		>pc_memstate</a
+		> :: <a href="Data-MemTimeState.html#t:QueryChan"
+		>QueryChan</a
+		></li
+	      ><li
+	      ><a href="#v:pc_request"
+		>pc_request</a
+		> :: <a href="MemServerAsyncTest.html#t:RequestSocket"
+		>RequestSocket</a
+		></li
+	      ><li
+	      ><a href="#v:pc_upstream_map"
+		>pc_upstream_map</a
+		> :: <a href="MemServerAsyncTest.html#t:UpstreamMap"
+		>UpstreamMap</a
+		></li
+	      ><li
+	      ><a href="#v:pc_request_answer_chan"
+		>pc_request_answer_chan</a
+		> :: TQueue (<a href="ProtoExtended.html#t:NodeAddr"
+		>NodeAddr</a
+		>, <a href="ProtoExtended.html#t:Proto"
+		>Proto</a
+		>)</li
+	      ><li
+	      ><a href="#v:pc_address"
+		>pc_address</a
+		> :: <a href="ProtoExtended.html#t:NodeAddr"
+		>NodeAddr</a
+		></li
+	      ><li
+	      ><a href="#v:pc_incoming"
+		>pc_incoming</a
+		> :: <a href="ProtoExtended.html#t:NodeAddr"
+		>NodeAddr</a
+		></li
+	      ><li
+	      ><a href="#v:pc_debug"
+		>pc_debug</a
+		> :: Bool</li
+	      ><li
+	      ><a href="#v:pc_log"
+		>pc_log</a
+		> :: TQueue String</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:UpstreamMap"
+	    >UpstreamMap</a
+	    > = TVar (HashMap <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > <a href="MemServerAsyncTest.html#t:UpstreamSocket"
+	    >UpstreamSocket</a
+	    >)</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:RequestSocket"
+	    >RequestSocket</a
+	    > = Socket Rep</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:UpstreamSocket"
+	    >UpstreamSocket</a
+	    > = Socket Req</li
+	  ><li class="src short"
+	  ><a href="#v:requestEngine"
+	    >requestEngine</a
+	    > :: <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:handleQuery"
+	    >handleQuery</a
+	    > :: <a href="MemServerAsyncTest.html#t:RequestSocket"
+	    >RequestSocket</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:sendAnswer"
+	    >sendAnswer</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:handleCommand"
+	    >handleCommand</a
+	    > :: Sender a =&gt; Socket a -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:connectToNode"
+	    >connectToNode</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:runMemQuery"
+	    >runMemQuery</a
+	    > :: <a href="Data-MemTimeState.html#t:Query"
+	    >Query</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > <a href="Data-MemTimeState.html#t:Result"
+	    >Result</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:toNodes"
+	    >toNodes</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:sendUpstream"
+	    >sendUpstream</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:UpdateMonad"
+	    >UpdateMonad</a
+	    > = <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > <a href="MemServerAsyncTest.html#t:UpdateConfig"
+	    >UpdateConfig</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:UpdateConfig"
+	    >UpdateConfig</a
+	    >  = <a href="#v:UC"
+	    >UC</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:uc_context"
+		>uc_context</a
+		> :: Context</li
+	      ><li
+	      ><a href="#v:uc_updates_map"
+		>uc_updates_map</a
+		> :: <a href="MemServerAsyncTest.html#t:UpdatesMap"
+		>UpdatesMap</a
+		></li
+	      ><li
+	      ><a href="#v:uc_request_answer_chan"
+		>uc_request_answer_chan</a
+		> :: TQueue (<a href="ProtoExtended.html#t:NodeAddr"
+		>NodeAddr</a
+		>, <a href="ProtoExtended.html#t:Proto"
+		>Proto</a
+		>)</li
+	      ><li
+	      ><a href="#v:uc_debug"
+		>uc_debug</a
+		> :: Bool</li
+	      ><li
+	      ><a href="#v:uc_log"
+		>uc_log</a
+		> :: TQueue String</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:UpdatesMap"
+	    >UpdatesMap</a
+	    > = TVar (HashMap <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > <a href="MemServerAsyncTest.html#t:UpdatesSocket"
+	    >UpdatesSocket</a
+	    >)</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:UpdatesSocket"
+	    >UpdatesSocket</a
+	    > = Socket Push</li
+	  ><li class="src short"
+	  ><a href="#v:updateEngine"
+	    >updateEngine</a
+	    > :: <a href="MemServerAsyncTest.html#t:UpdateMonad"
+	    >UpdateMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:toClient"
+	    >toClient</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:UpdateMonad"
+	    >UpdateMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a href="#t:IncomingConfig"
+	    >IncomingConfig</a
+	    >  = <a href="#v:IC"
+	    >IC</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:ic_context"
+		>ic_context</a
+		> :: Context</li
+	      ><li
+	      ><a href="#v:ic_incoming"
+		>ic_incoming</a
+		> :: <a href="MemServerAsyncTest.html#t:Incoming"
+		>Incoming</a
+		></li
+	      ><li
+	      ><a href="#v:ic_request_answer_chan"
+		>ic_request_answer_chan</a
+		> :: TQueue (<a href="ProtoExtended.html#t:NodeAddr"
+		>NodeAddr</a
+		>, <a href="ProtoExtended.html#t:Proto"
+		>Proto</a
+		>)</li
+	      ><li
+	      ><a href="#v:ic_debug"
+		>ic_debug</a
+		> :: Bool</li
+	      ><li
+	      ><a href="#v:ic_log"
+		>ic_log</a
+		> :: TQueue String</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:Incoming"
+	    >Incoming</a
+	    > = Socket Pull</li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >type</span
+	    > <a href="#t:IncomingMonad"
+	    >IncomingMonad</a
+	    > = <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > <a href="MemServerAsyncTest.html#t:IncomingConfig"
+	    >IncomingConfig</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:incomingEngine"
+	    >incomingEngine</a
+	    > :: <a href="MemServerAsyncTest.html#t:IncomingMonad"
+	    >IncomingMonad</a
+	    > ()</li
+	  ><li class="src short"
+	  ><a href="#v:receiveProto"
+	    >receiveProto</a
+	    > :: (MonadIO m, Receiver a, <a href="MemServerAsyncTest.html#t:PrintDebug"
+	    >PrintDebug</a
+	    > m) =&gt; Socket a -&gt; m <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:sendProto"
+	    >sendProto</a
+	    > :: (<a href="MemServerAsyncTest.html#t:PrintDebug"
+	    >PrintDebug</a
+	    > m, MonadIO m, Sender a) =&gt; Socket a -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; m ()</li
+	  ><li class="src short"
+	  ><a href="#v:asksTVar"
+	    >asksTVar</a
+	    > ::  (c -&gt; TVar a) -&gt; <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c a</li
+	  ><li class="src short"
+	  ><a href="#v:modifysTVar"
+	    >modifysTVar</a
+	    > ::  (c -&gt; TVar a) -&gt; (a -&gt; a) -&gt; <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c ()</li
+	  ><li class="src short"
+	  ><a href="#v:liftSTM"
+	    >liftSTM</a
+	    > ::  STM a -&gt; <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c a</li
+	  ><li class="src short"
+	  ><a href="#v:queryNode"
+	    >queryNode</a
+	    > :: <a href="Data-MemTimeState.html#t:QueryChan"
+	    >QueryChan</a
+	    > -&gt; Socket Pull -&gt; Socket Req -&gt; String -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; IO <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:get_ic_config"
+	    >get_ic_config</a
+	    > ::  (t, t1, t2) -&gt; t1</li
+	  ><li class="src short"
+	  ><a href="#v:get_pc_config"
+	    >get_pc_config</a
+	    > ::  (t, t1, t2) -&gt; t</li
+	  ><li class="src short"
+	  ><a href="#v:get_uc_config"
+	    >get_uc_config</a
+	    > ::  (t, t1, t2) -&gt; t2</li
+	  ><li class="src short"
+	  ><a href="#v:client-39-"
+	    >client'</a
+	    > :: Socket Pull -&gt; Socket Req -&gt; String -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; IO <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:tryTakeMVarT"
+	    >tryTakeMVarT</a
+	    > :: Int -&gt; MVar <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; IO <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></li
+	  ><li class="src short"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a href="#t:PrintDebug"
+	    >PrintDebug</a
+	    > m  <span class="keyword"
+	    >where</span
+	    ><ul class="subs"
+	    ><li
+	      ><a href="#v:printDebug"
+		>printDebug</a
+		> :: Show a =&gt; a -&gt; m ()</li
+	      ></ul
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:clientCommand"
+	    >clientCommand</a
+	    > :: String -&gt; String -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; IO ()</li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    >  <a name="t:ProtoMonad" class="def"
+	    >ProtoMonad</a
+	    > c a </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:ProtoMonad" class="def"
+		  >ProtoMonad</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:unProtoMonad" class="def"
+			>unProtoMonad</a
+			> :: ReaderT c IO a</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ProtoMonad" class="caption collapser" onclick="toggleSection('i:ProtoMonad')"
+	    >Instances</p
+	    ><div id="section.i:ProtoMonad" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:IncomingMonad"
+		    >IncomingMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:UpdateMonad"
+		    >UpdateMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:RequestMonad"
+		    >RequestMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadReader c (<a href="MemServerAsyncTest.html#t:ProtoMonad"
+		    >ProtoMonad</a
+		    > c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Monad (<a href="MemServerAsyncTest.html#t:ProtoMonad"
+		    >ProtoMonad</a
+		    > c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Functor (<a href="MemServerAsyncTest.html#t:ProtoMonad"
+		    >ProtoMonad</a
+		    > c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadPlus (<a href="MemServerAsyncTest.html#t:ProtoMonad"
+		    >ProtoMonad</a
+		    > c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Applicative (<a href="MemServerAsyncTest.html#t:ProtoMonad"
+		    >ProtoMonad</a
+		    > c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadIO (<a href="MemServerAsyncTest.html#t:ProtoMonad"
+		    >ProtoMonad</a
+		    > c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Alternative (<a href="MemServerAsyncTest.html#t:ProtoMonad"
+		    >ProtoMonad</a
+		    > c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >MonadCatchIO (<a href="MemServerAsyncTest.html#t:ProtoMonad"
+		    >ProtoMonad</a
+		    > c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runProtoMonad" class="def"
+	    >runProtoMonad</a
+	    > ::  c -&gt; <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c a -&gt; IO a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:RequestMonad" class="def"
+	    >RequestMonad</a
+	    > = <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > <a href="MemServerAsyncTest.html#t:RequestConfig"
+	    >RequestConfig</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Request engine,
+-   accepts incoming requests and processes them
+|
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:startNode" class="def"
+	    >startNode</a
+	    > :: <a href="MemServerAsyncTest.html#t:ConfigParameters"
+	    >ConfigParameters</a
+	    > -&gt; IO (<a href="MemServerAsyncTest.html#t:RequestConfig"
+	    >RequestConfig</a
+	    >, <a href="MemServerAsyncTest.html#t:IncomingConfig"
+	    >IncomingConfig</a
+	    >, <a href="MemServerAsyncTest.html#t:UpdateConfig"
+	    >UpdateConfig</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:ConfigParameters" class="def"
+	    >ConfigParameters</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:RP" class="def"
+		  >RP</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:param_pull" class="def"
+			>param_pull</a
+			> :: String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:param_req" class="def"
+			>param_req</a
+			> :: String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:param_qc" class="def"
+			>param_qc</a
+			> :: <a href="Data-MemTimeState.html#t:QueryChan"
+			>QueryChan</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:debug" class="def"
+			>debug</a
+			> :: Bool</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RequestConfig" class="def"
+	    >RequestConfig</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:PC" class="def"
+		  >PC</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:pc_context" class="def"
+			>pc_context</a
+			> :: Context</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:pc_memstate" class="def"
+			>pc_memstate</a
+			> :: <a href="Data-MemTimeState.html#t:QueryChan"
+			>QueryChan</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:pc_request" class="def"
+			>pc_request</a
+			> :: <a href="MemServerAsyncTest.html#t:RequestSocket"
+			>RequestSocket</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:pc_upstream_map" class="def"
+			>pc_upstream_map</a
+			> :: <a href="MemServerAsyncTest.html#t:UpstreamMap"
+			>UpstreamMap</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:pc_request_answer_chan" class="def"
+			>pc_request_answer_chan</a
+			> :: TQueue (<a href="ProtoExtended.html#t:NodeAddr"
+			>NodeAddr</a
+			>, <a href="ProtoExtended.html#t:Proto"
+			>Proto</a
+			>)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:pc_address" class="def"
+			>pc_address</a
+			> :: <a href="ProtoExtended.html#t:NodeAddr"
+			>NodeAddr</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:pc_incoming" class="def"
+			>pc_incoming</a
+			> :: <a href="ProtoExtended.html#t:NodeAddr"
+			>NodeAddr</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:pc_debug" class="def"
+			>pc_debug</a
+			> :: Bool</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:pc_log" class="def"
+			>pc_log</a
+			> :: TQueue String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:RequestConfig" class="caption collapser" onclick="toggleSection('i:RequestConfig')"
+	    >Instances</p
+	    ><div id="section.i:RequestConfig" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:RequestMonad"
+		    >RequestMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:UpstreamMap" class="def"
+	    >UpstreamMap</a
+	    > = TVar (HashMap <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > <a href="MemServerAsyncTest.html#t:UpstreamSocket"
+	    >UpstreamSocket</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:RequestSocket" class="def"
+	    >RequestSocket</a
+	    > = Socket Rep</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:UpstreamSocket" class="def"
+	    >UpstreamSocket</a
+	    > = Socket Req</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:requestEngine" class="def"
+	    >requestEngine</a
+	    > :: <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:handleQuery" class="def"
+	    >handleQuery</a
+	    > :: <a href="MemServerAsyncTest.html#t:RequestSocket"
+	    >RequestSocket</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendAnswer" class="def"
+	    >sendAnswer</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:handleCommand" class="def"
+	    >handleCommand</a
+	    > :: Sender a =&gt; Socket a -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:connectToNode" class="def"
+	    >connectToNode</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runMemQuery" class="def"
+	    >runMemQuery</a
+	    > :: <a href="Data-MemTimeState.html#t:Query"
+	    >Query</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > <a href="Data-MemTimeState.html#t:Result"
+	    >Result</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:toNodes" class="def"
+	    >toNodes</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendUpstream" class="def"
+	    >sendUpstream</a
+	    > :: <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:RequestMonad"
+	    >RequestMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:UpdateMonad" class="def"
+	    >UpdateMonad</a
+	    > = <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > <a href="MemServerAsyncTest.html#t:UpdateConfig"
+	    >UpdateConfig</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Update engine,
+-   accepts a local update and processes them 
+|
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:UpdateConfig" class="def"
+	    >UpdateConfig</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:UC" class="def"
+		  >UC</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:uc_context" class="def"
+			>uc_context</a
+			> :: Context</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:uc_updates_map" class="def"
+			>uc_updates_map</a
+			> :: <a href="MemServerAsyncTest.html#t:UpdatesMap"
+			>UpdatesMap</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:uc_request_answer_chan" class="def"
+			>uc_request_answer_chan</a
+			> :: TQueue (<a href="ProtoExtended.html#t:NodeAddr"
+			>NodeAddr</a
+			>, <a href="ProtoExtended.html#t:Proto"
+			>Proto</a
+			>)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:uc_debug" class="def"
+			>uc_debug</a
+			> :: Bool</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:uc_log" class="def"
+			>uc_log</a
+			> :: TQueue String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:UpdateConfig" class="caption collapser" onclick="toggleSection('i:UpdateConfig')"
+	    >Instances</p
+	    ><div id="section.i:UpdateConfig" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:UpdateMonad"
+		    >UpdateMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:UpdatesMap" class="def"
+	    >UpdatesMap</a
+	    > = TVar (HashMap <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > <a href="MemServerAsyncTest.html#t:UpdatesSocket"
+	    >UpdatesSocket</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:UpdatesSocket" class="def"
+	    >UpdatesSocket</a
+	    > = Socket Push</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:updateEngine" class="def"
+	    >updateEngine</a
+	    > :: <a href="MemServerAsyncTest.html#t:UpdateMonad"
+	    >UpdateMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:toClient" class="def"
+	    >toClient</a
+	    > :: <a href="ProtoExtended.html#t:NodeAddr"
+	    >NodeAddr</a
+	    > -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; <a href="MemServerAsyncTest.html#t:UpdateMonad"
+	    >UpdateMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:IncomingConfig" class="def"
+	    >IncomingConfig</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:IC" class="def"
+		  >IC</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:ic_context" class="def"
+			>ic_context</a
+			> :: Context</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:ic_incoming" class="def"
+			>ic_incoming</a
+			> :: <a href="MemServerAsyncTest.html#t:Incoming"
+			>Incoming</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:ic_request_answer_chan" class="def"
+			>ic_request_answer_chan</a
+			> :: TQueue (<a href="ProtoExtended.html#t:NodeAddr"
+			>NodeAddr</a
+			>, <a href="ProtoExtended.html#t:Proto"
+			>Proto</a
+			>)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:ic_debug" class="def"
+			>ic_debug</a
+			> :: Bool</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:ic_log" class="def"
+			>ic_log</a
+			> :: TQueue String</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:IncomingConfig" class="caption collapser" onclick="toggleSection('i:IncomingConfig')"
+	    >Instances</p
+	    ><div id="section.i:IncomingConfig" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:IncomingMonad"
+		    >IncomingMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Incoming" class="def"
+	    >Incoming</a
+	    > = Socket Pull</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:IncomingMonad" class="def"
+	    >IncomingMonad</a
+	    > = <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > <a href="MemServerAsyncTest.html#t:IncomingConfig"
+	    >IncomingConfig</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:incomingEngine" class="def"
+	    >incomingEngine</a
+	    > :: <a href="MemServerAsyncTest.html#t:IncomingMonad"
+	    >IncomingMonad</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:receiveProto" class="def"
+	    >receiveProto</a
+	    > :: (MonadIO m, Receiver a, <a href="MemServerAsyncTest.html#t:PrintDebug"
+	    >PrintDebug</a
+	    > m) =&gt; Socket a -&gt; m <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Some tools |
+</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sendProto" class="def"
+	    >sendProto</a
+	    > :: (<a href="MemServerAsyncTest.html#t:PrintDebug"
+	    >PrintDebug</a
+	    > m, MonadIO m, Sender a) =&gt; Socket a -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; m ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:asksTVar" class="def"
+	    >asksTVar</a
+	    > ::  (c -&gt; TVar a) -&gt; <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:modifysTVar" class="def"
+	    >modifysTVar</a
+	    > ::  (c -&gt; TVar a) -&gt; (a -&gt; a) -&gt; <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:liftSTM" class="def"
+	    >liftSTM</a
+	    > ::  STM a -&gt; <a href="MemServerAsyncTest.html#t:ProtoMonad"
+	    >ProtoMonad</a
+	    > c a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:queryNode" class="def"
+	    >queryNode</a
+	    > :: <a href="Data-MemTimeState.html#t:QueryChan"
+	    >QueryChan</a
+	    > -&gt; Socket Pull -&gt; Socket Req -&gt; String -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; IO <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:get_ic_config" class="def"
+	    >get_ic_config</a
+	    > ::  (t, t1, t2) -&gt; t1</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:get_pc_config" class="def"
+	    >get_pc_config</a
+	    > ::  (t, t1, t2) -&gt; t</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:get_uc_config" class="def"
+	    >get_uc_config</a
+	    > ::  (t, t1, t2) -&gt; t2</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:client-39-" class="def"
+	    >client'</a
+	    > :: Socket Pull -&gt; Socket Req -&gt; String -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; IO <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:tryTakeMVarT" class="def"
+	    >tryTakeMVarT</a
+	    > :: Int -&gt; MVar <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; IO <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a name="t:PrintDebug" class="def"
+	    >PrintDebug</a
+	    > m  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs methods"
+	  ><p class="caption"
+	    >Methods</p
+	    ><p class="src"
+	    ><a name="v:printDebug" class="def"
+	      >printDebug</a
+	      > :: Show a =&gt; a -&gt; m ()</p
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:PrintDebug" class="caption collapser" onclick="toggleSection('i:PrintDebug')"
+	    >Instances</p
+	    ><div id="section.i:PrintDebug" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > IO</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:IncomingMonad"
+		    >IncomingMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:UpdateMonad"
+		    >UpdateMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="MemServerAsyncTest.html#t:PrintDebug"
+		    >PrintDebug</a
+		    > <a href="MemServerAsyncTest.html#t:RequestMonad"
+		    >RequestMonad</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:clientCommand" class="def"
+	    >clientCommand</a
+	    > :: String -&gt; String -&gt; <a href="ProtoExtended.html#t:Proto"
+	    >Proto</a
+	    > -&gt; IO ()</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

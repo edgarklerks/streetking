@@ -1,0 +1,55 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+ImageSnapLet
+
+h1. Documentation
+
+data ImageConfig
+
+Constructors
+
+IC
+
+ 
+
+Fields
+
+<dl>
+<dt>&#95;dumpdir :: String</dt>
+<dd> </dd>
+<dt>&#95;servdir :: String</dt>
+<dd> </dd>
+<dt>&#95;allowedTypes :: [String]</dt>
+<dd> </dd>
+<dt>&#95;magicctx :: Magic</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Show "ImageConfig":ImageSnapLet.html#t:ImageConfig| |
+
+
+dumpdir :: Lens' "ImageConfig":ImageSnapLet.html#t:ImageConfig String
+
+servdir :: Lens' "ImageConfig":ImageSnapLet.html#t:ImageConfig String
+
+allowedTypes :: Lens' "ImageConfig":ImageSnapLet.html#t:ImageConfig [String]
+
+uploadImage :: (MonadState "ImageConfig":ImageSnapLet.html#t:ImageConfig m, MonadSnap m) =&gt; (String -&gt; m ()) -&gt; (String -&gt; FilePath -&gt; String -&gt; m ()) -&gt; m ()
+
+serveImage :: (MonadState "ImageConfig":ImageSnapLet.html#t:ImageConfig m, MonadSnap m) =&gt; ([Char] -&gt; m ()) -&gt; m FilePath -&gt; m ()
+
+initImage :: FilePath -&gt; SnapletInit b "ImageConfig":ImageSnapLet.html#t:ImageConfig
+
+getServDir :: MonadState "ImageConfig":ImageSnapLet.html#t:ImageConfig m =&gt; m String
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.SearchBuilder</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-SearchBuilder.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.SearchBuilder</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Sortable" class="def"
+	    >Sortable</a
+	    > = Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Exceptions" class="def"
+	    >Exceptions</a
+	    > = [String -&gt; <a href="Data-SearchBuilder.html#t:Type"
+	    >Type</a
+	    > -&gt; Maybe <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Behaviours" class="def"
+	    >Behaviours</a
+	    > = [(<a href="Data-SearchBuilder.html#t:Type"
+	    >Type</a
+	    >, <a href="Data-SearchBuilder.html#t:Behaviour"
+	    >Behaviour</a
+	    >)]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Type" class="def"
+	    >Type</a
+	    > = String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Behaviour" class="def"
+	    >Behaviour</a
+	    >  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Max" class="def"
+		  >Max</a
+		  > ::  <a href="Data-SearchBuilder.html#t:Behaviour"
+		  >Behaviour</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Min" class="def"
+		  >Min</a
+		  > ::  <a href="Data-SearchBuilder.html#t:Behaviour"
+		  >Behaviour</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:MinMax" class="def"
+		  >MinMax</a
+		  > ::  <a href="Data-SearchBuilder.html#t:Behaviour"
+		  >Behaviour</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Equal" class="def"
+		  >Equal</a
+		  > ::  <a href="Data-SearchBuilder.html#t:Behaviour"
+		  >Behaviour</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Like" class="def"
+		  >Like</a
+		  > ::  <a href="Data-SearchBuilder.html#t:Behaviour"
+		  >Behaviour</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Ignore" class="def"
+		  >Ignore</a
+		  > ::  <a href="Data-SearchBuilder.html#t:Behaviour"
+		  >Behaviour</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Behaviour" class="caption collapser" onclick="toggleSection('i:Behaviour')"
+	    >Instances</p
+	    ><div id="section.i:Behaviour" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Eq <a href="Data-SearchBuilder.html#t:Behaviour"
+		    >Behaviour</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:MString" class="def"
+	    >MString</a
+	    > = Maybe String</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:MInteger" class="def"
+	    >MInteger</a
+	    > = Maybe Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:MInt" class="def"
+	    >MInt</a
+	    > = Maybe Int</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:MBool" class="def"
+	    >MBool</a
+	    > = Maybe Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:MChar" class="def"
+	    >MChar</a
+	    > = Maybe Char</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:MDouble" class="def"
+	    >MDouble</a
+	    > = Maybe Double</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:defaultBehaviours" class="def"
+	    >defaultBehaviours</a
+	    > :: <a href="Data-SearchBuilder.html#t:Behaviours"
+	    >Behaviours</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:defaultExceptions" class="def"
+	    >defaultExceptions</a
+	    > :: <a href="Data-SearchBuilder.html#t:Exceptions"
+	    >Exceptions</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:findException" class="def"
+	    >findException</a
+	    > :: String -&gt; <a href="Data-SearchBuilder.html#t:Type"
+	    >Type</a
+	    > -&gt; <a href="Data-SearchBuilder.html#t:Exceptions"
+	    >Exceptions</a
+	    > -&gt; Maybe <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:build" class="def"
+	    >build</a
+	    > :: <a href="Model-General.html#t:Database"
+	    >Database</a
+	    > c a =&gt; <a href="Data-SearchBuilder.html#t:Behaviours"
+	    >Behaviours</a
+	    > -&gt; a -&gt; <a href="Data-SearchBuilder.html#t:Exceptions"
+	    >Exceptions</a
+	    > -&gt; (<a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    >, [String])</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:lookupMany" class="def"
+	    >lookupMany</a
+	    > :: Eq a =&gt; a -&gt; [(a, b)] -&gt; [b]</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

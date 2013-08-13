@@ -1,0 +1,157 @@
+.RP
+.TL
+Mission specification 
+.DA
+.AU
+Edgar Klerks 
+.AB 
+This document describes the mission system and it's features 
+.AE 
+.EQ
+sdefine and %{type "operator" vcenter \fR\(AN\fP}%
+sdefine not %{type "operator" vcenter \fR\(no\fP}%
+.EN
+
+.EQ
+delim $$
+.EN 
+
+.NH 1 
+Definition of mission structure 
+.LP 
+A mission is a set of (permutable) regular expressions together with a set of relations between those regular expressions described below, a time limit, a description and an output alphabet of rewards.
+The regular expressions describe the matching of events needed to end a mission.
+
+The relations describe an ordering between the various missions, where the ordering describes the sequence in which missions should be played. This ordering is transitive, irreflexive and asymmetric:
+
+Transitive:
+.EQ 
+{(mission sub a < mission sub b)} and {(mission sub b < mission sub c)} => mission sub a < mission sub c 
+.EN
+
+Irreflexive:
+.EQ 
+not ({mission sub a < mission sub a})
+.EN 
+
+Asymmetric:
+.EQ
+({mission sub a > mission sub b}) => not ({mission sub b > mission sub a})
+.EN 
+
+This is a property of the system, which can be tested with QuickCheck. 
+
+An example of a mission description is given:
+
+.PS
+A: box "P2L2M1"
+arrow "" "tran" 
+B: box "M100,E200"
+move to A .s
+down 
+move 
+C: box rad 0.15 "M2"
+arrow from 1/4 of the way between A and C "" "events"
+.PE 
+.LE
+
+.LP
+The above mission is a sequence of $mission sub 1$ and depends for its succes on the level of the user and an action (practice 1) the user should take. 
+
+If the mission succeeds it will emit an event $mission sub 2$, which activates missions dependent on $mission sub 2$ and it will reward the user with money and experience points.
+.LE 
+
+.NH 1
+Description of the rule alphabet and syntax 
+.LP 
+The rule alphabet is defined as, where all the parameters are optional:
+.TS
+box, tab(:);
+c | l | l .
+Symbol: Meaning : Parameters 
+$M sub n$:mission:mission id n  
+$P sub n$:practice:practice track id n 
+${R sub (n,p)}$ :challenge race:track n, pos p 
+${L sub n}$:level up:level reached n 
+${T sub (p,n,t)}$:tournament:tournament id n, pos p and type t   
+.TE
+
+Every rule can be grouped or modified:
+.TS
+box, tab(:);
+c | l . 
+Syntax : Meaning 
+(<$rule$>) : group <$rule$>
+<$rule$>+ : match rule one or more times
+<$rule$>* : match rule zero or more times 
+<$rule$>? : match rule zero or one time 
+<n<$rule$> : match rule at most n times 
+>n<$rule$> : match rule at least n times 
+>n<m<$rule$> : match rule at between n and m times 
+[$s sub 1$$s sub 2$..$s sub n$] : match all of $s sub 1$ to $s sub n$
+{$s sub 1$$s sub 2$..$s sub n$} : match any of $s sub 1$ to $s sub n$
+.TE 
+
+.LE
+
+.NH 1 
+Sequencing of missions 
+.LP 
+Missions are sequenced by rules. This is an example of such a sequential mission group with the action rewards:
+
+.EQ 
+define rule %{$1~:~$2~->~$3}%
+
+lpile {
+    
+    rule(m4,L3M3P2P3,E100M1000)
+
+    above 
+    rule(m5, L5M4P9R2, E300M2000)
+    above 
+
+    rule(m6, L5M5T3T4, E4000M2000)
+}
+.EN 
+
+Corresponding to the mission relation diagram:
+
+.PS 
+A: box "m4"
+arrow 
+B: box "m5"
+arrow 
+C: box "m6" 
+arrow 
+move to B .s
+down 
+move 
+AE: box "E100M1000"
+move to C .s 
+down 
+move 
+BE: box "E300M2000"
+move to C .s 
+right 
+move 1.25 
+down 
+move 
+CE: box "E4000M2000"
+
+arrow dotted from A.s to AE.n 
+arrow dotted from B.s to BE.n 
+arrow dotted from C.s to CE.n 
+.PE 
+
+In this diagram it is clear the missions have a specific sequence.  
+
+.NH 1
+Mission user description
+
+A mission carries a description, which can be unlocked by an event.
+
+
+
+
+
+

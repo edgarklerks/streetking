@@ -1,0 +1,20 @@
+acura integra ls
+201 top speed
+140 hp
+7.8 s in game 9.1
+1179 kg
+19650 price
+
+civic cx
+190 top speed
+106 hp
+9.3 s in game 11
+1070 kg
+10650 price
+
+corolla
+201 top speed
+119 hp
+8.5 s in game 9
+998 kg 518 + 80 + 250 + 100 +50
+
