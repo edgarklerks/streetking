@@ -156,6 +156,7 @@ import qualified Model.RaceReward as RWD
 import qualified Model.Report as RP 
 import qualified Model.RewardLog as RL 
 import qualified Model.RewardLogEvent as RLE 
+import qualified Model.Rule as Rule 
 import qualified Model.ShopReport as SR 
 import qualified Model.Support as SUP 
 import qualified Model.Tournament as TR 
@@ -2557,8 +2558,12 @@ availableMissions = do
                     "time_limit" +>= "time_limit_min" +&& 
                     "time_limit" +<= "time_limit_max" +&& 
                     "time_limit" +== "time_limit"
-            ys <- runDb $ search xs od l o :: Application [Mission.Mission]
-            writeMapables ys 
+            ys <- runDb $ do 
+                             ms <- search xs od l o
+                             forM ms $ \p -> do 
+                                                s <- load (Mission.rule_id p) :: SqlTransaction Connection  (Maybe Rule.Rule)
+                                                return $ InObject $ HM.fromList $ [("rule", toInRule s), ("mission", toInRule p)]
+            writeResult ys 
 
 userMission :: Application ()
 userMission = do 
@@ -2843,7 +2848,6 @@ getRewards = do
                 rs <- search xs od l o :: SqlTransaction Connection [RLE.RewardLogEvent]
                 forM rs $ \r -> do 
                        fromJust <$> load (fromJust $ RLE.id r) :: SqlTransaction Connection (RL.RewardLog)
-
         writeResult (transformRewards xs) 
 
 rewardLog :: Application ()

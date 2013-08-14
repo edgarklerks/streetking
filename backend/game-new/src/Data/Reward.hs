@@ -220,6 +220,7 @@ testParseRule = do
     print $ parse parseRule "" ">6[{TRP}{RPT}{T1,2PR124}]>5<6[TTT]"
     print $ parse parseRule "" "" 
     print $ parse parseRule "" "[[[T]]]" -- [T] 
+
 -- T tournament
 -- P practice
 -- R race 
@@ -239,6 +240,7 @@ testParseRule = do
 -- P and R at pos 124) and between 15 and 18 tournaments.
 -- >5<6[TTT] -- means you need to get between 5 and 6 three tournaments -- you need to get 15 and 18
 -- tournaments 
+
 
 optimize (All [(All xs)]) = optimize $ All (optimize <$> xs) 
 optimize (Any [(Any xs)]) = optimize $ Any (optimize <$> xs)

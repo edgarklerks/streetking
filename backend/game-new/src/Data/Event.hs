@@ -8,8 +8,14 @@ import Data.Conversion
 import qualified Data.Aeson as AS
 import qualified Data.Vector as V 
 import Control.Monad 
+import Control.Applicative
 import qualified Data.Text as T 
 import Data.Attoparsec.Number 
+import Data.InRules
+import Data.Convertible 
+import qualified Data.HashMap.Strict as Map
+import Data.Aeson
+import Data.Maybe 
 -- S means match always 
 -- I means match only with cond
 
@@ -23,6 +29,56 @@ data Symbol where
     MissionI :: Integer -> Symbol 
  deriving Show 
 
+instance ToInRule Symbol where 
+    toInRule (TournamentI pos id typ) = InObject $ Map.fromList $ 
+                                [("string", InString "tournament"),
+                                 ("pos", InString (fromMaybe "" (show <$> pos))),
+                                 ("tournament_id", InString (fromMaybe "" (show <$> id))),
+                                 ("type_id", InString (fromMaybe "" (show <$> typ)))
+                                 ] 
+    toInRule (LevelI l) = InObject $ Map.fromList $ [
+                            ("string", InString "level"),
+                            ("level", InInteger l)
+                        ]
+    toInRule (PracticeI i) = InObject $ Map.fromList $ [
+                            ("string", InString "practice"),
+                            ("track_id", InString (fromMaybe "" (show <$> i)))
+            ]
+    toInRule (MissionI i) = InObject $ Map.fromList $ [
+                            ("string", InString "mission"),
+                            ("track_id", InInteger i)
+                        ]
+
+
+testSymbolRule = All [One $ PracticeI (Just 2), One $ PracticeI  Nothing, One $ TournamentI (Just 1) Nothing (Just 3), Any [One $ PracticeI (return 9), One $ PracticeI $ return 12]]
+instance ToInRule (Expr g Symbol) where 
+       toInRule (Any xs) = InObject $ Map.fromList [
+                                        ("string" , InString "any"),
+                                        ("object", InArray $ toInRule <$> xs)
+                                    ]
+       toInRule (All xs) = InObject $ Map.fromList [
+                                        ("string", InString "all"),
+                                        ("object", InArray $ toInRule <$> xs)
+                                    ]
+       toInRule (FromTo p q x) = InObject $ Map.fromList [
+                                        ("string", InString "between"),
+                                        ("from", InInteger p), 
+                                        ("to", InInteger q),
+                                        ("object", toInRule x)
+                                ]
+       toInRule (One p) =  toInRule p 
+       toInRule (From p q) = InObject $ Map.fromList [
+                                ("string", InString "from"),
+                                ("from", InInteger p),
+                                ("object", toInRule q)
+                ]
+       toInRule (To p q) = InObject $ Map.fromList [
+                                ("string", InString "to"),
+                                ("to", InInteger p),
+                                ("object", toInRule q)
+                ]
+
+ 
 
 matchEvent :: Expr g Symbol -> [Event] -> ([Event], Bool) 
 matchEvent e = runDecider (eventDecider e)
