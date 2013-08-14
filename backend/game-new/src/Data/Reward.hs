@@ -20,7 +20,7 @@ import           Model.General
 import           System.Random 
 import           Text.Parsec.Char
 import           Text.Parsec.Combinator
-import           Text.Parsec.Prim hiding ((<|>), many)
+import           Text.Parsec.Prim hiding ((<|>), many, State)
 import           Text.Parsec.String
 import qualified Data.Account as DA
 import qualified Model.Account as ACC 
@@ -31,6 +31,7 @@ import qualified Model.RewardLogEvents as RLE
 import qualified Model.Rule as R
 import qualified Model.RuleReward as RW 
 import qualified Model.Transaction as TR 
+import Control.Monad.State 
 
 newtype Rewards = Rewards {
                     unRewards :: [Reward]
@@ -44,6 +45,33 @@ instance ToInRule Reward where
                                     , ("name", toInRule nm)
                                     , ("prizes", toInRule prz)
                                 ]
+
+type Modifier = [Integer]
+flattenRule :: Expr g Symbol -> State Modifier [(Expr g Symbol)]
+
+flattenRule (All (Any xs : Any ys : zs)) = do 
+                                    rs <- flattenRule (Any (xs ++ ys))
+                                    rest <- flattenRule (All zs)
+                                    flattenRule (All (rs ++ rest))
+
+flattenRule (All xs) = do 
+                ys <- forM xs flattenRule 
+                return $ concat ys 
+flattenRule (Any xs) = do 
+                ys <- forM xs flattenRule 
+                return $ concat ys 
+flattenRule (FromTo p q x) = do 
+                    pr <- get 
+                    put [p .. q]
+                    ps <- flattenRule x 
+                    put pr 
+                    return ps 
+flattenRule (One x) = do 
+                ps <- get
+                ys <- forM ps $ \p -> return $ replicate (fromInteger p) (FromTo p p (One x))
+                return ( [Any $ concat ys]) 
+
+
 
 
 instance ToInRule Prize where 

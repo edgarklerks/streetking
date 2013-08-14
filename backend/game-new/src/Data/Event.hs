@@ -16,6 +16,7 @@ import Data.Convertible
 import qualified Data.HashMap.Strict as Map
 import Data.Aeson
 import Data.Maybe 
+import qualified Data.List as L 
 -- S means match always 
 -- I means match only with cond
 
@@ -29,6 +30,66 @@ data Symbol where
     MissionI :: Integer -> Symbol 
  deriving Show 
 
+
+toTemplatish :: Int -> Expr g Symbol -> String 
+toTemplatish ind (All xs) = indent ind ++ "DO_ALL_OF{" ++  L.intercalate "" (toTemplatish (ind + 1) <$> xs) ++ "}" 
+toTemplatish ind (Any xs) = indent ind ++ "DO_ANY_OF{" ++  L.intercalate "" (toTemplatish (ind+1)  <$> xs) ++ "}" 
+toTemplatish ind (FromTo p q x) | p == q = indent ind ++ "DO_EXACTLY{" ++ (show p) ++ " " ++ toTemplatish (ind + 1) x  ++ "}"
+toTemplatish ind (FromTo p q x) = indent ind ++ "DO_BETWEEN{" ++ (show p) ++ "," ++ (show q) ++ " " ++ toTemplatish (ind + 1) x  ++ "}"
+toTemplatish ind (From p x)  = indent ind ++ "DO_AT_LEAST{" ++ (show p) ++ " " ++ toTemplatish (ind + 1) x ++ "}" 
+toTemplatish ind (To p x) = indent ind ++ "DO_AT_MOST{" ++ (show p) ++ " " ++ toTemplatish (ind + 1) x ++ "}" 
+toTemplatish ind (One p) = indent ind ++ toTemplatishSymbol p 
+    where toTemplatishSymbol (TournamentI p i t) = "TOURNAMENT{"  ++ pos ++ id ++ typ ++ "}" 
+                where pos = maybe "" (\x -> " POS{ " ++ show (x)) p ++ "}" 
+                      id = maybe "" (\x -> " TOURNAMENT{ " ++ (show x)) i ++ "}"  
+                      typ = maybe "" (\x -> " and type: " ++ (show x)) t 
+          toTemplatishSymbol (LevelI i) = "grow to or be at level: " ++ (show i)
+          toTemplatishSymbol (RaceI p i) = "win a race" ++ pos ++ id 
+                where pos = maybe "" (\x -> " at pos: " ++ (show x)) p
+                      id = maybe "" (\x -> " and track_id: " ++ (show x)) i
+          toTemplatishSymbol (PracticeI i) = "PRACTICE{" ++ id  ++ "}" 
+                where id = maybe "" (\x -> " TRACK_ID: " ++ (show x)) i 
+          toTemplatishSymbol (MissionI n) = "do mission " ++ (show n)
+
+
+indent :: Int -> String  
+indent n  = ('\n':(replicate (n * 4) ' '))
+
+toEngrish :: Int -> Expr g Symbol -> String 
+toEngrish ind (All xs) = indent ind ++ "do all of " ++  L.intercalate "" (toEngrish (ind + 1) <$> xs) ++ "" 
+toEngrish ind (Any xs) = indent ind ++ "choose any of " ++  L.intercalate "" (toEngrish (ind+1)  <$> xs) ++ "" 
+toEngrish ind (FromTo p q x) | p == q = indent ind ++ "do the following " ++ (show p) ++ " times:  " ++ toEngrish (ind + 1) x  ++ " "
+toEngrish ind (FromTo p q x) = indent ind ++ "do the following between " ++ (show p) ++ " and " ++ (show q) ++ " times:  " ++ toEngrish (ind + 1) x  ++ " "
+toEngrish ind (From p x)  = indent ind ++ "do the following at least " ++ (show p) ++ " times: " ++ toEngrish (ind + 1) x ++ "" 
+toEngrish ind (To p x) = indent ind ++ "do the following at most " ++ (show p) ++ " times: " ++ toEngrish (ind + 1) x ++ "" 
+toEngrish ind (One p) = indent ind ++ toEngrishSymbol p 
+    where toEngrishSymbol (TournamentI p i t) = "win a tournament"  ++ pos ++ id ++ typ
+                where pos = maybe "" (\x -> " at pos: " ++ show (x)) p 
+                      id = maybe "" (\x -> " and tournament_id: " ++ (show x)) i 
+                      typ = maybe "" (\x -> " and type: " ++ (show x)) t 
+          toEngrishSymbol (LevelI i) = "grow to or be at level: " ++ (show i)
+          toEngrishSymbol (RaceI p i) = "win a race" ++ pos ++ id 
+                where pos = maybe "" (\x -> " at pos: " ++ (show x)) p
+                      id = maybe "" (\x -> " and track_id: " ++ (show x)) i
+          toEngrishSymbol (PracticeI i) = "practice" ++ id  
+                where id = maybe "" (\x -> " at track_id: " ++ (show x)) i 
+          toEngrishSymbol (MissionI n) = "do mission " ++ (show n)
+
+{-- 
+do all of
+   do the following between 5 and 6 times: 
+                choose any of (win a tournament, win a race, practice) ), 
+                choose any of (win a race, practice, win a tournament), 
+                do the following at most 6 times: (
+                                        do all of (
+                                            win a race, 
+                                            do the following at most 3 times: 
+                                                    (practice), 
+                                            do the following at most 4 times: 
+                                                    (win a tournament)
+                                        )
+                            )
+--}
 instance ToInRule Symbol where 
     toInRule (TournamentI pos id typ) = InObject $ Map.fromList $ 
                                 [("string", InString "tournament"),
