@@ -1,0 +1,675 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Data.Relation</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Data-Relation.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Data.Relation</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Relation" class="def"
+	    >Relation</a
+	    >  </p
+	  ><div class="subs instances"
+	  ><p id="control.i:Relation" class="caption collapser" onclick="toggleSection('i:Relation')"
+	    >Instances</p
+	    ><div id="section.i:Relation" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-Relation.html#t:Relation"
+		    >Relation</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToValues <a href="Data-Relation.html#t:Relation"
+		    >Relation</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToSql <a href="Data-Relation.html#t:Relation"
+		    >Relation</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:RelationM" class="def"
+	    >RelationM</a
+	    > = State <a href="Data-Relation.html#t:Relation"
+	    >Relation</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getResult" class="def"
+	    >getResult</a
+	    > :: <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > Result</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getAssoc" class="def"
+	    >getAssoc</a
+	    > :: <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > ResultAssoc</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:toAssoc" class="def"
+	    >toAssoc</a
+	    > :: Result -&gt; ResultAssoc</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:fromAssoc" class="def"
+	    >fromAssoc</a
+	    > :: Schema -&gt; ResultAssoc -&gt; Result</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:raw" class="def"
+	    >raw</a
+	    > :: Sql -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; Schema -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:table" class="def"
+	    >table</a
+	    > :: String -&gt; Schema -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:view" class="def"
+	    >view</a
+	    > :: String -&gt; Schema -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:identity" class="def"
+	    >identity</a
+	    > :: <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:project" class="def"
+	    >project</a
+	    > :: Schema -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:projectAs" class="def"
+	    >projectAs</a
+	    > :: [(Key, Key)] -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:select" class="def"
+	    >select</a
+	    > :: Condition -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:unite" class="def"
+	    >unite</a
+	    > :: <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    > -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:intersect" class="def"
+	    >intersect</a
+	    > :: <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    > -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:diff" class="def"
+	    >diff</a
+	    > :: <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    > -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:cross" class="def"
+	    >cross</a
+	    > :: <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    > -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:rename" class="def"
+	    >rename</a
+	    > :: [(Key, Key)] -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:join" class="def"
+	    >join</a
+	    > :: Condition -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    > -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:take" class="def"
+	    >take</a
+	    > :: Integer -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:drop" class="def"
+	    >drop</a
+	    > :: Integer -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sort" class="def"
+	    >sort</a
+	    > :: Orderings -&gt; <a href="Data-Relation.html#t:RelationM"
+	    >RelationM</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:Direction" class="def"
+	    >Direction</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:Asc" class="def"
+		  >Asc</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td class="src"
+		><a name="v:Desc" class="def"
+		  >Desc</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Direction" class="caption collapser" onclick="toggleSection('i:Direction')"
+	    >Instances</p
+	    ><div id="section.i:Direction" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Data-Relation.html#t:Direction"
+		    >Direction</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToValues <a href="Data-Relation.html#t:Direction"
+		    >Direction</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToValues Orderings</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToValues Ordering</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToSql <a href="Data-Relation.html#t:Direction"
+		    >Direction</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToSql Orderings</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >ToSql Ordering</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-60--38--38--62-" class="def"
+	    >(&lt;&amp;&amp;&gt;)</a
+	    > :: Condition -&gt; Condition -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-60--124--124--62-" class="def"
+	    >(&lt;||&gt;)</a
+	    > :: Condition -&gt; Condition -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--61--61--124-" class="def"
+	    >(|==|)</a
+	    > :: String -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--62--124-" class="def"
+	    >(|&gt;|)</a
+	    > :: String -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--62--61--124-" class="def"
+	    >(|&gt;=|)</a
+	    > :: String -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--60--62--124-" class="def"
+	    >(|&lt;&gt;|)</a
+	    > :: String -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--60--124-" class="def"
+	    >(|&lt;|)</a
+	    > :: String -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--60--61--124-" class="def"
+	    >(|&lt;=|)</a
+	    > :: String -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--37--124-" class="def"
+	    >(|%|)</a
+	    > :: String -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--37--37--124-" class="def"
+	    >(|%%|)</a
+	    > :: String -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--61--61--124-" class="def"
+	    >(*==|)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--62--124-" class="def"
+	    >(*&gt;|)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--62--61--124-" class="def"
+	    >(*&gt;=|)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--60--62--124-" class="def"
+	    >(*&lt;&gt;|)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--60--124-" class="def"
+	    >(*&lt;|)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--60--61--124-" class="def"
+	    >(*&lt;=|)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--37--124-" class="def"
+	    >(*%|)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--37--37--124-" class="def"
+	    >(*%%|)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--61--61--42-" class="def"
+	    >(|==*)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--62--42-" class="def"
+	    >(|&gt;*)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--62--61--42-" class="def"
+	    >(|&gt;=*)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--60--62--42-" class="def"
+	    >(|&lt;&gt;*)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--60--42-" class="def"
+	    >(|&lt;*)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--60--61--42-" class="def"
+	    >(|&lt;=*)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--37--42-" class="def"
+	    >(|%*)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-124--37--37--42-" class="def"
+	    >(|%%*)</a
+	    > :: String -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--61--61--42-" class="def"
+	    >(*==*)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--62--42-" class="def"
+	    >(*&gt;*)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--62--61--42-" class="def"
+	    >(*&gt;=*)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--60--62--42-" class="def"
+	    >(*&lt;&gt;*)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--60--42-" class="def"
+	    >(*&lt;*)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--60--61--42-" class="def"
+	    >(*&lt;=*)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--37--42-" class="def"
+	    >(*%*)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:-42--37--37--42-" class="def"
+	    >(*%%*)</a
+	    > :: <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    > -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:and" class="def"
+	    >and</a
+	    > :: [Condition] -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:or" class="def"
+	    >or</a
+	    > :: [Condition] -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:as" class="def"
+	    >as</a
+	    > :: Sql -&gt; [<a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    >] -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:not" class="def"
+	    >not</a
+	    > :: Bool -&gt; Bool</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:isnull" class="def"
+	    >isnull</a
+	    > :: String -&gt; Condition</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:notnull" class="def"
+	    >notnull</a
+	    > :: String -&gt; Condition</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

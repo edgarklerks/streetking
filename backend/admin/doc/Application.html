@@ -1,0 +1,431 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >Application</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_Application.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>Application</p
+	></div
+      ><div id="description"
+      ><p class="caption"
+	>Description</p
+	><div class="doc"
+	><p
+	  >This module defines our application's state type and an alias for its
+ handler monad.
+</p
+	  ></div
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:ApplicationException" class="def"
+	    >ApplicationException</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:UserErrorE" class="def"
+		  >UserErrorE</a
+		  > ByteString</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:ApplicationException" class="caption collapser" onclick="toggleSection('i:ApplicationException')"
+	    >Instances</p
+	    ><div id="section.i:ApplicationException" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  >Show <a href="Application.html#t:ApplicationException"
+		    >ApplicationException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Typeable <a href="Application.html#t:ApplicationException"
+		    >ApplicationException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >Exception <a href="Application.html#t:ApplicationException"
+		    >ApplicationException</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:App" class="def"
+	    >App</a
+	    >  </p
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a name="v:App" class="def"
+		  >App</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><dl
+		    ><dt class="src"
+		      ><a name="v:_sess" class="def"
+			>_sess</a
+			> :: Snaplet SessionManager</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_auth" class="def"
+			>_auth</a
+			> :: Snaplet (AuthManager <a href="Application.html#t:App"
+			>App</a
+			>)</dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ><dt class="src"
+		      ><a name="v:_sql" class="def"
+			>_sql</a
+			> :: Snaplet <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+			>SqlTransactionConfig</a
+			></dt
+		      ><dd class="doc empty"
+		      >&nbsp;</dd
+		      ></dl
+		    ><div class="clear"
+		    ></div
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sql" class="def"
+	    >sql</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:sess" class="def"
+	    >sess</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet SessionManager)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:auth" class="def"
+	    >auth</a
+	    > :: Lens' <a href="Application.html#t:App"
+	    >App</a
+	    > (Snaplet (AuthManager <a href="Application.html#t:App"
+	    >App</a
+	    >))</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:AppHandler" class="def"
+	    >AppHandler</a
+	    > = Handler <a href="Application.html#t:App"
+	    >App</a
+	    > <a href="Application.html#t:App"
+	    >App</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:Application" class="def"
+	    >Application</a
+	    > = <a href="Application.html#t:AppHandler"
+	    >AppHandler</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:toAeson" class="def"
+	    >toAeson</a
+	    > :: <a href="Data-InRules.html#t:InRule"
+	    >InRule</a
+	    > -&gt; ByteString</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeAeson" class="def"
+	    >writeAeson</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeError" class="def"
+	    >writeError</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeResult" class="def"
+	    >writeResult</a
+	    > :: <a href="Data-InRules.html#t:ToInRule"
+	    >ToInRule</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeResult-39-" class="def"
+	    >writeResult'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeMapable" class="def"
+	    >writeMapable</a
+	    > :: <a href="Model-General.html#t:Mapable"
+	    >Mapable</a
+	    > a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeMapables" class="def"
+	    >writeMapables</a
+	    > :: <a href="Model-General.html#t:Mapable"
+	    >Mapable</a
+	    > a =&gt; [a] -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getUserId" class="def"
+	    >getUserId</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > Integer</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getOParam" class="def"
+	    >getOParam</a
+	    > :: ByteString -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ByteString</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >type</span
+	    > <a name="t:SqlMap" class="def"
+	    >SqlMap</a
+	    > = HashMap String <a href="Data-SqlTransaction.html#t:SqlValue"
+	    >SqlValue</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getJson" class="def"
+	    >getJson</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > <a href="Application.html#t:SqlMap"
+	    >SqlMap</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getJsons" class="def"
+	    >getJsons</a
+	    > :: <a href="Application.html#t:Application"
+	    >Application</a
+	    > [<a href="Application.html#t:SqlMap"
+	    >SqlMap</a
+	    >]</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getPagesWithDTDOrdered" class="def"
+	    >getPagesWithDTDOrdered</a
+	    > :: [String] -&gt; <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > (((Integer, Integer), <a href="Data-Database.html#t:Constraints"
+	    >Constraints</a
+	    >), <a href="Data-Database.html#t:Orders"
+	    >Orders</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getPagesWithDTD" class="def"
+	    >getPagesWithDTD</a
+	    > :: <a href="Data-DatabaseTemplate.html#t:DTD"
+	    >DTD</a
+	    > -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ((Integer, Integer), <a href="Data-Database.html#t:Constraints"
+	    >Constraints</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeError-39-" class="def"
+	    >writeError'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:writeAeson-39-" class="def"
+	    >writeAeson'</a
+	    > :: ToJSON a =&gt; a -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > ()</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:internalError" class="def"
+	    >internalError</a
+	    > ::  String -&gt; <a href="Application.html#t:Application"
+	    >Application</a
+	    > a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runCompose" class="def"
+	    >runCompose</a
+	    > :: (Applicative (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadCatchIO (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-ComposeModel.html#t:ComposeMonad"
+	    >ComposeMonad</a
+	    > a <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > (HashMap String <a href="Data-InRules.html#t:InRule"
+	    >InRule</a
+	    >)</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:runDb" class="def"
+	    >runDb</a
+	    > :: (Applicative (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadState <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    > (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >), MonadSnaplet m, MonadCatchIO (m b <a href="SqlTransactionSnaplet.html#t:SqlTransactionConfig"
+	    >SqlTransactionConfig</a
+	    >)) =&gt; <a href="Data-SqlTransaction.html#t:SqlTransaction"
+	    >SqlTransaction</a
+	    > <a href="Data-SqlTransaction.html#t:Connection"
+	    >Connection</a
+	    > a -&gt; m b <a href="Application.html#t:App"
+	    >App</a
+	    > a</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

@@ -1,0 +1,77 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.DatabaseTemplate
+
+h1. Documentation
+
+data DTD
+
+Constructors
+
+
+|Con "ConOp":Data-Database.html#t:ConOp String "DTD":Data-DatabaseTemplate.html#t:DTD| |
+|And "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD| |
+|Or "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD| |
+|Lift String| |
+|Fix "SqlValue":Data-SqlTransaction.html#t:SqlValue| |
+|If String (String -&gt; Bool) "DTD":Data-DatabaseTemplate.html#t:DTD "DTD":Data-DatabaseTemplate.html#t:DTD| |
+|OrderedBy "DTD":Data-DatabaseTemplate.html#t:DTD [String]| |
+|Nop| |
+
+
+orderedBy :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; [String] -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+transformDTD :: ("DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+filterDTD :: ("DTD":Data-DatabaseTemplate.html#t:DTD -&gt; Bool) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&amp;&amp;) :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&#124;&#124;) :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+==) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&gt;=) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&gt;) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&lt;) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&lt;=) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+%) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+%%) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&lt;&gt;) :: String -&gt; String -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+ifdtd :: String -&gt; (String -&gt; Bool) -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+==&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&gt;=&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&gt;&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&lt;&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&lt;=&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+%&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+%%&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+(+&lt;&gt;&#124;) :: String -&gt; "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "DTD":Data-DatabaseTemplate.html#t:DTD
+
+dtd :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; "Constraints":Data-Database.html#t:Constraints
+
+evalDTD :: "DTD":Data-DatabaseTemplate.html#t:DTD -&gt; HashMap String "SqlValue":Data-SqlTransaction.html#t:SqlValue -&gt; Maybe "Constraint":Data-Database.html#t:Constraint
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

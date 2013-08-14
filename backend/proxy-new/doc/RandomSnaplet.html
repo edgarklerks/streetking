@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >RandomSnaplet</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_RandomSnaplet.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption empty"
+      >&nbsp;</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>RandomSnaplet</p
+	></div
+      ><div id="interface"
+      ><h1
+	>Documentation</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >data</span
+	    >  <a name="t:RandomConfig" class="def"
+	    >RandomConfig</a
+	    >  </p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a name="t:HasRandom" class="def"
+	    >HasRandom</a
+	    > b  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs methods"
+	  ><p class="caption"
+	    >Methods</p
+	    ><p class="src"
+	    ><a name="v:randomLens" class="def"
+	      >randomLens</a
+	      > :: SnapletLens (Snaplet b) (Snaplet <a href="RandomSnaplet.html#t:RandomConfig"
+	      >RandomConfig</a
+	      >)</p
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >class</span
+	    >  <a name="t:Variate" class="def"
+	    >Variate</a
+	    > a  <span class="keyword"
+	    >where</span
+	    ></p
+	  ><div class="subs methods"
+	  ><p class="caption"
+	    >Methods</p
+	    ><p class="src"
+	    ><a name="v:uniform" class="def"
+	      >uniform</a
+	      > :: PrimMonad m =&gt; Gen (PrimState m) -&gt; m a</p
+	    ><p class="src"
+	    ><a name="v:uniformR" class="def"
+	      >uniformR</a
+	      > :: PrimMonad m =&gt; (a, a) -&gt; Gen (PrimState m) -&gt; m a</p
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Variate" class="caption collapser" onclick="toggleSection('i:Variate')"
+	    >Instances</p
+	    ><div id="section.i:Variate" class="show"
+	    ><table
+	      ><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Bool</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Double</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Float</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Int</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Int8</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Int16</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Int32</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Int64</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Word</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Word8</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Word16</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Word32</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > Word64</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > (Base64 L64)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > (Base64 L32)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > (Base64 L16)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  ><a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > (Base64 L8)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > a, <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > b) =&gt; <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > (a, b)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > a, <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > b, <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > c) =&gt; <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > (a, b, c)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td class="src"
+		  >(<a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > a, <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > b, <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > c, <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > d) =&gt; <a href="RandomSnaplet.html#t:Variate"
+		    >Variate</a
+		    > (a, b, c, d)</td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getUniform" class="def"
+	    >getUniform</a
+	    > :: (MonadState <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    > m, MonadIO m, <a href="RandomSnaplet.html#t:Variate"
+	    >Variate</a
+	    > a) =&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getUniformR" class="def"
+	    >getUniformR</a
+	    > :: (MonadState <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    > m, MonadIO m, <a href="RandomSnaplet.html#t:Variate"
+	    >Variate</a
+	    > a) =&gt; (a, a) -&gt; m a</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:getUniqueKey" class="def"
+	    >getUniqueKey</a
+	    > :: (MonadState <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    > m, MonadIO m) =&gt; m ByteString</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:initRandomSnaplet" class="def"
+	    >initRandomSnaplet</a
+	    > :: <a href="RandomSnaplet.html#t:Variate"
+	    >Variate</a
+	    > (Base64 a) =&gt; a -&gt; SnapletInit b <a href="RandomSnaplet.html#t:RandomConfig"
+	    >RandomConfig</a
+	    ></p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:l8" class="def"
+	    >l8</a
+	    > :: L8</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:l16" class="def"
+	    >l16</a
+	    > :: L16</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:l32" class="def"
+	    >l32</a
+	    > :: L32</p
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a name="v:l64" class="def"
+	    >l64</a
+	    > :: L64</p
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.11.0</p
+      ></div
+    ></body
+  ></html
+>

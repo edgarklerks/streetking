@@ -1,0 +1,73 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Data.Car
+
+h1. Documentation
+
+data Car
+
+Constructors
+
+Car
+
+ 
+
+Fields
+
+<dl>
+<dt>mass :: Double</dt>
+<dd> </dd>
+<dt>power :: Double</dt>
+<dd> </dd>
+<dt>traction :: Double</dt>
+<dd> </dd>
+<dt>handling :: Double</dt>
+<dd> </dd>
+<dt>braking :: Double</dt>
+<dd> </dd>
+<dt>aero :: Double</dt>
+<dd> </dd>
+<dt>nos :: Double</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Show "Car":Data-Car.html#t:Car| |
+
+
+pwr :: "Car":Data-Car.html#t:Car -&gt; Double
+
+hlm :: "Car":Data-Car.html#t:Car -&gt; Double
+
+tco :: "Car":Data-Car.html#t:Car -&gt; Double
+
+cda :: "Car":Data-Car.html#t:Car -&gt; Double
+
+dnf :: "Car":Data-Car.html#t:Car -&gt; Double
+
+brp :: "Car":Data-Car.html#t:Car -&gt; Double
+
+carInGarageCar :: "CarInGarage":Model-CarInGarage.html#t:CarInGarage -&gt; "Car":Data-Car.html#t:Car
+
+carMinimalCar :: "CarMinimal":Model-CarMinimal.html#t:CarMinimal -&gt; "Car":Data-Car.html#t:Car
+
+testCar :: "Car":Data-Car.html#t:Car
+
+zeroCar :: "Car":Data-Car.html#t:Car
+
+noobCar :: "Car":Data-Car.html#t:Car
+
+leetCar :: "Car":Data-Car.html#t:Car
+
+oneCar :: "Car":Data-Car.html#t:Car
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

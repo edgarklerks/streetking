@@ -1,0 +1,112 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+Model.AccountProfile
+
+h1. Documentation
+
+type MString = Maybe String
+
+type MInteger = Maybe Integer
+
+data AccountProfile
+
+Constructors
+
+AccountProfile
+
+ 
+
+Fields
+
+<dl>
+<dt>id :: "Id":Model-General.html#t:Id</dt>
+<dd> </dd>
+<dt>firstname :: "MString":Model-AccountProfile.html#t:MString</dt>
+<dd> </dd>
+<dt>lastname :: "MString":Model-AccountProfile.html#t:MString</dt>
+<dd> </dd>
+<dt>nickname :: "MString":Model-AccountProfile.html#t:MString</dt>
+<dd> </dd>
+<dt>picture&#95;small :: "MString":Model-AccountProfile.html#t:MString</dt>
+<dd> </dd>
+<dt>picture&#95;medium :: "MString":Model-AccountProfile.html#t:MString</dt>
+<dd> </dd>
+<dt>picture&#95;large :: "MString":Model-AccountProfile.html#t:MString</dt>
+<dd> </dd>
+<dt>level :: "MInteger":Model-AccountProfile.html#t:MInteger</dt>
+<dd> </dd>
+<dt>skill&#95;acceleration :: Integer</dt>
+<dd> </dd>
+<dt>skill&#95;braking :: Integer</dt>
+<dd> </dd>
+<dt>skill&#95;control :: Integer</dt>
+<dd> </dd>
+<dt>skill&#95;reactions :: Integer</dt>
+<dd> </dd>
+<dt>skill&#95;intelligence :: Integer</dt>
+<dd> </dd>
+<dt>money :: Integer</dt>
+<dd> </dd>
+<dt>respect :: Integer</dt>
+<dd> </dd>
+<dt>diamonds :: Integer</dt>
+<dd> </dd>
+<dt>energy :: Integer</dt>
+<dd> </dd>
+<dt>max&#95;energy :: Integer</dt>
+<dd> </dd>
+<dt>energy&#95;recovery :: Integer</dt>
+<dd> </dd>
+<dt>energy&#95;updated :: Integer</dt>
+<dd> </dd>
+<dt>busy&#95;until :: Integer</dt>
+<dd> </dd>
+<dt>till :: Integer</dt>
+<dd> </dd>
+<dt>city&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>city&#95;name :: String</dt>
+<dd> </dd>
+<dt>continent&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>continent&#95;name :: String</dt>
+<dd> </dd>
+<dt>skill&#95;unused :: Integer</dt>
+<dd> </dd>
+<dt>busy&#95;subject&#95;id :: Integer</dt>
+<dd> </dd>
+<dt>busy&#95;type :: String</dt>
+<dd> </dd>
+<dt>busy&#95;timeleft :: Integer</dt>
+<dd> </dd>
+<dt>free&#95;car :: Bool</dt>
+<dd> </dd>
+</dl>
+
+Instances
+
+
+|Eq "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|Show "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|ToJSON "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|FromJSON "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|Default "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|"FromInRule":Data-InRules.html#t:FromInRule "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|"ToInRule":Data-InRules.html#t:ToInRule "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|"Mapable":Model-General.html#t:Mapable "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|"ToAccountProfileMin":Model-AccountProfileMin.html#t:ToAccountProfileMin "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+|"Database":Model-General.html#t:Database "Connection":Data-SqlTransaction.html#t:Connection "AccountProfile":Model-AccountProfile.html#t:AccountProfile| |
+
+
+relation :: "RelationM":Data-Relation.html#t:RelationM
+
+schema :: [[Char]]
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

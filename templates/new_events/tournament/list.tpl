@@ -1,0 +1,1 @@
+<div id="tournament-list">No tournaments!!</div>

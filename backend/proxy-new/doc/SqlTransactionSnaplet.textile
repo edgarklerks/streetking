@@ -1,0 +1,55 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+Safe Haskell
+
+None
+
+SqlTransactionSnaplet
+
+h1. Documentation
+
+data SqlTransactionConfig
+
+Constructors
+
+STC
+
+ 
+
+Fields
+
+<dl>
+<dt>&#95;dsn :: String</dt>
+<dd> </dd>
+<dt>&#95;pool :: "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool</dt>
+<dd> </dd>
+<dt>&#95;dbcons :: Integer</dt>
+<dd> </dd>
+</dl>
+
+dsn :: Lens' "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig String
+
+pool :: Lens' "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig "ConnectionPool":Data-ConnectionPool.html#t:ConnectionPool
+
+dbcons :: Lens' "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig Integer
+
+returnDatabase :: (MonadIO m, MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig m) =&gt; "ConnectionContext":Data-ConnectionPool.html#t:ConnectionContext -&gt; m ()
+
+getDatabase :: (MonadIO m, MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig m) =&gt; m "ConnectionContext":Data-ConnectionPool.html#t:ConnectionContext
+
+withConnection :: (MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig m, MonadCatchIO m) =&gt; ("Connection":Data-SqlTransaction.html#t:Connection -&gt; m a) -&gt; m a
+
+runDb :: (Applicative m, MonadCatchIO m, MonadState "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig m) =&gt; (String -&gt; m a) -&gt; "SqlTransaction":Data-SqlTransaction.html#t:SqlTransaction "Connection":Data-SqlTransaction.html#t:Connection a -&gt; m a
+
+initSqlTransactionSnaplet :: FilePath -&gt; SnapletInit b "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig
+
+class HasSqlTransaction b where
+
+Methods
+
+sqlLens :: SnapletLens (Snaplet b) (Snaplet "SqlTransactionConfig":SqlTransactionSnaplet.html#t:SqlTransactionConfig)
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

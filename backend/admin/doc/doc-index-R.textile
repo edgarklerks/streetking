@@ -1,0 +1,291 @@
+* "Contents":index.html
+* "Index":doc-index.html
+
+ 
+
+* "A":doc-index-A.html
+* "B":doc-index-B.html
+* "C":doc-index-C.html
+* "D":doc-index-D.html
+* "E":doc-index-E.html
+* "F":doc-index-F.html
+* "G":doc-index-G.html
+* "H":doc-index-H.html
+* "I":doc-index-I.html
+* "J":doc-index-J.html
+* "K":doc-index-K.html
+* "L":doc-index-L.html
+* "M":doc-index-M.html
+* "N":doc-index-N.html
+* "O":doc-index-O.html
+* "P":doc-index-P.html
+* "Q":doc-index-Q.html
+* "R":doc-index-R.html
+* "S":doc-index-S.html
+* "T":doc-index-T.html
+* "U":doc-index-U.html
+* "V":doc-index-V.html
+* "W":doc-index-W.html
+* "X":doc-index-X.html
+* "Y":doc-index-Y.html
+* "Z":doc-index-Z.html
+* ":":doc-index-58.html
+* "&#42;":doc-index-42.html
+* "+":doc-index-43.html
+* ".":doc-index-46.html
+* "&lt;":doc-index-60.html
+* "=":doc-index-61.html
+* "&#124;":doc-index-124.html
+* "&#95;":doc-index-95.html
+* "All":doc-index-All.html
+
+Index - R
+
+
+|Race| |
+|1 (Data Constructor)|"Model.Report":Model-Report.html#v:Race|
+|2 (Type/Class)|"Model.Race":Model-Race.html#t:Race|
+|3 (Data Constructor)|"Model.Race":Model-Race.html#v:Race|
+|race|"Data.RacingNew":Data-RacingNew.html#v:race|
+|RaceConfig| |
+|1 (Type/Class)|"Data.RacingNew":Data-RacingNew.html#t:RaceConfig|
+|2 (Data Constructor)|"Data.RacingNew":Data-RacingNew.html#v:RaceConfig|
+|RaceData| |
+|1 (Type/Class)|"Data.RacingNew":Data-RacingNew.html#t:RaceData|
+|2 (Data Constructor)|"Data.RacingNew":Data-RacingNew.html#v:RaceData|
+|raceData|"Data.RacingNew":Data-RacingNew.html#v:raceData|
+|RaceDataList|"Data.RacingNew":Data-RacingNew.html#t:RaceDataList|
+|RaceI|"Data.Event":Data-Event.html#v:RaceI|
+|RaceM|"Data.RacingNew":Data-RacingNew.html#t:RaceM|
+|RaceParticipant| |
+|1 (Type/Class)|"Data.RaceParticipant":Data-RaceParticipant.html#t:RaceParticipant|
+|2 (Data Constructor)|"Data.RaceParticipant":Data-RaceParticipant.html#v:RaceParticipant|
+|RaceResult| |
+|1 (Type/Class)|"Data.RacingNew":Data-RacingNew.html#t:RaceResult|
+|2 (Data Constructor)|"Data.RacingNew":Data-RacingNew.html#v:RaceResult|
+|raceResult2FE|"Data.RacingNew":Data-RacingNew.html#v:raceResult2FE|
+|RaceResultTuple|"Model.TournamentResult":Model-TournamentResult.html#t:RaceResultTuple|
+|RaceReward| |
+|1 (Type/Class)|"Model.RaceReward":Model-RaceReward.html#t:RaceReward|
+|2 (Data Constructor)|"Model.RaceReward":Model-RaceReward.html#v:RaceReward|
+|RaceRewards| |
+|1 (Type/Class)|"Data.RaceReward":Data-RaceReward.html#t:RaceRewards|
+|2 (Data Constructor)|"Data.RaceReward":Data-RaceReward.html#v:RaceRewards|
+|RaceSectionPerformance| |
+|1 (Type/Class)|"Data.RaceSectionPerformance":Data-RaceSectionPerformance.html#t:RaceSectionPerformance|
+|2 (Data Constructor)|"Data.RaceSectionPerformance":Data-RaceSectionPerformance.html#v:RaceSectionPerformance|
+|raceSpeedAvg|"Data.RacingNew":Data-RacingNew.html#v:raceSpeedAvg|
+|raceSpeedFin|"Data.RacingNew":Data-RacingNew.html#v:raceSpeedFin|
+|raceSpeedTop|"Data.RacingNew":Data-RacingNew.html#v:raceSpeedTop|
+|RaceStart|"Notifications":Notifications.html#v:RaceStart|
+|raceStart|"Notifications":Notifications.html#v:raceStart|
+|raceTime|"Data.RacingNew":Data-RacingNew.html#v:raceTime|
+|raceWithParticipant|"Data.RacingNew":Data-RacingNew.html#v:raceWithParticipant|
+|race&#95;id| |
+|1 (Function)|"Model.RaceReward":Model-RaceReward.html#v:race_id|
+|2 (Function)|"Notifications":Notifications.html#v:race_id|
+|3 (Function)|"Model.TournamentResult":Model-TournamentResult.html#v:race_id|
+|race&#95;time1|"Model.TournamentResult":Model-TournamentResult.html#v:race_time1|
+|race&#95;time2|"Model.TournamentResult":Model-TournamentResult.html#v:race_time2|
+|race&#95;type|"Notifications":Notifications.html#v:race_type|
+|Radius|"Data.ModelToSVG":Data-ModelToSVG.html#t:Radius|
+|radius| |
+|1 (Function)|"Model.TrackDetails":Model-TrackDetails.html#v:radius|
+|2 (Function)|"Data.Section":Data-Section.html#v:radius|
+|randomPick|"Data.Tools":Data-Tools.html#v:randomPick|
+|randomPick'|"Data.Tools":Data-Tools.html#v:randomPick-39-|
+|raw|"Data.Relation":Data-Relation.html#v:raw|
+|RD|"Data.ModelToSVG":Data-ModelToSVG.html#v:RD|
+|rd&#95;car|"Data.RacingNew":Data-RacingNew.html#v:rd_car|
+|rd&#95;result|"Data.RacingNew":Data-RacingNew.html#v:rd_result|
+|rd&#95;user|"Data.RacingNew":Data-RacingNew.html#v:rd_user|
+|reactions| |
+|1 (Function)|"Data.RaceSectionPerformance":Data-RaceSectionPerformance.html#v:reactions|
+|2 (Function)|"Data.Driver":Data-Driver.html#v:reactions|
+|read|"Model.PreLetter":Model-PreLetter.html#v:read|
+|Readable| |
+|1 (Type/Class)|"Data.InRules":Data-InRules.html#t:Readable, "Data.Conversion":Data-Conversion.html#t:Readable|
+|2 (Data Constructor)|"Data.InRules":Data-InRules.html#v:Readable, "Data.Conversion":Data-Conversion.html#v:Readable|
+|readable|"Data.InRules":Data-InRules.html#v:readable, "Data.Conversion":Data-Conversion.html#v:readable|
+|readConfig|"Config.ConfigFileParser":Config-ConfigFileParser.html#v:readConfig|
+|readData|"Data.DataPack":Data-DataPack.html#v:readData|
+|readFuture|"Data.SqlTransaction":Data-SqlTransaction.html#v:readFuture|
+|readPostSorter|"Data.Notifications":Data-Notifications.html#v:readPostSorter|
+|readPrioService|"Data.Notifications":Data-Notifications.html#v:readPrioService|
+|readS|"Data.Tools":Data-Tools.html#v:readS|
+|readUserBoxes|"Data.Notifications":Data-Notifications.html#v:readUserBoxes|
+|ready|"Model.CarInGarage":Model-CarInGarage.html#v:ready|
+|recId|"Data.ModelToSVG":Data-ModelToSVG.html#v:recId|
+|record|"Data.ModelToSVG":Data-ModelToSVG.html#v:record|
+|records|"Data.ModelToSVG":Data-ModelToSVG.html#v:records|
+|registerTask|"Data.Chain":Data-Chain.html#v:registerTask|
+|Reject|"Data.InRules":Data-InRules.html#v:Reject, "Data.Conversion":Data-Conversion.html#v:Reject|
+|reject|"Data.InRules":Data-InRules.html#v:reject, "Data.Conversion":Data-Conversion.html#v:reject|
+|rejector|"Data.InRules":Data-InRules.html#v:rejector|
+|Relation|"Data.Relation":Data-Relation.html#t:Relation|
+|relation| |
+|1 (Function)|"Model.PartDetails":Model-PartDetails.html#v:relation|
+|2 (Function)|"Model.Tournament":Model-Tournament.html#v:relation|
+|3 (Function)|"Model.TournamentType":Model-TournamentType.html#v:relation|
+|4 (Function)|"Model.EventStream":Model-EventStream.html#v:relation|
+|5 (Function)|"Model.RaceReward":Model-RaceReward.html#v:relation|
+|6 (Function)|"Model.Report":Model-Report.html#v:relation|
+|7 (Function)|"Model.Task":Model-Task.html#v:relation|
+|8 (Function)|"Model.TrackDetails":Model-TrackDetails.html#v:relation|
+|9 (Function)|"Model.TrackMaster":Model-TrackMaster.html#v:relation|
+|10 (Function)|"Model.PreLetter":Model-PreLetter.html#v:relation|
+|11 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:relation|
+|12 (Function)|"Model.TaskTrigger":Model-TaskTrigger.html#v:relation|
+|13 (Function)|"Model.MenuModel":Model-MenuModel.html#v:relation|
+|14 (Function)|"Model.Reward":Model-Reward.html#v:relation|
+|15 (Function)|"Model.RuleReward":Model-RuleReward.html#v:relation|
+|16 (Function)|"Model.Action":Model-Action.html#v:relation|
+|17 (Function)|"Model.Rule":Model-Rule.html#v:relation|
+|18 (Function)|"Model.RewardLog":Model-RewardLog.html#v:relation|
+|19 (Function)|"Model.PartType":Model-PartType.html#v:relation|
+|20 (Function)|"Model.Part":Model-Part.html#v:relation|
+|21 (Function)|"Model.AccountGarage":Model-AccountGarage.html#v:relation|
+|22 (Function)|"Model.PartMarket":Model-PartMarket.html#v:relation|
+|23 (Function)|"Model.ParameterTable":Model-ParameterTable.html#v:relation|
+|24 (Function)|"Model.PersonnelInstance":Model-PersonnelInstance.html#v:relation|
+|25 (Function)|"Model.Personnel":Model-Personnel.html#v:relation|
+|26 (Function)|"Model.Notification":Model-Notification.html#v:relation|
+|27 (Function)|"Model.GarageParts":Model-GarageParts.html#v:relation|
+|28 (Function)|"Model.Garage":Model-Garage.html#v:relation|
+|29 (Function)|"Model.Config":Model-Config.html#v:relation|
+|30 (Function)|"Model.Continent":Model-Continent.html#v:relation|
+|31 (Function)|"Model.Country":Model-Country.html#v:relation|
+|32 (Function)|"Model.City":Model-City.html#v:relation|
+|33 (Function)|"Model.Track":Model-Track.html#v:relation|
+|34 (Function)|"Model.ChallengeType":Model-ChallengeType.html#v:relation|
+|35 (Function)|"Model.ChallengeAccept":Model-ChallengeAccept.html#v:relation|
+|36 (Function)|"Model.Application":Model-Application.html#v:relation|
+|37 (Function)|"Model.CarInstanceParts":Model-CarInstanceParts.html#v:relation|
+|38 (Function)|"Model.PartInstance":Model-PartInstance.html#v:relation|
+|39 (Function)|"Model.PartModifier":Model-PartModifier.html#v:relation|
+|40 (Function)|"Model.Account":Model-Account.html#v:relation|
+|41 (Function)|"Model.Transaction":Model-Transaction.html#v:relation|
+|42 (Function)|"Model.Escrow":Model-Escrow.html#v:relation|
+|43 (Function)|"Model.AccountProfileMin":Model-AccountProfileMin.html#v:relation|
+|44 (Function)|"Model.CarOptions":Model-CarOptions.html#v:relation|
+|45 (Function)|"Model.CarInGarage":Model-CarInGarage.html#v:relation|
+|46 (Function)|"Model.CarMinimal":Model-CarMinimal.html#v:relation|
+|47 (Function)|"Model.TrackTime":Model-TrackTime.html#v:relation|
+|48 (Function)|"Model.Challenge":Model-Challenge.html#v:relation|
+|49 (Function)|"Model.TournamentPlayers":Model-TournamentPlayers.html#v:relation|
+|50 (Function)|"Model.CarInstance":Model-CarInstance.html#v:relation|
+|51 (Function)|"Model.Race":Model-Race.html#v:relation|
+|52 (Function)|"Model.TournamentResult":Model-TournamentResult.html#v:relation|
+|53 (Function)|"Model.TournamentReport":Model-TournamentReport.html#v:relation|
+|54 (Function)|"Model.Car":Model-Car.html#v:relation|
+|RelationM|"Data.Relation":Data-Relation.html#t:RelationM|
+|release| |
+|1 (Function)|"Model.Escrow":Model-Escrow.html#v:release|
+|2 (Function)|"Data.Task":Data-Task.html#v:release|
+|remove| |
+|1 (Function)|"Data.LimitList":Data-LimitList.html#v:remove|
+|2 (Function)|"Data.Task":Data-Task.html#v:remove|
+|rename|"Data.Relation":Data-Relation.html#v:rename|
+|render|"Data.ModelToSVG":Data-ModelToSVG.html#v:render|
+|renderBox|"Data.ModelToSVG":Data-ModelToSVG.html#v:renderBox|
+|renderButton|"Data.ModelToSVG":Data-ModelToSVG.html#v:renderButton|
+|renderCircle|"Data.ModelToSVG":Data-ModelToSVG.html#v:renderCircle|
+|renderCon|"Data.ModelToSVG":Data-ModelToSVG.html#v:renderCon|
+|RenderData|"Data.ModelToSVG":Data-ModelToSVG.html#t:RenderData|
+|renderData|"Data.ModelToSVG":Data-ModelToSVG.html#v:renderData|
+|Renderer|"Data.ModelToSVG":Data-ModelToSVG.html#t:Renderer|
+|renderLine|"Data.ModelToSVG":Data-ModelToSVG.html#v:renderLine|
+|renderLocal|"Data.ModelToSVG":Data-ModelToSVG.html#v:renderLocal|
+|renderTable|"Data.Tools":Data-Tools.html#v:renderTable|
+|repaired|"Notifications":Notifications.html#v:repaired|
+|Report| |
+|1 (Type/Class)|"Model.Report":Model-Report.html#t:Report|
+|2 (Data Constructor)|"Model.Report":Model-Report.html#v:Report|
+|report|"Model.Report":Model-Report.html#v:report|
+|required| |
+|1 (Function)|"Model.PartDetails":Model-PartDetails.html#v:required|
+|2 (Function)|"Model.PartType":Model-PartType.html#v:required|
+|3 (Function)|"Model.PartMarket":Model-PartMarket.html#v:required|
+|4 (Function)|"Model.GarageParts":Model-GarageParts.html#v:required|
+|5 (Function)|"Model.CarInstanceParts":Model-CarInstanceParts.html#v:required|
+|respect| |
+|1 (Function)|"Data.RaceReward":Data-RaceReward.html#v:respect|
+|2 (Function)|"Model.AccountProfile":Model-AccountProfile.html#v:respect|
+|3 (Function)|"Model.AccountGarage":Model-AccountGarage.html#v:respect|
+|4 (Function)|"Model.Account":Model-Account.html#v:respect|
+|Ret|"Model.DBFunctions":Model-DBFunctions.html#t:Ret|
+|ReturnCar|"Notifications":Notifications.html#v:ReturnCar|
+|returnCar|"Notifications":Notifications.html#v:returnCar|
+|returnConnection|"Data.ConnectionPool":Data-ConnectionPool.html#v:returnConnection|
+|returnDatabase|"SqlTransactionSnaplet":SqlTransactionSnaplet.html#v:returnDatabase|
+|ReturnPart|"Notifications":Notifications.html#v:ReturnPart|
+|returnPart|"Notifications":Notifications.html#v:returnPart|
+|reviveConnection|"Data.ConnectionPool":Data-ConnectionPool.html#v:reviveConnection|
+|Reward| |
+|1 (Type/Class)|"Model.Reward":Model-Reward.html#t:Reward|
+|2 (Data Constructor)|"Model.Reward":Model-Reward.html#v:Reward|
+|RewardLog| |
+|1 (Type/Class)|"Model.RewardLog":Model-RewardLog.html#t:RewardLog|
+|2 (Data Constructor)|"Model.RewardLog":Model-RewardLog.html#v:RewardLog|
+|rewards| |
+|1 (Function)|"Model.Tournament":Model-Tournament.html#v:rewards|
+|2 (Function)|"Model.RaceReward":Model-RaceReward.html#v:rewards|
+|reward&#95;id|"Model.Action":Model-Action.html#v:reward_id|
+|rho|"Data.Environment":Data-Environment.html#v:rho|
+|rollback|"Data.SqlTransaction":Data-SqlTransaction.html#v:rollback|
+|Root|"Data.MenuTree":Data-MenuTree.html#v:Root|
+|round|"Model.TournamentResult":Model-TournamentResult.html#v:round|
+|Row|"Model.DBFunctions":Model-DBFunctions.html#v:Row|
+|RowExclusive|"Data.SqlTransaction":Data-SqlTransaction.html#v:RowExclusive|
+|RowShare|"Data.SqlTransaction":Data-SqlTransaction.html#v:RowShare|
+|rp&#95;account|"Data.RaceParticipant":Data-RaceParticipant.html#v:rp_account|
+|rp&#95;account&#95;id|"Data.RaceParticipant":Data-RaceParticipant.html#v:rp_account_id|
+|rp&#95;account&#95;min|"Data.RaceParticipant":Data-RaceParticipant.html#v:rp_account_min|
+|rp&#95;car|"Data.RaceParticipant":Data-RaceParticipant.html#v:rp_car|
+|rp&#95;car&#95;id|"Data.RaceParticipant":Data-RaceParticipant.html#v:rp_car_id|
+|rp&#95;car&#95;min|"Data.RaceParticipant":Data-RaceParticipant.html#v:rp_car_min|
+|rp&#95;escrow&#95;id|"Data.RaceParticipant":Data-RaceParticipant.html#v:rp_escrow_id|
+|rtp|"Data.SortOrder":Data-SortOrder.html#v:rtp|
+|Rule| |
+|1 (Type/Class)|"Model.Rule":Model-Rule.html#t:Rule|
+|2 (Data Constructor)|"Model.Rule":Model-Rule.html#v:Rule|
+|rule| |
+|1 (Function)|"Model.RuleReward":Model-RuleReward.html#v:rule|
+|2 (Function)|"Model.Rule":Model-Rule.html#v:rule|
+|3 (Function)|"Model.RewardLog":Model-RewardLog.html#v:rule|
+|RuleReward| |
+|1 (Type/Class)|"Model.RuleReward":Model-RuleReward.html#t:RuleReward|
+|2 (Data Constructor)|"Model.RuleReward":Model-RuleReward.html#v:RuleReward|
+|rule&#95;id| |
+|1 (Function)|"Model.EventStream":Model-EventStream.html#v:rule_id|
+|2 (Function)|"Model.Action":Model-Action.html#v:rule_id|
+|run| |
+|1 (Function)|"Data.SqlTransaction":Data-SqlTransaction.html#v:run|
+|2 (Function)|"Data.Task":Data-Task.html#v:run|
+|runAll|"Data.Task":Data-Task.html#v:runAll|
+|runCFilter|"Data.Tools":Data-Tools.html#v:runCFilter|
+|runCompose|"Application":Application.html#v:runCompose|
+|runComposeMonad|"Data.ComposeModel":Data-ComposeModel.html#v:runComposeMonad|
+|runDb| |
+|1 (Function)|"SqlTransactionSnaplet":SqlTransactionSnaplet.html#v:runDb|
+|2 (Function)|"Application":Application.html#v:runDb|
+|runDecider|"Data.Decider":Data-Decider.html#v:runDecider|
+|runFail|"Data.Task":Data-Task.html#v:runFail|
+|runl|"Data.ModelToSVG":Data-ModelToSVG.html#v:runl|
+|runMachine|"Data.Decider":Data-Decider.html#v:runMachine|
+|running|"Model.Tournament":Model-Tournament.html#v:running|
+|runPath|"Data.InRules":Data-InRules.html#v:runPath, "Data.Conversion":Data-Conversion.html#v:runPath|
+|runPostSorter|"Data.Notifications":Data-Notifications.html#v:runPostSorter|
+|runPrioService|"Data.Notifications":Data-Notifications.html#v:runPrioService|
+|runRaceM|"Data.RacingNew":Data-RacingNew.html#v:runRaceM|
+|runRaceWithParticipant|"Data.RacingNew":Data-RacingNew.html#v:runRaceWithParticipant|
+|runSectionM|"Data.RacingNew":Data-RacingNew.html#v:runSectionM|
+|runSqlTransaction|"Data.SqlTransaction":Data-SqlTransaction.html#v:runSqlTransaction|
+|runTask|"Data.Chain":Data-Chain.html#v:runTask|
+|runTestDb|"Data.SqlTransaction":Data-SqlTransaction.html#v:runTestDb|
+|runTournament|"Data.Tournament":Data-Tournament.html#v:runTournament|
+|runTournamentRounds|"Data.Tournament":Data-Tournament.html#v:runTournamentRounds|
+|runUserBoxes|"Data.Notifications":Data-Notifications.html#v:runUserBoxes|
+
+
+Produced by "Haddock":http://www.haskell.org/haddock/ version 2.11.0

@@ -1,0 +1,132 @@
+-   [Contents](index.html)
+-   [Index](doc-index.html)
+
+ 
+
+-   [A](doc-index-A.html)
+-   [B](doc-index-B.html)
+-   [C](doc-index-C.html)
+-   [D](doc-index-D.html)
+-   [E](doc-index-E.html)
+-   [F](doc-index-F.html)
+-   [G](doc-index-G.html)
+-   [H](doc-index-H.html)
+-   [I](doc-index-I.html)
+-   [J](doc-index-J.html)
+-   [K](doc-index-K.html)
+-   [L](doc-index-L.html)
+-   [M](doc-index-M.html)
+-   [N](doc-index-N.html)
+-   [O](doc-index-O.html)
+-   [P](doc-index-P.html)
+-   [Q](doc-index-Q.html)
+-   [R](doc-index-R.html)
+-   [S](doc-index-S.html)
+-   [T](doc-index-T.html)
+-   [U](doc-index-U.html)
+-   [V](doc-index-V.html)
+-   [W](doc-index-W.html)
+-   [Z](doc-index-Z.html)
+-   [\*](doc-index-42.html)
+-   [.](doc-index-46.html)
+-   [\<](doc-index-60.html)
+-   [=](doc-index-61.html)
+-   [|](doc-index-124.html)
+-   [\_](doc-index-95.html)
+-   [All](doc-index-All.html)
+
+Index - S
+
+||
+|sallowed|[Data.Tools](Data-Tools.html#v:sallowed)|
+|save|[Model.General](Model-General.html#v:save)|
+|saveDb|[Model.TH](Model-TH.html#v:saveDb)|
+|saveDb'|[Model.TH](Model-TH.html#v:saveDb-39-)|
+|scfilter|[Data.Tools](Data-Tools.html#v:scfilter)|
+|scheck|[Data.Tools](Data-Tools.html#v:scheck)|
+|schema| |
+|1 (Function)|[Model.Application](Model-Application.html#v:schema)|
+|2 (Function)|[Model.CarInstance](Model-CarInstance.html#v:schema)|
+|3 (Function)|[Model.ParameterTable](Model-ParameterTable.html#v:schema)|
+|search|[Model.General](Model-General.html#v:search)|
+|searchDB|[Model.TH](Model-TH.html#v:searchDB)|
+|Section|[Config.ConfigFileParser](Config-ConfigFileParser.html#t:Section), [ConfigSnaplet](ConfigSnaplet.html#t:Section)|
+|Sections|[Config.ConfigFileParser](Config-ConfigFileParser.html#t:Sections), [ConfigSnaplet](ConfigSnaplet.html#t:Sections)|
+|Select| |
+|1 (Type/Class)|[Data.Database](Data-Database.html#t:Select)|
+|2 (Data Constructor)|[Data.Database](Data-Database.html#v:Select)|
+|select| |
+|1 (Function)|[Data.Relation](Data-Relation.html#v:select)|
+|2 (Function)|[Data.Database](Data-Database.html#v:select)|
+|selectAll|[Data.Database](Data-Database.html#v:selectAll)|
+|Selection|[Data.Database](Data-Database.html#t:Selection)|
+|Selections|[Data.Database](Data-Database.html#t:Selections)|
+|sempty|[Model.General](Model-General.html#v:sempty)|
+|serializeHashMap|[Data.ConversionInstances](Data-ConversionInstances.html#v:serializeHashMap)|
+|serializeHashMapb|[Data.ConversionInstances](Data-ConversionInstances.html#v:serializeHashMapb)|
+|servdir|[ImageSnapLet](ImageSnapLet.html#v:servdir)|
+|serveImage|[ImageSnapLet](ImageSnapLet.html#v:serveImage)|
+|sExecute|[Data.SqlTransaction](Data-SqlTransaction.html#v:sExecute)|
+|sExecuteMany|[Data.SqlTransaction](Data-SqlTransaction.html#v:sExecuteMany)|
+|sFetchAllRows|[Data.SqlTransaction](Data-SqlTransaction.html#v:sFetchAllRows)|
+|sFetchAllRows'|[Data.SqlTransaction](Data-SqlTransaction.html#v:sFetchAllRows-39-)|
+|sFetchRow|[Data.SqlTransaction](Data-SqlTransaction.html#v:sFetchRow)|
+|Share|[Data.SqlTransaction](Data-SqlTransaction.html#v:Share)|
+|ShareRowExclusive|[Data.SqlTransaction](Data-SqlTransaction.html#v:ShareRowExclusive)|
+|ShareUpdateExclusive|[Data.SqlTransaction](Data-SqlTransaction.html#v:ShareUpdateExclusive)|
+|showTable|[Data.Tools](Data-Tools.html#v:showTable)|
+|showTable'|[Data.Tools](Data-Tools.html#v:showTable-39-)|
+|showTableWithHeader|[Data.Tools](Data-Tools.html#v:showTableWithHeader)|
+|showTableWithHeader'|[Data.Tools](Data-Tools.html#v:showTableWithHeader-39-)|
+|shp|[Data.InRules](Data-InRules.html#v:shp)|
+|shpTestAB|[Data.InRules](Data-InRules.html#v:shpTestAB)|
+|shpTestArr|[Data.InRules](Data-InRules.html#v:shpTestArr)|
+|singleObj|[Data.InRules](Data-InRules.html#v:singleObj), [Data.Conversion](Data-Conversion.html#v:singleObj)|
+|singleton|[Data.And](Data-And.html#v:singleton)|
+|sinsert|[Model.General](Model-General.html#v:sinsert)|
+|smust|[Data.Tools](Data-Tools.html#v:smust)|
+|sort|[Data.Relation](Data-Relation.html#v:sort)|
+|Sql|[Data.Database](Data-Database.html#t:Sql)|
+|sql| |
+|1 (Function)|[Application](Application.html#v:sql)|
+|2 (Function)|[Data.Database](Data-Database.html#v:sql)|
+|SqlBool|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlBool)|
+|SqlByteString|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlByteString)|
+|SqlChar|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlChar)|
+|SqlDiffTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlDiffTime)|
+|SqlDouble|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlDouble)|
+|SqlEpochTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlEpochTime)|
+|SqlError|[Data.SqlTransaction](Data-SqlTransaction.html#t:SqlError)|
+|sqlExecute|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlExecute)|
+|sqlGetAll|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlGetAll)|
+|sqlGetAllAssoc|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlGetAllAssoc)|
+|sqlGetOne|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlGetOne)|
+|sqlGetRow|[Data.SqlTransaction](Data-SqlTransaction.html#v:sqlGetRow)|
+|SqlInt32|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlInt32)|
+|SqlInt64|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlInt64)|
+|SqlInteger|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlInteger)|
+|SqlLocalDate|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlLocalDate)|
+|SqlLocalTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlLocalTime)|
+|SqlLocalTimeOfDay|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlLocalTimeOfDay)|
+|SqlNull|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlNull)|
+|SqlPOSIXTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlPOSIXTime)|
+|SqlRational|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlRational)|
+|SqlString|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlString)|
+|SqlTimeDiff|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlTimeDiff)|
+|SqlTransaction|[Data.SqlTransaction](Data-SqlTransaction.html#t:SqlTransaction)|
+|SqlTransactionConfig|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#t:SqlTransactionConfig)|
+|SqlTransactionUser|[Data.SqlTransaction](Data-SqlTransaction.html#t:SqlTransactionUser)|
+|SqlUTCTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlUTCTime)|
+|SqlValue|[Data.SqlTransaction](Data-SqlTransaction.html#t:SqlValue)|
+|SqlWord32|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlWord32)|
+|SqlWord64|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlWord64)|
+|SqlZonedLocalTimeOfDay|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlZonedLocalTimeOfDay)|
+|SqlZonedTime|[Data.SqlTransaction](Data-SqlTransaction.html#v:SqlZonedTime)|
+|sRun|[Data.SqlTransaction](Data-SqlTransaction.html#v:sRun)|
+|Statement|[Data.SqlTransaction](Data-SqlTransaction.html#t:Statement)|
+|STC|[SqlTransactionSnaplet](SqlTransactionSnaplet.html#v:STC)|
+|strength|[Data.Tools](Data-Tools.html#v:strength)|
+|StringC|[Config.ConfigFileParser](Config-ConfigFileParser.html#v:StringC), [ConfigSnaplet](ConfigSnaplet.html#v:StringC)|
+|StringLike|[Data.Tools](Data-Tools.html#t:StringLike)|
+
+Produced by [Haddock](http://www.haskell.org/haddock/) version 2.11.0
