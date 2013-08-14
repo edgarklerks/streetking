@@ -2561,8 +2561,8 @@ availableMissions = do
             ys <- runDb $ do 
                              ms <- search xs od l o
                              forM ms $ \p -> do 
-                                                (Just s) <- load (Mission.rule_id p) :: SqlTransaction Connection  (Maybe Rule.Rule)
-                                                return $ InObject $ HM.fromList $ [("rule", toInRule (ruleToExpression (Rule.rule s))), ("mission", toInRule p)]
+                                                s <- load (Mission.rule_id p) :: SqlTransaction Connection  (Maybe Rule.Rule)
+                                                return $ InObject $ HM.fromList $ [("rule", toInRule (ruleToExpression <$> (Rule.rule <$>  s))), ("mission", toInRule p)]
             writeResult ys 
 
 userMission :: Application ()
