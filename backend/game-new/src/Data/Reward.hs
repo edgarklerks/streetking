@@ -258,6 +258,11 @@ joinSame xs = let (as,bs) = foldr splitAll ([],[]) xs
     where splitAll (All x) (alls,dfs) = (x ++ alls, dfs)
           splitAll x (alls, dfs) = (alls, x : dfs)
 
+ruleToExpression :: String -> Expr g Symbol 
+ruleToExpression  xs = case parse parseRule "" xs of 
+                            Left e -> Any [] 
+                            Right a -> a 
+
 parseRule :: Parser (Expr g Symbol)
 parseRule = optimize <$> (All <$> manyRules)
 
