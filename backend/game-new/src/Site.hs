@@ -2558,12 +2558,17 @@ availableMissions = do
                     "time_limit" +>= "time_limit_min" +&& 
                     "time_limit" +<= "time_limit_max" +&& 
                     "time_limit" +== "time_limit"
-            ys <- runDb $ do 
-                             ms <- search xs od l o
-                             forM ms $ \p -> do 
-                                                s <- load (Mission.rule_id p) :: SqlTransaction Connection  (Maybe Rule.Rule)
-                                                return $ InObject $ HM.fromList $ [("rule", toInRule (ruleToExpression <$> (Rule.rule <$>  s))), ("mission", toInRule p)]
+            ys <- runDb $ avDb xs od l o 
             writeResult ys 
+
+avDb xs od l o =  do 
+                             ms <- search xs od l o
+                             liftIO $ print ms 
+                             forM ms $ \p -> do 
+                                                liftIO $ print p 
+                                                r <- load (Mission.rule_id p) :: SqlTransaction Connection  (Maybe Rule.Rule)
+                                                liftIO $ print r 
+                                                return $ InObject $ HM.fromList $ [("rule", toInRule (ruleToExpression <$> (Rule.rule <$>  r))), ("mission", toInRule p)]
 
 userMission :: Application ()
 userMission = do 
