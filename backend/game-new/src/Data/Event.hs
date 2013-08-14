@@ -46,8 +46,13 @@ instance ToInRule Symbol where
             ]
     toInRule (MissionI i) = InObject $ Map.fromList $ [
                             ("string", InString "mission"),
-                            ("track_id", InInteger i)
+                            ("mission_id", InInteger i)
                         ]
+    toInRule (RaceI pos id) = InObject $ Map.fromList $ [
+                            ("string", InString "race"),
+                            ("track_id", InString (fromMaybe "" (show <$> id))),
+                            ("pos", InString (fromMaybe "" (show <$> pos))) 
+            ]
 
 
 testSymbolRule = All [One $ PracticeI (Just 2), One $ PracticeI  Nothing, One $ TournamentI (Just 1) Nothing (Just 3), Any [One $ PracticeI (return 9), One $ PracticeI $ return 12]]
