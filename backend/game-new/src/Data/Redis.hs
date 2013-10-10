@@ -27,7 +27,7 @@ data Tree k v = Tree {
 onRedis :: Tree k v -> Redis a -> IO a
 onRedis t m = runRedis (connection t) m 
 
-loadTree :: S.Serialize v => String -> v -> String -> Integer -> IO (Tree String v)
+loadTree :: S.Serialize v => B.ByteString -> v -> B.ByteString -> Integer -> IO (Tree B.ByteString B.ByteString)
 loadTree sn v s p = do 
                     let ci = defaultConnectInfo {
                             connectHost = s,
