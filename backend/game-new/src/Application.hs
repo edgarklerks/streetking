@@ -29,7 +29,7 @@ import           Data.Typeable
 import           Database.HDBC
 import           Database.HDBC.PostgreSQL (Connection)
 import           Model.General
-import           NodeSnapletTest as D 
+import           NodeSnaplet as D 
 import           NotificationSnaplet as N  
 import           ProtoExtended 
 import           RandomSnaplet as R 
