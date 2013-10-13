@@ -10,25 +10,18 @@ import           Control.Concurrent.STM
 import           Control.Monad.Trans
 import           Control.Lens hiding (Context)
 import           Data.MemTimeState
-import           MemServerAsyncTest
-import           ProtoExtended  
 import           Snap.Core 
 import           Snap.Snaplet
 import           System.Random 
-import           System.ZMQ3 as Z  
 import qualified Data.Binary as B 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as L 
 import qualified Control.Monad.CatchIO as CIO 
 import           GHC.Exception
+import qualified Data.Redis as R 
 
 data DHTConfig = DHC {
-        _query :: MVar (),
-        _ctx :: Context,
-        _addr :: String, 
-        _pull :: Socket Pull,
-        _req :: Socket Req,
-        _pc :: (RequestConfig, IncomingConfig, UpdateConfig) 
+               _redis :: Tree B.ByteString B.ByteString
     }
 
 newtype NodeTest a = NodeTest {
@@ -39,42 +32,12 @@ runNodeTest :: DHTConfig -> NodeTest a -> IO a
 runNodeTest dhc m = evalStateT (unNodeTest m) dhc 
 
 
-data NodeTestParams = NTP {
-            nt_pull :: String,
-            nt_req :: String, 
-            nt_dump :: String
-    }
+
+insert k v = do 
+    r <- gets _redis
+    liftIO $ R.insert r k v 
 
 
-setupTests = do 
-    let servers = [
-                  NTP "tcp://127.0.0.1:7122" "tcp://127.0.0.1:8712" "test_server_1_dump"
-                , NTP "tcp://127.0.0.1:7123" "tcp://127.0.0.1:8713" "test_server_2_dump"
-                , NTP "tcp://127.0.0.1:7124" "tcp://127.0.0.1:8714" "test_server_3_dump"
-                ]
-    forM_ servers $ forkIO . createNodeTest 
-
-   
-
-createNodeTest :: NodeTestParams -> IO ()
-createNodeTest ntp = do 
-       l <- liftIO $ newMemState (60 * 1000 * 1000 * 30) (6000 * 1000) (nt_dump ntp)
-       qc <- liftIO $ newTQueueIO 
-       liftIO $ forkIO $ queryManager (nt_dump ntp) l qc 
-       s <- liftIO $ startNode $ RP (nt_req ntp) (nt_pull ntp) qc False 
-       return ()
-
-
-sendQuery :: (MonadState DHTConfig m, MonadIO m) => Proto -> m Proto 
-sendQuery r = do
-                 s <- gets _query 
-                 a <- gets _addr
-                 p <- gets _pull
-                 rq <- gets _req 
-                 pc <- gets _pc
-                 liftIO $ withMVar s $ \_ -> do  
-                    res <- queryNode (pc_memstate $ get_pc_config $ pc) p rq a r 
-                    return res 
 
 makeLenses ''DHTConfig
 
