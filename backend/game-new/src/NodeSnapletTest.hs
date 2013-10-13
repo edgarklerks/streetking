@@ -37,6 +37,10 @@ insert k v = do
     r <- gets _redis
     liftIO $ R.insert r k v 
 
+find k = do 
+    r <- gets _redis 
+    liftIO $ R.find r k 
+
 
 
 makeLenses ''DHTConfig
