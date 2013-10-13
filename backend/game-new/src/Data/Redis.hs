@@ -1,15 +1,13 @@
 {-# Language ViewPatterns #-}
 module Data.Redis (
-    Tree, 
-    find,
+    loadTree,
+    onRedis,
+    find, 
+    insert,
     getNode,
     reduceTreeBU,
-    reduceTreeTD,
-    asList,
-    insert,
-    delete
-
-)where 
+    reduceTreeTD
+) where 
 
 import Database.Redis 
 import qualified Data.Serialize as S
@@ -17,6 +15,8 @@ import qualified Data.ByteString.Lazy as B
 import qualified Data.ByteString as BS
 import Control.Monad 
 import Control.Applicative 
+import Network.Socket (PortNumber)
+import Data.Default
 
 data Tree k v = Tree {
         root :: k,
@@ -24,8 +24,29 @@ data Tree k v = Tree {
     }
 
 
+asList :: S.Serialize k => S.Serialize v => Tree k v -> IO [(k,v)]
+asList t = reduceTreeBU t (\x y z -> (x,y):z) []
+
 onRedis :: Tree k v -> Redis a -> IO a
 onRedis t m = runRedis (connection t) m 
+
+loadTree :: S.Serialize v => B.ByteString -> v -> String -> Integer -> IO (Tree B.ByteString B.ByteString)
+loadTree sn v s p = do 
+                    let ci = defaultConnectInfo {
+                            connectHost = s,
+                            connectPort = PortNumber  $ fromInteger p}
+                    c <- connect ci  
+                    let t =  Tree {
+                        connection = c,
+                        root = sn 
+                    }
+                    x <- find t sn 
+                    case x `asTypeOf` (Just v) of 
+                        Nothing -> void $ onRedis t $ set (S.encode sn) (S.encode (v)) 
+                        Just sn -> return ()
+                    return t 
+
+
 
 getValue k = do 
         x <- get (S.encode k)
@@ -37,9 +58,7 @@ getValue k = do
                                             Right (Nothing) -> return Nothing 
                                             Right (Just a) -> return (Just a)
 
-
-asList :: (S.Serialize k, S.Serialize v) => Tree k v -> IO [(k,v)]
-asList t = reduceTreeBU t (\k v z -> (k,v):z) []  
+        
 
 find :: (S.Serialize k, S.Serialize v) => Tree k v -> k -> IO (Maybe v)
 find t k = onRedis t $ do 
