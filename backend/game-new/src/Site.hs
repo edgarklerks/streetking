@@ -173,6 +173,7 @@ import qualified Model.TrackTime as TTM
 import qualified Model.Transaction as Transaction
 import qualified Model.TravelReport as TR 
 import qualified Notifications as N 
+import qualified Data.Role as Role 
 
 type STQ a = SqlTransaction Connection a
 
@@ -227,7 +228,7 @@ userLogin = do
         then do 
 
             k <- getUniqueKey 
-            addRole (convert $ A.id user) k 
+            addRole (Role.User $ convert $ A.id user) k 
             n <- runDb (load $ convert $ A.id user) :: Application (Maybe AP.AccountProfile)
             writeResult k
         else do 
