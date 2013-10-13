@@ -44,6 +44,7 @@ import           Data.List (tails, intercalate)
 import           Control.Exception.Base
 import           LogSnaplet hiding (logCycle)
 import qualified LogSnaplet as LSS 
+import           Snap.Snaplet ()
 ------------------------------------------------------------------------------
 import           Application
 

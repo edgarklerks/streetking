@@ -28,6 +28,7 @@ import Snap.Core
 import Snap.Snaplet
 import Control.Lens 
 import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Char8 as C
 import Config.ConfigFileParser
 
@@ -47,7 +48,7 @@ import LogSnaplet
 data RoleSnaplet = RoleSnaplet {
         runRS :: R.RolePair B.ByteString,
         _random :: Snaplet (RandomConfig),
-        _dht :: Snaplet (DHTConfig), 
+        _dht :: Snaplet (DHTConfig R.Role), 
         _log_cycler :: Snaplet Cycle 
 
 
@@ -70,7 +71,7 @@ may rs rr = do
     xs <- gets runRS
     let ls = cookieValue <$> catMaybes [ct, at,st]
     let ls' = catMaybes [ct', at',st']
-    ts <- foldM (getRoles xs) [R.All] (ls ++ ls')
+    ts <- foldM (getRoles xs) [R.All] ((\x -> L.fromChunks [x]) <$> ls ++ ls')
     b <- foldM (getPerms xs rr rs) False ts 
     return b
  where getRoles xs zs x = do 
@@ -86,7 +87,7 @@ getRoles k = do
     ct' <- getParam k 
     case (ct' <|> ct) of 
         Nothing -> return []
-        Just x -> getRoles' x
+        Just x -> getRoles' (L.fromChunks [x])
 
 dropRoles :: (MonadState RoleSnaplet m, MonadSnap m) => C.ByteString -> m ()
 dropRoles s = error "not implemented" 
@@ -98,7 +99,7 @@ addRole s r = do
 
     with log_cycler $ logCycle "role_snaplet" "addRole"
     let ck = Cookie s h Nothing Nothing (Just "/") False False
-    with dht $ insertBinary h r
+    with dht $ insert (L.fromChunks $ return h) r
     modifyResponse . addResponseCookie $ ck 
     modifyRequest $ \r -> r { rqCookies = ck : rqCookies r }
     writeBS $ "{\"result\":\"" `C.append` h `C.append` "\"}"
@@ -117,7 +118,7 @@ initRoleSnaplet a s p = makeSnaplet "RoleSnaplet" "User/Application role manager
 
 
 getRoles' k = do 
-        (x :: Maybe R.Role) <- with dht $ lookupBinary k   
+        (x :: Maybe R.Role) <- with dht $ find k   
         case x  of 
             Nothing -> return []
             Just a -> return [a]
