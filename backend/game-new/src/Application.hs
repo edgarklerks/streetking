@@ -43,6 +43,7 @@ import qualified Database.HDBC.PostgreSQL as DB
 import qualified LockSnaplet as L 
 import qualified SqlTransactionSnaplet as ST 
 import           LogSnaplet 
+import qualified Data.Role as R 
 
 
 
@@ -63,7 +64,7 @@ data App = App
       _db :: Snaplet SqlTransactionConfig
     , _config :: Snaplet ConfigSnaplet 
     , _rnd :: Snaplet RandomConfig 
-    , _nde :: Snaplet DHTConfig 
+    , _nde :: Snaplet (DHTConfig R.Role) 
     , _notf :: Snaplet N.NotificationConfig
     , _slock :: Snaplet L.Lock 
     , _logcycle :: Snaplet Cycle 
@@ -71,8 +72,10 @@ data App = App
 
 makeLenses ''App
 
-getUniqueKey :: Application (B.ByteString)
-getUniqueKey = with rnd $ R.getUniqueKey 
+getUniqueKey :: Application (L.ByteString)
+getUniqueKey = with rnd $ do
+                s <- R.getUniqueKey 
+                return $ L.fromChunks [s]
 
 runDb a = do
         l <- getLock 
@@ -195,8 +198,7 @@ getPagesWithDTD d = do
 
 -- | Add a role to a user id 
 addRole i k =  with nde $ do 
-                    insert k rs
-        where rs = B.pack $ L.unpack $ BI.encode $ User (Just i) 
+                    D.insert k i
 
 
 -- | write an json error 

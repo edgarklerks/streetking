@@ -47,8 +47,8 @@ import qualified Snap.Iteratee as I
 import           Control.Concurrent.STM 
 import qualified Data.HashMap.Strict as S 
 import           Debug.Trace 
-import           Data.ExternalLog (Cycle, reportCycle) 
 import           Data.ConduitTransformer
+import qualified Data.ExternalLog as E
 
 
 {-- I need a datastructure, which can dynamicly be:
@@ -69,8 +69,7 @@ newtype Addresses = Addresses {
     }
 
 data ProxySnaplet = PS {
-        _proxy :: Addresses,
-        _cycle_logr :: Cycle 
+        _proxy :: Addresses
     } 
 
 emptyAddresses :: IO Addresses 
@@ -180,18 +179,18 @@ filterAddress a f = do
 
 
 {-- Initializes mini heartbeat handler and proxy server --}
-initProxy :: Cycle -> FilePath -> SnapletInit b ProxySnaplet 
-initProxy cl fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other side" Nothing $ do 
+initProxy ::  FilePath -> SnapletInit b ProxySnaplet 
+initProxy  fp = makeSnaplet "ProxySnaplet" "Proxy sends requests to the other side" Nothing $ do 
                                 xs <- liftIO $ readConfig fp 
 
                                 let ps = lookupConfig "Heartbeat" xs >>= lookupVar "listener-address"
                                 let (Just (StringC c)) = ps 
 
                                 p <- liftIO $ emptyAddresses
-                                liftIO $ initHeartBeat cl p c
-                                return (PS p cl) 
+                                liftIO $ initHeartBeat undefined p c
+                                return (PS p) 
 
-initHeartBeat :: Cycle -> Addresses -> Address -> IO ThreadId   
+initHeartBeat :: E.Cycle -> Addresses -> Address -> IO ThreadId   
 initHeartBeat cl p c = do
                 print "Starting heart beat proxy"
                 forkIO $ hotelManager cl c $ \b -> do
@@ -315,8 +314,6 @@ sendAbroad r rq = do
                 s2 <- liftIO $ newTQueueIO
                 
                 runRequestBody (chanIteratorHttpManager rq s2 s1)
-                cl <- gets _cycle_logr
-                liftIO $ reportCycle cl "proxy_snaplet" "sendAbroad"
                 resp <- getResponse 
 
                 finishWith $ 
