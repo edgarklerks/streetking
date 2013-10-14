@@ -78,7 +78,8 @@ Executable game-new
     base64-bytestring,
     lens-family-core,
     quicklz,
-    network
+    network,
+    hedis
 
   if flag(development)
     build-depends:
