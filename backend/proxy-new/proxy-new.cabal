@@ -74,7 +74,8 @@ Executable proxy-new
     lens-family-core,
     quicklz,
     QuickCheck,
-    http-conduit
+    http-conduit,
+    hedis
 --    http-enumerator
 
   if flag(development)
