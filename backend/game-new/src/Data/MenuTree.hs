@@ -42,10 +42,10 @@ type MenuTree = Tree (Int, Menu)
 {-- Tree in labeled flat form, suitable for database storage --}
 type FlatTree = [((Int, Int), Menu)]
 
-$(A.deriveJSON (\x -> case x of 
+$(A.deriveJSON (A.defaultOptions {A.fieldLabelModifier = \x -> case x of 
                         "subForest" -> "nodes" 
-                        "rootLabel" -> "content") ''Tree)
-$(A.deriveJSON id ''Menu)
+                        "rootLabel" -> "content"}) ''Tree)
+$(A.deriveJSON A.defaultOptions ''Menu)
 
 anotateTree :: Tree Menu -> MenuTree 
 anotateTree xs = fst $ runState (T.mapM step xs) 0 
